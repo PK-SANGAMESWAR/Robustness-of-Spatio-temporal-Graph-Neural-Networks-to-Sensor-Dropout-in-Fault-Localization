@@ -1,0 +1,37 @@
+[project]
+name = "fault-localization"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel>=7.3.0",
+    # Simulation
+    "opendssdirect.py>=0.9",
+    # Data processing
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "scipy>=1.13",
+    # Graph & visualization
+    "networkx>=3.3",
+    "matplotlib>=3.9",
+    "seaborn>=0.13",
+    # Utilities
+    "pyyaml>=6.0",
+    "tqdm>=4.66",
+    "scikit-learn>=1.5",
+    "pytest>=8.0",
+    # Experiment models (CPU wheels are selected by uv on supported platforms)
+    "torch==2.5.1+cu121",
+    "torch-geometric>=2.6",
+]
+
+# The host driver supports CUDA 12.2.  Use the official CUDA 12.1 wheel, a
+# compatible runtime generation, and resolve its NCCL dependency as a unit.
+[tool.uv.sources]
+torch = { index = "pytorch-cu121" }
+
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true

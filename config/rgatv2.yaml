@@ -1,0 +1,8 @@
+base: experiment_base.yaml
+benchmark_version: benchmark_v1.1_samplerfix
+model:
+  name: rgatv2
+  heads: 4
+  attention_dropout: 0.3
+training:
+  epochs: 15

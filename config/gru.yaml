@@ -1,0 +1,6 @@
+base: experiment_base.yaml
+benchmark_version: benchmark_v1.1_samplerfix
+model:
+  name: gru
+training:
+  epochs: 11

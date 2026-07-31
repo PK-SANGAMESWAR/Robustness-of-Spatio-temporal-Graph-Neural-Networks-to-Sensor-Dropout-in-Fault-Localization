@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------------------
+# Python-generated files
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.pytest_cache/
+
+# ---------------------------------------------------------------------------
+# Virtual environment (5+ GB — recreate with `uv sync` from pyproject/uv.lock)
+# ---------------------------------------------------------------------------
+.venv/
+
+# ---------------------------------------------------------------------------
+# Datasets — multi-GB, regenerable via scripts/generate_*.py. Never commit.
+# ---------------------------------------------------------------------------
+/dataset/
+/dataset_medium_A/
+/dataset_fullscale_50/
+/dataset_fullscale_100/
+# Stray generated dataset accidentally nested inside the source package
+# (the real IEEE-123 .dss source files one level up ARE tracked).
+/fault_localization/data/ieee123/fault_localization/
+
+# ---------------------------------------------------------------------------
+# Large / regenerable training artifacts under results/.
+# Keep the small paper-relevant outputs (figures, metrics.json,
+# metrics_by_epoch.csv, confusion_matrix.csv, benchmark_summary/comparison.csv,
+# run configs, logs); drop the heavy regenerable ones below.
+# NOTE: .gitignore has no inline comments — each pattern must be on its own line.
+# ---------------------------------------------------------------------------
+# model checkpoints (regenerable by training)
+*.pt
+# per-window predictions (tens of MB per run)
+predictions_test.csv
+# per-run dataset fingerprint (12-24 MB each)
+dataset_manifest.json
+# benchmark-level dataset fingerprint
+manifest.json
+
+# ---------------------------------------------------------------------------
+# Base paper PDF — third-party copyrighted material, not ours to redistribute.
+# ---------------------------------------------------------------------------
+BasePaper.pdf
+
+# ---------------------------------------------------------------------------
+# OS / editor cruft
+# ---------------------------------------------------------------------------
+.DS_Store

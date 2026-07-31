@@ -1,0 +1,3 @@
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgatv2.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version fullscale_final --epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3 --gnn-layers 4
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")

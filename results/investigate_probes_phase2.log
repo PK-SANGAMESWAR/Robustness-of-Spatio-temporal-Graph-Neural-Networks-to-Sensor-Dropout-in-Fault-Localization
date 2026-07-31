@@ -1,0 +1,19 @@
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgsage_max.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version diag_depth4 --gnn-layers 4
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/diag_depth4/rgsage_max/seed_00042
+[ok] diag_depth4 — 221.5 min
+
+depth3 graph_macro_f1=0.7508, depth4 graph_macro_f1=0.8063
+LOCKED depth = 4 (depth-4 beat depth-3)
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgsage_max.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version diag_combined_depth4_epochs30 --gnn-layers 4 --epochs 30
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/diag_combined_depth4_epochs30/rgsage_max/seed_00042
+[ok] diag_combined_depth4_epochs30 — 439.9 min
+
+Phase 2 done in 661.4 min. 0 failure(s).

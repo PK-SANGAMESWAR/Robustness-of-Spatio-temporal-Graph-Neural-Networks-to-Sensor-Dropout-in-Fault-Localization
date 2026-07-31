@@ -1,0 +1,1 @@
+## If there are are any taining or any code that should be ran in terminal, dont directly do it instead give code i ll do it. 

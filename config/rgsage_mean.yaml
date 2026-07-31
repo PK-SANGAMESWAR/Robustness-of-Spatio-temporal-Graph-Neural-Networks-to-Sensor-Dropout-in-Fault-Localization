@@ -1,0 +1,8 @@
+base: experiment_base.yaml
+benchmark_version: benchmark_v1.1_samplerfix
+model:
+  name: rgsage_mean
+  aggregator: mean
+  neighbor_sampling: false
+training:
+  epochs: 15

@@ -1,0 +1,37 @@
+benchmark_version: benchmark_v1.0
+data_root: dataset
+output_root: results
+seed: 42
+device: cuda
+feeder_config: default   # "default" or "green" (reconfigured topology)
+
+# GNN depth: 1 spatial layer (matches paper Fig. 1 simplest configuration)
+# Documented here to resolve the previously unresolved protocol decision.
+gnn_layers: 1
+
+metrics:
+  f1_average: macro
+  labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+
+training:
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  checkpoint_metric: graph_f1
+  deterministic: true
+
+model:
+  temporal_hidden_dim: 128
+  gnn_hidden_dim: 64
+  dropout: 0.35
+
+# Sensor-dropout study configuration (PROBLEM.md §4 novelty)
+# Set enabled: true to run the dropout robustness evaluation.
+# All models must be evaluated on identical data (KNOWN_ISSUES §3).
+dropout_study:
+  enabled: false
+  k_levels: [0, 1, 2, 5, 10]   # number of dropped sensors per evaluation
+  n_mask_seeds: 3               # seeds for mask selection (≥3 for mean ± std)
+  policy: zero_messages         # "zero_messages" or "drop_edges"
+  dropout_aware_training: false # if true, wrap training loader with DropoutAugmentedLoader
+  train_k_range: [0, 1, 2, 5]  # k values to sample during dropout-aware training

@@ -1,0 +1,37 @@
+[run] uv run python -m fault_localization.experiments.cli train --config config/gru.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version fullscale_50_seed42
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_50_seed42/gru/seed_00042
+[ok] gru — 117.2 min
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgcn.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version fullscale_50_seed42
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_50_seed42/rgcn/seed_00042
+[ok] rgcn — 167.8 min
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgsage_mean.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version fullscale_50_seed42
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_50_seed42/rgsage_mean/seed_00042
+[ok] rgsage_mean — 167.3 min
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgsage_max.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version fullscale_50_seed42
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_50_seed42/rgsage_max/seed_00042
+[ok] rgsage_max — 184.4 min
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgatv2.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version fullscale_50_seed42
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_50_seed42/rgatv2/seed_00042
+[ok] rgatv2 — 230.5 min
+
+Sweep done in 867.2 min. 0 failure(s).

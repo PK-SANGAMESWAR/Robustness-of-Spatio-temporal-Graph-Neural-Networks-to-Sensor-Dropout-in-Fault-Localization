@@ -1,0 +1,7 @@
+[skip] diag_depth1_epochs30 — already complete
+[skip] diag_depth1_epochs30_100runs — already complete
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgsage_max.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version diag_depth4_epochs30_stable --gnn-layers 4 --epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[FAILED (rc=-9)] diag_depth4_epochs30_stable — 38.7 min
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgsage_max.yaml --seed 42 --data-root dataset_fullscale_100 --benchmark-version diag_depth1_epochs30_100runs_stable --epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3
