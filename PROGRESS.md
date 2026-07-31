@@ -315,3 +315,49 @@ current `fullscale_final` checkpoints are current-structure and load fine, so 4a
 real models.
 
 Figures reuse the palette/style of `build_fullscale_final_figures.py` for cross-paper consistency.
+
+### Step 2 — sweep progress (updated 2026-07-31)
+Completed (test soft-voted macro-F1 / no-fault recall):
+- **rgsage_max = 0.853 / 1.000** (reused Step-1 run).
+- **rgatv2 = 0.610 / 1.000** — ⚠️ late-epoch instability: val-F1 collapsed 0.62(ep26)→0.375(ep30)
+  and loss spiked 0.71→1.22 at ep29–30, but **best-checkpoint (ep26 peak 0.621) absorbed it**,
+  so the reported test 0.610 is unaffected. Cleared the main danger zone (ep10–26) cleanly; the
+  spike was a NEW late one. rgatv2's 0.610 is well below rgsage_max — a real architecture finding.
+- **rgcn** training now (~ep9/30, val-F1 0.524, healthy climb, no divergence). gru + rgsage_mean
+  still queued. 50-run sweep ETA ~1 day. Then: build Step 2 table/figures → Step 3 gate → STOP.
+
+### Full-scale (100-run / 3.30M) decision — user wants it; PARKED, not launched
+User asked for full-scale training. Confirmed 3.30M = `dataset_fullscale_100` (already on disk),
+vs our 50-run 1.65M. Architecture is IDENTICAL (same models/depth-4/epochs/stabilization — only
+DATA_ROOT + benchmark_version differ). Chosen path: **finish 50-run first (fallback), THEN launch
+100-run.** `scripts/run_fullscale100_seed42_sweep.py` staged (all 5 models train fresh — no reuse;
+→ `results/fullscale_final_100/`). NOT auto-chained — launch manually when 50-run done. Cost:
+~4–5 days for seed-42 baseline (2× data). Timeline risk vs Aug 15 flagged to user.
+
+### Paper writing (paper/overleaf.tex) — sections filled + verified against code
+- **Related Work table** fixed: added `\usepackage{booktabs}` + `\yes/\no/\pt` defs, corrected
+  Nguyen row (2022, 1D-CNN+GCN not RNN), added all 8 missing `\bibitem`s (web-verified). No
+  undefined citations remain (13 total).
+- **Grid Simulation & Dataset** written (all claims code-verified) + auto-generated dataset table
+  (`scripts/build_dataset_assets.py` → `paper/tables/dataset_info.tex`) + 2 figures from REAL data
+  (`paper/figures/measured_only_graph.png`, `fault_signature.png`; deepest-sag 0.83/0.22/0.014 p.u.
+  @ 0.1/1/10 Ω). Dataset-scale numbers (50-run/1.65M) live ONLY at overleaf.tex lines ~300/317/321
+  + the table — regenerate table via `build_dataset_assets.py --data-root dataset_fullscale_100
+  --runs-per-scenario 100` if switching to 100%.
+- **Baseline Architectures** written from the model code (GRU-128 shared temporal encoder; RGCN
+  sym-norm; RGSAGE concat mean/max; RGATv2 4-head shared-W-on-pair; BN→ReLU→drop0.35→Linear-26
+  head; soft-vote = sum node probs; weighted-CE; depth-4 flagged as the only architectural
+  deviation). Now cites Hamilton2017 + Brody2022 (previously uncited).
+- Still empty in overleaf.tex: dropout-eval + dropout-aware methods, experimental setup, all
+  results subsections, discussion, conclusion.
+
+### Git — repo published
+Initialized + pushed to GitHub (private): `PK-SANGAMESWAR/Robustness-...-Fault-Localization`.
+Comprehensive `.gitignore` (excludes .venv, all dataset*/ dirs, *.pt, predictions_test.csv,
+manifests, BasePaper.pdf); source + paper + docs + small result artifacts (figures/metrics/
+summaries) tracked. Merged GitHub's MIT LICENSE, wrote real README.md. Pushed via VS Code
+(sandbox has no git creds). `.git` pruned 2.6G→5M.
+
+### Orientation
+`CLAUDE.md` now holds a full repo map (file locations + roles) — read it first each session to
+avoid re-exploring.

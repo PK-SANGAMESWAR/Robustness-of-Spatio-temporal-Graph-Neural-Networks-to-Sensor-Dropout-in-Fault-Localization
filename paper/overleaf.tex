@@ -1,0 +1,567 @@
+% Template for Elsevier CRC journal article
+% version 1.2 dated 09 May 2011
+
+% This file (c) 2009-2011 Elsevier Ltd.  Modifications may be freely made,
+% provided the edited file is saved under a different name
+
+% This file contains modifications for Procedia Computer Science
+
+% Changes since version 1.1
+% - added "procedia" option compliant with ecrc.sty version 1.2a
+%   (makes the layout approximately the same as the Word CRC template)
+% - added example for generating copyright line in abstract
+
+%-----------------------------------------------------------------------------------
+
+%% This template uses the elsarticle.cls document class and the extension package ecrc.sty
+%% For full documentation on usage of elsarticle.cls, consult the documentation "elsdoc.pdf"
+%% Further resources available at http://www.elsevier.com/latex
+
+%-----------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                          %%
+%% Important note on usage                                  %%
+%% -----------------------                                  %%
+%% This file should normally be compiled with PDFLaTeX      %%
+%% Using standard LaTeX should work but may produce clashes %%
+%%                                                          %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% The '3p' and 'times' class options of elsarticle are used for Elsevier CRC
+%% The 'procedia' option causes ecrc to approximate to the Word template
+\documentclass[3p,times,procedia]{elsarticle}
+\flushbottom
+
+%% The `ecrc' package must be called to make the CRC functionality available
+\usepackage{ecrc}
+\usepackage[bookmarks=false]{hyperref}
+    \hypersetup{colorlinks,
+      linkcolor=blue,
+      citecolor=blue,
+      urlcolor=blue}
+%\usepackage{amsmath}
+
+
+%% The ecrc package defines commands needed for running heads and logos.
+%% For running heads, you can set the journal name, the volume, the starting page and the authors
+
+%% set the volume if you know. Otherwise `00'
+\volume{00}
+
+%% set the starting page if not 1
+\firstpage{1}
+
+%% Give the name of the journal
+\journalname{Procedia Computer Science}
+
+%% Give the author list to appear in the running head
+%% Example \runauth{C.V. Radhakrishnan et al.}
+\runauth{P K Sangameswar}
+
+%% The choice of journal logo is determined by the \jid and \jnltitlelogo commands.
+%% A user-supplied logo with the name <\jid>logo.pdf will be inserted if present.
+%% e.g. if \jid{yspmi} the system will look for a file yspmilogo.pdf
+%% Otherwise the content of \jnltitlelogo will be set between horizontal lines as a default logo
+
+%% Give the abbreviation of the Journal.
+\jid{procs}
+
+%% Give a short journal name for the dummy logo (if needed)
+%\jnltitlelogo{Computer Science}
+
+%% Hereafter the template follows `elsarticle'.
+%% For more details see the existing template files elsarticle-template-harv.tex and elsarticle-template-num.tex.
+
+%% Elsevier CRC generally uses a numbered reference style
+%% For this, the conventions of elsarticle-template-num.tex should be followed (included below)
+%% If using BibTeX, use the style file elsarticle-num.bst
+
+%% End of ecrc-specific commands
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% The amssymb package provides various useful mathematical symbols
+
+\usepackage{amssymb}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers after \end{frontmatter}.
+%% \usepackage{lineno}
+
+%% natbib.sty is loaded by default. However, natbib options can be
+%% provided with \biboptions{...} command. Following options are
+%% valid:
+
+%%   round  -  round parentheses are used (default)
+%%   square -  square brackets are used   [option]
+%%   curly  -  curly braces are used      {option}
+%%   angle  -  angle brackets are used    <option>
+%%   semicolon  -  multiple citations separated by semi-colon
+%%   colon  - same as semicolon, an earlier confusion
+%%   comma  -  separated by comma
+%%   numbers-  selects numerical citations
+%%   super  -  numerical citations as superscripts
+%%   sort   -  sorts multiple citations according to order in ref. list
+%%   sort&compress   -  like sort, but also compresses numerical citations
+%%   compress - compresses without sorting
+%%
+%% \biboptions{authoryear}
+
+% \biboptions{}
+
+% if you have landscape tables
+\usepackage[figuresright]{rotating}
+% booktabs provides \toprule/\midrule/\bottomrule/\addlinespace used in Table 1
+\usepackage{booktabs}
+%\usepackage{harvard}
+% put your own definitions here:x
+% Symbols for the related-work comparison table (Table 1)
+\newcommand{\yes}{\checkmark}
+\newcommand{\no}{\ensuremath{-}}
+\newcommand{\pt}{\ensuremath{\sim}}
+%   \newcommand{\cZ}{\cal{Z}}
+%   \newtheorem{def}{Definition}[section]
+%   ...
+
+% add words to TeX's hyphenation exception list
+%\hyphenation{author another created financial paper re-commend-ed Post-Script}
+
+% declarations for front matter
+
+
+\begin{document}
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for the associated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for the associated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for the associated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%%
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\dochead{International Conference on Machine Learning and Data Engineering}%%%
+%% Use \dochead if there is an article header, e.g. \dochead{Short communication}
+%% \dochead can also be used to include a conference title, if directed by the editors
+%% e.g. \dochead{17th International Conference on Dynamical Processes in Excited States of Solids}
+
+\title{Robustness of Spatio-temporal Graph Neural Networks to Sensor Dropout in Fault Localization for Partially Observable Distribution Grids}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+
+
+\author[1]{P K Sangameswar} 
+\author[1]{Dr. M Anbazhagan\corref{cor1}}
+
+\address[1]{Department of Computer Science and Engineering, Amrita School of Computing, Coimbatore, Amrita Vishwa Vidyapeetham, India}
+% \address[b]{Department of Computer Science and Engineering, Amrita School of Computing, Amrita Vishwa Vidyapeetham, Coimbatore, Tamil Nadu, India}
+
+\begin{abstract}
+%% Text of abstract
+Accurate fault localization is critical for reducing outage duration and improving the reliability of modern power distribution systems. Fault localization - identifying where a fault occurs, not merely detecting its presence is essential for rapid service restoration, yet remains difficult under partial observability, where only a limited number of micro-phasor measurement units ($\mu$PMUs) monitor networks containing hundreds of buses. Spatio-temporal graph neural networks(STGNNs), which is a combination of temporal sequence modeling with graph message passing over the topology, have shown strong localization accuracy in this setting. However their existing evaluations assume that every $\mu$PMU is always available, an assumption that fails in deployed systems where sensors are lost to communication faults, maintenance, or hardware failure. In this work, we reproduce the STGNN fault-localization benchmark of \cite{Karabulut2026} on the IEEE 123-bus-feeder. Using the same dataset, train-validation-test splits, and a class-imbalance aware training objective, we reproduce the performance of GRU, RGCN, RGSAGE-Mean, RGSAGE-Max, and RGATv2 models, achieving a soft-voting macro-F1 score of [X], consistent with the reported range. Building on this reproduced benchmark, we perform the first systematic evaluation of STGNN robustness to $\mu$PMU loss by removing $k \in \{0,1,2,5,10\}$ of the 25 available $\mu$PMUs  during inference.Our experiments show that localization performance [degrades sharply / degrades gradually] as sensor availability decreases, with high-impedance faults located far from instrumented buses exhibiting the largest performance degradation. To mitigate this, we introduce a simple, architecture-independent dropout-aware training, a simple, architecture-agnostic scheme that randomly masks measurement nodes while training which inturn encourages the model to learn representations that are less dependent on specific sensors. Without introducing any additional inference-time computation, the proposed approach recovers [X] of the localization accuracy lost under sensor dropout relative to standard training. All comparisons use identical data and evaluation protocols, so reported effects are internally consistent. Our results indicate that incorporating sensor-dropout awareness during training substantially improves the resilience of STGNN-based fault localization, bringing such models closer to reliable deployment in sparsely instrumented grids.
+\end{abstract}
+
+\begin{keyword}
+Power System \sep fault location \sep Time Series \sep Graph Neural Networks \sep Recurrent Neural Networks 
+
+%% keywords here, in the form: keyword \sep keyword
+
+%% PACS codes here, in the form: \PACS code \sep code
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+\end{keyword}
+
+\cortext[cor1]{Corresponding author. Tel.: +0-000-000-0000 ; fax: +0-000-000-0000.}
+\end{frontmatter}
+
+%\correspondingauthor[*]{Corresponding author. Tel.: +0-000-000-0000 ; fax: +0-000-000-0000.}
+\email{m\_anbazhagan@cb.amrita.edu}
+
+%%
+%% Start line numbering here if you want
+%%
+% \linenumbers
+\vspace*{-6pt}
+%% main text
+
+\section{Introduction}
+
+Rapid and accurate fault localization in electrical power distribution grids is essential for automated restoration in modern power distribution grids. As feeders absorb growing shares of DERs and adopt self-healing schemes, how effectively and precisely a system can identify where a fault occurred - not merely that one occurred - determines how much of network can be re-energized before crews are dispatched. Traditional impedance based and traveling-wave fault location methods assume that sensors or measurement devices are across the distribution networks. However this is not the case where micro-phasor measurement units ($\mu$PMUs) are installed only at a few locations because they are expensive and require communication infrastructure. A feeder with hundreds of buses may carry only a number of $\mu$PMUs, so any fault-localization methods should work under partial-observability.
+ 
+Graph neural networks (GNNs) are a natural fit for this setting, as the feeder's known topology can be encoded and found out by using message-passing graph to share information between connected buses. This allows the model to infer faults even when the faulty bus does not have a measurement device. \cite{Karabulut2026} demonstrated this approach using a Spatio-Temporal Graph Neural Network (STGNN) that combines a GRU for learning temporal patterns with different GNN layers, including RGCN, RGSAGE, and RGATv2. They evaluated these models on the IEEE 123-bus feeder with 25 sparsely placed $\mu$PMUs, 25 possible fault locations, 11 fault types, and three fault resistance values. The model predicts one of 26 classes (25 fault locations and one no-fault class). They also introduced a measured-only graph, where only buses with $\mu$PMUs are included as graph nodes. Their STGNN models achieved an F1-score of about 94.7–94.9%, compared to 86.3% for a GRU-only model. Even when the network configuration changed and fault signals became weaker, the STGNN models maintained 86.2–87.9% F1, while the GRU-only model dropped to 75.5%.
+ 
+This result, however, rests on an assumption that does not hold in deployed systems: that every $\mu$PMU is always available and functioning. Real sensors drop out - through communication loss, hardware failure and other means. This means that a model trained and evaluated only with complete sensor carries no guarantee of degrading gracefully, even if some of its input go dark. Prior work on incomplete measurement in this setting addresses a different regime: Zhang et al.\ \cite{zhang2025} impute chronically unmeasured buses via graph Dirichlet imputation before contrastive GCN training, and Fan et al.\ \cite{fan2024} target measurement noise through a variational graph autoencoder. Both assume a sensor availability approach that is fixed and known during training time. To the best of our knowledge, no previous work has studied how STGNN-based fault localization is affected when some sensors fail during inference.
+ 
+The contributions of this paper are as follows.
+\begin{itemize}
+  \item First, we reproduce the \cite{Karabulut2026} STGNN benchmark protocol — the IEEE 123-bus feeder, $\mu$PMUs placement, fault taxonomy, and windowing scheme — training GRU, RGCN, RGSAGE-Mean, RGSAGE-Max, and RGATv2 on identical data, splits, and loss under a class-imbalance-corrected (inverse-frequency weighted) objective, and report our own reproduced baseline numbers as the reference point for everything that follows [X].
+  \item Second, and centrally, we quantify how far fault-localization accuracy degrades when $k \in \{0, 1, 2, 5, 10\}$ $\mu$PMUs are dropped at inference time, across all five model architectures, producing macro-F1-vs-$k$ degradation curves. 
+  \item Third, we introduce dropout-aware training —randomly masking a variable number of measurement nodes during training, rather than always presenting the full sensor set — as a simple, architecture-agnostic mitigation, and show that it recovers a substantial fraction of the accuracy lost to sensor dropout relative to standard training, including under a reconfigured ("green") feeder topology that stresses the model's reliance on a fixed graph structure. All comparisons — baselines against each other, and standard training against dropout-aware training — are conducted on identical data, splits, and evaluation protocol, so that reported effects are internally consistent even where they depart from the original paper's absolute scale (see Reproduction Notes, Section [X]).
+\end{itemize}
+ 
+The remainder of this paper is organized as follows. Section~\ref{sec:related} reviews related work on GNN-based fault localization and robustness to missing data in graph learning. Section~\ref{sec:methods} describes the simulation setup, the baseline architectures, the sensor-dropout evaluation protocol, and dropout-aware training. Section~\ref{sec:setup} details the experimental configuration. Section~\ref{sec:results} presents the degradation curves and the effect of dropout-aware training. Section~\ref{sec:discussion} discusses the implications and limitations of these findings. Section~\ref{sec:conclusion} concludes the paper.
+ 
+\section{Related Work}
+\label{sec:related}
+
+% ------------------------------------------------------------
+%  TABLE 1
+% ------------------------------------------------------------
+\begin{table}[!ht]
+\centering
+\caption{Positioning of representative fault-localization methods.
+Task: D = detection, C = type classification, L = localization.
+\yes{} = yes, \no{} = not studied, \pt{} = partial.}
+\label{tab:related}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llcccccc@{}}
+\toprule
+Work & Approach / model & Task & Test system & Multi- & Sparse & Drop-out & Loss \\
+     &                  &      &             & arch.  & obs.   & @ test   & mitigation \\
+\midrule
+\multicolumn{8}{@{}l}{\textit{Model-based}} \\
+Krishnathevar \& Ngu (2012) \cite{krishnathevar2012} & Generalized impedance-based & L & Distribution & \no & \no & \no & \no \\
+Liu et al.\ (2023) \cite{liu2023} & Traveling wave, multi-branch & L & Distribution & \no & \no & \no & \no \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Non-graph data-driven}} \\
+Livani et al.\ (2013) \cite{livani2013} & ML, faulty-line identification & L & Distribution & \no & \no & \no & \no \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Static GNN}} \\
+Chen et al.\ (2020) \cite{chen2020} & Spectral GCN (Chebyshev) & L & IEEE 123-, 37-bus & \no & \pt & \yes & \yes \\
+Fan et al.\ (2024) \cite{fan2024} & VGAE + GraphSAGE & L & Distribution & \no & \no & \no & \no \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Spatio-temporal GNN}} \\
+Nguyen et al.\ (2022) \cite{nguyen2022} & 1D-CNN + GCN & D+C+L & Distribution & \no & \no & \no & \no \\
+Ngo et al.\ (2025) \cite{ngo2025} & GAT + 1D-CNN & D+C+L & Distribution & \no & \no & \no & \no \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Sparse / missing measurement}} \\
+Zhang et al.\ (2025) \cite{zhang2025} & GDIA-GCL: imputation + contrastive & L & Distribution & \no & \yes & \pt & imputation \\
+\addlinespace
+\multicolumn{8}{@{}l}{\textit{Base paper and this work}} \\
+Karabulut et al.\ (2026) \cite{Karabulut2026} & STGNN: RGCN, RGSAGE, RGATv2 & L & IEEE 123-bus & \yes & \yes & \no & \no \\
+\textbf{This work} & \textbf{STGNN + node drop-out study} & \textbf{D+L} & \textbf{IEEE 123-bus} & \textbf{\yes} & \textbf{\yes} & \textbf{\yes} & \textbf{\yes} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+\section{Materials and Methods}
+\label{sec:methods}
+
+ 
+\subsection{Grid Simulation and Dataset}
+
+We evaluate on the IEEE 123-bus distribution feeder, a standard radial benchmark
+operating at 4.16\,kV and 60\,Hz, simulated in OpenDSS through the
+OpenDSSDirect.py interface. To obtain genuine temporal fault signatures rather
+than static snapshots, the circuit is solved in daily (quasi-static time-series)
+mode with a 1\,ms step so that loads vary along the daily load-shape curve as the
+solver advances. Table~\ref{tab:dataset} summarizes the full configuration; every
+count reported there is computed directly from the generated corpus.
+
+Partial observability is modelled by instrumenting only 25 of the feeder's buses
+with $\mu$PMUs, following the placement of \cite{Karabulut2026} (single-, two-,
+and three-phase units reporting three-phase RMS voltages). From these measured
+buses we construct the reduced \emph{measured-only} graph shown in
+Fig.~\ref{fig:graph}: the 25 $\mu$PMUs are the nodes and the feeder topology
+induces a connected 24-edge tree over them, so message passing operates on the
+sensing infrastructure rather than the full physical network. Crucially, only 6
+of the 25 candidate fault locations coincide with an instrumented bus; the
+remaining 19 are never directly observed, which is the central difficulty the
+spatial model must overcome.
+
+Faults are injected at 25 candidate locations spanning 11 fault types (three LG,
+three LL, three LLG, and two symmetric three-phase faults) at three fault
+resistances (0.1, 1, and 10\,$\Omega$), giving the full factorial set of
+$25\times11\times3=825$ scenarios. Each scenario is simulated 50 times with the
+per-bus load independently scaled by a factor drawn from $\mathcal{U}(0.5,1.3)$,
+exposing the model to a wide range of operating conditions.
+
+For every event we record a 60\,ms window beginning 40\,ms before fault
+inception at 1\,ms resolution, from which we extract 40 overlapping sliding
+windows of 20 timesteps (20\,ms) each; the resulting corpus is balanced at
+exactly 50\% no-fault. Each node carries an $F=6$ feature vector per timestep ---
+the three-phase RMS voltages $[V_1,V_2,V_3]$ concatenated with a binary
+availability mask $[m_1,m_2,m_3]$ that is 1 for a present, live phase and 0 for an
+absent or dropped sensor --- with voltage channels z-score normalized using
+training-split statistics only. Fig.~\ref{fig:sig} shows a fault signature drawn
+directly from the simulated data: the depth of the voltage sag scales strongly
+with fault resistance --- a near-bolted 0.1\,$\Omega$ fault sags the nearest
+channel by 0.83\,p.u., whereas a 10\,$\Omega$ fault sags it by under 0.02\,p.u.
+--- foreshadowing why high-impedance faults are the hardest to localize.
+
+The resulting corpus contains $825\times50=41{,}250$ events (1.65\,M windows),
+partitioned 70/15/15 at the \emph{event} level so that sliding windows from a
+single event never span splits (Table~\ref{tab:dataset}). We follow the base
+paper's generation protocol but regenerate the dataset ourselves; our exact count
+(1.65\,M windows) differs from the 2.5\,M reported by \cite{Karabulut2026}, whose
+figure is not reconstructable from the stated 825-scenario grid. We therefore
+report our own counts rather than forcing a match. Because every experiment in
+this paper is trained and evaluated on this same corpus with identical splits,
+all reported comparisons remain internally consistent.
+
+% AUTO-GENERATED by scripts/build_dataset_assets.py — do not hand-edit counts.
+\begin{table}[!ht]
+\centering
+\caption{Dataset configuration and window-level distribution for the frozen
+\texttt{dataset\_fullscale\_50} corpus (50 runs/scenario). All counts are
+computed directly from the generated dataset.}
+\label{tab:dataset}
+\footnotesize
+\begin{tabular}{@{}ll@{}}
+\toprule
+\multicolumn{2}{@{}l}{\textit{Simulation configuration}} \\
+\midrule
+Test feeder            & IEEE 123-bus, 4.16\,kV, 60\,Hz \\
+Simulator              & OpenDSS (OpenDSSDirect.py), Daily 1\,ms step \\
+Fault positions        & 25 buses \\
+$\mu$PMU locations     & 25 buses (single-/two-/three-phase) \\
+Fault types            & 11 (3 LG, 3 LL, 3 LLG, 2 three-phase) \\
+Fault resistances      & 3 (0.1, 1, 10\,$\Omega$) \\
+Load multiplier        & $\mathcal{U}(0.5, 1.3)$ per run \\
+Scenarios (factorial)  & $25\times11\times3 = 825$ \\
+Runs per scenario      & 50 \\
+Record / window        & 60\,ms record (40\,ms pre-fault), 20-step (20\,ms) windows \\
+Windows per event      & 40 \\
+Node features $F$      & 6 ($[V_1,V_2,V_3]$ + availability mask $[m_1,m_2,m_3]$) \\
+Classes                & 26 (25 locations + no-fault) \\
+\addlinespace
+\multicolumn{2}{@{}l}{\textit{Window-level distribution (event-level 70/15/15 split)}} \\
+\midrule
+Split & Fault / No-fault / Total (events) \\
+\midrule
+Train      & 577,500 / 577,500 / 1,155,000 (28,875) \\
+Validation & 124,000 / 124,000 / 248,000 (6,200) \\
+Test       & 123,500 / 123,500 / 247,000 (6,175) \\
+\midrule
+Total      & 825,000 / 825,000 / 1,650,000 (41,250) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/measured_only_graph.png}
+\caption{The measured-only graph used by the spatial models: the 25 $\mu$PMU
+buses (coloured by phase count) and the 24 topology-derived edges forming a
+connected tree. Red rings mark the 6 $\mu$PMU buses that are also candidate
+fault locations; the other 19 fault locations are unmeasured.}
+\label{fig:graph}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/fault_signature.png}
+\caption{A fault signature at bus 101 (three-phase-to-ground) taken directly
+from the simulated data. The deepest-sagging $\mu$PMU channel is shown,
+normalized to its pre-fault mean; sag depth scales with fault resistance, so
+10\,$\Omega$ high-impedance faults produce only a shallow, hard-to-detect
+signature.}
+\label{fig:sig}
+\end{figure}
+
+\subsection{Baseline Architectures: GRU, RGCN, RGSAGE, RGATv2}
+
+All five baselines share a common spatio-temporal template: a temporal encoder
+produces one embedding per $\mu$PMU node, an optional spatial stage exchanges
+information between nodes over the measured-only graph, a shared per-node head
+assigns class scores, and the node scores are combined by soft voting into a
+single graph-level prediction. The GRU-only baseline omits the spatial stage; the
+four GNN variants differ only within it.
+
+\textbf{Temporal encoding.} Each node's $F=6$ feature sequence (three RMS
+voltages and three availability-mask channels) over the 20-step window is
+processed by a single-layer GRU with 128 hidden units, shared across all nodes;
+the final hidden state yields a 128-dimensional per-node embedding $h_v$. Because
+the same GRU is applied independently to every node, the temporal stage alone ---
+the GRU-only baseline --- classifies each node from its own measurements and
+cannot exploit spatial relationships.
+
+\textbf{Spatial encoding.} The four GNN variants each stack message-passing
+operators over the 25-node graph, with self-loops added so a node always
+aggregates its own embedding:
+\begin{itemize}
+  \item \emph{RGCN} propagates with the symmetrically normalized adjacency
+  $\tilde D^{-1/2}\tilde A\tilde D^{-1/2}$; the structure-only weights are
+  computed once and reused at every hop.
+  \item \emph{RGSAGE-Mean} / \emph{RGSAGE-Max} concatenate a node's own embedding
+  with the mean- or max-aggregated neighbour embedding and project the result
+  with a learned linear map (\cite{Hamilton2017}; base-paper Eq.~5); the two
+  variants differ only in the aggregator.
+  \item \emph{RGATv2} follows the GATv2 formulation of \cite{Brody2022}
+  (base-paper Eq.~8): a shared linear map is applied to the \emph{concatenated}
+  node pair $[h_i \,\|\, h_j]$, a LeakyReLU precedes the dot product with a
+  per-head attention vector, the coefficients are normalized over each node's
+  in-neighbours, and dropout is applied to those normalized coefficients. We use
+  4 attention heads with a separate value projection.
+\end{itemize}
+Every GNN variant uses a 64-dimensional spatial hidden size and a ReLU between
+successive hops (none after the last).
+
+\textbf{Spatial depth (reproduction deviation).} The base paper uses a single
+spatial layer. In our reproduction a single hop plateaued well below the reported
+accuracy, because most fault locations lie more than one hop from any $\mu$PMU
+(only 6 of 25 fault buses are instrumented); we therefore fix the spatial depth
+at \emph{four} stacked hops for every GNN variant, which substantially improves
+localization over the single-hop configuration (Section~\ref{sec:results}). This
+deeper receptive field is the only architectural change from the base protocol
+--- the temporal encoder, feature set, and classifier head are unchanged --- and
+is documented as a reproduction deviation (Section~[X]). The depth is fixed
+independently of dataset scale.
+
+\textbf{Classification and aggregation.} A shared head --- batch normalization,
+ReLU, dropout ($p=0.35$), and a linear map to the 26 classes --- produces
+per-node logits. At inference, node class probabilities are summed across the 25
+nodes and the arg-max gives the window's graph-level prediction (soft voting,
+base-paper \S3.1). Training minimizes a node-level cross-entropy in which each
+window's single event label supervises all nodes, weighted by inverse class
+frequency to counter the 50\% no-fault imbalance.
+
+\textbf{Common hyperparameters.} GRU hidden size 128, GNN hidden size 64, RGATv2
+with 4 attention heads and attention dropout 0.3, and classifier dropout 0.35.
+The full training configuration is given in Section~\ref{sec:setup}.
+
+\subsection{Sensor-Dropout Evaluation Protocol}
+ 
+\subsection{Dropout-Aware Training}
+ 
+
+\section{Experimental Setup}
+\label{sec:setup}
+
+ 
+\section{Results}
+\label{sec:results}
+ 
+\subsection{Baseline Accuracy Under Full Observability}
+
+ 
+\subsection{Accuracy Degradation Under Sensor Dropout}
+
+ 
+\subsection{Effect of Feeder Reconfiguration (``Green'' Scenario)}
+
+ 
+\subsection{Effect of Dropout-Aware Training}
+ 
+\section{Discussion}
+\label{sec:discussion}
+ 
+\subsection{Which Architectures Are Most Robust to Sensor Loss}
+ 
+\subsection{Limitations}
+ 
+\section{Conclusion and Future Work}
+\label{sec:conclusion}
+ 
+\section*{Acknowledgements}
+
+
+
+
+
+\begin{thebibliography}{00}
+ 
+\bibitem{Karabulut2026}
+{K}arabulut, Burak, Carlo Manna, and Chris Develder. (2026) ``Robustness
+of spatio-temporal graph neural networks for fault location in
+partially observable distribution grids." {\it arXiv preprint}
+{\bf arXiv:2604.20403}.
+ 
+\bibitem{Karabulut2025}
+Karabulut, Burak, Carlo Manna, and Chris Develder. (2025)
+``Generalization of graph neural network models for distribution
+grid fault detection." {\it arXiv preprint} {\bf arXiv:2510.03571}.
+ 
+\bibitem{Hamilton2017}
+Hamilton, Will, Zhitao Ying, and Jure Leskovec. (2017) ``Inductive
+representation learning on large graphs." {\it Advances in Neural
+Information Processing Systems} {\bf 30}: 1024--1034.
+ 
+\bibitem{Brody2022}
+Brody, Shaked, Uri Alon, and Eran Yahav. (2022) ``How attentive are
+graph attention networks?" {\it International Conference on Learning
+Representations (ICLR)}.
+ 
+\bibitem{Rong2020}
+Rong, Yu, Wenbing Huang, Tingyang Xu, and Junzhou Huang. (2020)
+``DropEdge: Towards deep graph convolutional networks on node
+classification." {\it International Conference on Learning
+Representations (ICLR)}.
+
+\bibitem{krishnathevar2012}
+Krishnathevar, R., and E. E. Ngu. (2012) ``Generalized impedance-based
+fault location for distribution systems." {\it IEEE Transactions on
+Power Delivery} {\bf 27} (1): 449--451.
+
+\bibitem{liu2023}
+Liu, F., L. Xie, K. Yu, Y. Wang, X. Zeng, L. Bi, et al. (2023) ``A novel
+fault location method based on traveling wave for multi-branch
+distribution network." {\it Electric Power Systems Research} {\bf 224}:
+109753.
+
+\bibitem{livani2013}
+Livani, H., and C. Y. Evrenosoglu. (2013) ``A machine learning-based
+faulty line identification for smart distribution network." {\it North
+American Power Symposium (NAPS)}: 1--6.
+
+\bibitem{chen2020}
+Chen, K., J. Hu, Y. Zhang, Z. Yu, and J. He. (2020) ``Fault location in
+power distribution systems via deep graph convolutional networks."
+{\it IEEE Journal on Selected Areas in Communications} {\bf 38} (1):
+119--131.
+
+\bibitem{fan2024}
+Fan, M., J. Xia, H. Zhang, and X. Zhang. (2024) ``Fault location method
+of distribution network based on VGAE-GraphSAGE." {\it Processes}
+{\bf 12} (10): 2179.
+
+\bibitem{nguyen2022}
+Nguyen, B. L. H., T. Vu, T.-T. Nguyen, M. Panwar, and R. Hovsapian.
+(2022) ``1-D convolutional graph convolutional networks for fault
+detection in distributed energy systems." {\it IEEE 1st Industrial
+Electronics Society Annual On-Line Conference (ONCON)}: 1--6.
+
+\bibitem{ngo2025}
+Ngo, Q.-H., B. L. H. Nguyen, J. Zhang, K. Schoder, H. Ginn, and T. Vu.
+(2025) ``Deep graph neural network for fault detection and
+identification in distribution systems." {\it Electric Power Systems
+Research} {\bf 247}: 111721.
+
+% TODO: verify the full author list for Zhang et al.\ (2025).
+\bibitem{zhang2025}
+Zhang, L., et al. (2025) ``Fault location in power distribution networks
+with massive missing data: a graph-based imputation and contrastive
+learning approach." {\it IEEE Transactions on Automation Science and
+Engineering} {\bf 22}: 16825--16837.
+
+\end{thebibliography}
+
+\clearpage
+
+\end{document}
+
