@@ -4,16 +4,25 @@ Merges two degradation_curves.csv files produced by run_dropout_study.py:
   - standard-trained models     (results/dropout_study/degradation_curves.csv)
   - dropout-aware models        (results/dropout_study_aware/degradation_curves.csv)
 
+Optionally overlays the novel SDR-STGNN (availability-gated) curve as a bold
+third line — the paper's 3-way ablation on the RGSAGE-Max backbone:
+standard vs dropout-aware (augmentation only) vs SDR-STGNN (architecture +
+augmentation). The SDR curve comes from a degradation_curves.csv produced by
+running run_dropout_study.py on the sdr_stgnn checkpoint (--models sdr_stgnn),
+or from the sdr run's auto-emitted dropout_curve.json.
+
 Writes:
   <output-dir>/dropout_aware_comparison.csv  — per (model, k): F1 standard vs
       dropout-aware + recovery (Δ = dropout_aware − standard).
   <output-dir>/dropout_aware_comparison.png  — overlaid degradation curves,
-      standard (dashed) vs dropout-aware (solid), one color per model.
+      standard (dashed) vs dropout-aware (solid), one color per model, plus the
+      SDR-STGNN curve (bold) when --sdr is given.
 
 Usage:
     uv run python scripts/build_dropout_comparison.py \
         --standard results/dropout_study/degradation_curves.csv \
         --dropout-aware results/dropout_study_aware/degradation_curves.csv \
+        --sdr results/dropout_study_sdr/degradation_curves.csv \
         --output-dir results/dropout_study
 """
 from __future__ import annotations
@@ -28,9 +37,11 @@ import pandas as pd
 
 MODELS_ORDER = ["gru", "rgcn", "rgsage_mean", "rgsage_max", "rgatv2"]
 MODEL_LABELS = {"gru": "GRU", "rgcn": "RGCN", "rgsage_mean": "RGSAGE-Mean",
-                "rgsage_max": "RGSAGE-Max", "rgatv2": "RGATv2"}
+                "rgsage_max": "RGSAGE-Max", "rgatv2": "RGATv2",
+                "sdr_stgnn": "SDR-STGNN (ours)"}
 MODEL_COLOR = {"gru": "#2a78d6", "rgcn": "#eb6834", "rgsage_mean": "#1baf7a",
-               "rgsage_max": "#eda100", "rgatv2": "#e87ba4"}
+               "rgsage_max": "#eda100", "rgatv2": "#e87ba4",
+               "sdr_stgnn": "#111111"}
 INK = "#0b0b0b"; INK_SECONDARY = "#52514e"; INK_MUTED = "#898781"
 GRID = "#e1e0d9"; SURFACE = "#fcfcfb"
 
@@ -49,7 +60,7 @@ def build_comparison(std: pd.DataFrame, aware: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_figure(std: pd.DataFrame, aware: pd.DataFrame, out_path: Path,
-                 k_levels: "list[int]") -> None:
+                 k_levels: "list[int]", sdr: "pd.DataFrame | None" = None) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -80,9 +91,20 @@ def build_figure(std: pd.DataFrame, aware: pd.DataFrame, out_path: Path,
                     linestyle="-", linewidth=2.2, markersize=6, capsize=3,
                     color=c, zorder=4)
 
+    # The novel model: a bold third curve (architecture + dropout-aware training).
+    if sdr is not None and not sdr.empty:
+        gsdr = sdr[sdr["model"] == "sdr_stgnn"].sort_values("k")
+        ax.errorbar(gsdr["k"], gsdr["f1_mean"], yerr=gsdr["f1_std"], marker="D",
+                    linestyle="-", linewidth=3.0, markersize=8, capsize=3,
+                    color=MODEL_COLOR["sdr_stgnn"], zorder=6)
+
     # Two legends: color = model, style = training regime.
     model_handles = [Line2D([0], [0], color=MODEL_COLOR[m], lw=2,
                             label=MODEL_LABELS[m]) for m in models]
+    if sdr is not None and not sdr.empty:
+        model_handles.append(Line2D([0], [0], color=MODEL_COLOR["sdr_stgnn"],
+                                    lw=3, marker="D",
+                                    label=MODEL_LABELS["sdr_stgnn"]))
     style_handles = [
         Line2D([0], [0], color=INK_SECONDARY, lw=2, linestyle="--", label="standard"),
         Line2D([0], [0], color=INK_SECONDARY, lw=2, linestyle="-", label="dropout-aware"),
@@ -106,6 +128,8 @@ def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--standard", default="results/dropout_study/degradation_curves.csv")
     p.add_argument("--dropout-aware", default="results/dropout_study_aware/degradation_curves.csv")
+    p.add_argument("--sdr", default=None,
+                   help="degradation_curves.csv containing the sdr_stgnn curve (optional).")
     p.add_argument("--output-dir", default="results/dropout_study")
     args = p.parse_args()
 
@@ -119,6 +143,14 @@ def main() -> int:
     aware = pd.read_csv(aware_path)
     merged = build_comparison(std, aware)
 
+    sdr = None
+    if args.sdr:
+        sdr_path = Path(args.sdr)
+        if sdr_path.exists():
+            sdr = pd.read_csv(sdr_path)
+        else:
+            print(f"[warn] --sdr given but not found: {sdr_path} (skipping SDR curve)")
+
     out_dir = Path(args.output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     csv_path = out_dir / "dropout_aware_comparison.csv"
@@ -126,12 +158,21 @@ def main() -> int:
 
     k_levels = sorted(std["k"].unique().tolist())
     fig_path = out_dir / "dropout_aware_comparison.png"
-    build_figure(std, aware, fig_path, k_levels)
+    build_figure(std, aware, fig_path, k_levels, sdr=sdr)
 
     print(f"Wrote {csv_path} ({len(merged)} rows) and {fig_path}")
     print("\n--- recovery (dropout_aware − standard) macro-F1 ---")
     pivot = merged.pivot(index="model", columns="k", values="recovery")
     print(pivot.to_string(float_format=lambda v: f"{v:+.3f}"))
+
+    # SDR-STGNN vs the standard RGSAGE-Max backbone it is built on.
+    if sdr is not None and "sdr_stgnn" in sdr["model"].values:
+        base = std[std["model"] == "rgsage_max"][["k", "f1_mean"]]
+        s = sdr[sdr["model"] == "sdr_stgnn"][["k", "f1_mean"]]
+        cmp = base.merge(s, on="k", suffixes=("_rgsage_max_std", "_sdr"))
+        cmp["gain"] = cmp["f1_mean_sdr"] - cmp["f1_mean_rgsage_max_std"]
+        print("\n--- SDR-STGNN gain over standard RGSAGE-Max (macro-F1) ---")
+        print(cmp.to_string(index=False, float_format=lambda v: f"{v:+.3f}"))
     return 0
 
 

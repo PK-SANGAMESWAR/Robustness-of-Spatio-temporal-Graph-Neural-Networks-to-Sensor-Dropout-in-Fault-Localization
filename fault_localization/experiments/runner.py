@@ -11,7 +11,7 @@ import torch
 
 from fault_localization.data.dataset import WindowGraphDataset, make_dataloader
 from fault_localization.data.manifest import create_manifest, verify_manifest, write_manifest
-from fault_localization.models import GRUBaseline, RGSAGE, RGCN, RGATv2
+from fault_localization.models import GRUBaseline, RGSAGE, RGCN, RGATv2, SDRSTGNN
 from .config import validate_config
 from .evaluate import evaluate_loader
 from .seed import seed_everything
@@ -28,6 +28,13 @@ def _model(config, edge):
     name = m["name"]
     if name == "gru":
         return GRUBaseline(**common)
+    if name == "sdr_stgnn":
+        return SDRSTGNN(
+            edge, aggregator=m.get("aggregator", "max"),
+            gnn_hidden_dim=m.get("gnn_hidden_dim", 64),
+            num_layers=config.get("gnn_layers", 1),
+            **common,
+        )
     if name.startswith("rgsage"):
         return RGSAGE(
             edge, m["aggregator"],

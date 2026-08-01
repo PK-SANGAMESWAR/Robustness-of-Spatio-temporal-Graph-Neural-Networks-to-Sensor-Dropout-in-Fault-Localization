@@ -1,0 +1,16 @@
+base: experiment_base.yaml
+benchmark_version: sdr_stgnn
+model:
+  name: sdr_stgnn
+  aggregator: max        # built on the strongest baseline (RGSAGE-Max)
+# The novel contribution: availability-gated message passing trained WITH
+# sensor-dropout augmentation, then evaluated on the degradation curve.
+# Frozen recipe (depth 4 / 30 epochs / grad-clip 1.0 / warmup 3) is applied via
+# CLI flags by scripts/run_sdr_stgnn.py, matching every other sweep.
+dropout_study:
+  enabled: true                 # emit dropout_curve.json after test eval
+  dropout_aware_training: true  # wrap train loader with DropoutAugmentedLoader
+  policy: zero_messages
+  train_k_range: [0, 1, 2, 5]
+  k_levels: [0, 1, 2, 5, 10]
+  n_mask_seeds: 3
