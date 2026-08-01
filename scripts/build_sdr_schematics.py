@@ -80,20 +80,24 @@ def build_architecture(out_path: Path) -> None:
     for i in range(len(centers) - 1):
         _arrow(ax, centers[i][1], y + h / 2, centers[i + 1][0], y + h / 2)
 
-    # Availability side-branch feeding the gated block
+    # Availability side-branch feeding the gated block (centred under it).
+    gate_cx = 4.35 + 2.1 / 2      # centre of the gated block
+    ab_x, ab_w, ab_y, ab_h = gate_cx - 1.55, 3.1, 0.15, 0.78
     ax.add_patch(FancyBboxPatch(
-        (4.35, 0.15), 1.9, 0.75, boxstyle="round,pad=0.02,rounding_size=0.06",
+        (ab_x, ab_y), ab_w, ab_h, boxstyle="round,pad=0.02,rounding_size=0.06",
         linewidth=1.6, edgecolor=ACCENT, facecolor=SURFACE, zorder=2))
-    ax.text(4.35 + 0.95, 0.15 + 0.375, "availability  a = 𝟙[mask present] ∈ {0,1}ᴺ",
-            ha="center", va="center", fontsize=9, color=ACCENT, fontweight="bold")
-    _arrow(ax, 5.3, 0.9, 5.3, y, color=ACCENT, lw=1.8)
-    # mask tap from input into the availability box
-    _arrow(ax, 1.1, y, 1.1, 0.5, color=ACCENT, lw=1.4, style="-")
-    _arrow(ax, 1.1, 0.52, 4.35, 0.52, color=ACCENT, lw=1.4)
+    ax.text(gate_cx, ab_y + ab_h / 2,
+            "availability  a ∈ {0,1}ᴺ\n(1 if sensor's mask present)",
+            ha="center", va="center", fontsize=8.5, color=ACCENT, fontweight="bold")
+    _arrow(ax, gate_cx, ab_y + ab_h, gate_cx, y, color=ACCENT, lw=1.8)
+    # mask tap from input, routed along the bottom to the box's left edge.
+    tap_y = ab_y + ab_h / 2
+    _arrow(ax, 1.1, y, 1.1, tap_y, color=ACCENT, lw=1.4, style="-")
+    _arrow(ax, 1.1, tap_y, ab_x, tap_y, color=ACCENT, lw=1.4)
 
     ax.text(6.5, 3.28, "SDR-STGNN: availability-gated spatio-temporal GNN",
             ha="center", va="center", fontsize=13, fontweight="bold", color=INK)
-    ax.text(5.3, 1.02, "dead sensors emit no messages",
+    ax.text(gate_cx, 1.05, "dead sensors emit no messages",
             ha="center", va="center", fontsize=8, style="italic", color=ACCENT)
     fig.tight_layout()
     fig.savefig(out_path, dpi=200, bbox_inches="tight")

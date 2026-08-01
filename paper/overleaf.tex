@@ -386,6 +386,16 @@ signature.}
 
 \subsection{Baseline Architectures: GRU, RGCN, RGSAGE, RGATv2}
 
+The five baselines evaluated here --- GRU, RGCN, RGSAGE-Mean, RGSAGE-Max, and
+RGATv2 --- are faithful reproductions of the architectures proposed by
+\cite{Karabulut2026}; we do not modify their model designs. What we reuse from
+the base paper is its dataset-generation and evaluation protocol (described
+above), on top of which these same architectures are re-implemented and
+retrained on our corpus. The one exception, the spatial depth, is a reproduction
+hyperparameter discussed below, not an architectural redesign. Our own
+architectural contribution, SDR-STGNN, is built on the strongest of these
+reproduced baselines and is introduced separately in Section~[X].
+
 All five baselines share a common spatio-temporal template: a temporal encoder
 produces one embedding per $\mu$PMU node, an optional spatial stage exchanges
 information between nodes over the measured-only graph, a shared per-node head
@@ -422,16 +432,18 @@ aggregates its own embedding:
 Every GNN variant uses a 64-dimensional spatial hidden size and a ReLU between
 successive hops (none after the last).
 
-\textbf{Spatial depth (reproduction deviation).} The base paper uses a single
-spatial layer. In our reproduction a single hop plateaued well below the reported
-accuracy, because most fault locations lie more than one hop from any $\mu$PMU
-(only 6 of 25 fault buses are instrumented); we therefore fix the spatial depth
-at \emph{four} stacked hops for every GNN variant, which substantially improves
-localization over the single-hop configuration (Section~\ref{sec:results}). This
-deeper receptive field is the only architectural change from the base protocol
---- the temporal encoder, feature set, and classifier head are unchanged --- and
-is documented as a reproduction deviation (Section~[X]). The depth is fixed
-independently of dataset scale.
+\textbf{Spatial depth (reproduction hyperparameter).} The base paper uses a
+single spatial layer. In our reproduction a single hop plateaued well below the
+reported accuracy, because most fault locations lie more than one hop from any
+$\mu$PMU (only 6 of 25 fault buses are instrumented); we therefore stack
+\emph{four} message-passing hops in every GNN variant, which substantially
+improves localization over the single-hop configuration
+(Section~\ref{sec:results}). This is the sole respect in which our reproduced
+baselines depart from \cite{Karabulut2026}: the temporal encoder, feature set,
+aggregation operators, and classifier head are otherwise reproduced unchanged.
+We treat the added depth as a reproduction hyperparameter --- a deeper receptive
+field for the same architecture, not a redesign of it --- and document it as such
+(Section~[X]); it is fixed independently of dataset scale.
 
 \textbf{Classification and aggregation.} A shared head --- batch normalization,
 ReLU, dropout ($p=0.35$), and a linear map to the 26 classes --- produces
@@ -446,7 +458,55 @@ with 4 attention heads and attention dropout 0.3, and classifier dropout 0.35.
 The full training configuration is given in Section~\ref{sec:setup}.
 
 \subsection{Sensor-Dropout Evaluation Protocol}
- 
+\label{sec:dropout-eval}
+
+We quantify robustness to $\mu$PMU loss entirely at \emph{inference} time: a model
+is trained once and then evaluated under progressively more missing sensors with
+its weights frozen. This isolates how gracefully a fixed model degrades, separate
+from any training-time mitigation (Section~\ref{sec:results}).
+
+\textbf{Missingness model.} To simulate a lost sensor we select $k$ of the 25
+$\mu$PMUs and, for every test window, zero all six input channels of each selected
+node --- both the three RMS-voltage channels and the three availability-mask
+channels. Zeroing the mask is essential rather than redundant: a zero voltage is a
+legitimate reading on some buses, so the availability mask, not the voltage, is the
+authoritative indicator that a node is unobserved. This reproduces exactly the
+encoding an absent sensor already produces in the dataset
+(Section~\ref{sec:methods}), so a dropped node is indistinguishable from one that
+was never instrumented.
+
+\textbf{Graph handling.} A dropped node is \emph{not} removed from the graph; it
+keeps its edges and continues to participate in message passing, but now propagates
+a zeroed embedding (its temporal encoder consumes an all-zero sequence).
+Consequently, under the mask-agnostic baselines a dead sensor still injects a
+meaningless message into each of its live neighbours' aggregation --- the precise
+failure mode our availability-gated model is designed to remove (Section~[X]). All
+models are compared on this identical, fully-connected graph; an alternative policy
+that severs the edges incident to a dropped node was implemented but not used, so
+that graph structure is never a confound between models.
+
+\textbf{Dropout sweep.} We sweep $k \in \{0,1,2,5,10\}$ --- $0\%$, $4\%$, $8\%$,
+$20\%$, and $40\%$ of the sensing infrastructure removed --- with $k=0$ the
+full-observability reference. For each $k$ the dropped nodes are drawn uniformly at
+random and independently for every window. To keep the comparison paired and
+reproducible, the random selection is driven by fixed seeds that are reused across
+every model, so all architectures see the identical dropout realizations on the
+identical frozen test split (Table~\ref{tab:dataset}). Each $(\mathrm{model},k)$
+point is averaged over $n_{\mathrm{seed}}=3$ independent mask realizations and
+reported as mean\,$\pm$\,standard deviation.
+
+\textbf{Metric and derived robustness scores.} At each $k$ the per-node class
+scores are pooled across the 25 nodes and the arg-max taken (soft voting, as
+defined for the baselines above), and we report macro-F1 over the 26 classes,
+yielding a macro-F1-versus-$k$ \emph{degradation curve} per model. From each curve
+we derive two summary measures: the \emph{retention}
+$R(k)=\mathrm{F1}(k)/\mathrm{F1}(0)$, the fraction of full-observability accuracy
+preserved at dropout level $k$; and a single \emph{normalized area under the
+retention curve} (AUDC),
+$\mathrm{AUDC}=\frac{1}{k_{\max}-k_{\min}}\int_{k_{\min}}^{k_{\max}} R(k)\,dk \in
+[0,1]$ (trapezoidal integration over the swept $k$), for which a higher value
+denotes a model that sheds less accuracy as sensors are lost.
+
 \subsection{Dropout-Aware Training}
  
 

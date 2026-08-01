@@ -30,4 +30,4 @@ Bottom line: single seed = enough to write the draft and prove the mechanism; 3 
 
 Want me to note in QUESTIONS.md that seeds 43/44 are required for the contribution figures (not optional), so it doesn't slip?
 
-2. Will the architecture of models change if we try full scale training to 100 percent of dataset -> 3.30 M
+2. Will the architecture of models change if we try full scale training to 100 percent of dataset -> 3.30 M or will we do the dataset training on same architecture as we did for 1.5 M ie 50 percent of full dataset?

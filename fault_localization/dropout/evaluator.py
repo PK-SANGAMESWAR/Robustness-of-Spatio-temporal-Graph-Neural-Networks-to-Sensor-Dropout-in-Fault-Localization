@@ -21,6 +21,7 @@ import torch
 from sklearn.metrics import f1_score  # type: ignore
 
 from fault_localization.dropout.masking import apply_sensor_dropout_batch
+from fault_localization.models.voting import soft_vote
 
 logger = logging.getLogger(__name__)
 
@@ -85,8 +86,10 @@ def evaluate_at_dropout(
 
             logits = model(x_dropped)  # [B, N, C]
 
-            # Soft voting: average logits over nodes, then argmax
-            graph_pred = logits.mean(dim=1).argmax(dim=-1)  # [B]
+            # Soft voting: sum node softmax probabilities, then argmax —
+            # identical to the training/eval pipeline (models/voting.py) so
+            # the degradation curve's k=0 matches the reported test_graph.f1.
+            _, graph_pred = soft_vote(logits)  # [B]
             all_preds.extend(graph_pred.cpu().tolist())
             all_labels.extend(y.cpu().tolist())
 
