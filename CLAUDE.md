@@ -9,6 +9,8 @@ Target venue ICMLDE 2026, deadline **15 Aug 2026**.
 - `PROGRESS.md` — full project journey + live execution log (§14). **Source of truth for status.**
 - `NEXT-STEPS.md` — the locked execution plan (Steps 1–6). Supersedes older roadmaps.
 - `PROBLEM.md` — problem statement / scope. `QUESTIONS.md` — user's open questions.
+- `RUN-100RUN-SWEEP.md` — **runbook: how to launch/monitor the full-scale (100-run/3.30M)
+  sweep in a fresh session** once the 50-run sweep is done. Follow it if asked to run 100-run.
 - `README.md` — public GitHub readme. Repo is pushed to GitHub (private).
 
 ## Source package: `fault_localization/`

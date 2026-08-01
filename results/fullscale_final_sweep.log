@@ -8,3 +8,24 @@ results/fullscale_final/rgatv2/seed_00042
 [run] uv run python -m fault_localization.experiments.cli train --config config/rgcn.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version fullscale_final --epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3 --gnn-layers 4
 /home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
   warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_final/rgcn/seed_00042
+[ok] rgcn seed=42 — 360.9 min
+[run] uv run python -m fault_localization.experiments.cli train --config config/gru.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version fullscale_final --epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_final/gru/seed_00042
+[ok] gru seed=42 — 320.5 min
+[run] uv run python -m fault_localization.experiments.cli train --config config/rgsage_mean.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version fullscale_final --epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3 --gnn-layers 4
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_final/rgsage_mean/seed_00042
+[ok] rgsage_mean seed=42 — 366.0 min
+[skip] rgsage_max seed=42 — already complete
+
+Full sweep done in 1916.7 min. 0 failure(s).

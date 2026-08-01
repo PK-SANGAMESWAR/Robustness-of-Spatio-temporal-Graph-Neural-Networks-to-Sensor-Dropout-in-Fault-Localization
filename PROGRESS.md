@@ -316,15 +316,26 @@ real models.
 
 Figures reuse the palette/style of `build_fullscale_final_figures.py` for cross-paper consistency.
 
-### Step 2 — sweep progress (updated 2026-07-31)
-Completed (test soft-voted macro-F1 / no-fault recall):
-- **rgsage_max = 0.853 / 1.000** (reused Step-1 run).
-- **rgatv2 = 0.610 / 1.000** — ⚠️ late-epoch instability: val-F1 collapsed 0.62(ep26)→0.375(ep30)
-  and loss spiked 0.71→1.22 at ep29–30, but **best-checkpoint (ep26 peak 0.621) absorbed it**,
-  so the reported test 0.610 is unaffected. Cleared the main danger zone (ep10–26) cleanly; the
-  spike was a NEW late one. rgatv2's 0.610 is well below rgsage_max — a real architecture finding.
-- **rgcn** training now (~ep9/30, val-F1 0.524, healthy climb, no divergence). gru + rgsage_mean
-  still queued. 50-run sweep ETA ~1 day. Then: build Step 2 table/figures → Step 3 gate → STOP.
+### Step 2 — 50-run sweep COMPLETE (2026-08-01), Step 3 gate = baseline OK ✅
+Full sweep done in 1916.7 min (~32 h), 0 failures. Final table (`results/fullscale_final/`,
+seed 42, depth-4, 30 epochs, stabilized; summary + 5 figures built):
+
+| model | soft-voted F1 | per-window F1 | f1@0.1Ω | f1@1Ω | f1@10Ω | nofault P/R |
+|---|---|---|---|---|---|---|
+| rgsage_max | **0.853** | 0.723 | 0.951 | 0.917 | 0.665 | 0.999 / 1.000 |
+| rgsage_mean | 0.811 | 0.689 | 0.924 | 0.846 | 0.633 | 0.993 / 1.000 |
+| rgcn | 0.729 | 0.619 | 0.904 | 0.807 | 0.460 | 1.000 / 1.000 |
+| rgatv2 | 0.610 | 0.537 | 0.702 | 0.666 | 0.409 | 0.991 / 1.000 |
+| gru | 0.296 | 0.153 | 0.461 | 0.278 | 0.092 | 0.941 / 1.000 |
+
+- **Step 3 verdict: baseline OK** — no divergence, best GNN sane (0.853), min no-fault recall
+  0.9998 (detection preserved). rgatv2's ep29–30 spike was absorbed by best-checkpoint.
+- Findings: clean ordering rgsage_max > rgsage_mean > rgcn > rgatv2 ≫ gru; per-resistance
+  monotonic (10Ω hardest, backs the high-impedance narrative); **rgatv2 underperforms** vs the
+  base paper (where it was top) — likely depth-4 attention instability, worth a paper sentence.
+- **STOPPED for review per plan.** GPU now FREE. Did NOT auto-start dropout study or 100-run.
+- Next: user will launch 100-run in a fresh session via `RUN-100RUN-SWEEP.md`; contribution
+  (Step 4 dropout study) still gated/parked.
 
 ### Full-scale (100-run / 3.30M) decision — user wants it; PARKED, not launched
 User asked for full-scale training. Confirmed 3.30M = `dataset_fullscale_100` (already on disk),

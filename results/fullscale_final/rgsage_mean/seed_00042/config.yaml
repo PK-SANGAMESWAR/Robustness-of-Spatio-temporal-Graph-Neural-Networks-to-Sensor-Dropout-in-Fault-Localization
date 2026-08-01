@@ -1,0 +1,68 @@
+benchmark_version: fullscale_final
+data_root: dataset_fullscale_50
+device: cuda
+dropout_study:
+  dropout_aware_training: false
+  enabled: false
+  k_levels:
+  - 0
+  - 1
+  - 2
+  - 5
+  - 10
+  n_mask_seeds: 3
+  policy: zero_messages
+  train_k_range:
+  - 0
+  - 1
+  - 2
+  - 5
+feeder_config: default
+gnn_layers: 4
+metrics:
+  f1_average: macro
+  labels:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 25
+model:
+  aggregator: mean
+  dropout: 0.35
+  gnn_hidden_dim: 64
+  name: rgsage_mean
+  neighbor_sampling: false
+  temporal_hidden_dim: 128
+output_root: results
+seed: 42
+training:
+  batch_size: 32
+  checkpoint_metric: graph_f1
+  deterministic: true
+  epochs: 30
+  grad_clip_norm: 1.0
+  learning_rate: 0.001
+  warmup_epochs: 3
+  weight_decay: 0.0001
