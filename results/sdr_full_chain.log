@@ -5,3 +5,74 @@
 /home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
   warnings.warn("Can't initialize NVML")
 [eval] gru seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgcn seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_mean seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_max seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgatv2 seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[skip] gru seed=43: no checkpoint at results/fullscale_final/gru/seed_00043/checkpoint_best.pt
+[skip] rgcn seed=43: no checkpoint at results/fullscale_final/rgcn/seed_00043/checkpoint_best.pt
+[skip] rgsage_mean seed=43: no checkpoint at results/fullscale_final/rgsage_mean/seed_00043/checkpoint_best.pt
+[eval] rgsage_max seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[skip] rgatv2 seed=43: no checkpoint at results/fullscale_final/rgatv2/seed_00043/checkpoint_best.pt
+[skip] gru seed=44: no checkpoint at results/fullscale_final/gru/seed_00044/checkpoint_best.pt
+[skip] rgcn seed=44: no checkpoint at results/fullscale_final/rgcn/seed_00044/checkpoint_best.pt
+[skip] rgsage_mean seed=44: no checkpoint at results/fullscale_final/rgsage_mean/seed_00044/checkpoint_best.pt
+[eval] rgsage_max seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[skip] rgatv2 seed=44: no checkpoint at results/fullscale_final/rgatv2/seed_00044/checkpoint_best.pt
+
+Wrote results/dropout_study/degradation_curves.csv (25 rows) and results/dropout_study/degradation_curves.png
+
+--- macro-F1 vs k (mean over mask seeds) ---
+k              0     1     2     5     10
+model                                    
+gru         0.296 0.285 0.251 0.080 0.044
+rgatv2      0.610 0.543 0.476 0.305 0.101
+rgcn        0.729 0.669 0.598 0.419 0.145
+rgsage_max  0.846 0.728 0.570 0.267 0.059
+rgsage_mean 0.811 0.709 0.615 0.400 0.151
+[08-02 20:11:46] Step 4b: dropout-aware curve (seed 42 so far)
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] rgsage_max seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+
+Wrote results/dropout_study_aware/degradation_curves.csv (5 rows) and results/dropout_study_aware/degradation_curves.png
+
+--- macro-F1 vs k (mean over mask seeds) ---
+k             0     1     2     5     10
+model                                   
+rgsage_max 0.852 0.838 0.828 0.791 0.692
+[08-02 20:28:54] Step 4c: SDR-STGNN curve (seed 42 so far)
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] sdr_stgnn seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+/home/ubuntu/Fault-Localization/scripts/run_dropout_study.py:199: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  ax.legend(frameon=False, loc="upper right")
+
+Wrote results/dropout_study_sdr/degradation_curves.csv (5 rows) and results/dropout_study_sdr/degradation_curves.png
+
+--- macro-F1 vs k (mean over mask seeds) ---
+k            0     1     2     5     10
+model                                  
+sdr_stgnn 0.842 0.826 0.815 0.756 0.642
+[08-02 20:46:16] Step 4d: result figures
+Wrote SDR result figures to paper/figures/ (k-levels=[0, 1, 2, 5, 10], 3 backbone variants).
+[08-02 20:46:17] Step 4e: overlay
+Wrote results/dropout_study/dropout_aware_comparison.csv (5 rows) and results/dropout_study/dropout_aware_comparison.png
+
+--- recovery (dropout_aware − standard) macro-F1 ---
+k              0      1      2      5      10
+model                                        
+rgsage_max +0.005 +0.110 +0.257 +0.525 +0.633
+
+--- SDR-STGNN gain over standard RGSAGE-Max (macro-F1) ---
+ k  f1_mean_rgsage_max_std  f1_mean_sdr   gain
+ 0                  +0.846       +0.842 -0.005
+ 1                  +0.728       +0.826 +0.099
+ 2                  +0.570       +0.815 +0.244
+ 5                  +0.267       +0.756 +0.489
+10                  +0.059       +0.642 +0.583
+[08-02 20:46:18] === interim (seed-level) figure set COMPLETE ===
+[08-02 20:46:18] === SDR-STGNN seed 43 START ===
+[run] uv run python -m fault_localization.experiments.cli train --config config/sdr_stgnn.yaml --seed 43 --data-root dataset_fullscale_50 --benchmark-version sdr_stgnn --epochs 30 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
