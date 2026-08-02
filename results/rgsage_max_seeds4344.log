@@ -1,0 +1,14 @@
+=== launching rgsage_max seed=43 Sat 01 Aug 2026 07:07:21 PM IST ===
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_final/rgsage_max/seed_00043
+=== rgsage_max seed=43 exited rc=0 Sun 02 Aug 2026 02:25:42 AM IST ===
+=== launching rgsage_max seed=44 Sun 02 Aug 2026 02:25:42 AM IST ===
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/fullscale_final/rgsage_max/seed_00044
+=== rgsage_max seed=44 exited rc=0 Sun 02 Aug 2026 09:41:46 AM IST ===
