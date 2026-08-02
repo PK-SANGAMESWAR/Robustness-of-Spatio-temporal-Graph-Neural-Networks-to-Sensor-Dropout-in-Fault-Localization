@@ -74,6 +74,42 @@ def load_trained_model(seed_dir: Path, edge_index, device: torch.device):
     return model, cfg
 
 
+def aggregate_over_seeds(per_seed_rows: "list[dict]",
+                         model_order: "list[str]") -> "list[dict]":
+    """Collapse per-(seed, model, k) records into one row per (model, k).
+
+    ``f1_mean`` is the mean over TRAINING seeds of each seed's (mask-mean) F1.
+    ``f1_std`` is the std over training seeds (sample, ddof=1) when >1 seed is
+    present — the multi-seed error bar the paper figures draw — and falls back to
+    the single seed's mask-seed std when only one training seed is given, so the
+    default (seed-42-only) path is byte-for-byte unchanged. Downstream figure
+    scripts read only (model, k, f1_mean, f1_std) and one row per (model, k), so
+    this aggregation keeps them working without any change.
+    """
+    import pandas as pd
+    df = pd.DataFrame(per_seed_rows)
+    order = {m: i for i, m in enumerate(model_order)}
+    out: list[dict] = []
+    for (model_name, k), g in df.groupby(["model", "k"], sort=False):
+        f1s = g["f1_seed"].to_numpy(dtype=float)
+        n = int(len(f1s))
+        if n > 1:
+            f1_std = float(f1s.std(ddof=1)); err_kind = "train_seed_std"
+        else:
+            f1_std = float(g["mask_std"].iloc[0]); err_kind = "mask_seed_std"
+        out.append({
+            "model": model_name, "k": int(k),
+            "f1_mean": float(f1s.mean()), "f1_std": f1_std,
+            "acc_mean": float(g["acc_seed"].mean()),
+            "n_train_seeds": n, "n_mask_seeds": int(g["n_mask_seeds"].iloc[0]),
+            "policy": g["policy"].iloc[0], "err_kind": err_kind,
+            "seeds": json.dumps(sorted(int(s) for s in g["seed"])),
+            "f1_per_train_seed": json.dumps([round(float(x), 6) for x in f1s]),
+        })
+    out.sort(key=lambda d: (order.get(d["model"], 99), d["k"]))
+    return out
+
+
 def evaluate_all_models(args) -> "list[dict]":
     device = torch.device(args.device)
     results_dir = Path(args.results_dir)
@@ -82,34 +118,38 @@ def evaluate_all_models(args) -> "list[dict]":
     test_loader = make_dataloader(test_ds, args.batch_size, shuffle=False,
                                   num_workers=0)
 
-    rows: list[dict] = []
-    for model_name in args.models:
-        seed_dir = results_dir / model_name / f"seed_{args.seed:05d}"
-        ckpt = seed_dir / "checkpoint_best.pt"
-        if not ckpt.exists():
-            print(f"[skip] {model_name}: no checkpoint at {ckpt}", flush=True)
-            continue
+    per_seed_rows: list[dict] = []
+    for seed in args.seeds:
+        for model_name in args.models:
+            seed_dir = results_dir / model_name / f"seed_{seed:05d}"
+            ckpt = seed_dir / "checkpoint_best.pt"
+            if not ckpt.exists():
+                print(f"[skip] {model_name} seed={seed}: no checkpoint at {ckpt}",
+                      flush=True)
+                continue
 
-        model, cfg = load_trained_model(seed_dir, test_ds.edge_index, device)
-        f1_avg = cfg.get("metrics", {}).get("f1_average", "macro")
-        print(f"[eval] {model_name} (device={device}) over k={args.k_levels} ...",
-              flush=True)
+            model, cfg = load_trained_model(seed_dir, test_ds.edge_index, device)
+            f1_avg = cfg.get("metrics", {}).get("f1_average", "macro")
+            print(f"[eval] {model_name} seed={seed} (device={device}) "
+                  f"over k={args.k_levels} ...", flush=True)
 
-        curve = evaluate_dropout_curve(
-            model=model, loader=test_loader, device=device,
-            dropout_levels=args.k_levels, n_mask_seeds=args.n_mask_seeds,
-            policy=args.policy, f1_average=f1_avg, model_name=model_name,
-        )
-        for k in args.k_levels:
-            r = curve[k]
-            rows.append({
-                "model": model_name, "k": k,
-                "f1_mean": r["f1_mean"], "f1_std": r["f1_std"],
-                "acc_mean": r["acc_mean"], "n_mask_seeds": r["n_mask_seeds"],
-                "policy": r["policy"],
-                "f1_per_seed": json.dumps(r["f1_per_seed"]),
-            })
-    return rows
+            curve = evaluate_dropout_curve(
+                model=model, loader=test_loader, device=device,
+                dropout_levels=args.k_levels, n_mask_seeds=args.n_mask_seeds,
+                policy=args.policy, f1_average=f1_avg,
+                model_name=f"{model_name}/seed{seed}",
+            )
+            for k in args.k_levels:
+                r = curve[k]
+                per_seed_rows.append({
+                    "model": model_name, "seed": seed, "k": k,
+                    "f1_seed": r["f1_mean"], "acc_seed": r["acc_mean"],
+                    "mask_std": r["f1_std"], "n_mask_seeds": r["n_mask_seeds"],
+                    "policy": r["policy"],
+                })
+    if not per_seed_rows:
+        return []
+    return aggregate_over_seeds(per_seed_rows, args.models)
 
 
 def write_csv(rows: "list[dict]", out_dir: Path) -> Path:
@@ -149,9 +189,11 @@ def build_figure(rows: "list[dict]", out_dir: Path, k_levels: "list[int]") -> Pa
             color=MODEL_COLOR.get(model_name, INK_SECONDARY),
             label=MODEL_LABELS.get(model_name, model_name), zorder=3,
         )
+    multiseed = any(r.get("err_kind") == "train_seed_std" for r in rows)
+    err_over = "training seeds" if multiseed else "mask seeds"
     ax.set_xticks(k_levels)
     ax.set_xlabel("μPMUs dropped at inference (k of 25)")
-    ax.set_ylabel("Soft-voted graph macro-F1 (test), mean ± std over mask seeds")
+    ax.set_ylabel(f"Soft-voted graph macro-F1 (test), mean ± std over {err_over}")
     ax.set_title("Sensor-dropout degradation curves (feature-masking)")
     ax.set_ylim(0, 1.02)
     ax.legend(frameon=False, loc="upper right")
@@ -168,7 +210,12 @@ def main() -> int:
     p.add_argument("--data-root", default="dataset_fullscale_50")
     p.add_argument("--output-dir", default="results/dropout_study")
     p.add_argument("--models", nargs="+", default=MODELS_DEFAULT)
-    p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--seeds", type=int, nargs="+", default=None,
+                   help="Training seeds to evaluate and aggregate as mean ± std "
+                        "over seeds (e.g. --seeds 42 43 44). Default: [42].")
+    p.add_argument("--seed", type=int, default=None,
+                   help="(back-compat) single training seed; ignored if --seeds "
+                        "is given.")
     p.add_argument("--k-levels", type=int, nargs="+", default=[0, 1, 2, 5, 10])
     p.add_argument("--n-mask-seeds", type=int, default=3)
     p.add_argument("--policy", default="zero_messages",
@@ -177,6 +224,8 @@ def main() -> int:
     p.add_argument("--device", default="cuda")
     p.add_argument("--batch-size", type=int, default=32)
     args = p.parse_args()
+    if args.seeds is None:
+        args.seeds = [args.seed] if args.seed is not None else [42]
 
     rows = evaluate_all_models(args)
     if not rows:
