@@ -93,3 +93,10 @@ results/sdr_stgnn/sdr_stgnn/seed_00044
 [08-03 12:49:12] === dropout-aware rgsage_max seed 43 START ===
 /home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
   warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/dropout_aware/rgsage_max/seed_00043
+[08-03 20:18:45] === dropout-aware rgsage_max seed 43 END rc=0 ===
+[08-03 20:18:45] === dropout-aware rgsage_max seed 44 START ===
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
