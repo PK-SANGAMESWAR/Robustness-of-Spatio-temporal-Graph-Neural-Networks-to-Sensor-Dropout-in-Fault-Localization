@@ -76,3 +76,20 @@ rgsage_max +0.005 +0.110 +0.257 +0.525 +0.633
 [run] uv run python -m fault_localization.experiments.cli train --config config/sdr_stgnn.yaml --seed 43 --data-root dataset_fullscale_50 --benchmark-version sdr_stgnn --epochs 30 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
 /home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
   warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/sdr_stgnn/sdr_stgnn/seed_00043
+[ok] sdr_stgnn seed=43 — 481.3 min
+[08-03 04:47:35] === SDR-STGNN seed 43 END rc=0 ===
+[08-03 04:47:35] === SDR-STGNN seed 44 START ===
+[run] uv run python -m fault_localization.experiments.cli train --config config/sdr_stgnn.yaml --seed 44 --data-root dataset_fullscale_50 --benchmark-version sdr_stgnn --epochs 30 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/sdr_stgnn/sdr_stgnn/seed_00044
+[ok] sdr_stgnn seed=44 — 481.6 min
+[08-03 12:49:12] === SDR-STGNN seed 44 END rc=0 ===
+[08-03 12:49:12] === dropout-aware rgsage_max seed 43 START ===
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")

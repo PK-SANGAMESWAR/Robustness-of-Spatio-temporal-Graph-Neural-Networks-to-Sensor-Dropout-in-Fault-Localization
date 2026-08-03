@@ -1,0 +1,11 @@
+# Sensor-Dropout Degradation Curve
+
+**Model:** sdr_stgnn  
+**Seeds per level:** 3  
+**Policy:** zero_messages  
+
+| Model | k=0 | k=1 | k=2 | k=5 | k=10 |
+|-------|-------|-------|-------|-------|-------|
+| sdr_stgnn | 0.839±0.000 | 0.825±0.001 | 0.815±0.001 | 0.765±0.007 | 0.654±0.004 |
+
+*F1 values shown as mean ± std over 3 mask seeds.*

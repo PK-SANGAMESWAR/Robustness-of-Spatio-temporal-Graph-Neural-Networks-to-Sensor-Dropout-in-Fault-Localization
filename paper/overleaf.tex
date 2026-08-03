@@ -219,10 +219,11 @@ The contributions of this paper are as follows.
 \begin{itemize}
   \item First, we reproduce the \cite{Karabulut2026} STGNN benchmark protocol — the IEEE 123-bus feeder, $\mu$PMUs placement, fault taxonomy, and windowing scheme — training GRU, RGCN, RGSAGE-Mean, RGSAGE-Max, and RGATv2 on identical data, splits, and loss under a class-imbalance-corrected (inverse-frequency weighted) objective, and report our own reproduced baseline numbers as the reference point for everything that follows [X].
   \item Second, and centrally, we quantify how far fault-localization accuracy degrades when $k \in \{0, 1, 2, 5, 10\}$ $\mu$PMUs are dropped at inference time, across all five model architectures, producing macro-F1-vs-$k$ degradation curves. 
-  \item Third, we introduce dropout-aware training —randomly masking a variable number of measurement nodes during training, rather than always presenting the full sensor set — as a simple, architecture-agnostic mitigation, and show that it recovers a substantial fraction of the accuracy lost to sensor dropout relative to standard training, including under a reconfigured ("green") feeder topology that stresses the model's reliance on a fixed graph structure. All comparisons — baselines against each other, and standard training against dropout-aware training — are conducted on identical data, splits, and evaluation protocol, so that reported effects are internally consistent even where they depart from the original paper's absolute scale (see Reproduction Notes, Section [X]).
+  \item Third, we introduce dropout-aware training —randomly masking a variable number of measurement nodes during training, rather than always presenting the full sensor set — as a simple, architecture-agnostic \emph{training method}, and show that it recovers a substantial fraction of the accuracy lost to sensor dropout relative to standard training, including under a reconfigured ("green") feeder topology that stresses the model's reliance on a fixed graph structure. All comparisons — baselines against each other, and standard training against dropout-aware training — are conducted on identical data, splits, and evaluation protocol, so that reported effects are internally consistent even where they depart from the original paper's absolute scale (see Reproduction Notes, Section [X]).
+  \item Fourth, as an \emph{architectural} counterpart to that training method, we introduce \emph{SDR-STGNN} (Sensor-Dropout-Robust STGNN), an availability-gated spatio-temporal network built on the strongest baseline (RGSAGE-Max) that structurally silences dropped $\mu$PMUs during message passing so they cannot corrupt their live neighbours, and we evaluate whether this architectural change improves robustness beyond dropout-aware training alone (Section~\ref{sec:sdr}).
 \end{itemize}
  
-The remainder of this paper is organized as follows. Section~\ref{sec:related} reviews related work on GNN-based fault localization and robustness to missing data in graph learning. Section~\ref{sec:methods} describes the simulation setup, the baseline architectures, the sensor-dropout evaluation protocol, and dropout-aware training. Section~\ref{sec:setup} details the experimental configuration. Section~\ref{sec:results} presents the degradation curves and the effect of dropout-aware training. Section~\ref{sec:discussion} discusses the implications and limitations of these findings. Section~\ref{sec:conclusion} concludes the paper.
+The remainder of this paper is organized as follows. Section~\ref{sec:related} reviews related work on GNN-based fault localization and robustness to missing data in graph learning. Section~\ref{sec:methods} describes the simulation setup, the baseline architectures, the sensor-dropout evaluation protocol, dropout-aware training, and the SDR-STGNN architecture. Section~\ref{sec:setup} details the experimental configuration. Section~\ref{sec:results} presents the degradation curves and the effect of dropout-aware training. Section~\ref{sec:discussion} discusses the implications and limitations of these findings. Section~\ref{sec:conclusion} concludes the paper.
  
 \section{Related Work}
 \label{sec:related}
@@ -392,9 +393,12 @@ RGATv2 --- are faithful reproductions of the architectures proposed by
 the base paper is its dataset-generation and evaluation protocol (described
 above), on top of which these same architectures are re-implemented and
 retrained on our corpus. The one exception, the spatial depth, is a reproduction
-hyperparameter discussed below, not an architectural redesign. Our own
-architectural contribution, SDR-STGNN, is built on the strongest of these
-reproduced baselines and is introduced separately in Section~[X].
+hyperparameter discussed below, not an architectural redesign. Beyond these
+reproductions, this work adds two components on top of the strongest baseline,
+RGSAGE-Max: a \emph{training method} --- dropout-aware training
+(Section~\ref{sec:dropout-aware}) --- and a new \emph{architecture} --- SDR-STGNN,
+whose availability-gated message passing we evaluate as an ablation against that
+training method (Section~\ref{sec:sdr}).
 
 All five baselines share a common spatio-temporal template: a temporal encoder
 produces one embedding per $\mu$PMU node, an optional spatial stage exchanges
@@ -480,7 +484,7 @@ keeps its edges and continues to participate in message passing, but now propaga
 a zeroed embedding (its temporal encoder consumes an all-zero sequence).
 Consequently, under the mask-agnostic baselines a dead sensor still injects a
 meaningless message into each of its live neighbours' aggregation --- the precise
-failure mode our availability-gated model is designed to remove (Section~[X]). All
+failure mode our availability-gated model is designed to remove (Section~\ref{sec:sdr}). All
 models are compared on this identical, fully-connected graph; an alternative policy
 that severs the edges incident to a dropped node was implemented but not used, so
 that graph structure is never a confound between models.
@@ -508,7 +512,82 @@ $\mathrm{AUDC}=\frac{1}{k_{\max}-k_{\min}}\int_{k_{\min}}^{k_{\max}} R(k)\,dk \i
 denotes a model that sheds less accuracy as sensors are lost.
 
 \subsection{Dropout-Aware Training}
- 
+\label{sec:dropout-aware}
+
+Dropout-aware training addresses sensor loss at training time rather than through
+the architecture. The evaluation protocol of Section~\ref{sec:dropout-eval}
+exposes a train--test mismatch: every baseline is trained with all 25 $\mu$PMUs
+present, yet at deployment must tolerate missing ones. Applying the evaluation's
+own missingness model as a training augmentation removes that mismatch, so the
+network cannot come to depend on any particular sensor being available.
+
+We wrap the training loader so that each mini-batch is masked before the forward
+pass. For every window we draw a dropout level $k$ uniformly from $\{0,1,2,5\}$
+and zero all six channels of $k$ randomly chosen $\mu$PMU nodes --- the same
+feature-masking operation used at evaluation (Section~\ref{sec:dropout-eval}).
+Because $k$ varies from batch to batch, a single epoch presents both the
+full-observability case ($k=0$) and several partial-observability cases, and no
+node is ever always present. The augmentation changes only the inputs, so it is
+architecture-agnostic and applies unchanged to all five baselines and to
+SDR-STGNN (Section~\ref{sec:sdr}).
+
+Every other element of the recipe is held at the baseline setting --- the
+architecture, spatial depth, optimizer, loss, and training stabilization of
+Section~\ref{sec:setup} --- so that any change in degradation behaviour is
+attributable to the augmentation alone. Masking is applied only during training;
+at inference the model runs exactly as its standard counterpart, adding no
+parameters and no inference-time computation.
+
+\subsection{SDR-STGNN: Availability-Gated Message Passing}
+\label{sec:sdr}
+
+SDR-STGNN addresses the same problem through the architecture, and we include it
+as an ablation against dropout-aware training. All five baselines receive the
+availability mask as the three channels $[m_1,m_2,m_3]$, yet no operator in their
+message passing acts on it: a dropped node, now carrying a zeroed embedding, is
+still aggregated into its live neighbours and can corrupt them. SDR-STGNN takes
+the strongest baseline, RGSAGE-Max, and makes its aggregation
+\emph{availability-gated} so that dropped sensors emit no messages.
+
+\textbf{Availability.} From the mask channels we derive a per-node availability
+scalar
+\begin{equation}
+a_i = \mathbf{1}\!\left\{\ \max_{s}\ \max_{p\in\{1,2,3\}}\ m_{i,p}(s) > 0 \right\}
+\in \{0,1\},
+\label{eq:avail}
+\end{equation}
+where $m_{i,p}(s)$ is the availability-mask channel of phase $p$ at node $i$ and
+timestep $s$. Hence $a_i=1$ when node $i$ has any live mask channel at any
+timestep of the window, and $a_i=0$ for a dropped or never-instrumented node,
+whose mask is zero throughout.
+
+\textbf{Gated aggregation.} At each of the four hops the max-aggregation of
+RGSAGE-Max is restricted to available sources, and the node's own self-loop
+contribution is gated by the same scalar:
+\begin{equation}
+\mathrm{agg}_j = \max_{\,i\,\in\,\mathcal{N}(j)\cup\{j\},\ a_i=1} h_i,
+\qquad
+h_j' = \mathrm{ReLU}\!\left(W\,[\,a_j h_j \;\|\; \mathrm{agg}_j\,]\right),
+\label{eq:gate}
+\end{equation}
+where $\mathcal{N}(j)$ is the set of graph neighbours of node $j$, $\|$ denotes
+concatenation, and $W$ is the hop's learned projection. A dropped source
+($a_i=0$) is excluded from the maximum and contributes nothing; a node whose
+entire closed neighbourhood is unavailable aggregates to zero rather than to a
+corrupted embedding. The availability $a$ is computed once from the input and
+reused at every hop; the gate itself adds no parameters, and the shared GRU
+encoder, four-hop depth, classifier head, and soft voting are all identical to
+RGSAGE-Max. When every sensor is present ($a_i=1$ for all $i$), Eq.~\ref{eq:gate}
+reduces exactly to standard RGSAGE-Max, so SDR-STGNN and its backbone coincide at
+$k=0$ by construction. We train SDR-STGNN with the dropout-aware augmentation of
+Section~\ref{sec:dropout-aware} so that its gates are exercised during learning.
+
+\textbf{What the ablation isolates.} Evaluating three variants on the same
+RGSAGE-Max backbone --- standard training; dropout-aware training (mask as input,
+ungated); and SDR-STGNN (mask as input and structurally gated, dropout-aware) ---
+separates the effect of the training-time augmentation from that of the
+structural gate. The result of this comparison is reported in
+Section~\ref{sec:results}.
 
 \section{Experimental Setup}
 \label{sec:setup}
