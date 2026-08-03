@@ -11,6 +11,7 @@ matters more than speed of output.
 - `.rules/20-research.md` — web search + citation verification protocol.
 - `.rules/30-writing.md` — prose, LaTeX, and Procedia/Vancouver conventions.
 - `.rules/40-figures.md` — finding, selecting, and captioning figures.
+- `.rules/50-page-limit.md` — the 10-page limit. **Applies after the full draft, not during.**
 
 ## Paper at a glance
 
@@ -18,6 +19,7 @@ matters more than speed of output.
 |---|---|
 | Venue | ICMLDE (Elsevier Procedia Computer Science) |
 | Citation style | Vancouver, numeric, square brackets, ordered by first appearance |
+| Page limit | 10 pages compiled — enforced only at the final gate, see `50-page-limit.md` |
 | Template | `elsarticle` / Procedia CS `ecrc` class |
 | Topic | Spatio-temporal GNN fault localization on power distribution feeders |
 | Testbed | IEEE 123-bus feeder |
