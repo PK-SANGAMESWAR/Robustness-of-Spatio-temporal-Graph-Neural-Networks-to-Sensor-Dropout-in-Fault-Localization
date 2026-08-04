@@ -100,3 +100,52 @@ results/dropout_aware/rgsage_max/seed_00043
 [08-03 20:18:45] === dropout-aware rgsage_max seed 44 START ===
 /home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
   warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/dropout_aware/rgsage_max/seed_00044
+[08-04 03:48:13] === dropout-aware rgsage_max seed 44 END rc=0 ===
+[08-04 03:48:14] REBUILD: SDR-STGNN study over seeds 42 43 44
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] sdr_stgnn seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] sdr_stgnn seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] sdr_stgnn seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+/home/ubuntu/Fault-Localization/scripts/run_dropout_study.py:199: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  ax.legend(frameon=False, loc="upper right")
+
+Wrote results/dropout_study_sdr/degradation_curves.csv (5 rows) and results/dropout_study_sdr/degradation_curves.png
+
+--- macro-F1 vs k (mean over mask seeds) ---
+k            0     1     2     5     10
+model                                  
+sdr_stgnn 0.839 0.824 0.812 0.758 0.643
+[08-04 04:39:54] REBUILD: dropout-aware study over seeds 42 43 44
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] rgsage_max seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_max seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_max seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+
+Wrote results/dropout_study_aware/degradation_curves.csv (5 rows) and results/dropout_study_aware/degradation_curves.png
+
+--- macro-F1 vs k (mean over mask seeds) ---
+k             0     1     2     5     10
+model                                   
+rgsage_max 0.839 0.826 0.816 0.778 0.676
+[08-04 05:30:51] REBUILD: result figures (multi-seed error bands)
+Wrote SDR result figures to paper/figures/ (k-levels=[0, 1, 2, 5, 10], 3 backbone variants).
+Wrote results/dropout_study/dropout_aware_comparison.csv (5 rows) and results/dropout_study/dropout_aware_comparison.png
+
+--- recovery (dropout_aware − standard) macro-F1 ---
+k              0      1      2      5      10
+model                                        
+rgsage_max -0.008 +0.099 +0.245 +0.512 +0.617
+
+--- SDR-STGNN gain over standard RGSAGE-Max (macro-F1) ---
+ k  f1_mean_rgsage_max_std  f1_mean_sdr   gain
+ 0                  +0.846       +0.839 -0.007
+ 1                  +0.728       +0.824 +0.096
+ 2                  +0.570       +0.812 +0.241
+ 5                  +0.267       +0.758 +0.491
+10                  +0.059       +0.643 +0.585
+[08-04 05:30:52] === ALL DONE: multi-seed figures (SDR & aware over 42/43/44). STOP before 100-run. ===

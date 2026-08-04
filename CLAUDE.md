@@ -109,7 +109,9 @@ per-model `{gru,rgcn,rgsage_mean,rgsage_max,rgatv2,sdr_stgnn}.yaml` (each `base:
   50% no-fault. Paper's reported 2.5M is NOT reconstructable from 825 grid — documented deviation.
 - 6 of 25 fault buses are μPMU nodes → 19 fault locations unmeasured. Graph = 25-node
   24-edge connected tree. One window = `[N=25, S=20, F=6]` (3 RMS volts + 3 mask channels).
-- Reproduction accepted at depth-4 (deviation from paper's 1 layer). Weighted-CE frozen.
+- Reproduction accepted at depth-4 (deviation from paper's 1 layer). **Unweighted CE frozen**
+  (train.py passes no `weight`; imbalance handled by the balanced corpus — 50% no-fault, 25
+  fault classes equal by factorial design — NOT by loss weighting; paper text fixed to match).
 - **SDR-STGNN finding (interim seed-42):** robustness AUDC — standard RGSAGE-Max **0.41** →
   dropout-aware **0.92** → SDR-STGNN **0.89**. The gate MATCHES but does NOT beat dropout-aware
   training (it silences dropped nodes at every hop, blocking multi-hop routing through recovered
