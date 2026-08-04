@@ -38,7 +38,7 @@ from pathlib import Path
 # epochs, not the full 30 -- if depth-4 attention instability shows up at
 # full length, we want to know within hours, not after 30h.
 MODELS = ["rgatv2", "rgcn", "gru", "rgsage_mean", "rgsage_max"]
-SEEDS = [42]
+SEEDS = [42, 43, 44]
 DATA_ROOT = "dataset_fullscale_50"
 BENCHMARK_VERSION = "fullscale_final"
 EPOCHS = 30
