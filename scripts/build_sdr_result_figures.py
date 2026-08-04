@@ -145,7 +145,7 @@ def fig_ablation_backbone(variants, out_path, k_levels):
     ax.set_xticks(k_levels)
     ax.set_xlabel("μPMUs dropped at inference (k of 25)")
     ax.set_ylabel("Soft-voted graph macro-F1 (test), mean ± std")
-    ax.set_title("Ablation on the RGSAGE-Max backbone: the gate buys robustness")
+    ax.set_title("Ablation on the RGSAGE-Max backbone: dropout-aware training drives robustness")
     ax.set_ylim(0, 1.02); ax.legend(frameon=False, loc="lower left")
     fig.tight_layout(); fig.savefig(out_path, dpi=200); plt.close(fig)
 

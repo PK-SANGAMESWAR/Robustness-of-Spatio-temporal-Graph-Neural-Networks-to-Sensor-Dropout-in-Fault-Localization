@@ -118,9 +118,10 @@ per-model `{gru,rgcn,rgsage_mean,rgsage_max,rgatv2,sdr_stgnn}.yaml` (each `base:
   nodes). **Report faithfully — do not claim the gate wins.**
 - **Multi-seed (50-run):** SDR-STGNN + dropout-aware RGSAGE-Max trained at seeds 42/43/44
   (deviation from the runbook's single-seed; run via a scratchpad orchestrator, autonomous).
-- **Green-feeder scenario** promised in the abstract but NOT run — code `configure_green_feeder`
-  exists; it's a generalization test → generate a green dataset + evaluate existing checkpoints,
-  **NO retraining**. See `WRONG-CLAIMS.md`.
+- **Green-feeder scenario: ❌ CUT (2026-08-04), out of scope.** Not a contribution booster
+  (a second-axis stress test only) and would need a new green corpus — dropped before the
+  deadline. No green dataset/runs/claims; `configure_green_feeder` stays as dead/future-work
+  code. Paper no longer promises it. See `WRONG-CLAIMS.md` #1 / `NEXT-STEPS.md` Step 6 (VOID).
 - Stabilization (grad-clip 1.0 + warmup 3) on EVERY run. GPU = T1000 8GB (NVML monitoring
   broken but training unaffected).
 

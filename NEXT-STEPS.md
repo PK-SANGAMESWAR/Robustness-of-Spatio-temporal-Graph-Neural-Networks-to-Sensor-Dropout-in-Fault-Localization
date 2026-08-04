@@ -12,10 +12,13 @@
   any further depth/epoch/scale probes, exact-0.86 chasing.
 - **Measurement noise: DROPPED entirely.** PROBLEM.md §5 mentions it as optional;
   no noise-injection code exists and none will be added. Not in scope for this paper.
-- **Green feeder: CORE, not optional** — kept in scope per PROBLEM.md §5 ("*especially*
-  in the challenging reconfigured green feeder scenario"), but sequenced LAST (Step 6,
-  after the default-feeder dropout study). Cut only if compute genuinely runs out after
-  Steps 1–5 — it is not the first thing to cut, it is the last.
+- **Green feeder: CUT (decision 2026-08-04).** Dropped from scope entirely. It is a
+  stress test on a second robustness axis (topology change), not an accuracy/contribution
+  booster for the conference paper — the base paper's own STGNNs merely *degrade* under
+  reconfiguration. It does not strengthen the headline dropout-aware-training story enough
+  to justify the extra green-dataset simulation before the deadline. Do NOT run it; do NOT
+  claim it. The abstract/intro no longer promise it and the empty Results subsection has
+  been removed from `paper/overleaf.tex`. Step 6 below is VOID.
 - We are shipping a SCOPED paper. The contribution is the SENSOR-DROPOUT STUDY applied
   to the existing models — NOT a brand-new network architecture.
 
@@ -105,15 +108,11 @@ Only after the contribution results exist:
 - Recompute all reported numbers as mean ± std over the 3 seeds.
 - This adds error bars for the paper; it is NOT a blocker for earlier steps.
 
-## STEP 6 — Green feeder dropout study (CORE, sequenced last)
-Not optional — kept in scope per PROBLEM.md §5, but deliberately sequenced after the
-default-feeder contribution work so the core result exists first regardless of remaining
-time:
-- Generate the green/reconfigured dataset (open 60–160, close 54–94).
-- Repeat 4a/4b (degradation curves + dropout-aware training) on it, same frozen config.
-- Report the same summary table/figures as Step 4, for the green feeder.
-- Cut this ONLY if compute genuinely runs out after Steps 1–5 — it is the last thing
-  to cut, not the first.
+## STEP 6 — Green feeder dropout study — ❌ CUT (2026-08-04), VOID
+Removed from scope. It was a second-axis robustness stress test (topology change), not a
+contribution booster, and needed a new green simulation corpus we won't spend before the
+deadline. No green dataset, no green runs, no green claims. `configure_green_feeder` stays
+in the code as dead/future-work only. Nothing to do here.
 
 ---
 
