@@ -12,6 +12,8 @@ matters more than speed of output.
 - `.rules/30-writing.md` — prose, LaTeX, and Procedia/Vancouver conventions.
 - `.rules/40-figures.md` — finding, selecting, and captioning figures.
 - `.rules/50-page-limit.md` — the 10-page limit. **Applies after the full draft, not during.**
+- `.rules/60-integrity.md` — plagiarism prohibitions and AI provenance disclosure.
+- `.rules/70-quality-bar.md` — contribution test, reviewer simulation, readiness gate.
 
 ## Paper at a glance
 
