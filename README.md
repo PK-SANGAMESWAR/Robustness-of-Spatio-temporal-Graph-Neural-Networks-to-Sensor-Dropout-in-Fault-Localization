@@ -72,7 +72,7 @@ generation scripts; the IEEE-123 OpenDSS source files ship in
 
 ## Running the baselines
 
-Frozen config: GNN depth 4, 30 epochs, inverse-frequency weighted cross-entropy,
+Frozen config: GNN depth 4, 30 epochs, unweighted cross-entropy,
 gradient-clip norm 1.0 + 3-epoch LR warmup (training stabilization), applied to
 every run.
 

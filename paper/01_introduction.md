@@ -55,7 +55,7 @@ characterized, nor has training been adapted to anticipate it.
 **This paper makes the following contributions.** First, we reproduce the Karabulut et al. STGNN
 benchmark protocol — the IEEE 123-bus feeder, μPMU placement, fault taxonomy, and windowing
 scheme — training GRU, RGCN, RGSAGE-Mean, RGSAGE-Max, and RGATv2 on identical data, splits, and
-loss under a class-imbalance-corrected (inverse-frequency weighted) objective, and report our own
+loss under an unweighted cross-entropy objective, and report our own
 reproduced baseline numbers as the reference point for everything that follows [X]. Second, and
 centrally, we quantify how far fault-localization accuracy degrades when $k \in \{0, 1, 2, 5,
 10\}$ μPMUs are dropped at inference time, across all five model architectures, producing

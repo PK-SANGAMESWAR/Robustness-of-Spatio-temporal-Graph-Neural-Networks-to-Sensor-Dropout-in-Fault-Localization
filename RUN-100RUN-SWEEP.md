@@ -11,7 +11,7 @@ full background.
 Retrain all 5 baselines (GRU, RGCN, RGSAGE-Mean, RGSAGE-Max, RGATv2) on the **100-run /
 3.30M-window** corpus (`dataset_fullscale_100`), instead of the 50-run / 1.65M corpus the
 first sweep used. **The model architecture is IDENTICAL** — same depth-4, 30 epochs,
-inverse-freq weighted CE, grad-clip 1.0 + warmup 3. The ONLY change is the dataset
+unweighted CE, grad-clip 1.0 + warmup 3. The ONLY change is the dataset
 (more training data) and the output folder. This is a data-scale study, not an
 architecture change (change one variable at a time).
 

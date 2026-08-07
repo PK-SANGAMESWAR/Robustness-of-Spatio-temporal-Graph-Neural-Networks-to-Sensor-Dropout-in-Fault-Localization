@@ -193,7 +193,7 @@ LaTeX/Word template (exact download link not yet resolved).
 **Locked decisions (do not revisit without an explicit new call):**
 - Reproduction is ACCEPTED at depth-4 rgsage_max = 0.834. Do not chase the exact 0.86.
 - Frozen config for the definitive sweep: GNN depth=4 (GRU has no spatial layer), epochs=30,
-  50 runs/scenario, default feeder, inverse-frequency weighted CE, grad-clip-norm=1.0,
+  50 runs/scenario, default feeder, unweighted CE, grad-clip-norm=1.0,
   warmup-epochs=3 — applied to **every** run.
 - **Permanently cut:** depth-1@100 investigation (including a stabilized rerun — trip-wire
   monitor was needed once already to kill a stray relaunch of it), any further use of the

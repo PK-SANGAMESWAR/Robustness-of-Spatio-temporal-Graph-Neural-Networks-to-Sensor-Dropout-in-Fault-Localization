@@ -6,7 +6,7 @@
   zone cleanly, val-F1 ~0.855. The fix works.
 - Frozen config for ALL runs: GNN depth = 4, epochs = 30, 50 runs/scenario (~1.65M
   windows — do not echo the paper's "~2.5M windows" figure, that was the paper's
-  full 100-run corpus, not ours), default feeder, inverse-frequency weighted CE,
+  full 100-run corpus, not ours), default feeder, unweighted CE,
   grad-clip-norm = 1.0, warmup-epochs = 3.
 - CUT permanently (never run): depth-1@100 investigation, 100-run dataset, depth-5,
   any further depth/epoch/scale probes, exact-0.86 chasing.
@@ -38,7 +38,7 @@ baseline table in ~1.5 days instead of ~4–5 days.
 
 - models: gru, rgcn, rgsage_mean, rgsage_max, rgatv2
 - seed: 42 ONLY
-- config: depth=4 (all GNNs), epochs=30, 50 runs, default feeder, weighted CE
+- config: depth=4 (all GNNs), epochs=30, 50 runs, default feeder, unweighted CE
 - stabilization: grad-clip-norm=1.0 + warmup-epochs=3 MUST be applied to EVERY run
   (verify these are in the sweep script/config, not just a CLI probe)
 - resumable + crash-isolated: one model diverging must not kill the others

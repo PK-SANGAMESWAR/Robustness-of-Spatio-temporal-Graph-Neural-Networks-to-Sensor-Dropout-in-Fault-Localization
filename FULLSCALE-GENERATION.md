@@ -60,7 +60,7 @@ All other params fixed to paper protocol: 11 fault types, R∈{0.1,1,10}Ω, 1 ms
 ## 3. Definitive Sweep (per scale)
 - Models: gru, rgcn, rgsage_mean, rgsage_max, rgatv2
 - Seeds: 42, 43, 44
-- Loss: inverse-frequency weighted CE (FROZEN from Step 1)
+- Loss: unweighted CE (FROZEN from Step 1)
 - Epochs: paper values (GRU 11 / GNN 15) unless early-stopping triggers
 - Resumable; one crash must not kill the sweep.
 - Report per model, mean ± std over seeds:

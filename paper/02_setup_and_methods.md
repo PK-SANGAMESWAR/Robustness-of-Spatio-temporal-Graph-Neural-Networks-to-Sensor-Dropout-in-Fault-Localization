@@ -101,13 +101,13 @@ the GRU encoder and the classifier, each with a 64-dimensional GNN hidden size:
   ([BASE Eq. 8], following the corrected GATv2 formulation of Brody et al. — shared $W$ applied
   to the *concatenated* pair before the nonlinearity, not to separate projections).
 
-**Loss.** All models are trained with inverse-frequency-weighted cross-entropy over node-level
+**Loss.** All models are trained with unweighted cross-entropy over node-level
 predictions (each event's single ground-truth label is expanded to every node, since the
 graph-level prediction is a soft vote over per-node logits at test time). This choice is frozen
-across the entire study: an earlier diagnostic isolated that fixing the roughly 50%/50% class
-imbalance (no-fault vs. 25 fault classes) preserves detection but does *not* by itself fix
-localization — confirming the GRU baseline's shortfall is architectural (lack of spatial
-reasoning), not a training-imbalance artifact.
+across the entire study: the corpus is balanced by construction (roughly 50%/50% no-fault vs.
+25 fault classes, the latter equally represented by the factorial design), so class weighting
+is unnecessary. An earlier diagnostic further confirmed the GRU baseline's shortfall is
+architectural (lack of spatial reasoning), not a training-imbalance artifact.
 
 **Optimization.** AdamW, learning rate $10^{-3}$, weight decay $10^{-4}$, batch size 32. Epoch
 budgets follow the paper's protocol: 11 epochs for the GRU baseline, 15 for each STGNN variant.
