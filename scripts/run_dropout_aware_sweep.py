@@ -120,6 +120,9 @@ def main() -> int:
     p.add_argument("--data-root", default="dataset_fullscale_50")
     p.add_argument("--benchmark-version", default=BENCHMARK_VERSION)
     p.add_argument("--models", nargs="+", default=MODELS)
+    p.add_argument("--seeds", type=int, nargs="+", default=SEEDS,
+                   help="Training seeds to run (default: [42]). Resumable: any "
+                        "(model, seed) with an existing metrics.json is skipped.")
     p.add_argument("--epochs", type=int, default=30)
     p.add_argument("--gnn-layers", type=int, default=4)
     args = p.parse_args()
@@ -128,12 +131,14 @@ def main() -> int:
         device = "cpu"
         epochs = 1
         models = ["rgsage_max"]
+        seeds = [42]
         data_root = "dataset"
         print("=== DRY-RUN: cpu / dataset (tiny) / 1 epoch / rgsage_max ===")
     else:
         device = "cuda"
         epochs = args.epochs
         models = args.models
+        seeds = args.seeds
         data_root = args.data_root
 
     failures: list[str] = []
@@ -143,7 +148,7 @@ def main() -> int:
             model, device=device, epochs=epochs, gnn_layers=args.gnn_layers,
             output_root=args.output_root, data_root=data_root,
         )
-        for seed in SEEDS:
+        for seed in seeds:
             ok, _ = run_one(model, seed, cfg_path,
                             benchmark_version=args.benchmark_version,
                             data_root=data_root, output_root=args.output_root,

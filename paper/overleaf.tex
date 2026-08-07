@@ -605,7 +605,7 @@ Section~\ref{sec:methods}. Training was fully deterministic through fixed random
 
 \textbf{Training objective.} Models are trained by minimizing the node-level cross-entropy loss defined in Section~\ref{sec:methods}, without class weighting. Class imbalance is addressed by dataset construction rather than by the loss. Specifically, the corpus is balanced with 50\% no-fault samples (Table~\ref{tab:dataset}), while the 25 fault locations are uniformly represented through the $25 \times 11 \times 3$ factorial design. The training distribution therefore does not favour any fault location, and a standard cross-entropy objective provides equal treatment to all classes. This is a deliberate departure from a common inverse-frequency-weighted recipe, discussed further in Section~\ref{sec:repro}.
 
-\textbf{Seeds and multi-seed reporting.} All sources of training stochasticity --- parameter initialization, mini-batch ordering, and the dropout-aware masking procedure --- are controlled by a single integer random seed. All five baselines (GRU, RGCN, RGSAGE-Mean, RGSAGE-Max, and RGATv2) and both robustness variants (dropout-aware RGSAGE-Max and SDR-STGNN) were trained using three independent seeds (42, 43, and 44), and their reported full-observability metrics are the mean\,$\pm$\,standard deviation across these runs. The sensor-dropout degradation analysis (Section~\ref{sec:res-degrade}) is seed-averaged for RGSAGE-Max and the two robustness variants; for the other four baselines it is evaluated on the seed-42 checkpoint, with the reported variability there arising from the random mask realizations (Section~\ref{sec:dropout-eval}).
+\textbf{Seeds and multi-seed reporting.} All sources of training stochasticity --- parameter initialization, mini-batch ordering, and the dropout-aware masking procedure --- are controlled by a single integer random seed. All five baselines (GRU, RGCN, RGSAGE-Mean, RGSAGE-Max, and RGATv2) and both robustness variants (dropout-aware RGSAGE-Max and SDR-STGNN) were trained using three independent seeds (42, 43, and 44), and their reported full-observability metrics are the mean\,$\pm$\,standard deviation across these runs. The sensor-dropout degradation analysis (Section~\ref{sec:res-degrade}) is likewise seed-averaged over 42/43/44 for every model, with three random mask realizations per seed (Section~\ref{sec:dropout-eval}).
 
 \textbf{Dropout-aware training.} The dropout-aware variant (Section~\ref{sec:dropout-aware}) uses the same optimization and training configuration described above. The only modification is that each mini-batch is augmented immediately before the forward pass by randomly masking each window, with the dropout level uniformly sampled from $\{0,1,2,5\}$. No hyperparameter was retuned, so any change in robustness can be attributed solely to training-time augmentation rather than to a different training budget.
 
@@ -636,7 +636,7 @@ which constitutes paper's primary evaluation. Finally, we show the effectiveness
 
 Unless otherwise stated, all results are computed on the frozen test split defined in Table~\ref{tab:dataset}. All five baselines and the two robustness variants are reported at full observability as
 mean\,$\pm$\,standard deviation over three independent training seeds
-(42, 43, and 44). The sensor-dropout degradation curves (Section~\ref{sec:res-degrade}) are seed-averaged for RGSAGE-Max and the robustness variants, and evaluated on the seed-42 checkpoint for the other four baselines, consistent with Section~\ref{sec:setup}.
+(42, 43, and 44). The sensor-dropout degradation curves (Section~\ref{sec:res-degrade}) are seed-averaged over 42/43/44 for every model, consistent with Section~\ref{sec:setup}.
  
 \subsection{Baseline Accuracy Under Full Observability}
 \label{sec:res-baseline}
@@ -747,9 +747,9 @@ Table~\ref{tab:baseline} also addresses the spatial-depth question introduced in
 \subsection{Accuracy Degradation Under Sensor Dropout}
 \label{sec:res-degrade}
 
-We now freeze each baseline and evaluate it under the dropout sweep of Section~\ref{sec:dropout-eval}, progressively moving $k\in\{0,1,2,5,10\}$ of the $25$ $\mu$PMUs at inference time. Table~\ref{tab:degradation} summarizes the resulting degradation curves through the normalized area under the retention curve (AUDC) and the retention at the most severe dropout level ($k=10$, corresponding to $40\%$ sensor loss), while Fig.~\ref{fig:degradation} shows the complete macro-$F_1$ degradation curves. All models decline in performance as sensors are removed, and the loss becomes substantial at higher dropout levels. No baseline retains more than a fifth of its full-observability macro-F1 at $k=10$.
+We now freeze each baseline and evaluate it under the dropout sweep of Section~\ref{sec:dropout-eval}, progressively moving $k\in\{0,1,2,5,10\}$ of the $25$ $\mu$PMUs at inference time. Table~\ref{tab:degradation} summarizes the resulting degradation curves through the normalized area under the retention curve (AUDC) and the retention at the most severe dropout level ($k=10$, corresponding to $40\%$ sensor loss), while Fig.~\ref{fig:degradation} shows the complete macro-$F_1$ degradation curves. All models decline in performance as sensors are removed, and the loss becomes substantial at higher dropout levels. No baseline retains more than a third of its full-observability macro-F1 at $k=10$.
 
-The results reveal a clear trade-off between clean accuracy and robustness. RGSAGE-Max, the strongest model under full observability, is also the least robust to sensor dropout: its graph-level macro-$F_1$ falls from $0.846$ to $0.059$ at $k=10$ (AUDC $0.414$), retaining only $7.0\%$ of its full-observability performance. In contrast, RGCN, which ranks behind RGSAGE-Max at $k=0$, achieves the highest robustness (AUDC $0.586$), retaining $19.9\%$ of its baseline performance, with RGSAGE-Mean and RGATv2 lying between these extremes. Clean accuracy therefore does not predict robustness to sensor loss.
+The results reveal a clear trade-off between clean accuracy and robustness. RGSAGE-Max, the strongest model under full observability, is also the least robust to sensor dropout: its graph-level macro-$F_1$ falls from $0.846$ to $0.059$ at $k=10$ (AUDC $0.414$), retaining only $7.0\%$ of its full-observability performance. The remaining models retain a larger fraction of their (lower) baseline accuracy: RGATv2 and RGCN show the highest retention (AUDC $0.634$ and $0.615$; $31.8\%$ and $24.7\%$ at $k=10$), with RGSAGE-Mean and GRU in between. RGATv2's apparent robustness should be read with caution, however: it has the lowest clean accuracy of the GNNs and by far the largest seed variance (up to $\pm0.09$ macro-F1), so its high \emph{relative} retention partly reflects a low starting point and training instability rather than a genuinely graceful degradation. The robust conclusion is that clean accuracy does not predict robustness to sensor loss --- the most accurate model degrades the fastest.
 
 This behaviour is consistent with the aggregation operators. Under our evaluation protocol, a dropped node keeps its edges but propagates a zeroed embedding (Section~\ref{sec:dropout-eval}); max-aggregation, which selects a single dominant neighbour, is the most exposed to such a corrupted message being injected into a live node's neighbourhood, whereas mean and normalized-sum aggregation dilute it. This observation motivates the availability-gated mechanism of Section~\ref{sec:sdr}, which is designed to remove that corrupted message entirely --- the same failure mode that dropout-aware training instead teaches the network to tolerate.
 
@@ -766,24 +766,23 @@ This behaviour is consistent with the aggregation operators. Under our evaluatio
            normalized area under the retention curve
            $\mathrm{F1}(k)/\mathrm{F1}(0)$ over the swept $k$
            (higher $=$ more robust); Ret.@10 is the fraction of the $k=0$
-           score retained at $k=10$. Each point is the mean over three shared
-           mask realizations; per-point mask-realization standard deviation is
-           below 0.03 for all models, and RGSAGE-Max additionally averages over
-           seeds 42/43/44. For the four single-seed baselines the $k{=}0$ entry
-           is the seed-42 checkpoint used throughout this dropout evaluation, and
-           so differs slightly from the seed-averaged full-observability means in
-           Table~\ref{tab:baseline}; AUDC and Ret.@10 are computed relative to
-           each model's own $k{=}0$ and are unaffected.}
+           score retained at $k=10$. Every entry is averaged over training seeds
+           42/43/44 and three shared mask realizations per seed, so the $k{=}0$
+           column matches the full-observability means of Table~\ref{tab:baseline}.
+           The per-point standard deviation over seeds stays below $0.05$ for all
+           models except RGATv2, whose training instability at four layers gives a
+           larger spread (up to $0.09$); AUDC and Ret.@10 are computed relative to
+           each model's own $k{=}0$.}
   \label{tab:degradation}
   \footnotesize
   \begin{tabular}{@{}lccccccc@{}}
     \toprule
     Model       & $k{=}0$ & $k{=}1$ & $k{=}2$ & $k{=}5$ & $k{=}10$ & AUDC & Ret.@10 \\
     \midrule
-    RGCN        & 0.729 & 0.669 & 0.598 & 0.419 & 0.145 & \textbf{0.586} & \textbf{19.9\%} \\
-    RGATv2      & 0.610 & 0.543 & 0.476 & 0.305 & 0.101 & 0.536 & 16.6\% \\
-    RGSAGE-Mean & 0.811 & 0.709 & 0.615 & 0.400 & 0.151 & 0.533 & 18.6\% \\
-    GRU         & 0.296 & 0.285 & 0.251 & 0.080 & 0.044 & 0.461 & 14.9\% \\
+    RGATv2      & 0.522 & 0.488 & 0.437 & 0.317 & 0.166 & \textbf{0.634} & \textbf{31.8\%} \\
+    RGCN        & 0.712 & 0.657 & 0.599 & 0.434 & 0.176 & 0.615 & 24.7\% \\
+    RGSAGE-Mean & 0.786 & 0.712 & 0.633 & 0.415 & 0.119 & 0.551 & 15.1\% \\
+    GRU         & 0.286 & 0.273 & 0.252 & 0.111 & 0.052 & 0.521 & 18.0\% \\
     RGSAGE-Max  & \textbf{0.846} & \textbf{0.728} & 0.570 & 0.267 & 0.059 & 0.414 & 7.0\% \\
     \bottomrule
   \end{tabular}
@@ -800,11 +799,10 @@ This behaviour is consistent with the aggregation operators. Under our evaluatio
            dropped at inference, for the five baselines and the
            availability-gated SDR-STGNN (black; introduced in
            Section~\ref{sec:res-aware}). Markers are means; error bars denote
-           $\pm 1$ standard deviation over the three shared mask realizations,
-           and additionally over training seeds 42/43/44 for RGSAGE-Max and
-           SDR-STGNN. RGSAGE-Max (orange), the most accurate baseline at
-           $k=0$, degrades the fastest, whereas SDR-STGNN---trained with
-           dropout-aware augmentation---stays nearly flat.}
+           $\pm 1$ standard deviation over training seeds 42/43/44 (three shared
+           mask realizations per seed). RGSAGE-Max (orange), the most accurate
+           baseline at $k=0$, degrades the fastest, whereas SDR-STGNN---trained
+           with dropout-aware augmentation---stays nearly flat.}
   \label{fig:degradation}
 \end{figure}
 
@@ -893,11 +891,11 @@ dropout-aware curve for all $k\ge1$. As expected, the three variants coincide un
  
 \subsection{Which Architectures Are Most Robust to Sensor Loss}
 
-The five baselines expose an inverse relationship between clean accuracy and robustness. Ranked by full-observability macro-F1 the order is RGSAGE-Max ($0.846$), RGSAGE-Mean ($0.786$), RGCN ($0.712$), RGATv2 ($0.522$), and GRU ($0.286$); ranked by robustness (AUDC) the order is almost reversed --- RGCN ($0.586$), RGATv2 ($0.536$), RGSAGE-Mean ($0.533$), GRU ($0.461$), and RGSAGE-Max ($0.414$). The most accurate model under full observability is therefore the least robust to sensor loss, while RGCN --- only third in clean accuracy --- is the most robust, retaining $19.9\%$ of its score at $k=10$ against RGSAGE-Max's $7.0\%$.
+The five baselines expose an inverse relationship between clean accuracy and robustness. Ranked by full-observability macro-F1 the order is RGSAGE-Max ($0.846$), RGSAGE-Mean ($0.786$), RGCN ($0.712$), RGATv2 ($0.522$), and GRU ($0.286$); ranked by robustness (AUDC) the order is RGATv2 ($0.634$), RGCN ($0.615$), RGSAGE-Mean ($0.551$), GRU ($0.521$), and RGSAGE-Max ($0.414$). The most accurate model under full observability is thus the least robust to sensor loss. The nominal top of the robustness ranking, RGATv2, is also the least accurate GNN and the most variable across seeds ($\pm0.09$ macro-F1), so its lead over RGCN sits within noise; the firm conclusion is the inversion at the extremes --- the strongest clean model degrades the fastest, retaining only $7.0\%$ at $k=10$ against RGCN's $24.7\%$.
 
-This ordering follows from how each operator treats the zeroed embedding that a dropped sensor propagates (Section~\ref{sec:dropout-eval}). Max-pooling forwards the single largest activation in a neighbourhood, so one corrupted message can dominate a live node's update; RGSAGE-Max, the strongest clean model, is consequently the most fragile. Normalized-sum (RGCN) and mean (RGSAGE-Mean) aggregation average the corrupted message against the surviving ones and degrade more gracefully. Attention (RGATv2) could in principle down-weight a dropped neighbour, but its weights are computed from features and are not availability-aware, leaving it between the two extremes. GRU performs no spatial aggregation and is thus insensitive to neighbours' dropout, but its localization is capped by the absence of spatial reasoning.
+This ordering follows from how each operator treats the zeroed embedding that a dropped sensor propagates (Section~\ref{sec:dropout-eval}). Max-pooling forwards the single largest activation in a neighbourhood, so one corrupted message can dominate a live node's update; RGSAGE-Max, the strongest clean model, is consequently the most fragile. Normalized-sum (RGCN) and mean (RGSAGE-Mean) aggregation average the corrupted message against the surviving ones and degrade more gracefully. Attention (RGATv2) could in principle down-weight a dropped neighbour, but its weights are computed from features and are not availability-aware; its high retention is accompanied by large seed variance, so we do not read it as a reliably superior operator. GRU performs no spatial aggregation and is thus insensitive to neighbours' dropout, but its localization is capped by the absence of spatial reasoning.
 
-The practical implication is that the choice of aggregation operator is a weak lever for robustness: even the most robust baseline loses four-fifths of its accuracy at $40\%$ dropout, and no baseline exceeds $20\%$ retention. Deployment-level robustness comes not from the aggregator but from training. Dropout-aware training raises retention from $7.0\%$ to $80.6\%$ on the same RGSAGE-Max backbone (Table~\ref{tab:aware}), and because it alters only the input masking it applies unchanged to every architecture studied. The availability-gated SDR-STGNN confirms this from the opposite side: adding a structural gate on top of dropout-aware training matches but does not exceed it (AUDC $0.895$ versus $0.916$), because silencing every dropped node at every hop also removes the multi-hop paths that would otherwise route information around a failure. Robustness to sensor dropout is thus best treated as a training-time property rather than an architectural one.
+The practical implication is that the choice of aggregation operator is a weak lever for robustness: even the most robust baseline retains under a third of its accuracy at $40\%$ dropout, and every model loses the majority of its performance. Deployment-level robustness comes not from the aggregator but from training. Dropout-aware training raises retention from $7.0\%$ to $80.6\%$ on the same RGSAGE-Max backbone (Table~\ref{tab:aware}), and because it alters only the input masking it applies unchanged to every architecture studied. The availability-gated SDR-STGNN confirms this from the opposite side: adding a structural gate on top of dropout-aware training matches but does not exceed it (AUDC $0.895$ versus $0.916$), because silencing every dropped node at every hop also removes the multi-hop paths that would otherwise route information around a failure. Robustness to sensor dropout is thus best treated as a training-time property rather than an architectural one.
 
 \subsection{Limitations}
 
@@ -906,7 +904,7 @@ Several limitations bound the scope of these findings.
   \item \emph{Single feeder and topology.} All experiments use the IEEE 123-bus feeder in its default configuration. We did not evaluate the reconfigured (``green'') topology of \cite{Karabulut2026} or any other feeder, so generalization across network sizes and topologies remains open (Section~\ref{sec:repro}).
   \item \emph{Missingness model.} Sensors are dropped independently and uniformly at random per window. Real $\mu$PMU failures are often correlated --- co-located units, a shared communication path, or a substation outage fail together --- and persist over time rather than resampling each window. Structured failures may degrade, and may respond to mitigation, differently.
   \item \emph{Dataset scale.} Our depth-4, unweighted, $1.65$\,M-window dataset yields a strongest-baseline macro-F1 of $0.846$ (Section~\ref{sec:repro}). All comparisons in this study are internally consistent, but absolute magnitudes are not directly comparable to \cite{Karabulut2026}, which uses a different corpus.
-  \item \emph{Single-seed degradation for four baselines.} Only RGSAGE-Max and the two robustness variants carry training-seed error bars in the dropout sweep; the other four baselines' degradation curves are evaluated on the seed-42 checkpoint (Section~\ref{sec:res-degrade}). RGATv2 in particular shows high training-seed variance ($\pm0.087$ at $k=0$), so its robustness ranking should be read as indicative.
+  \item \emph{RGATv2 training-seed variance.} All degradation curves are seed-averaged over 42/43/44, but RGATv2 shows high training-seed variance ($\pm0.087$ at $k=0$) from instability at the adopted four-layer depth (Section~\ref{sec:res-degrade}). Its nominal top robustness ranking should therefore be read as indicative rather than a firm ordering over the mid-tier baselines.
   \item \emph{No imputation baseline.} We contrast a training-time mitigation with an architectural one; we do not compare against impute-then-infer pipelines such as \cite{zhang2025} or \cite{fan2024}. Whether reconstructing dropped measurements before inference can match dropout-aware training is left to future work.
   \item \emph{Training dropout range.} Dropout-aware training samples $k\in\{0,1,2,5\}$, so the $k=10$ ($40\%$) evaluation probes beyond the training distribution. Recovery remains strong there, but larger or adaptive dropout budgets were not tuned.
 \end{itemize}
