@@ -1,0 +1,36 @@
+# Python 3.12 required. Pinned to the environment used for the reported results.
+#
+# The primary/authoritative dependency spec is pyproject.toml + uv.lock ("uv sync").
+# This file is a convenience for pip users:
+#
+#     pip install -r requirements.txt
+#
+# torch is installed from the official PyTorch CUDA 12.1 wheel index below. For a
+# CPU-only install, drop the "+cu121" local version and remove --extra-index-url.
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+# Deep learning
+torch==2.5.1+cu121
+torch-geometric==2.8.0.post1
+
+# Power-system simulation
+opendssdirect.py==0.9.4
+
+# Data processing
+numpy==2.5.1
+pandas==3.0.3
+scipy==1.18.0
+scikit-learn==1.9.0
+
+# Graph & visualization
+networkx==3.6.1
+matplotlib==3.11.1
+seaborn==0.13.2
+
+# Utilities
+pyyaml==6.0.3
+tqdm==4.69.0
+ipykernel==7.3.0
+
+# Testing
+pytest==9.1.1

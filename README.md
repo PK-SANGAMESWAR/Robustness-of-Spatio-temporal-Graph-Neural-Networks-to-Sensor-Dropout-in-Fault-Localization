@@ -52,11 +52,23 @@ tests/                  # unit + regression tests
 
 ## Setup
 
-Uses [uv](https://docs.astral.sh/uv/) for dependency management:
+Requires **Python 3.12**. The project uses [uv](https://docs.astral.sh/uv/) for
+dependency management (authoritative spec: `pyproject.toml` + `uv.lock`):
 
 ```bash
 uv sync          # create .venv from pyproject.toml + uv.lock
 ```
+
+Alternatively, with plain pip (versions pinned to the tested environment):
+
+```bash
+python3.12 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+`requirements.txt` installs `torch` from the PyTorch CUDA 12.1 wheel index; for a
+CPU-only install, drop the `+cu121` pin and the `--extra-index-url` line. The
+`uv run ...` commands below become plain `python ...` inside the activated venv.
 
 ## Data
 
@@ -112,9 +124,12 @@ uv run pytest
 ## Status
 
 Active research code (targeting an ICMLDE 2026 submission). The baseline is
-reproduced at depth-4; reported numbers are seed-42 first, with additional seeds
-backfilled for error bars. See `PROGRESS.md` and `NEXT-STEPS.md` for the current
-execution state.
+reproduced at depth-4. All five baselines are trained at seeds 42/43/44, and
+full-observability accuracy is reported as mean ± std over those seeds. The
+sensor-dropout degradation curves are seed-averaged for RGSAGE-Max and the two
+robustness variants (dropout-aware RGSAGE-Max and SDR-STGNN); the other four
+baselines' degradation curves are reported on the seed-42 checkpoint. See
+`PROGRESS.md` and `NEXT-STEPS.md` for the current execution state.
 
 ## License
 
