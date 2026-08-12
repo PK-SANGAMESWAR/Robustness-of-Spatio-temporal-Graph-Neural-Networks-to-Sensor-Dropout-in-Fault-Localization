@@ -63,6 +63,10 @@ def impute_batch(x: torch.Tensor, k: int, mask_seed: int, adj: torch.Tensor) -> 
     b, n, s, _ = x.shape
     # Per-sample availability (1 = kept, 0 = dropped) — same selection rule as
     # apply_sensor_dropout_batch (fresh rng per batch, per-sample sampling).
+    # VERIFIED byte-for-byte identical to the zeroing study's dropped sets for
+    # every (k, offset) with batch=32, shuffle=False — so the ONLY difference
+    # from the zero_messages run is the fill (neighbour-mean vs zero), which is
+    # what makes this a fair paired imputation baseline.
     avail = torch.ones(b, n, device=x.device)
     rng = random.Random(mask_seed)
     for i in range(b):
