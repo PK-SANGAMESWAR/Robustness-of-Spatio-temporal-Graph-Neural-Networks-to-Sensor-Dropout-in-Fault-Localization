@@ -1,23 +1,39 @@
 # CLAUDE.md — repo map & orientation (READ THIS FIRST to avoid re-exploring)
 
-**Project:** conference paper reproducing Karabulut et al. (2026) STGNN fault-localization
-baselines on the IEEE-123 feeder under partial μPMU observability, plus the
+**Project:** conference paper that **adopts** Karabulut et al. (2026)'s STGNN fault-localization
+methodology on the IEEE-123 feeder under partial μPMU observability and reports **our own**
+numbers (NOT a reproduction — no "reproduce"/0.95-matching language; keep attribution), plus the
 **sensor-dropout robustness** contribution: degradation curves + **dropout-aware training**
 (the effective, architecture-agnostic mitigation) + **SDR-STGNN** (an availability-gated
 model, kept as an honest ablation — it MATCHES but does not beat dropout-aware training).
 Target venue ICMLDE 2026, deadline **15 Aug 2026**.
 
+**Status (2026-08-12): all experiments DONE; the paper is a complete draft.** Every model is
+trained at seeds 42/43/44, every degradation curve is 3-seed, and `paper/overleaf.tex` has all
+sections written (abstract → conclusion + bibliography). What remains is author-only: Overleaf
+page count vs. the 12-page cap, iThenticate/similarity check, acknowledgements + corresponding-
+author details, final AI-disclosure wording. The 100-run sweep is still parked (do NOT launch
+without being asked).
+
 ## Authoritative docs (read these for state/plan; don't re-derive)
-- `PROGRESS.md` — full project journey + live execution log (§14). **Source of truth for status.**
-- `NEXT-STEPS.md` — the locked execution plan (Steps 1–6). Supersedes older roadmaps.
+- `PROGRESS.md` — full project journey + execution log (§14). Source of truth for the journey;
+  for *current* status trust this file's Status line + `results/` on disk.
+- `NEXT-STEPS.md` — the locked execution plan (Steps 1–6; Step 6 VOID). Supersedes older roadmaps.
+- `PROVENANCE.md` — **append-only AI-provenance ledger. Every session that edits
+  `paper/overleaf.tex` or manuscript assets MUST append an entry** (per `paper/.rules/60-integrity.md`
+  Part A). Never overwrite prior entries.
 - `RUN-SDR-50RUN-RUNBOOK.md` — runbook for the SDR contribution on the 50-run corpus.
-- `WRONG-CLAIMS.md` — open gaps between paper claims and what's actually run.
+- `WRONG-CLAIMS.md` — gaps between paper claims and what's actually run (#1 green-feeder = resolved/cut).
 - `PROBLEM.md` — problem statement / scope. `QUESTIONS.md` — user's open questions.
 - `RUN-100RUN-SWEEP.md` — **runbook: how to launch/monitor the full-scale (100-run/3.30M)
-  sweep in a fresh session** once the 50-run work is done. Follow it if asked to run 100-run.
+  sweep in a fresh session.** Follow it only if explicitly asked to run 100-run.
+- `CURRENT-TRAINING.md` — **STALE** (2026-08-07 snapshot; the 8 missing model-seed dropout
+  evaluations it lists have since been run). Don't treat it as current status.
 - `README.md` — public GitHub readme. Repo is pushed to GitHub (private).
 - `paper/PAPER-CLAUDE.md` + `paper/.rules/` — paper-writing conventions (Procedia/Vancouver,
-  LaTeX, figures). Read when editing `paper/overleaf.tex`.
+  LaTeX, figures, page limit, integrity, quality bar). Read when editing `paper/overleaf.tex`.
+- `IMP/paper-points.md`, `IMP/points-for-paper.md` — the author's own raw framing notes
+  (honesty on dataset size, "same protocol, our own regeneration", no numeric replication claim).
 
 ## Source package: `fault_localization/`
 - `config/constants.py` — **all dataset/protocol constants** (FAULT_BUSES, PMU_BUSES, 11
@@ -55,14 +71,15 @@ Target venue ICMLDE 2026, deadline **15 Aug 2026**.
 - `analysis/errors.py`. IEEE-123 DSS source files: `data/ieee123/*.DSS` + config yaml.
 
 ## Scripts (`scripts/`) — all `uv run python scripts/<x>.py`
-- **Definitive 50-run sweep (DONE):** `run_fullscale_final_sweep.py` → `results/fullscale_final/`
-  (5 baselines seed 42; RGSAGE-Max also seeds 43/44 → clean-test **0.846 ± 0.007**). Summary/
-  figures: `build_fullscale_final_summary.py`, `build_fullscale_final_figures.py`. Metrics: `_metrics.py`.
-- **SDR contribution (running/mostly done):** `run_sdr_stgnn.py` (train SDR-STGNN, `--seed`),
-  `run_dropout_aware_sweep.py` (dropout-aware; `SEEDS` hardcoded `[42]` — for seeds 43/44 call
-  `cli train` on `config/dropout_aware/rgsage_max.yaml`), `run_dropout_study.py` (degradation
+- **Definitive 50-run sweep (DONE, 3 seeds):** `run_fullscale_final_sweep.py` (`SEEDS = [42,43,44]`)
+  → `results/fullscale_final/` — all 5 baselines × seeds 42/43/44. Summary/figures:
+  `build_fullscale_final_summary.py`, `build_fullscale_final_figures.py`. Metrics: `_metrics.py`.
+- **SDR contribution (DONE):** `run_sdr_stgnn.py` (train SDR-STGNN, `--seed`),
+  `run_dropout_aware_sweep.py` (dropout-aware; now takes `--models` **and `--seeds`**, resumable —
+  any (model, seed) with an existing metrics.json is skipped), `run_dropout_study.py` (degradation
   curves; **`--seeds 42 43 44` aggregates training-seed error bars**), `build_sdr_result_figures.py`,
-  `build_dropout_comparison.py`, `run_sdr_contribution.py` (orchestrator). De-risk: `smoke_test_dropout.py`.
+  `build_dropout_comparison.py`, `build_sdr_schematics.py`, `run_sdr_contribution.py` (orchestrator).
+  De-risk: `smoke_test_dropout.py`.
 - **100-run sweep (STAGED, parked):** `run_fullscale100_seed42_sweep.py` → would write
   `results/fullscale_final_100/`. Same frozen config, only DATA_ROOT differs. NOT launched.
 - **Paper dataset assets:** `build_dataset_assets.py` → `paper/tables/dataset_info.tex` +
@@ -75,8 +92,9 @@ Target venue ICMLDE 2026, deadline **15 Aug 2026**.
 ## Config (`config/`)
 `experiment_base.yaml` (base: device cuda, gnn_layers, training, dropout_study block) +
 per-model `{gru,rgcn,rgsage_mean,rgsage_max,rgatv2,sdr_stgnn}.yaml` (each `base:` experiment_base).
-`config/dropout_aware/rgsage_max.yaml` is generated by `run_dropout_aware_sweep.py`
-(dropout_aware_training=True). Frozen sweep config applied via CLI flags (`--gnn-layers 4
+`config/dropout_aware/{gru,rgcn,rgsage_mean,rgsage_max,rgatv2}.yaml` are generated by
+`run_dropout_aware_sweep.py` (dropout_aware_training=True) — all 5 now exist and are committed.
+Frozen sweep config applied via CLI flags (`--gnn-layers 4
 --epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3`), not baked into the baseline yaml.
 
 ## Results (`results/`)
