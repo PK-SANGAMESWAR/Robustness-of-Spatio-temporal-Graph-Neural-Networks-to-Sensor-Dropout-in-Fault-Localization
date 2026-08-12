@@ -98,12 +98,17 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
 --epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3`), not baked into the baseline yaml.
 
 ## Results (`results/`)
-- `fullscale_final/<model>/seed_000{42,43,44}/` — **the definitive 50-run sweep** (metrics.json,
-  checkpoint_best.pt, predictions_test.csv, metrics_by_epoch.csv, config.yaml). Figures →
-  `fullscale_final/figures/`. (RGSAGE-Max is multi-seed; other baselines seed 42 only.)
+- `fullscale_final/<model>/seed_000{42,43,44}/` — **the definitive 50-run sweep**, all 5 baselines
+  × 3 seeds (metrics.json, checkpoint_best.pt, predictions_test.csv, metrics_by_epoch.csv,
+  confusion_matrix.csv, config.yaml). Aggregates: `benchmark_summary.csv` (mean±std over seeds,
+  the paper's Table 3 source) + `benchmark_comparison.csv` (per-seed rows). Figures →
+  `fullscale_final/figures/`.
 - **SDR contribution:** `sdr_stgnn/sdr_stgnn/seed_000{42,43,44}/` (+ auto `dropout_curve.json`),
-  `dropout_aware/rgsage_max/seed_000{42,43,44}/`, `dropout_study{,_aware,_sdr}/degradation_curves.csv`.
-  Result figures → `paper/figures/sdr_*.png`; summary `paper/figures/sdr_robustness_summary.csv`.
+  `dropout_aware/<all 5 models>/seed_000{42,43,44}/`, and three 3-seed curve files —
+  `dropout_study/degradation_curves.csv` (standard, 5 models), `dropout_study_aware/…` (dropout-aware,
+  5 models), `dropout_study_sdr/…` (SDR-STGNN). Each row carries `f1_mean/f1_std/f1_per_train_seed`,
+  `n_train_seeds=3`, `n_mask_seeds=3`, `policy=zero_messages`. Seed-42-only predecessors are kept as
+  `*.bak.csv`. Result figures → `paper/figures/sdr_*.png`; summary `paper/figures/sdr_robustness_summary.csv`.
 - Per-run metrics.json keys: `test_graph.f1` (soft-voted macro-F1), `test_node_diagnostic.f1`
   (per-window), `test_graph.per_class.{precision,recall}` (class 0 = no-fault),
   `best_validation_graph_f1`.
@@ -112,14 +117,22 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
   `trend_*` (medium-A).
 
 ## Paper (`paper/`)
-- `overleaf.tex` — **the live paper** (Elsevier CRC/Procedia). Written: abstract, intro,
-  related-work table, Grid Simulation & Dataset (+ table + 2 figs), Baseline Architectures,
-  Sensor-Dropout Evaluation Protocol. Empty: dropout-aware methods, setup, results,
-  discussion, conclusion. **Abstract/intro/related-table still frame the contribution around
-  SDR-STGNN as a novel architecture — needs reframing toward dropout-aware training.**
+- `overleaf.tex` — **the live paper** (Elsevier CRC/Procedia), ~900 lines, **complete draft**:
+  abstract, intro, related work (+`tab:related`), Materials & Methods (dataset +`tab:dataset`
+  +`fig:graph`/`fig:sig`, baselines, deviations `tab:deviations`, dropout-eval protocol,
+  dropout-aware training +`alg:aware`, SDR-STGNN), Setup, Results (`tab:baseline`,
+  `tab:degradation`, `fig:degradation`, `tab:aware`, `fig:ablation`, architecture-agnostic
+  subsection), Discussion (+limitations), Conclusion, bibliography (14 refs).
+  Framing is reframed: dropout-aware training is the headline; SDR-STGNN is an ablation.
+  The four wide tables use `table*` (full-width) to avoid two-column overflow.
+- Revision docs: `paper-issue.md` (ICMLDE revision checklist — **executed**, with `paper-issue.tex`
+  the pre-revision snapshot), `plan-paper.md` (the ~15pp→12pp trim plan + claim re-derivation).
 - `figures/`, `tables/` — generated assets for Overleaf upload.
-- `PAPER-CLAUDE.md` + `.rules/` — paper-writing conventions. `0*.md`, `RELATED-WORK.md` —
-  earlier markdown drafts (superseded by overleaf.tex).
+- `PAPER-CLAUDE.md` + `.rules/00-core,10-reading,20-research,30-writing,40-figures,50-pagelimit,
+  60-integrity,70-quality` — paper conventions. Note: `50-pagelimit.md` still states 10 pages with
+  the `Verified:` line unfilled, while the trim work targeted the **12-page** ICMLDE cap from
+  `paper-issue.md` — confirm against the CFP before trusting either. `0*.md`, `RELATED-WORK.md`,
+  `ALGORITHM-FORMULATION.md` — earlier markdown drafts (superseded by overleaf.tex).
 
 ## Key facts (verified against code — safe to reuse without re-checking)
 - Dataset: 50-run corpus `dataset_fullscale_50` = 1.65M **windows** (825×50×40; event-level

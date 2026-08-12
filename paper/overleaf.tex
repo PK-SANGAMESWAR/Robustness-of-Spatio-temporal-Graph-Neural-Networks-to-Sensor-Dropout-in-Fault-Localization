@@ -694,8 +694,9 @@ This behaviour is consistent with the aggregation operators --- max-aggregation 
 \subsection{Effect of Dropout-Aware Training}
 \label{sec:res-aware}
 
-The degradation of RGSAGE-Max motivated the two mitigations of Sections~\ref{sec:dropout-aware} and~\ref{sec:sdr}, both built on the same backbone.
-Table~\ref{tab:aware} and Fig.~\ref{fig:ablation} compare three variants on the identical dropout sweep: standard training, dropout-aware training, and the availability-gated SDR-STGNN.
+The degradation of RGSAGE-Max motivated the mitigations of Sections~\ref{sec:dropout-aware} and~\ref{sec:sdr}, all built on the same backbone. Table~\ref{tab:aware} compares four ways to cope with sensor loss on the identical dropout sweep: standard training (dropped nodes zeroed), an impute-then-infer baseline, dropout-aware training, and the availability-gated SDR-STGNN; Fig.~\ref{fig:ablation} shows the latter three as degradation curves.
+
+\textbf{Imputation baseline.} A natural alternative to a training-time fix is to reconstruct dropped sensors before inference. As a lightweight impute-then-infer control --- the no-training analogue of graph-based imputation~\cite{zhang2025} --- we fill each dropped node's three voltage channels with the per-timestep mean of its \emph{available} $1$-hop graph neighbours and present the result to the standard-trained model as observed (availability mask set to $1$, the most favourable setting for imputation); dropped nodes are selected identically to the zeroing sweep, so the only change is the fill. Imputation gives only a small gain over zeroing (AUDC $0.414\!\to\!0.495$; retention at $k=10$ $7.0\%\!\to\!13.1\%$) and stays far below dropout-aware training (AUDC $0.916$): the reconstructed values are still fed to a model never trained to distrust them, so naive imputation does not recover the lost accuracy. The imputation uses undirected $1$-hop neighbours as a preprocessing step, independent of each operator's aggregation direction.
 
 Dropout-aware training improves the robustness of RGSAGE-Max to sensor loss. Its AUDC increases from $0.414$ to $0.916$, while its retention at $k=10$ improves from $7.0\%$ to $80.6\%$. Whereas the standard model degrades to a graph-level macro-$F_1$ of $0.059$ when $40\%$ of the $\mu$PMUs are removed,
 the dropout-aware variant still achieves $0.676\pm0.019$, corresponding to an absolute improvement of $0.617$ macro-$F_1$ points at the most severe dropout level. This increase is achieved with virtually no loss in clean performance --- under full observability ($k=0$), the dropout-aware model attains $0.839\pm0.011$ compared with $0.846\pm0.007$ for the standard model, a difference well within one standard deviation. Because the dropout-aware training modifies only training data and not the model architecture, it does not introduce any additional parameters nor extra inference-time computation (Section~\ref{sec:dropout-aware}). This indicates that training-time masking alone is sufficient to recover most of the robustness lost under conventional training.
@@ -713,10 +714,12 @@ dropout-aware curve for all $k\ge1$. As expected, the three variants coincide un
 % ---------------------------------------------------------------------------
 \begin{table*}[!ht]
   \centering
-  \caption{The two mitigations on the RGSAGE-Max backbone: soft-voted macro-F1
-           (mean\,$\pm$\,std over seeds 42/43/44) per dropout level $k$, with AUDC
-           and $k=10$ retention. Dropout-aware training recovers most of the lost
-           accuracy; the gated SDR-STGNN matches but does not exceed it.}
+  \caption{Test-time and training-time mitigations on the RGSAGE-Max backbone:
+           soft-voted macro-F1 (mean\,$\pm$\,std over seeds 42/43/44) per dropout
+           level $k$, with AUDC and $k=10$ retention. Graph mean-imputation of dropped
+           sensors gives only a small gain over zeroing; dropout-aware training
+           recovers most of the lost accuracy, and the gated SDR-STGNN matches but
+           does not exceed it.}
   \label{tab:aware}
   \footnotesize
   \setlength{\tabcolsep}{4pt}
@@ -724,12 +727,18 @@ dropout-aware curve for all $k\ge1$. As expected, the three variants coincide un
     \toprule
     Variant & $k{=}0$ & $k{=}2$ & $k{=}5$ & $k{=}10$ & AUDC & Ret.@10 \\
     \midrule
-    Standard training
+    Standard training (zeroing)
       & $\mathbf{0.846}{\pm}\mathbf{0.007}$
       & $0.570{\pm}0.030$
       & $0.267{\pm}0.028$
       & $0.059{\pm}0.020$
       & 0.414 & 7.0\% \\
+    Mean-imputation (standard)
+      & $0.846{\pm}0.006$
+      & $0.637{\pm}0.015$
+      & $0.374{\pm}0.039$
+      & $0.110{\pm}0.031$
+      & 0.495 & 13.1\% \\
     Dropout-aware training
       & $0.839{\pm}0.011$
       & $\mathbf{0.816}{\pm}\mathbf{0.011}$
@@ -789,7 +798,7 @@ Several limitations bound the scope of these findings.
   \item \emph{Missingness model.} Sensors are dropped independently and uniformly at random per window. Real $\mu$PMU failures are often correlated --- co-located units, a shared communication path, or a substation outage fail together --- and persist over time rather than resampling each window. Structured failures may degrade, and may respond to mitigation, differently.
   \item \emph{Dataset scale.} Our depth-4, unweighted, $1.65$\,M-window dataset yields a strongest-baseline macro-F1 of $0.846$ (Section~\ref{sec:repro}); absolute magnitudes are not directly comparable to \cite{Karabulut2026}, which uses a different corpus.
   \item \emph{RGATv2 training-seed variance.} All degradation curves are seed-averaged over 42/43/44, but RGATv2 shows high training-seed variance ($\pm0.087$ at $k=0$) from instability at the adopted four-layer depth (Section~\ref{sec:res-degrade}). Its nominal top robustness ranking should therefore be read as indicative rather than a firm ordering over the mid-tier baselines.
-  \item \emph{No imputation baseline.} We contrast a training-time mitigation with an architectural one; we do not compare against impute-then-infer pipelines such as \cite{zhang2025} or \cite{fan2024}. Whether reconstructing dropped measurements before inference can match dropout-aware training is left to future work.
+  \item \emph{Imputation scope.} We compare against a lightweight graph mean-imputation baseline (Section~\ref{sec:res-aware}), which recovers little of the lost accuracy; we do not evaluate learned, iterative reconstruction models such as the Dirichlet/contrastive pipeline of \cite{zhang2025} or the VGAE of \cite{fan2024}. Whether a stronger learned imputer could close the gap to dropout-aware training is left to future work.
   \item \emph{Training dropout range.} Dropout-aware training samples $k\in\{0,1,2,5\}$, so the $k=10$ ($40\%$) evaluation probes beyond the training distribution. Recovery remains strong there, but larger or adaptive dropout budgets were not tuned.
 \end{itemize}
 

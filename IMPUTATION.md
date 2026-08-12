@@ -1,9 +1,9 @@
 # IMPUTATION.md — Imputation baseline for the sensor-dropout study
 
-**Status:** experiment running (standard-trained RGSAGE-Max, seeds 42/43/44).
-Methodology + fairness are final; the results table is filled once the seed-averaged
-run completes. **No existing result, checkpoint, or CSV is modified** — this only
-*adds* one comparison.
+**Status:** ✅ complete (standard-trained RGSAGE-Max, seeds 42/43/44). Wired into the
+paper (Table `tab:aware` row + §Effect-of-Dropout-Aware-Training paragraph + limitation
+rewrite). **No existing result, checkpoint, or CSV was modified** — this only *adds*
+one comparison.
 
 ---
 
@@ -102,23 +102,22 @@ uv run python scripts/run_imputation_baseline.py \
 
 ## 6. Results (RGSAGE-Max backbone, soft-voted macro-F1)
 
-Seed-averaged over 42/43/44, three mask realizations each. **Imputation column pending
-run completion** — partial seed-42 values shown in _italics_ as an interim indication;
-final seed-averaged numbers replace this table when the run finishes.
+Seed-averaged over 42/43/44 (mean ± std), three mask realizations each. **Final.**
 
-| Variant | $k{=}0$ | $k{=}2$ | $k{=}5$ | $k{=}10$ | AUDC | Ret@10 |
-|---|---|---|---|---|---|---|
-| Standard training (zero) | 0.846 | 0.570 | 0.267 | 0.059 | 0.414 | 7.0% |
-| **Mean-imputation (standard)** | _0.853*_ | _0.631*_ | _pending_ | _pending_ | _pending_ | _pending_ |
-| Dropout-aware training | 0.839 | 0.816 | 0.778 | 0.676 | **0.916** | **80.6%** |
-| SDR-STGNN (gated) | 0.839 | 0.812 | 0.758 | 0.643 | 0.895 | 76.7% |
+| Variant | $k{=}0$ | $k{=}1$ | $k{=}2$ | $k{=}5$ | $k{=}10$ | AUDC | Ret@10 |
+|---|---|---|---|---|---|---|---|
+| Standard training (zero) | 0.846 | 0.728 | 0.570 | 0.267 | 0.059 | 0.414 | 7.0% |
+| **Mean-imputation (standard)** | **0.846**±0.006 | **0.718**±0.017 | **0.637**±0.015 | **0.374**±0.039 | **0.110**±0.031 | **0.495**±0.035 | **13.1%**±3.7% |
+| Dropout-aware training | 0.839 | — | 0.816 | 0.778 | 0.676 | 0.916 | 80.6% |
+| SDR-STGNN (gated) | 0.839 | — | 0.812 | 0.758 | 0.643 | 0.895 | 76.7% |
 
-_*seed-42 only, interim._
-
-**Interim read:** imputation helps modestly over zeroing at moderate dropout (seed-42
-$k{=}2$: 0.631 vs 0.537) but stays far below dropout-aware training (0.816 at $k{=}2$).
-If this holds seed-averaged, the claim is: *naïve graph imputation does not recover the
-lost accuracy — robustness must come from training, not from patching the input.*
+**Read:** graph mean-imputation gives a *small* gain over zeroing (AUDC 0.414 → 0.495,
+Ret@10 7.0% → 13.1%) but stays **far below dropout-aware training** (AUDC 0.916,
+Ret@10 80.6%). It helps most at moderate dropout (k=2: 0.637 vs 0.570; k=5: 0.374 vs
+0.267) and collapses with zeroing at the extreme (k=10: 0.110 vs 0.059). Conclusion:
+*naive graph imputation does not recover the lost accuracy — the reconstructed values
+are still fed to a model never trained to distrust them, so robustness must come from
+training, not from patching the input at test time.*
 
 ## 7. What it changes in the paper
 
