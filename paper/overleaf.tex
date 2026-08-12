@@ -248,7 +248,7 @@ Section~\ref{sec:related} reviews related work; Sections~\ref{sec:methods}--\ref
 %   \newcommand{\no}{\ensuremath{-}}
 %   \newcommand{\pt}{\ensuremath{\sim}}
 % ---------------------------------------------------------------------------
-\begin{table}[!ht]
+\begin{table*}[!ht]
   \centering
   \caption{Positioning of representative fault-localization methods.
            Task: D $=$ detection, C $=$ type classification, L $=$ localization.
@@ -312,7 +312,7 @@ Section~\ref{sec:related} reviews related work; Sections~\ref{sec:methods}--\ref
       & \yes & \yes & \yes & \yes \\
     \bottomrule
   \end{tabular}
-\end{table}
+\end{table*}
 
 Table~\ref{tab:related} shows that no prior method simultaneously addresses sparse observability, test-time sensor dropout, and active loss mitigation. Imputation-based approaches~\cite{zhang2025,fan2024} assume a fixed, known missingness pattern, which is incompatible with the random inference-time failures we study. In a companion line of work, Karabulut et al.~\cite{Karabulut2025} study cross-feeder generalization of these STGNN detectors; our work is complementary, addressing sensor-dropout robustness on a fixed topology. This gap motivates the evaluation and mitigation study presented here.
 
@@ -333,16 +333,13 @@ For each fault scenario, we record a 60\,ms window, starting 40\,ms before fault
 The resulting corpus contains $825\times50=41{,}250$ events (1.65\,M windows), partitioned 70/15/15 at the \emph{event} level (train 1{,}155k / validation 248k / test 247k windows; exactly 50\% no-fault), so that the sliding windows from a single event never span more than one split (Table~\ref{tab:dataset}). We adopt the base paper's dataset-generation methodology but build our own dataset; we do not aim to replicate its exact corpus or reported scores, and report all statistics from our own implementation. Since every model in this work is trained and evaluated on this same dataset using identical data splits, the experimental comparisons remain fair and internally consistent.
 
 % ---------------------------------------------------------------------------
-% Dataset configuration + window-level distribution.
+% Dataset configuration (window-level split counts are inline in the prose).
 %   Frozen corpus: dataset_fullscale_50 (50 runs/scenario)
 % ---------------------------------------------------------------------------
 \begin{table}[!ht]
   \centering
-  \caption{Dataset configuration for the frozen
-           \texttt{dataset\_fullscale\_50} corpus (50 runs per scenario).
-           The 70/15/15 split is applied at the \emph{event} level, so no two
-           windows from the same simulation run appear in different splits.
-           All counts are computed directly from the generated dataset.}
+  \caption{Dataset configuration (50 runs/scenario). The 70/15/15 split is at the
+           \emph{event} level; all counts are from the generated dataset.}
   \label{tab:dataset}
   \footnotesize
   \begin{tabular}{@{}ll@{}}
@@ -371,21 +368,18 @@ The resulting corpus contains $825\times50=41{,}250$ events (1.65\,M windows), p
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.6\linewidth]{figures/measured_only_graph.png}
-\caption{The measured-only graph used by the spatial models: the 25 $\mu$PMU
-buses (coloured by phase count) and the 24 topology-derived edges forming a
-connected tree. Red rings mark the 6 $\mu$PMU buses that are also candidate
-fault locations; the other 19 fault locations are unmeasured.}
+\caption{The measured-only graph: 25 $\mu$PMU buses (coloured by phase count) and
+24 topology-derived edges forming a connected tree. Red rings mark the 6 $\mu$PMU
+buses that are also fault locations; the other 19 are unmeasured.}
 \label{fig:graph}
 \end{figure}
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.6\linewidth]{figures/fault_signature.png}
-\caption{A fault signature at bus 101 (three-phase-to-ground) taken directly
-from the simulated data. The deepest-sagging $\mu$PMU channel is shown,
-normalized to its pre-fault mean; sag depth scales with fault resistance, so
-10\,$\Omega$ high-impedance faults produce only a shallow, hard-to-detect
-signature.}
+\caption{Fault signature at bus 101 (three-phase-to-ground): the deepest-sagging
+$\mu$PMU channel, normalized to its pre-fault mean. Sag depth scales with fault
+resistance, so 10\,$\Omega$ faults give only a shallow, hard-to-detect signature.}
 \label{fig:sig}
 \end{figure}
 
@@ -406,45 +400,24 @@ This is the only architectural difference from \cite{Karabulut2026}. The tempora
 \subsection{Sensor-Dropout Evaluation Protocol}
 \label{sec:dropout-eval}
 
-We evaluate robustness to $\mu$PMU failures entirely at \emph{inference} time. A single trained model is evaluated under progressively increasing sensor dropout with all model parameters fixed, which isolates robustness from any training-time mitigation (Section~\ref{sec:results}).
+We evaluate robustness to $\mu$PMU failures entirely at \emph{inference} time, with all model parameters fixed, which isolates robustness from any training-time mitigation.
 
-\textbf{Missingness model.} To simulate a lost sensor we select $k$ of the 25 $\mu$PMUs and, for every test window, set all six input channels of each selected node to zero --- the three RMS-voltage channels and the three availability-mask channels. Zeroing the availability mask is essential rather than redundant, because a zero voltage can itself be a valid measurement at some buses; the availability mask therefore serves as the definitive indicator that a node is unobserved. This exactly matches the encoding used for absent sensors in the generated dataset (Section~\ref{sec:methods}), making a failed $\mu$PMU indistinguishable from a location that was never instrumented.
+\textbf{Missingness model.} To simulate a lost sensor we select $k$ of the 25 $\mu$PMUs and, for every test window, zero all six input channels of each selected node --- both the RMS-voltage and the availability-mask channels. Zeroing the mask is essential: a zero voltage can be a valid reading, so the mask is the definitive indicator that a node is unobserved. This matches the encoding of absent sensors in the dataset (Section~\ref{sec:methods}), making a failed $\mu$PMU indistinguishable from one that was never instrumented.
 
-\textbf{Graph handling.} A dropped node is \emph{not} removed from the graph. Its incident edges remain unchanged and it continues to participate in message passing. However, as the temporal encoder receives an all-zero input sequence, it produces a zero-valued embedding that is propagated to neighboring nodes. Consequently, under the mask-agnostic baselines a failed sensor still contributes a non-informative message to its neighbors --- exactly the behavior the availability-gated model (Section~\ref{sec:sdr}) is designed to prevent. All models are evaluated on this identical graph so that differences arise solely from the message-passing mechanism rather than from changes in graph connectivity. Although we implemented an alternative policy of removing edges incident to dropped nodes, it was not used in the reported experiments, to avoid introducing graph topology as an additional confounding factor.
+\textbf{Graph handling.} A dropped node keeps its edges and still participates in message passing, but its temporal encoder now receives an all-zero sequence and emits a zero-valued embedding that propagates to neighbours --- exactly the non-informative message the availability-gated model (Section~\ref{sec:sdr}) is designed to suppress. All models see the same graph, so differences arise solely from the message-passing mechanism, not from connectivity changes. (An edge-removal policy was implemented but not used, to avoid confounding topology with dropout.)
 
-\textbf{Dropout sweep.} We evaluate sensor dropout at $k \in \{0,1,2,5,10\}$, corresponding to the removal of $0\%$, $4\%$, $8\%$, $20\%$, and $40\%$ of the 25 $\mu$PMUs, with $k=0$ serving as full-observability reference. For each value of $k$, the dropped sensors are sampled uniformly at random and independently for every test window. To ensure a paired and reproducible comparison, the random sampling is driven by fixed seeds that are reused across all models, so that every architecture is evaluated on an identical sequence of dropout realizations over the same frozen test split (Table~\ref{tab:dataset}).
-Results for each $(\mathrm{model}, k)$ configuration are averaged over $n_{\mathrm{seed}}=3$ independent mask realizations and reported as mean $\pm$ standard deviation.
-
-\textbf{Metric and derived robustness scores.} At each dropout level $k$, the per-node class probabilities are summed over all 25 nodes, and the graph-level prediction is obtained by taking arg-max of the aggregated probabilities (soft-voting, as told above). Performance is measured using the macro-F1 score over the 26 fault classes, which produces a macro-F1-versus-$k$ \emph{degradation curve} for each
-model.
-
-From this curve we derive two robustness measures. The first is the
-\emph{retention},
+\textbf{Dropout sweep and metrics.} We sweep $k \in \{0,1,2,5,10\}$ ($0/4/8/20/40\%$ loss), with $k=0$ the full-observability reference. Dropped sensors are sampled uniformly at random per window, driven by fixed seeds reused across all models so that every architecture sees an identical sequence of dropout realizations on the same frozen test split (Table~\ref{tab:dataset}). Each $(\mathrm{model},k)$ point is averaged over $n_{\mathrm{seed}}=3$ mask realizations (and, where stated, over training seeds 42/43/44). Performance is the soft-voted macro-F1 over the 26 classes, giving a macro-F1-versus-$k$ \emph{degradation curve}. From it we derive the \emph{retention} $R(k)=\mathrm{F1}(k)/\mathrm{F1}(0)$ and the \emph{normalized area under the retention curve},
 \[
-R(k)=\frac{\mathrm{F1}(k)}{\mathrm{F1}(0)},
+\mathrm{AUDC}=\frac{1}{k_{\max}-k_{\min}}\int_{k_{\min}}^{k_{\max}} R(k)\,dk \in[0,1],
 \]
-which quantifies the fraction of full-observability performance retained at
-dropout level $k$. The second is the \emph{normalized area under the retention
-curve} (AUDC),
-\[
-\mathrm{AUDC}
-=\frac{1}{k_{\max}-k_{\min}}
-\int_{k_{\min}}^{k_{\max}} R(k)\,dk
-\in[0,1],
-\]
-computed using trapezoidal integration over the evaluated dropout levels
-$\{0,1,2,5,10\}$. Higher AUDC values indicate greater robustness, corresponding
-to a slower degradation in classification performance as sensors are removed.
+computed by trapezoidal integration over $\{0,1,2,5,10\}$; a higher AUDC means slower degradation.
 
 
 \subsection{Dropout-Aware Training}
 
 \label{sec:dropout-aware}
 
-Dropout-aware training improves robustness to sensor failure through the \emph{training procedure} rather than network architecture. The evaluation protocol of Section~\ref{sec:dropout-eval} highlights a train--test mismatch: the baselines are trained with all 25 $\mu$PMUs available, yet are
-evaluated under partial observability. We eliminate this mismatch by applying the same missingness model used during evaluation as training-time data augmentation. Consequently, the network is exposed to randomly missing sensors throughout optimization and learns representations that are less dependent on the availability of any individual $\mu$PMU.
-
-We augment the training data loader so that each mini-batch is masked immediately before the forward pass. For every training window, we sample a dropout level $k$ uniformly from $\{0,1,2,5\}$, after which all six input channels of $k$ randomly selected $\mu$PMU nodes are set to zero using the same feature-masking procedure employed during evaluation (Section~\ref{sec:dropout-eval}). As the sampled dropout level varies from batch to batch, each training epoch contains both the full-observability case ($k=0$) and multiple partial-observability cases, ensuring that no individual $\mu$PMU is consistently available throughout training. The augmentation modifies only the input features; it does not alter the graph structure, model architecture, or optimization procedure. Consequently, it is architecture-agnostic and can be applied without modification to all baselines as well as SDR-STGNN (Section~\ref{sec:sdr}).
+Dropout-aware training removes the train--test mismatch exposed in Section~\ref{sec:dropout-eval}: the baselines train with all 25 $\mu$PMUs available but are evaluated under partial observability. We apply the evaluation missingness model as training-time augmentation --- before each forward pass a dropout level $k\sim\mathrm{Uniform}\{0,1,2,5\}$ is drawn per batch and $k$ randomly chosen nodes are zeroed (Algorithm~\ref{alg:aware}). Because $k$ varies batch to batch, every epoch mixes full- and partial-observability cases, so no $\mu$PMU is consistently available and the network learns representations that do not depend on any individual sensor. The augmentation touches only the input features --- not the graph, architecture, or optimizer --- so it is architecture-agnostic and applies unchanged to all baselines and to SDR-STGNN (Section~\ref{sec:sdr}).
 
 % ---------------------------------------------------------------------------
 % Dropout-aware training. Requires in the preamble:
@@ -453,10 +426,9 @@ We augment the training data loader so that each mini-batch is masked immediatel
 %   \usepackage{amsmath,amssymb}
 % ---------------------------------------------------------------------------
 \begin{algorithm}[t]
-  \caption{Dropout-aware training. Applied identically to every model; the only
-           change from standard training is the per-batch masking
-           (lines~4--8). The training objective is the node-level cross-entropy
-           of Section~\ref{sec:methods}; soft voting is used only at inference.}
+  \caption{Dropout-aware training. The only change from standard training is the
+           per-batch masking (lines~4--8); the objective is the node-level
+           cross-entropy of Section~\ref{sec:methods}.}
   \label{alg:aware}
   \begin{algorithmic}[1]
     \Require training batches $\mathcal{B}$; dropout levels
@@ -489,7 +461,7 @@ We augment the training data loader so that each mini-batch is masked immediatel
 \end{algorithm}
 
 
-Every other aspect of the training protocol is held identical to the baseline, including the architecture, spatial depth, optimizer, loss function, and training stabilization strategy described in Section~\ref{sec:setup}. Any difference in robustness can therefore be attributed solely to the dropout-aware augmentation. Masking is applied only during training; at inference the model is evaluated exactly as its standard counterpart, introducing no additional parameters and no inference-time computation.
+All other training details are identical to the baseline (Section~\ref{sec:setup}), so any robustness difference is attributable solely to the augmentation; masking is applied only during training and adds no parameters or inference-time cost.
 
 \subsection{SDR-STGNN: Availability-Gated Graph Aggregation}
 \label{sec:sdr}
@@ -505,8 +477,7 @@ a_i = \mathbf{1}\!\left\{\ \max_{s}\ \max_{p\in\{1,2,3\}}\ m_{i,p}(s) > 0 \right
 \label{eq:avail}
 \end{equation}
 
-where $m_{i,p}(s)$ denotes the availability-mask value of phase $p$ at node $i$
-and timestep $s$. Thus, $a_i=1$ if any mask channel is active at any timestep within the input window, and $a_i=0$ otherwise. Consequently, both dropped $\mu$PMUs and locations that were never instrumented receive $a_i=0$, since their availability masks are identically zero throughout the window.
+where $m_{i,p}(s)$ is the mask value of phase $p$ at node $i$ and step $s$; thus $a_i=1$ iff any mask channel is active at any step in the window, so both dropped $\mu$PMUs and never-instrumented locations receive $a_i=0$.
 
 \textbf{Gated aggregation.} At each of the four message-passing layers, the max-aggregation of RGSAGE-Max is restricted to available source nodes, while the self-representation is gated by the same availability indicator:
 
@@ -538,24 +509,13 @@ a_j h_j
 \right).
 \end{equation}
 
-where $\mathcal N(j)$ denotes the neighbours of node $j$, $\|$ represents
-concatenation, and $W$ is the learned projection for the current layer. Thus,
-nodes with $a_i=0$ are excluded from neighbourhood aggregation and contribute no
-messages to neighbouring nodes. If the entire closed neighbourhood of $j$ is
-unavailable, the aggregated representation defaults to the zero vector.
+where $\mathcal N(j)$ are the neighbours of $j$, $\|$ is concatenation, and $W$ the layer projection. Nodes with $a_i=0$ thus send no messages; if the entire closed neighbourhood of $j$ is unavailable, $\mathrm{agg}_j$ is the zero vector.
 
 The availability indicators are computed once from the input window (Eq.~\ref{eq:avail}) and reused across all four message-passing layers. The gating mechanism itself adds no parameters, and the shared GRU encoder, four-hop depth, classifier head, and soft voting are all identical to RGSAGE-Max. When every sensor is available ($a_i=1$ for all $i$), Eq.~\ref{eq:gate} reduces exactly to the standard RGSAGE-Max update, so SDR-STGNN and its backbone are identical under full
 observability ($k=0$). SDR-STGNN is trained using the dropout-aware augmentation described in Section~\ref{sec:dropout-aware}, ensuring that the availability
 gates are exercised throughout training.
 
-\textbf{What the ablation isolates.} Evaluating the three variants on the same RGSAGE-Max backbone: (i) the baseline with standard training;
-(ii) dropout-aware training, which retains the availability mask as an input but
-uses the original ungated message-passing operator; and (iii) SDR-STGNN, which
-combines dropout-aware training with availability-gated message passing. Because
-all other aspects of the architecture, optimization, and evaluation protocol are
-identical, this ablation isolates the contribution of the training-time
-augmentation from that of the structural gating mechanism. The resulting
-comparison is presented in Section~\ref{sec:results}.
+\textbf{What the ablation isolates.} On the same RGSAGE-Max backbone we compare three variants: (i) standard training; (ii) dropout-aware training (ungated, mask as input only); and (iii) SDR-STGNN (dropout-aware training plus availability-gated aggregation). Since everything else is identical, the comparison separates the training-time augmentation from the structural gate (Section~\ref{sec:results}).
 
 \section{Experimental Setup}
 \label{sec:setup}
@@ -568,7 +528,7 @@ Section~\ref{sec:dropout-aware}), every aspect of the training and evaluation pi
 \textbf{Optimization.} All models were trained for 30 epochs using AdamW with a learning rate of $10^{-3}$, weight decay of $10^{-4}$, and a batch size of 32. The learning rate was linearly warmed up over the first three epochs before remaining constant for the rest of training. To improve optimization stability, the gradient norm was clipped to 1.0. Batching respects event boundaries via an event-chunk sampler that keeps all sliding windows of an event together, consistent with the event-level partition described in
 Section~\ref{sec:methods}. Training was fully deterministic through fixed random seeds. The model checkpoint achieving the highest validation graph-level macro-F1 was selected for testing; no additional early-stopping criterion was used.
 
-\textbf{Training objective.} Models are trained by minimizing the node-level cross-entropy loss defined in Section~\ref{sec:methods}, without class weighting. Class imbalance is addressed by dataset construction rather than by the loss. Specifically, the corpus is balanced with 50\% no-fault samples (Table~\ref{tab:dataset}), while the 25 fault locations are uniformly represented through the $25 \times 11 \times 3$ factorial design. The training distribution therefore does not favour any fault location, and a standard cross-entropy objective provides equal treatment to all classes. This is a deliberate departure from a common inverse-frequency-weighted recipe, discussed further in Section~\ref{sec:repro}.
+\textbf{Training objective.} Models are trained by minimizing the node-level cross-entropy loss defined in Section~\ref{sec:methods}, without class weighting. Class imbalance is addressed by dataset construction rather than by the loss. Specifically, the corpus is balanced with 50\% no-fault samples (Table~\ref{tab:dataset}), while the 25 fault locations are uniformly represented through the $25 \times 11 \times 3$ factorial design. The training distribution therefore does not favour any fault location, and a standard cross-entropy objective provides equal treatment to all classes; no inverse-frequency weighting is needed, consistent with the base paper's unweighted objective~\cite{Karabulut2026}.
 
 \textbf{Seeds and multi-seed reporting.} All sources of training stochasticity --- parameter initialization, mini-batch ordering, and the dropout-aware masking procedure --- are controlled by a single integer random seed. All five baselines (GRU, RGCN, RGSAGE-Mean, RGSAGE-Max, and RGATv2) and both robustness variants (dropout-aware RGSAGE-Max and SDR-STGNN) were trained using three independent seeds (42, 43, and 44), and their reported full-observability metrics are the mean\,$\pm$\,standard deviation across these runs. The sensor-dropout degradation analysis (Section~\ref{sec:res-degrade}) is likewise seed-averaged over 42/43/44 for every model, with three random mask realizations per seed (Section~\ref{sec:dropout-eval}).
 
@@ -581,12 +541,12 @@ deviation. Performance is measured using graph-level macro-F1 over the 26 fault 
 \section{Differences from the Base Paper's Setup}
 \label{sec:repro}
 
-Our setup follows \cite{Karabulut2026} (feeder, $\mu$PMU placement, fault taxonomy, windowing, and soft-voting evaluation) but differs in four documented respects (Table~\ref{tab:deviations}). The most consequential is spatial depth: a single hop localizes poorly here because only 6 of the 25 fault buses are instrumented, so most faults lie more than one hop from any $\mu$PMU; macro-F1 rises monotonically from $0.51$ at one hop to $0.85$ at four (Section~\ref{sec:res-baseline}), which we adopt as a configuration choice --- a deeper receptive field for the same architecture --- not a redesign. Unweighted cross-entropy suffices because the corpus is already balanced at 50\% no-fault with the 25 fault locations equally represented, so there is no imbalance for a weighted loss to correct. All comparisons in this work are conducted on our own corpus and splits, so robustness effects are internally consistent regardless of absolute F1 differences from the base paper; the effects should be read against our own $0.85$ reference point.
+Our setup follows \cite{Karabulut2026} (feeder, $\mu$PMU placement, fault taxonomy, windowing, soft-voting evaluation, and an unweighted cross-entropy objective) but differs in three documented respects (Table~\ref{tab:deviations}). The most consequential is spatial depth: a single hop localizes poorly here because only 6 of the 25 fault buses are instrumented, so most faults lie more than one hop from any $\mu$PMU; macro-F1 rises monotonically from $0.51$ at one hop to $0.85$ at four (Section~\ref{sec:res-baseline}), which we adopt as a configuration choice --- a deeper receptive field for the same architecture --- not a redesign. All comparisons in this work are conducted on our own corpus and splits, so robustness effects are internally consistent regardless of absolute F1 differences from the base paper; the effects should be read against our own $0.85$ reference point.
 
 \begin{table}[!ht]
   \centering
-  \caption{Documented deviations of our setup from \cite{Karabulut2026}. All
-           comparisons in this work are internally consistent on our own corpus.}
+  \caption{Deviations of our setup from \cite{Karabulut2026}; all comparisons are
+           internally consistent on our own corpus.}
   \label{tab:deviations}
   \footnotesize
   \begin{tabular}{@{}lll@{}}
@@ -594,7 +554,6 @@ Our setup follows \cite{Karabulut2026} (feeder, $\mu$PMU placement, fault taxono
     Aspect & \cite{Karabulut2026} & This work \\
     \midrule
     Spatial depth   & 1 hop            & 4 hops \\
-    Training loss   & not specified    & unweighted cross-entropy \\
     Corpus size     & not reconstructable & 1.65\,M windows (50 runs/scenario) \\
     Green topology  & evaluated        & not evaluated (future work) \\
     \bottomrule
@@ -622,9 +581,9 @@ independently and therefore lacks an explicit mechanism for reasoning about faul
 
 Accuracy decreases monotonically as fault resistance increases, for every model. For example, RGSAGE-Max drops from 0.949 at $0.1\,\Omega$ to 0.676 at $10\,\Omega$, reflecting the weaker voltage signatures of high-impedance faults (Fig.~\ref{fig:sig}). High-impedance faults therefore remain the most challenging operating condition throughout the study. In contrast, fault detection is effectively saturated: all models achieve a no-fault recall of 1.000 and a no-fault precision of at least 0.972, indicating that the primary challenge is fault localization rather than fault detection. Unlike \cite{Karabulut2026}, RGATv2 is the weakest GNN model in our experiments ($0.522\pm0.087$), and also the highest in variance across seeds; the wide standard deviation reflects training instability at the adopted four-layer depth, and the reported metrics are the best validated checkpoint of each seed without extensive hyperparameter tuning. Stabilizing RGATv2 at depth four --- for example via attention-dropout tuning or warmup scheduling --- is left as future work.
 
-\begin{table}[!ht]
+\begin{table*}[!ht]
 \centering
-\caption{Baseline fault-localization performance under full observability ($k=0$) on the frozen test split. Reported metrics include graph-level macro-F1 (obtained by soft voting), node-level macro-F1, macro-F1 stratified by fault resistance, and precision/recall for the no-fault class. All five models are reported as mean$\pm$standard deviation over three independent training seeds (42, 43, and 44); standard deviations are shown for the two headline macro-F1 columns, while the per-resistance and no-fault columns list the seed-averaged mean. Bold marks the best value in each column.}
+\caption{Baseline performance under full observability ($k=0$): graph- and node-level macro-F1 (soft-voted), macro-F1 by fault resistance, and no-fault precision/recall. Mean$\pm$std over seeds 42/43/44 ($\pm$std shown for the two macro-F1 columns; other columns are seed means). Bold marks the best per column.}
 
 \label{tab:baseline}
 \footnotesize
@@ -694,7 +653,7 @@ GRU
 & $1.000$ \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 Table~\ref{tab:baseline} also addresses the spatial-depth question: a single-seed depth sweep on RGSAGE-Max shows macro-F1 rising monotonically from $0.509$ (1 hop) through $0.571$ (2) and $0.751$ (3) to $0.806$ (4 hops, reduced 15-epoch budget), with the full 30-epoch stabilized recipe reaching $0.846$ and no sign of over-smoothing. Because only 6 of the 25 fault buses are instrumented, a single hop cannot reach faults two or more hops from any $\mu$PMU, so the enlarged receptive field --- not the aggregation operator --- is the primary driver of accuracy. These intermediate-depth runs are diagnostic (reduced budget), not individually tuned operating points.
 
@@ -713,20 +672,13 @@ This behaviour is consistent with the aggregation operators. Under our evaluatio
 %   F1 means from results/dropout_study/degradation_curves.csv
 %   AUDC / retention = normalized trapezoid of F1(k)/F1(0) over k in {0,1,2,5,10}
 % ---------------------------------------------------------------------------
-\begin{table}[!ht]
+\begin{table*}[!ht]
   \centering
-  \caption{Baseline degradation under sensor dropout: soft-voted macro-F1 as
-           $k$ of the 25 $\mu$PMUs are dropped at inference. AUDC is the
-           normalized area under the retention curve
-           $\mathrm{F1}(k)/\mathrm{F1}(0)$ over the swept $k$
-           (higher $=$ more robust); Ret.@10 is the fraction of the $k=0$
-           score retained at $k=10$. Every entry is averaged over training seeds
-           42/43/44 and three shared mask realizations per seed, so the $k{=}0$
-           column matches the full-observability means of Table~\ref{tab:baseline}.
-           The per-point standard deviation over seeds stays below $0.05$ for all
-           models except RGATv2, whose training instability at four layers gives a
-           larger spread (up to $0.09$); AUDC and Ret.@10 are computed relative to
-           each model's own $k{=}0$.}
+  \caption{Baseline degradation under sensor dropout: soft-voted macro-F1 as $k$
+           of 25 $\mu$PMUs are dropped. AUDC is the normalized area under the
+           retention curve $\mathrm{F1}(k)/\mathrm{F1}(0)$ (higher $=$ more robust);
+           Ret.@10 is the score kept at $k=10$. Averaged over seeds 42/43/44 (three
+           mask realizations each); seed std $<0.05$ except RGATv2 (up to $0.09$).}
   \label{tab:degradation}
   \footnotesize
   \begin{tabular}{@{}lccccccc@{}}
@@ -740,7 +692,7 @@ This behaviour is consistent with the aggregation operators. Under our evaluatio
     RGSAGE-Max  & \textbf{0.846} & \textbf{0.728} & 0.570 & 0.267 & 0.059 & 0.414 & 7.0\% \\
     \bottomrule
   \end{tabular}
-\end{table}
+\end{table*}
 
 % ---------------------------------------------------------------------------
 % Degradation curves for all baselines + SDR-STGNN.
@@ -749,14 +701,10 @@ This behaviour is consistent with the aggregation operators. Under our evaluatio
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.85\linewidth]{figures/sdr_degradation_all.png}
-  \caption{Soft-voted graph-level macro-F1 as $k$ of the 25 $\mu$PMUs are
-           dropped at inference, for the five baselines and the
-           availability-gated SDR-STGNN (black; introduced in
-           Section~\ref{sec:res-aware}). Markers are means; error bars denote
-           $\pm 1$ standard deviation over training seeds 42/43/44 (three shared
-           mask realizations per seed). RGSAGE-Max (orange), the most accurate
-           baseline at $k=0$, degrades the fastest, whereas SDR-STGNN---trained
-           with dropout-aware augmentation---stays nearly flat.}
+  \caption{Soft-voted macro-F1 vs.\ $k$ dropped $\mu$PMUs, for the five baselines
+           and SDR-STGNN (black). Markers are means; error bars $\pm1$ std over
+           seeds 42/43/44. RGSAGE-Max (orange), the most accurate at $k=0$,
+           degrades fastest, whereas SDR-STGNN stays nearly flat.}
   \label{fig:degradation}
 \end{figure}
 
@@ -781,14 +729,12 @@ dropout-aware curve for all $k\ge1$. As expected, the three variants coincide un
 %   sdr              = results/dropout_study_sdr/degradation_curves.csv
 %                      (SDR-STGNN, seeds 42/43/44)
 % ---------------------------------------------------------------------------
-\begin{table}[!ht]
+\begin{table*}[!ht]
   \centering
-  \caption{Effect of the two mitigations on the RGSAGE-Max backbone under
-           sensor dropout: soft-voted macro-F1
-           (mean\,$\pm$\,std over seeds 42/43/44) at each dropout level $k$,
-           with AUDC and $k=10$ retention. Dropout-aware training recovers most
-           of the accuracy lost to sensor loss; the availability-gated
-           SDR-STGNN matches but does not exceed it.}
+  \caption{The two mitigations on the RGSAGE-Max backbone: soft-voted macro-F1
+           (mean\,$\pm$\,std over seeds 42/43/44) per dropout level $k$, with AUDC
+           and $k=10$ retention. Dropout-aware training recovers most of the lost
+           accuracy; the gated SDR-STGNN matches but does not exceed it.}
   \label{tab:aware}
   \footnotesize
   \setlength{\tabcolsep}{4pt}
@@ -816,7 +762,7 @@ dropout-aware curve for all $k\ge1$. As expected, the three variants coincide un
       & 0.895 & 76.7\% \\
     \bottomrule
   \end{tabular}
-\end{table}
+\end{table*}
 
 
 % ---------------------------------------------------------------------------
@@ -826,16 +772,12 @@ dropout-aware curve for all $k\ge1$. As expected, the three variants coincide un
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=0.85\linewidth]{figures/sdr_ablation_backbone.png}
-  \caption{Sensor-dropout ablation on the RGSAGE-Max backbone: standard
-           training (orange, dashed), dropout-aware training (blue), and the
-           availability-gated SDR-STGNN (black), all trained and evaluated
-           identically. Markers are means over seeds 42/43/44; error bars
-           denote $\pm 1$ standard deviation. Both robustness variants nearly
-           coincide and remain far above standard training at every dropout
-           level; the ungated dropout-aware model is marginally above the gated
-           SDR-STGNN for $k \ge 5$, so the structural gate does not improve on
-           the training-time augmentation. Tabulated in
-           Table~\ref{tab:aware}.}
+  \caption{Backbone ablation (RGSAGE-Max): standard training (orange, dashed),
+           dropout-aware (blue), and gated SDR-STGNN (black), all trained and
+           evaluated identically. Means over seeds 42/43/44; error bars $\pm1$ std.
+           Both variants nearly coincide and stay far above standard training; the
+           ungated model is marginally above the gated one for $k\ge5$, so the gate
+           adds nothing over the augmentation. See Table~\ref{tab:aware}.}
   \label{fig:ablation}
 \end{figure}
 
@@ -846,11 +788,9 @@ The comparison above uses the RGSAGE-Max backbone. To test whether the gain is a
 
 \begin{table}[!ht]
   \centering
-  \caption{Dropout-aware training applied to every architecture (seeds 42/43/44):
-           standard vs.\ dropout-aware (DA) robustness under the sensor-dropout
-           sweep. AUDC is the normalized area under the retention curve;
-           Ret.@10 is the fraction of the $k{=}0$ score kept at $k{=}10$ ($40\%$
-           loss). Every architecture improves; the four spatial GNNs recover to
+  \caption{Dropout-aware training on every architecture (seeds 42/43/44): standard
+           vs.\ dropout-aware (DA) robustness. Ret.@10 is the $k{=}0$ score kept at
+           $40\%$ loss. Every architecture improves; the four spatial GNNs reach
            $0.92$--$0.96$ AUDC.}
   \label{tab:agnostic}
   \footnotesize
@@ -902,22 +842,6 @@ Several limitations bound the scope of these findings.
 Building on the STGNN fault-localization methodology of \cite{Karabulut2026}, this work extended it with a systematic evaluation of robustness to $\mu$PMU sensor loss. We showed that clean accuracy is not a reliable indicator of robustness: the highest-performing baseline under full observability degraded the fastest as sensors were removed. Our principal contribution, dropout-aware training, recovered most of the lost performance, increasing the retained macro-$F_1$ at $40\%$ sensor dropout from $7\%$ to $81\%$ without sacrificing clean accuracy or increasing inference cost. The proposed availability-gated SDR-STGNN achieved comparable, but not superior, robustness, indicating that training-time augmentation is a simpler and more effective solution than architectural modification. Future work will investigate correlated and spatially structured sensor failures, larger and more diverse feeder datasets, cross-topology generalization to reconfigured feeders, and adaptive availability-gating mechanisms.
  
 \section*{Acknowledgements}
-
-% AUTHOR ACTION: if there was funding or institutional/computing support, replace
-% the sentence below with the appropriate acknowledgement (include grant numbers).
-This research did not receive any specific grant from funding agencies in the
-public, commercial, or not-for-profit sectors.
-
-\section*{Declaration of Generative AI and AI-Assisted Technologies in the Writing Process}
-
-% AUTHOR ACTION: confirm the exact tool name/version and the placement required by
-% ICMLDE / Procedia CS before submission. The statement below follows Elsevier's
-% template and discloses the AI assistance actually used in preparing this manuscript.
-During the preparation of this work the authors used Anthropic Claude, a large
-language model, in order to assist with drafting, language editing, and
-proofreading of the manuscript text. After using this tool, the authors reviewed
-and edited the content as needed and take full responsibility for the content of
-the publication.
 
 \begin{thebibliography}{00}
  

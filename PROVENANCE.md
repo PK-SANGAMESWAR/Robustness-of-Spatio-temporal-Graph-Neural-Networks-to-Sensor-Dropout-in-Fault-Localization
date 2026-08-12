@@ -57,3 +57,41 @@ Author-only items NOT done by the model (stated, not performed):
                submission-ready until done).
              - Final manual novelty-claim literature check (web check done; author confirms).
              - Corresponding-author contact details; funding/AI-disclosure final wording.
+
+Date:        2026-08-12
+File:        paper/overleaf.tex — deviations table + training-objective; wide-table alignment
+Class:       AI-VERIFIED-ONLY (correction) + AI-EDITED (layout)
+Scope:       Verified the base paper's loss against arXiv:2604.20403 — it uses standard
+             UNWEIGHTED cross-entropy ("optimized using the cross-entropy loss function",
+             no class weighting). This means unweighted CE is NOT a deviation from [1].
+             Corrected: removed the "Training loss" row from Table (four deviations -> three);
+             reworded the deviations intro and the Setup training-objective paragraph to state
+             consistency with [1] rather than a departure. Separately, converted the four wide
+             multi-column tables (tab:related, tab:baseline, tab:degradation, tab:aware) to
+             full-width table* to fix column overflow in two-column layout.
+Prior class: AI-DRAFTED / AI-EDITED (this session).
+Author input: Author asked to verify the training loss and check alignment; verification used
+             the primary source (base paper), correcting a model-introduced inaccuracy.
+
+Date:        2026-08-12
+File:        paper/overleaf.tex — Option-A page-reduction pass (prose condensation)
+Class:       AI-EDITED
+Scope:       Condensed prose to reduce length toward the 12-page limit, without removing
+             any result, table, or figure: dropout-evaluation protocol (merged sweep+metric,
+             inlined retention eq), dropout-aware training prose (deferred detail to Alg. 1),
+             SDR-STGNN explanatory text, and four results paragraphs (baseline gap, degradation
+             mechanism -> deferred to Discussion, dropout-aware and SDR-STGNN number-reciting).
+             Net body prose ~8040 -> ~7280 words.
+Prior class: AI-DRAFTED / AI-EDITED (earlier sessions/this session).
+Author input: Author requested an ~2-page Option-A trim (keep all results). Real page count
+             must be confirmed on Overleaf (local proxy class under-counts vs. Procedia).
+
+Date:        2026-08-12
+File:        paper/overleaf.tex — caption shortening
+Class:       AI-EDITED
+Scope:       Shortened all table/figure/algorithm captions (tab:dataset, fig:graph,
+             fig:sig, alg:aware, tab:deviations, tab:baseline, tab:degradation,
+             fig:degradation, tab:aware, fig:ablation, tab:agnostic) to reduce length;
+             content/meaning preserved, related-work legend kept intact. Author request.
+Prior class: AI-DRAFTED / AI-EDITED (this session).
+Author input: Author asked to shorten figure/table caption text.
