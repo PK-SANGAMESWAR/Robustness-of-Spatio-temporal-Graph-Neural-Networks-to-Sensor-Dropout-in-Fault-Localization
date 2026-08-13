@@ -70,14 +70,27 @@ def evaluate_at_dropout(
     edge_index = getattr(model, "edge_index", None)
 
     with torch.no_grad():
-        for batch in loader:
+        for batch_idx, batch in enumerate(loader):
             x = batch["x"].to(device)
             y = batch["y"].to(device)
 
-            # Apply dropout to the batch
+            # Apply dropout to the batch.
+            #
+            # The per-batch seed MUST vary with batch_idx.  apply_sensor_dropout_batch
+            # reseeds its RNG on every call, so passing a constant mask_seed made the
+            # same B node-subsets repeat for every batch, collapsing the number of
+            # distinct dropout realizations from len(dataset) to batch_size.  Deriving
+            # the seed from batch_idx (mirroring DropoutAugmentedLoader in
+            # dropout/training.py, which already does this) gives a distinct subset per
+            # window while keeping the sequence fully deterministic — so every model
+            # still sees an identical mask sequence on the same shuffle=False loader.
+            #
+            # Collision-safety: mask_seed = 10000*k + seed_offset, so distinct mask_seeds
+            # differ by >= 1 and the derived seeds differ by >= 10000, while batch_idx
+            # stays well below 10000 for any batch size used here.
             if k > 0:
                 x_dropped, ei_dropped, _ = apply_sensor_dropout_batch(
-                    x, k=k, seed=mask_seed, policy=policy,
+                    x, k=k, seed=mask_seed * 10000 + batch_idx, policy=policy,
                     edge_index=edge_index,
                 )
             else:
@@ -149,22 +162,56 @@ def evaluate_dropout_curve(
     """
     results: dict[str, Any] = {}
 
+    # Single-pass evaluation.  The windows live in per-event COMPRESSED .npz files
+    # (data/dataset.py) behind a small LRU cache, so a pass over the test split is
+    # dominated by decompression, not by the GPU.  Looping (k, offset) *inside* the
+    # batch loop reads and decompresses the split once instead of
+    # len(dropout_levels) * n_mask_seeds times, which is where nearly all the wall
+    # clock went.  Masks and therefore results are bit-identical to the previous
+    # nested-loop form: the seed for a (k, offset, batch) triple is unchanged.
+    combos = [(k, off) for k in dropout_levels for off in range(n_mask_seeds)]
+    preds: dict[tuple[int, int], list[int]] = {c: [] for c in combos}
+    labels: list[int] = []
+    edge_index = getattr(model, "edge_index", None)
+
+    model.eval()
+    with torch.no_grad():
+        for batch_idx, batch in enumerate(loader):
+            x = batch["x"].to(device)
+            labels.extend(batch["y"].tolist())
+
+            # k=0 is dropout-free, so every offset yields the same prediction.
+            # Compute it once and copy, rather than running n_mask_seeds identical
+            # forward passes.
+            zero_pred: list[int] | None = None
+
+            for (k, off) in combos:
+                if k == 0:
+                    if zero_pred is None:
+                        _, gp = soft_vote(model(x))
+                        zero_pred = gp.cpu().tolist()
+                    preds[(k, off)].extend(zero_pred)
+                    continue
+
+                mask_seed = 10000 * k + off
+                x_dropped, _, _ = apply_sensor_dropout_batch(
+                    x, k=k, seed=mask_seed * 10000 + batch_idx, policy=policy,
+                    edge_index=edge_index,
+                )
+                _, gp = soft_vote(model(x_dropped))
+                preds[(k, off)].extend(gp.cpu().tolist())
+
+    y_true = np.asarray(labels)
     for k in dropout_levels:
         f1_per_seed: list[float] = []
         acc_per_seed: list[float] = []
 
         for seed_offset in range(n_mask_seeds):
-            # Use a deterministic seed per (k, seed_offset) so results are
-            # reproducible and comparable across models (internal fairness)
-            mask_seed = 10000 * k + seed_offset
-
-            metrics = evaluate_at_dropout(
-                model, loader, device, k=k,
-                mask_seed=mask_seed, policy=policy,
-                f1_average=f1_average,
+            p = np.asarray(preds[(k, seed_offset)])
+            f1_per_seed.append(
+                float(f1_score(y_true, p, average=f1_average, zero_division=0))
             )
-            f1_per_seed.append(metrics["f1_macro"])
-            acc_per_seed.append(metrics["accuracy"])
+            acc_per_seed.append(float(np.mean(p == y_true)))
 
         f1_mean = float(np.mean(f1_per_seed))
         f1_std = float(np.std(f1_per_seed))

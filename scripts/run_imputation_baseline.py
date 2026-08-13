@@ -62,11 +62,11 @@ def impute_batch(x: torch.Tensor, k: int, mask_seed: int, adj: torch.Tensor) -> 
         return x
     b, n, s, _ = x.shape
     # Per-sample availability (1 = kept, 0 = dropped) — same selection rule as
-    # apply_sensor_dropout_batch (fresh rng per batch, per-sample sampling).
-    # VERIFIED byte-for-byte identical to the zeroing study's dropped sets for
-    # every (k, offset) with batch=32, shuffle=False — so the ONLY difference
-    # from the zero_messages run is the fill (neighbour-mean vs zero), which is
-    # what makes this a fair paired imputation baseline.
+    # apply_sensor_dropout_batch (fresh rng seeded per batch, per-sample sampling).
+    # The caller MUST pass the same per-batch-derived seed the evaluator now uses
+    # (mask_seed * 10000 + batch_idx). Keeping these two seeding schemes in step is
+    # what makes this a paired imputation baseline: identical dropped sets, so the
+    # ONLY difference from the zero_messages run is the fill (neighbour-mean vs zero).
     avail = torch.ones(b, n, device=x.device)
     rng = random.Random(mask_seed)
     for i in range(b):
@@ -91,10 +91,14 @@ def eval_at_k(model, loader, device, k, mask_seed, adj, f1_average="macro") -> f
     model.eval()
     preds: list[int] = []
     labels: list[int] = []
-    for batch in loader:
+    for batch_idx, batch in enumerate(loader):
         x = batch["x"].to(device)
         y = batch["y"].to(device)
-        x_in = impute_batch(x, k, mask_seed, adj) if k > 0 else x
+        # Per-batch seed derivation must match dropout/evaluator.py exactly, or the
+        # imputation sweep would drop different nodes than the zeroing sweep and the
+        # paired comparison in Table 6 would be invalid.
+        x_in = (impute_batch(x, k, mask_seed * 10000 + batch_idx, adj)
+                if k > 0 else x)
         logits = model(x_in)
         _, graph_pred = soft_vote(logits)
         preds.extend(graph_pred.cpu().tolist())
@@ -120,11 +124,15 @@ def main() -> int:
     p.add_argument("--n-mask-seeds", type=int, default=3)
     p.add_argument("--device", default="cuda")
     p.add_argument("--batch-size", type=int, default=32)
+    p.add_argument("--num-workers", type=int, default=0,
+                   help="DataLoader workers; 0 was the old hardcoded value "
+                        "and is I/O bound on this corpus.")
     args = p.parse_args()
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     test_ds = WindowGraphDataset(args.data_root, "test")
-    loader = make_dataloader(test_ds, args.batch_size, shuffle=False, num_workers=0)
+    loader = make_dataloader(test_ds, args.batch_size, shuffle=False,
+                             num_workers=args.num_workers)
     n_nodes = int(test_ds.edge_index.max()) + 1
     adj = build_adjacency(test_ds.edge_index, n_nodes).to(device)
 

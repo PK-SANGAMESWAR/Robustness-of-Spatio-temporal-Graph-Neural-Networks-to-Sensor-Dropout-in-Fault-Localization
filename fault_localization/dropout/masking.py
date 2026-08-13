@@ -147,13 +147,27 @@ def apply_sensor_dropout_batch(
     rng = random.Random(seed)
     b, n, s, f = x.shape
     x_dropped = x.clone()
-    dropped_per_sample: list[list[int]] = []
 
-    for i in range(b):
-        _, _, dropped = apply_sensor_dropout(x[i], k, rng, policy, edge_index)
-        if dropped:
-            x_dropped[i, dropped, :, :] = 0.0
-        dropped_per_sample.append(dropped)
+    # Draw the per-sample node subsets exactly as apply_sensor_dropout does
+    # (``sorted(rng.sample(range(n), k))``, once per sample, in sample order), so
+    # the RNG stream — and therefore every mask — is unchanged.  The old code
+    # obtained these by calling apply_sensor_dropout per sample, which cloned and
+    # zeroed a [N,S,F] slice whose tensor result was then thrown away (the caller
+    # re-zeroed into x_dropped anyway).  That was b wasted clones plus 2b zeroing
+    # ops per call, on the hottest path of the whole dropout sweep.  Here we take
+    # only the sample indices and apply one vectorised scatter instead.
+    k_eff = min(k, n)
+    dropped_per_sample: list[list[int]] = [
+        sorted(rng.sample(range(n), k_eff)) for _ in range(b)
+    ]
+
+    if k_eff > 0:
+        idx_b = torch.arange(b, device=x.device).repeat_interleave(k_eff)
+        idx_n = torch.tensor(
+            [d for ds in dropped_per_sample for d in ds],
+            dtype=torch.long, device=x.device,
+        )
+        x_dropped[idx_b, idx_n] = 0.0
 
     # For batch mode, edge_index policy is applied once (same graph for all)
     edge_index_out = edge_index

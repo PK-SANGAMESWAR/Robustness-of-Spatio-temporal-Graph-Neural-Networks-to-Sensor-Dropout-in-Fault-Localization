@@ -116,7 +116,7 @@ def evaluate_all_models(args) -> "list[dict]":
 
     test_ds = WindowGraphDataset(args.data_root, "test")
     test_loader = make_dataloader(test_ds, args.batch_size, shuffle=False,
-                                  num_workers=0)
+                                  num_workers=args.num_workers)
 
     per_seed_rows: list[dict] = []
     for seed in args.seeds:
@@ -223,6 +223,9 @@ def main() -> int:
                    help="Only zero_messages is supported (NEXT-STEPS.md 4a).")
     p.add_argument("--device", default="cuda")
     p.add_argument("--batch-size", type=int, default=32)
+    p.add_argument("--num-workers", type=int, default=0,
+                   help="DataLoader workers; 0 was the old hardcoded value "
+                        "and is I/O bound on this corpus.")
     args = p.parse_args()
     if args.seeds is None:
         args.seeds = [args.seed] if args.seed is not None else [42]
