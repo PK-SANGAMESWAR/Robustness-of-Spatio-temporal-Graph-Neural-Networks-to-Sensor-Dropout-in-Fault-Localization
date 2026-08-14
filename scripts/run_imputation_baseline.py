@@ -153,9 +153,17 @@ def main() -> int:
         per_seed[seed] = f1_by_k
 
     # aggregate over seeds
+    #
+    # ddof=1 (sample std) — NOT numpy's ddof=0 default.  Every other error bar in
+    # the paper (dropout/evaluator.py, the degradation_curves.csv files, the
+    # benchmark summaries) is a sample std over the same three training seeds, and
+    # Table 5 puts this row next to those.  With n=3 the two conventions differ by
+    # sqrt(3/2) = 22%, so mixing them made the imputation row look tighter than the
+    # rows it is compared against — at k=0 the two rows share identical per-seed
+    # values yet printed different spreads.
     ks = args.k_levels
     f1_mean = {k: float(np.mean([per_seed[s][k] for s in args.seeds])) for k in ks}
-    f1_std = {k: float(np.std([per_seed[s][k] for s in args.seeds])) for k in ks}
+    f1_std = {k: float(np.std([per_seed[s][k] for s in args.seeds], ddof=1)) for k in ks}
     audc_per_seed = [audc(per_seed[s], ks) for s in args.seeds]
     ret10_per_seed = [per_seed[s][ks[-1]] / per_seed[s][ks[0]] for s in args.seeds]
 
@@ -166,9 +174,10 @@ def main() -> int:
         "seeds": args.seeds, "k_levels": ks,
         "f1_mean": f1_mean, "f1_std": f1_std,
         "audc_mean": float(np.mean(audc_per_seed)),
-        "audc_std": float(np.std(audc_per_seed)),
+        "audc_std": float(np.std(audc_per_seed, ddof=1)),
         "ret10_mean": float(np.mean(ret10_per_seed)),
-        "ret10_std": float(np.std(ret10_per_seed)),
+        "ret10_std": float(np.std(ret10_per_seed, ddof=1)),
+        "err_kind": "train_seed_std",
         "per_seed_f1": {str(s): per_seed[s] for s in args.seeds},
     }
     (out / "imputation_summary.json").write_text(json.dumps(summary, indent=2))

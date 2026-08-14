@@ -100,7 +100,17 @@ def _audc(k: np.ndarray, ret: np.ndarray) -> float:
 
 
 # ---------------------------------------------------------------------------
-def fig_degradation_all(baselines, sdr, out_path, k_levels):
+def fig_degradation_all(baselines, aware_bb, sdr, out_path, k_levels):
+    """Standard-trained baselines plus BOTH mitigations on the RGSAGE-Max backbone.
+
+    The dropout-aware curve must be drawn here, not just SDR-STGNN.  Dropout-aware
+    training is the paper's headline result and SDR-STGNN is the ablation that
+    matches but does not beat it; a plot showing only the gated model — labelled
+    "ours" against five ungated baselines — reads as if the architecture were the
+    contribution, which is the overclaim the paper is careful to avoid everywhere
+    else.  The two mitigation curves nearly coincide, which is exactly the finding,
+    so SDR-STGNN is dashed to keep both legible where they overlap.
+    """
     plt.rcParams.update(_RC)
     # Short canvas: the paper places this at ~0.85\linewidth in a single-column
     # layout, so a low aspect ratio saves page height without shrinking the text.
@@ -110,16 +120,26 @@ def fig_degradation_all(baselines, sdr, out_path, k_levels):
         ax.errorbar(g["k"], g["f1_mean"], yerr=g["f1_std"], marker="o", capsize=4,
                     linewidth=2, markersize=6, color=MODEL_COLOR[m],
                     label=MODEL_LABELS[m], zorder=3)
+    if aware_bb is not None and not aware_bb.empty:
+        g = aware_bb.sort_values("k")
+        ax.errorbar(g["k"], g["f1_mean"], yerr=g["f1_std"], marker="s", capsize=4,
+                    linewidth=3, markersize=7, color=V_AWARE,
+                    label="RGSAGE-Max + dropout-aware (ours)", zorder=6)
     if sdr is not None and not sdr.empty:
         g = sdr[sdr["model"] == "sdr_stgnn"].sort_values("k")
         ax.errorbar(g["k"], g["f1_mean"], yerr=g["f1_std"], marker="D", capsize=4,
-                    linewidth=3, markersize=8, color=MODEL_COLOR["sdr_stgnn"],
-                    label=MODEL_LABELS["sdr_stgnn"], zorder=5)
+                    linewidth=2.5, linestyle="--", markersize=7,
+                    color=MODEL_COLOR["sdr_stgnn"],
+                    label="SDR-STGNN (gated, ours)", zorder=5)
     ax.set_xticks(k_levels)
     ax.set_xlabel("μPMUs dropped at inference (k of 25)")
     ax.set_ylabel("Soft-voted graph macro-F1 (test)")
     # No in-figure title: the LaTeX caption carries it (and saves vertical space).
-    ax.set_ylim(0, 1.02); ax.legend(frameon=False, loc="upper right", ncol=2, fontsize=9)
+    # Headroom to 1.18 keeps the 3-row legend clear of the ~0.85 mitigation curves.
+    ax.set_ylim(0, 1.18)
+    ax.set_yticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
+    ax.legend(frameon=False, loc="upper right", ncol=3, fontsize=8,
+              columnspacing=1.1, handletextpad=0.5)
     fig.tight_layout(); fig.savefig(out_path, dpi=400); plt.close(fig)
 
 
@@ -253,7 +273,7 @@ def main() -> int:
     variants = _backbone_variants(std_bb, aware_bb, sdr)
 
     if baselines is not None or sdr is not None:
-        fig_degradation_all(baselines, sdr, out / "sdr_degradation_all.png", k_levels)
+        fig_degradation_all(baselines, aware_bb, sdr, out / "sdr_degradation_all.png", k_levels)
     if len(variants) >= 2:
         fig_ablation_backbone(variants, out / "sdr_ablation_backbone.png", k_levels)
         fig_retention(variants, out / "sdr_retention.png", k_levels)

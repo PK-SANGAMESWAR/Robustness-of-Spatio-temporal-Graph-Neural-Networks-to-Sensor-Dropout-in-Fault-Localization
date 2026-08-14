@@ -46,9 +46,10 @@ not mix them with current numbers.
   **edit only, no large structural rewrites** — AI-plagiarism risk — and **never fabricate a
   number**). `REVIEW.md` = an external review of an *earlier* draft; its Section-2 blockers
   (author to-do notes in abstract/Fig. 2 caption, `[?]` citations, three typos, uncited
-  `Karabulut2025`) are **already fixed**. Still open from it: **12-page cap** (now 13 pp), the
-  em-dash standardisation (503 `---` remain), `\eqref` for equation cross-refs, ≥300 dpi
-  figure re-export.
+  `Karabulut2025`) are **already fixed**. Still open from it: only the
+  **12-page cap** (now 13 pp). Its other items are DONE: em-dash standardisation (only 8
+  `---` remain outside comments), `\eqref` for equation cross-refs, and ≥300 dpi figures
+  (both embedded PNGs export at 400 dpi).
 - `IMP/paper-points.md`, `IMP/points-for-paper.md` — the author's own raw framing notes
   (honesty on dataset size, "same protocol, our own regeneration", no numeric replication claim).
 - Background/history, not current state: `APPROACH.md`, `IMPLEMENT.md` (base-paper audit
@@ -171,10 +172,10 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
 ## Paper (`paper/`)
 - `overleaf.tex` — **the live paper** (Elsevier CRC/Procedia, `\documentclass[3p,times,procedia]`),
   ~880 lines, **complete draft**: abstract, intro, related work (+`tab:related`), Materials &
-  Methods (dataset +`tab:dataset` +`fig:graph`/`fig:sig`, baselines, deviations `tab:deviations`,
+  Methods (dataset +`tab:dataset` +`fig:graph`, baselines, deviations `tab:deviations`,
   dropout-eval protocol, dropout-aware training +`alg:aware`, SDR-STGNN), Setup, Results
   (`tab:baseline`, `tab:degradation`, `fig:degradation`, `tab:aware` incl. the **imputation
-  baseline** row, `fig:ablation`, cross-architecture subsection), Discussion (robustness ranking
+  baseline** row, cross-architecture subsection), Discussion (robustness ranking
   + limitations), Conclusion, Acknowledgements, GenAI declaration, bibliography.
   Framing: dropout-aware training is the headline; SDR-STGNN is an ablation.
   The wide tables use `table*` (full-width) to avoid two-column overflow.
@@ -196,7 +197,7 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
   fault classes equal by factorial design — NOT by loss weighting; paper text fixed to match).
 - **SDR-STGNN finding (final, 3 training seeds × 3 mask seeds, post-bugfix):** robustness AUDC —
   standard RGSAGE-Max **0.402** → neighbour-mean imputation **0.476** → dropout-aware **0.913**
-  → SDR-STGNN **0.892**. Retention at k=10: **5.7% → 11.8% → 80.3% → 75.3%**. The gate MATCHES
+  → SDR-STGNN **0.892**. Retention at k=10: **5.7% → 11.8% → 80.3% → 75.2%**. The gate MATCHES
   but does NOT beat dropout-aware training (it silences dropped nodes at every hop, blocking
   multi-hop routing through recovered nodes), and imputation gains little over zeroing because
   the reconstructed values still go to a model never trained to distrust them.

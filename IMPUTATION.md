@@ -102,19 +102,24 @@ uv run python scripts/run_imputation_baseline.py \
 
 ## 6. Results (RGSAGE-Max backbone, soft-voted macro-F1)
 
-Seed-averaged over 42/43/44 (mean ± std), three mask realizations each. **Final.**
+Seed-averaged over 42/43/44 (mean ± std, sample std / ddof=1), three mask realizations
+each. **Final — post mask-diversity bugfix; these match `tab:aware` in the paper.**
 
 | Variant | $k{=}0$ | $k{=}1$ | $k{=}2$ | $k{=}5$ | $k{=}10$ | AUDC | Ret@10 |
 |---|---|---|---|---|---|---|---|
-| Standard training (zero) | 0.846 | 0.728 | 0.570 | 0.267 | 0.059 | 0.414 | 7.0% |
-| **Mean-imputation (standard)** | **0.846**±0.006 | **0.718**±0.017 | **0.637**±0.015 | **0.374**±0.039 | **0.110**±0.031 | **0.495**±0.035 | **13.1%**±3.7% |
-| Dropout-aware training | 0.839 | — | 0.816 | 0.778 | 0.676 | 0.916 | 80.6% |
-| SDR-STGNN (gated) | 0.839 | — | 0.812 | 0.758 | 0.643 | 0.895 | 76.7% |
+| Standard training (zero) | 0.846 | 0.736 | 0.590 | 0.236 | 0.048 | 0.402 | 5.7% |
+| **Mean-imputation (standard)** | **0.846**±0.007 | **0.739**±0.017 | **0.637**±0.028 | **0.336**±0.043 | **0.099**±0.033 | **0.476**±0.042 | **11.8%**±4.0% |
+| Dropout-aware training | 0.839 | 0.827 | 0.815 | 0.774 | 0.674 | 0.913 | 80.3% |
+| SDR-STGNN (gated) | 0.839 | 0.827 | 0.813 | 0.758 | 0.631 | 0.892 | 75.2% |
 
-**Read:** graph mean-imputation gives a *small* gain over zeroing (AUDC 0.414 → 0.495,
-Ret@10 7.0% → 13.1%) but stays **far below dropout-aware training** (AUDC 0.916,
-Ret@10 80.6%). It helps most at moderate dropout (k=2: 0.637 vs 0.570; k=5: 0.374 vs
-0.267) and collapses with zeroing at the extreme (k=10: 0.110 vs 0.059). Conclusion:
+At $k{=}0$ imputation is a no-op, so its clean column is the standard row's number
+(identical per-seed values, hence an identical ±0.007).
+
+**Read:** graph mean-imputation gives a *small* gain over zeroing (AUDC 0.402 → 0.476,
+Ret@10 5.7% → 11.8%) but stays **far below dropout-aware training** (AUDC 0.913,
+Ret@10 80.3%). It helps most at moderate dropout (k=2: 0.637 vs 0.590; k=5: 0.336 vs
+0.236) and collapses with zeroing at the extreme (k=10: 0.099 vs 0.048); the gain over
+zeroing at k=10 is **not significant** (+0.051, p=0.102). Conclusion:
 *naive graph imputation does not recover the lost accuracy — the reconstructed values
 are still fed to a model never trained to distrust them, so robustness must come from
 training, not from patching the input at test time.*
