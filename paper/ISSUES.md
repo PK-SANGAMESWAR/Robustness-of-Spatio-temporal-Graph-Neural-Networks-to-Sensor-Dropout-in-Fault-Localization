@@ -51,5 +51,3 @@
 
 ### 10. Figures — necessity check
 - Flag any figure that isn't needed; note where content should be added or swapped in.
-
-### 11. Ensure AI plag is not there 

@@ -130,32 +130,34 @@ def build_graph_figure(data_root: Path, out_dir: Path) -> dict:
     pos = nx.kamada_kawai_layout(G) if nx.is_connected(G) else nx.spring_layout(G, seed=42)
 
     plt.rcParams.update({"figure.facecolor": SURFACE, "axes.facecolor": SURFACE,
-                         "font.family": "sans-serif", "text.color": INK})
-    fig, ax = plt.subplots(figsize=(8, 7))
+                         "font.family": "sans-serif", "text.color": INK, "font.size": 11})
+    # Canvas is kept short and wide: the figure is placed at ~0.85\linewidth in the
+    # single-column Procedia layout, so a low aspect ratio buys page space while the
+    # larger font sizes below keep the node labels legible after down-scaling.
+    fig, ax = plt.subplots(figsize=(6.5, 4.2))
     nx.draw_networkx_edges(G, pos, ax=ax, edge_color=INK_MUTED, width=1.4)
     for ph in (1, 2, 3):
         nodes = [n for n in G.nodes if phase_of[n] == ph]
-        nx.draw_networkx_nodes(G, pos, nodelist=nodes, ax=ax, node_size=430,
+        nx.draw_networkx_nodes(G, pos, nodelist=nodes, ax=ax, node_size=520,
                                node_color=PHASE_COLOR[ph], edgecolors=INK, linewidths=1.0)
     # ring-highlight nodes that are also fault locations
     fnodes = [n for n in G.nodes if node_is_fault[n]]
-    nx.draw_networkx_nodes(G, pos, nodelist=fnodes, ax=ax, node_size=650,
+    nx.draw_networkx_nodes(G, pos, nodelist=fnodes, ax=ax, node_size=760,
                            node_color="none", edgecolors="#c0392b", linewidths=2.2)
     nx.draw_networkx_labels(G, pos, labels={i: idx_to_bus[i] for i in G.nodes},
-                            ax=ax, font_size=7, font_color=INK)
+                            ax=ax, font_size=10, font_color=INK)
     handles = [Line2D([0], [0], marker="o", linestyle="", markersize=10,
                       markerfacecolor=PHASE_COLOR[p], markeredgecolor=INK,
                       label=f"{p}-phase $\\mu$PMU") for p in (1, 2, 3)]
     handles.append(Line2D([0], [0], marker="o", linestyle="", markersize=12,
                           markerfacecolor="none", markeredgecolor="#c0392b",
                           label="also a fault location"))
-    ax.legend(handles=handles, frameon=False, loc="lower left", fontsize=9)
-    ax.set_title("Measured-only graph: 25 $\\mu$PMU nodes and topology-derived edges",
-                 fontsize=12, fontweight="bold")
+    ax.legend(handles=handles, frameon=False, loc="upper left", fontsize=10)
+    # No in-figure title: the LaTeX caption carries it (and saves vertical space).
     ax.axis("off")
     fig.tight_layout()
     out_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_dir / "measured_only_graph.png", dpi=170)
+    fig.savefig(out_dir / "measured_only_graph.png", dpi=400)
     plt.close(fig)
     n_measured_faults = sum(node_is_fault.values())
     return {"n_nodes": G.number_of_nodes(), "n_edges": G.number_of_edges(),
@@ -176,8 +178,8 @@ def build_signature_figure(data_root: Path, out_dir: Path,
     plt.rcParams.update({"figure.facecolor": SURFACE, "axes.facecolor": SURFACE,
                          "font.family": "sans-serif", "text.color": INK,
                          "axes.labelcolor": INK, "xtick.color": INK_SECONDARY,
-                         "ytick.color": INK_SECONDARY})
-    fig, ax = plt.subplots(figsize=(8, 5))
+                         "ytick.color": INK_SECONDARY, "font.size": 11})
+    fig, ax = plt.subplots(figsize=(6.5, 2.8))
     ax.spines["top"].set_visible(False); ax.spines["right"].set_visible(False)
     ax.spines["left"].set_color(INK_MUTED); ax.spines["bottom"].set_color(INK_MUTED)
     ax.grid(color=GRID, linewidth=1, zorder=0); ax.set_axisbelow(True); ax.tick_params(length=0)
@@ -206,13 +208,12 @@ def build_signature_figure(data_root: Path, out_dir: Path,
     ax.text(C.FAULT_START_STEP - 0.8, 0.55, "fault inception", rotation=90,
             color=INK_MUTED, fontsize=9, va="center", ha="right")
     ax.set_xlabel("Time (ms)")
-    ax.set_ylabel("Phase voltage (p.u. of pre-fault)")
-    ax.set_title(f"Fault signature at bus {bus} ({ftype}): deepest-sag $\\mu$PMU channel",
-                 fontsize=12, fontweight="bold")
-    ax.legend(frameon=False, title="Fault resistance", loc="lower left")
+    ax.set_ylabel("Phase voltage (p.u.)")
+    # No in-figure title: the LaTeX caption carries it (and saves vertical space).
+    ax.legend(frameon=False, title="Fault resistance", loc="lower left", fontsize=9)
     fig.tight_layout()
     out_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out_dir / "fault_signature.png", dpi=170)
+    fig.savefig(out_dir / "fault_signature.png", dpi=400)
     plt.close(fig)
     return {"bus": bus, "ftype": ftype, "sag_pu": sag_report}
 

@@ -63,7 +63,7 @@ _RC = {
     "figure.facecolor": SURFACE, "axes.facecolor": SURFACE,
     "axes.edgecolor": INK_MUTED, "axes.labelcolor": INK, "text.color": INK,
     "xtick.color": INK_SECONDARY, "ytick.color": INK_SECONDARY,
-    "font.size": 11, "axes.titlesize": 13, "axes.titleweight": "bold",
+    "font.size": 9, "axes.titlesize": 11, "axes.titleweight": "bold",
     "font.family": "sans-serif",
 }
 
@@ -102,7 +102,9 @@ def _audc(k: np.ndarray, ret: np.ndarray) -> float:
 # ---------------------------------------------------------------------------
 def fig_degradation_all(baselines, sdr, out_path, k_levels):
     plt.rcParams.update(_RC)
-    fig, ax = plt.subplots(figsize=(9, 5.5)); _style(ax)
+    # Short canvas: the paper places this at ~0.85\linewidth in a single-column
+    # layout, so a low aspect ratio saves page height without shrinking the text.
+    fig, ax = plt.subplots(figsize=(6.5, 3.1)); _style(ax)
     for m in [x for x in MODELS_ORDER if baselines is not None and x in baselines["model"].values]:
         g = baselines[baselines["model"] == m].sort_values("k")
         ax.errorbar(g["k"], g["f1_mean"], yerr=g["f1_std"], marker="o", capsize=4,
@@ -115,10 +117,10 @@ def fig_degradation_all(baselines, sdr, out_path, k_levels):
                     label=MODEL_LABELS["sdr_stgnn"], zorder=5)
     ax.set_xticks(k_levels)
     ax.set_xlabel("μPMUs dropped at inference (k of 25)")
-    ax.set_ylabel("Soft-voted graph macro-F1 (test), mean ± std")
-    ax.set_title("Sensor-dropout degradation: baselines vs SDR-STGNN")
-    ax.set_ylim(0, 1.02); ax.legend(frameon=False, loc="upper right")
-    fig.tight_layout(); fig.savefig(out_path, dpi=200); plt.close(fig)
+    ax.set_ylabel("Soft-voted graph macro-F1 (test)")
+    # No in-figure title: the LaTeX caption carries it (and saves vertical space).
+    ax.set_ylim(0, 1.02); ax.legend(frameon=False, loc="upper right", ncol=2, fontsize=9)
+    fig.tight_layout(); fig.savefig(out_path, dpi=400); plt.close(fig)
 
 
 def _backbone_variants(std_bb, aware_bb, sdr):
@@ -136,7 +138,7 @@ def _backbone_variants(std_bb, aware_bb, sdr):
 
 def fig_ablation_backbone(variants, out_path, k_levels):
     plt.rcParams.update(_RC)
-    fig, ax = plt.subplots(figsize=(9, 5.5)); _style(ax)
+    fig, ax = plt.subplots(figsize=(6.5, 4.0)); _style(ax)
     styles = ["--", "-", "-"]; widths = [2.0, 2.2, 3.2]; markers = ["o", "s", "D"]
     for (label, color, g), ls, lw, mk in zip(variants, styles, widths, markers):
         ax.errorbar(g["k"], g["f1_mean"], yerr=g["f1_std"], marker=mk, linestyle=ls,
@@ -147,12 +149,12 @@ def fig_ablation_backbone(variants, out_path, k_levels):
     ax.set_ylabel("Soft-voted graph macro-F1 (test), mean ± std")
     ax.set_title("Ablation on the RGSAGE-Max backbone: dropout-aware training drives robustness")
     ax.set_ylim(0, 1.02); ax.legend(frameon=False, loc="lower left")
-    fig.tight_layout(); fig.savefig(out_path, dpi=200); plt.close(fig)
+    fig.tight_layout(); fig.savefig(out_path, dpi=400); plt.close(fig)
 
 
 def fig_retention(variants, out_path, k_levels):
     plt.rcParams.update(_RC)
-    fig, ax = plt.subplots(figsize=(9, 5.5)); _style(ax)
+    fig, ax = plt.subplots(figsize=(6.5, 4.0)); _style(ax)
     styles = ["--", "-", "-"]; widths = [2.0, 2.2, 3.2]; markers = ["o", "s", "D"]
     for (label, color, g), ls, lw, mk in zip(variants, styles, widths, markers):
         f0 = g[g["k"] == 0]["f1_mean"].iloc[0]
@@ -165,7 +167,7 @@ def fig_retention(variants, out_path, k_levels):
     ax.set_ylabel("Macro-F1 retained vs k=0  (%)")
     ax.set_title("Accuracy retention under sensor dropout (higher = more robust)")
     ax.legend(frameon=False, loc="lower left")
-    fig.tight_layout(); fig.savefig(out_path, dpi=200); plt.close(fig)
+    fig.tight_layout(); fig.savefig(out_path, dpi=400); plt.close(fig)
 
 
 def fig_audc_bar(variants, out_path):
@@ -176,7 +178,7 @@ def fig_audc_bar(variants, out_path):
         ret = (g["f1_mean"] / f0).to_numpy()
         vals.append(_audc(g["k"].to_numpy(), ret))
         labels.append(label.replace(" (", "\n(")); colors.append(color)
-    fig, ax = plt.subplots(figsize=(8, 5.2)); _style(ax)
+    fig, ax = plt.subplots(figsize=(6.5, 4.0)); _style(ax)
     bars = ax.bar(range(len(vals)), vals, color=colors, zorder=3, width=0.6)
     for b, v in zip(bars, vals):
         ax.text(b.get_x() + b.get_width() / 2, v + 0.01, f"{v:.3f}", ha="center",
@@ -185,7 +187,7 @@ def fig_audc_bar(variants, out_path):
     ax.set_ylabel("Normalised AUDC (area under retention curve)")
     ax.set_ylim(0, max(vals) * 1.15 if vals else 1)
     ax.set_title("Robustness score: area under the retention curve")
-    fig.tight_layout(); fig.savefig(out_path, dpi=200); plt.close(fig)
+    fig.tight_layout(); fig.savefig(out_path, dpi=400); plt.close(fig)
 
 
 def fig_heatmap(baselines, sdr, out_path, k_levels):
@@ -198,7 +200,7 @@ def fig_heatmap(baselines, sdr, out_path, k_levels):
         g = sdr[sdr["model"] == "sdr_stgnn"].set_index("k")["f1_mean"]
         rows.append([g.get(k, np.nan) for k in k_levels]); labels.append(MODEL_LABELS["sdr_stgnn"])
     mat = np.array(rows, dtype=float)
-    fig, ax = plt.subplots(figsize=(7.5, 0.7 * len(rows) + 1.8))
+    fig, ax = plt.subplots(figsize=(6.5, 0.6 * len(rows) + 1.6))
     im = ax.imshow(mat, aspect="auto", cmap="YlGn", vmin=0, vmax=1)
     ax.set_xticks(range(len(k_levels))); ax.set_xticklabels([f"k={k}" for k in k_levels])
     ax.set_yticks(range(len(labels))); ax.set_yticklabels(labels)
@@ -209,7 +211,7 @@ def fig_heatmap(baselines, sdr, out_path, k_levels):
                         fontsize=10, color=INK if mat[i, j] > 0.4 else "#555")
     ax.set_title("Macro-F1 under sensor dropout")
     fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label="macro-F1")
-    fig.tight_layout(); fig.savefig(out_path, dpi=200); plt.close(fig)
+    fig.tight_layout(); fig.savefig(out_path, dpi=400); plt.close(fig)
 
 
 def write_summary(variants, out_path, k_levels):
