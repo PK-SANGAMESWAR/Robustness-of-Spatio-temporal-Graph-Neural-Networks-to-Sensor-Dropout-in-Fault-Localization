@@ -11,3 +11,98 @@
 [eval] rgcn seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
 [eval] rgsage_mean seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
 [eval] rgsage_max seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgatv2 seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] gru seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgcn seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_mean seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_max seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgatv2 seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+
+Wrote results/dropout_study/degradation_curves.csv (25 rows) and results/dropout_study/degradation_curves.png
+
+--- macro-F1 vs k (mean over mask seeds) ---
+k              0     1     2     5     10
+model                                    
+gru         0.286 0.273 0.252 0.111 0.051
+rgatv2      0.522 0.490 0.444 0.302 0.157
+rgcn        0.712 0.664 0.610 0.418 0.164
+rgsage_max  0.846 0.736 0.590 0.236 0.048
+rgsage_mean 0.786 0.720 0.647 0.393 0.108
+--- STANDARD EXIT=0 2026-08-13T23:40:37+05:30 ---
+--- AWARE START 2026-08-13T23:40:37+05:30 ---
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] gru seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgcn seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_mean seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_max seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgatv2 seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] gru seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgcn seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_mean seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_max seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgatv2 seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] gru seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgcn seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_mean seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgsage_max seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] rgatv2 seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+
+Wrote results/dropout_study_aware/degradation_curves.csv (25 rows) and results/dropout_study_aware/degradation_curves.png
+
+--- macro-F1 vs k (mean over mask seeds) ---
+k              0     1     2     5     10
+model                                    
+gru         0.300 0.300 0.299 0.278 0.078
+rgatv2      0.553 0.550 0.546 0.533 0.505
+rgcn        0.613 0.607 0.600 0.579 0.533
+rgsage_max  0.839 0.827 0.815 0.774 0.674
+rgsage_mean 0.673 0.666 0.657 0.628 0.550
+--- AWARE EXIT=0 2026-08-14T02:09:42+05:30 ---
+--- SDR START 2026-08-14T02:09:42+05:30 ---
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] sdr_stgnn seed=42 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] sdr_stgnn seed=43 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+[eval] sdr_stgnn seed=44 (device=cuda) over k=[0, 1, 2, 5, 10] ...
+/home/ubuntu/Fault-Localization/scripts/run_dropout_study.py:199: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  ax.legend(frameon=False, loc="upper right")
+
+Wrote results/dropout_study_sdr/degradation_curves.csv (5 rows) and results/dropout_study_sdr/degradation_curves.png
+
+--- macro-F1 vs k (mean over mask seeds) ---
+k            0     1     2     5     10
+model                                  
+sdr_stgnn 0.839 0.827 0.813 0.758 0.631
+--- SDR EXIT=0 2026-08-14T02:38:45+05:30 ---
+--- IMPUTE START 2026-08-14T02:38:45+05:30 ---
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[impute] rgsage_max seed=42 k=0: F1=0.8526 (mask offsets=3)
+[impute] rgsage_max seed=42 k=1: F1=0.7306 (mask offsets=3)
+[impute] rgsage_max seed=42 k=2: F1=0.6198 (mask offsets=3)
+[impute] rgsage_max seed=42 k=5: F1=0.2976 (mask offsets=3)
+[impute] rgsage_max seed=42 k=10: F1=0.0665 (mask offsets=3)
+[impute] rgsage_max seed=43 k=0: F1=0.8475 (mask offsets=3)
+[impute] rgsage_max seed=43 k=1: F1=0.7288 (mask offsets=3)
+[impute] rgsage_max seed=43 k=2: F1=0.6205 (mask offsets=3)
+[impute] rgsage_max seed=43 k=5: F1=0.3282 (mask offsets=3)
+[impute] rgsage_max seed=43 k=10: F1=0.0985 (mask offsets=3)
+[impute] rgsage_max seed=44 k=0: F1=0.8389 (mask offsets=3)
+[impute] rgsage_max seed=44 k=1: F1=0.7588 (mask offsets=3)
+[impute] rgsage_max seed=44 k=2: F1=0.6695 (mask offsets=3)
+[impute] rgsage_max seed=44 k=5: F1=0.3820 (mask offsets=3)
+[impute] rgsage_max seed=44 k=10: F1=0.1330 (mask offsets=3)
+
+=== Mean-imputation + standard RGSAGE-Max (seeds [42, 43, 44]) ===
+  k= 0: F1 = 0.846 ± 0.006
+  k= 1: F1 = 0.739 ± 0.014
+  k= 2: F1 = 0.637 ± 0.023
+  k= 5: F1 = 0.336 ± 0.035
+  k=10: F1 = 0.099 ± 0.027
+  AUDC   = 0.476 ± 0.034
+  Ret@10 = 11.8% ± 3.3%
+
+Wrote results/dropout_study_impute/imputation_summary.json
+--- IMPUTE EXIT=0 2026-08-14T03:14:39+05:30 ---
+=== ALL DONE 2026-08-14T03:14:39+05:30 ===
