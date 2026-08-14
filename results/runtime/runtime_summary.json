@@ -1,0 +1,350 @@
+{
+  "environment": {
+    "python": "3.12.3",
+    "torch": "2.5.1+cu121",
+    "gpu": "NVIDIA T1000 8GB",
+    "cuda": "12.1",
+    "platform": "Linux-6.17.0-35-generic-x86_64-with-glibc2.39"
+  },
+  "protocol": {
+    "input_shape": [
+      null,
+      25,
+      20,
+      6
+    ],
+    "synthetic_input": true,
+    "repeats": 50,
+    "warmup": 10,
+    "throughput_batch_size": 32,
+    "timing_seed": 42,
+    "training_numbers_source": "metrics_by_epoch.csv train_seconds (recorded, not re-measured)"
+  },
+  "inference": [
+    {
+      "label": "GRU",
+      "model_dir": "gru",
+      "variant": "standard",
+      "device": "cuda",
+      "checkpoint": "results/fullscale_final/gru/seed_00042",
+      "params": 55834,
+      "params_trainable": 55834,
+      "batch_size_throughput": 32,
+      "latency_b1_ms_mean": 0.3542936034500599,
+      "latency_b1_ms_std": 0.0036873824249865307,
+      "latency_b1_ms_p95": 0.360422907397151,
+      "latency_bN_ms_mean": 5.768262594938278,
+      "latency_bN_ms_std": 1.4001018225859638,
+      "throughput_windows_per_s": 5547.597647180694,
+      "peak_mem_mb": 177.541015625,
+      "forward_mem_mb": 144.9599609375,
+      "peak_mem_mb_b1": 44.67041015625,
+      "forward_mem_mb_b1": 12.44384765625,
+      "weight_mem_mb": 0.21298980712890625,
+      "repeats": 50
+    },
+    {
+      "label": "RGCN",
+      "model_dir": "rgcn",
+      "variant": "standard",
+      "device": "cuda",
+      "checkpoint": "results/fullscale_final/rgcn/seed_00042",
+      "params": 74778,
+      "params_trainable": 74778,
+      "batch_size_throughput": 32,
+      "latency_b1_ms_mean": 0.6877862196415663,
+      "latency_b1_ms_std": 0.021444806164489655,
+      "latency_b1_ms_p95": 0.7165730698034167,
+      "latency_bN_ms_mean": 5.392841221764684,
+      "latency_bN_ms_std": 0.033535092542597296,
+      "throughput_windows_per_s": 5933.792352508523,
+      "peak_mem_mb": 177.61572265625,
+      "forward_mem_mb": 144.9599609375,
+      "peak_mem_mb_b1": 44.7451171875,
+      "forward_mem_mb_b1": 12.44384765625,
+      "weight_mem_mb": 0.28525543212890625,
+      "repeats": 50
+    },
+    {
+      "label": "RGSAGE-Mean",
+      "model_dir": "rgsage_mean",
+      "variant": "standard",
+      "device": "cuda",
+      "checkpoint": "results/fullscale_final/rgsage_mean/seed_00042",
+      "params": 95258,
+      "params_trainable": 95258,
+      "batch_size_throughput": 32,
+      "latency_b1_ms_mean": 0.9038798790425062,
+      "latency_b1_ms_std": 0.031774698857105176,
+      "latency_b1_ms_p95": 0.9568610461428761,
+      "latency_bN_ms_mean": 5.708005288615823,
+      "latency_bN_ms_std": 0.032905227853661394,
+      "throughput_windows_per_s": 5606.161589202017,
+      "peak_mem_mb": 177.69384765625,
+      "forward_mem_mb": 144.9599609375,
+      "peak_mem_mb_b1": 44.8232421875,
+      "forward_mem_mb_b1": 12.44384765625,
+      "weight_mem_mb": 0.36338043212890625,
+      "repeats": 50
+    },
+    {
+      "label": "RGSAGE-Max",
+      "model_dir": "rgsage_max",
+      "variant": "standard",
+      "device": "cuda",
+      "checkpoint": "results/fullscale_final/rgsage_max/seed_00042",
+      "params": 95258,
+      "params_trainable": 95258,
+      "batch_size_throughput": 32,
+      "latency_b1_ms_mean": 0.6401944253593683,
+      "latency_b1_ms_std": 0.027212492823115678,
+      "latency_b1_ms_p95": 0.7098139729350805,
+      "latency_bN_ms_mean": 5.2998298685997725,
+      "latency_bN_ms_std": 0.015339506732371869,
+      "throughput_windows_per_s": 6037.929668194137,
+      "peak_mem_mb": 177.69384765625,
+      "forward_mem_mb": 144.9599609375,
+      "peak_mem_mb_b1": 44.8232421875,
+      "forward_mem_mb_b1": 12.44384765625,
+      "weight_mem_mb": 0.36338043212890625,
+      "repeats": 50
+    },
+    {
+      "label": "RGATv2",
+      "model_dir": "rgatv2",
+      "variant": "standard",
+      "device": "cuda",
+      "checkpoint": "results/fullscale_final/rgatv2/seed_00042",
+      "params": 366362,
+      "params_trainable": 366362,
+      "batch_size_throughput": 32,
+      "latency_b1_ms_mean": 1.3764001801609993,
+      "latency_b1_ms_std": 0.046762829740736554,
+      "latency_b1_ms_p95": 1.4602645765990019,
+      "latency_bN_ms_mean": 6.852312637493014,
+      "latency_bN_ms_std": 0.02527391923259108,
+      "throughput_windows_per_s": 4669.9562166660735,
+      "peak_mem_mb": 178.72705078125,
+      "forward_mem_mb": 144.9599609375,
+      "peak_mem_mb_b1": 45.8564453125,
+      "forward_mem_mb_b1": 12.44384765625,
+      "weight_mem_mb": 1.3975601196289062,
+      "repeats": 50
+    },
+    {
+      "label": "RGSAGE-Max",
+      "model_dir": "rgsage_max",
+      "variant": "dropout-aware",
+      "device": "cuda",
+      "checkpoint": "results/dropout_aware/rgsage_max/seed_00042",
+      "params": 95258,
+      "params_trainable": 95258,
+      "batch_size_throughput": 32,
+      "latency_b1_ms_mean": 0.6385767925530672,
+      "latency_b1_ms_std": 0.01759306918271995,
+      "latency_b1_ms_p95": 0.6648903246968985,
+      "latency_bN_ms_mean": 5.299418307840824,
+      "latency_bN_ms_std": 0.01976741813323548,
+      "throughput_windows_per_s": 6038.398582850872,
+      "peak_mem_mb": 177.69384765625,
+      "forward_mem_mb": 144.9599609375,
+      "peak_mem_mb_b1": 44.8232421875,
+      "forward_mem_mb_b1": 12.44384765625,
+      "weight_mem_mb": 0.36338043212890625,
+      "repeats": 50
+    },
+    {
+      "label": "SDR-STGNN",
+      "model_dir": "sdr_stgnn",
+      "variant": "dropout-aware",
+      "device": "cuda",
+      "checkpoint": "results/sdr_stgnn/sdr_stgnn/seed_00042",
+      "params": 95258,
+      "params_trainable": 95258,
+      "batch_size_throughput": 32,
+      "latency_b1_ms_mean": 0.754658542573452,
+      "latency_b1_ms_std": 0.014830292809064668,
+      "latency_b1_ms_p95": 0.7757579907774925,
+      "latency_bN_ms_mean": 5.415876600891352,
+      "latency_bN_ms_std": 0.029880103170925303,
+      "throughput_windows_per_s": 5908.554119333776,
+      "peak_mem_mb": 177.697265625,
+      "forward_mem_mb": 144.96337890625,
+      "peak_mem_mb_b1": 44.82373046875,
+      "forward_mem_mb_b1": 12.4443359375,
+      "weight_mem_mb": 0.36338043212890625,
+      "repeats": 50
+    }
+  ],
+  "training": [
+    {
+      "n_seeds": 3,
+      "epochs_run": 30,
+      "sec_per_epoch_mean": 564.3403748653933,
+      "sec_per_epoch_std": 4.070699115829688,
+      "total_hours_mean": 4.70283645721161,
+      "total_hours_std": 0.033922492631913895,
+      "best_epoch_mean": 25.0,
+      "best_epoch_std": 2.6457513110645907,
+      "best_epoch_per_seed": [
+        22,
+        26,
+        27
+      ],
+      "sec_per_epoch_per_seed": [
+        568.901080710829,
+        561.074850416913,
+        563.0451934684378
+      ],
+      "label": "GRU",
+      "model": "gru",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": 3,
+      "epochs_run": 30,
+      "sec_per_epoch_mean": 635.6424201629642,
+      "sec_per_epoch_std": 6.107616096027203,
+      "total_hours_mean": 5.2970201680247015,
+      "total_hours_std": 0.050896800800226995,
+      "best_epoch_mean": 27.666666666666668,
+      "best_epoch_std": 2.309401076758503,
+      "best_epoch_per_seed": [
+        29,
+        25,
+        29
+      ],
+      "sec_per_epoch_per_seed": [
+        642.6073244385576,
+        633.1194239649145,
+        631.2005120854204
+      ],
+      "label": "RGCN",
+      "model": "rgcn",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": 3,
+      "epochs_run": 30,
+      "sec_per_epoch_mean": 648.3818113652524,
+      "sec_per_epoch_std": 2.5445881564229755,
+      "total_hours_mean": 5.403181761377103,
+      "total_hours_std": 0.02120490130352485,
+      "best_epoch_mean": 28.333333333333332,
+      "best_epoch_std": 1.5275252316519468,
+      "best_epoch_per_seed": [
+        30,
+        28,
+        27
+      ],
+      "sec_per_epoch_per_seed": [
+        651.3142339841618,
+        647.0756065365703,
+        646.7555935750249
+      ],
+      "label": "RGSAGE-Mean",
+      "model": "rgsage_mean",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": 3,
+      "epochs_run": 30,
+      "sec_per_epoch_mean": 802.1572814039937,
+      "sec_per_epoch_std": 3.0894360338223246,
+      "total_hours_mean": 6.684644011699948,
+      "total_hours_std": 0.025745300281853057,
+      "best_epoch_mean": 28.666666666666668,
+      "best_epoch_std": 1.5275252316519468,
+      "best_epoch_per_seed": [
+        27,
+        29,
+        30
+      ],
+      "sec_per_epoch_per_seed": [
+        804.8692438539894,
+        802.8084274194669,
+        798.7941729385251
+      ],
+      "label": "RGSAGE-Max",
+      "model": "rgsage_max",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": 3,
+      "epochs_run": 30,
+      "sec_per_epoch_mean": 1478.915077293297,
+      "sec_per_epoch_std": 12.628475825175087,
+      "total_hours_mean": 12.324292310777473,
+      "total_hours_std": 0.10523729854312594,
+      "best_epoch_mean": 24.666666666666668,
+      "best_epoch_std": 5.131601439446884,
+      "best_epoch_per_seed": [
+        26,
+        29,
+        19
+      ],
+      "sec_per_epoch_per_seed": [
+        1493.2580167760295,
+        1474.0214282018133,
+        1469.4657869020477
+      ],
+      "label": "RGATv2",
+      "model": "rgatv2",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": 3,
+      "epochs_run": 30,
+      "sec_per_epoch_mean": 824.056058102603,
+      "sec_per_epoch_std": 1.7688759228400779,
+      "total_hours_mean": 6.867133817521691,
+      "total_hours_std": 0.01474063269033391,
+      "best_epoch_mean": 28.0,
+      "best_epoch_std": 1.0,
+      "best_epoch_per_seed": [
+        28,
+        27,
+        29
+      ],
+      "sec_per_epoch_per_seed": [
+        822.0166440934253,
+        824.9782207337984,
+        825.1733094805852
+      ],
+      "label": "RGSAGE-Max",
+      "model": "rgsage_max",
+      "variant": "dropout-aware"
+    },
+    {
+      "n_seeds": 3,
+      "epochs_run": 30,
+      "sec_per_epoch_mean": 834.8846087857046,
+      "sec_per_epoch_std": 3.8226692758147256,
+      "total_hours_mean": 6.957371739880872,
+      "total_hours_std": 0.031855577298455645,
+      "best_epoch_mean": 29.0,
+      "best_epoch_std": 1.0,
+      "best_epoch_per_seed": [
+        28,
+        30,
+        29
+      ],
+      "sec_per_epoch_per_seed": [
+        839.2837759064821,
+        832.9985485495844,
+        832.3715019010473
+      ],
+      "label": "SDR-STGNN",
+      "model": "sdr_stgnn",
+      "variant": "dropout-aware"
+    }
+  ],
+  "derived": {
+    "rgsage_max_da_vs_std_latency_ratio": 0.9974732163508092,
+    "rgsage_max_da_vs_std_params_equal": true,
+    "rgsage_max_da_vs_std_train_overhead_pct": 2.729985403894908,
+    "sdr_vs_da_latency_ratio": 1.1817819741871345,
+    "sdr_vs_da_throughput_ratio": 0.9784968710270541,
+    "sdr_extra_params": 0
+  }
+}

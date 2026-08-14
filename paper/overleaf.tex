@@ -113,6 +113,17 @@
 
 % \biboptions{}
 
+% --- ecrc.sty bug workaround -------------------------------------------------
+% ecrc.sty reads \abovelistskip<N>/\belowlistskip<N> via \csname but never
+% defines them, so every list raises "Missing number"/"Illegal unit of measure".
+% The errors are recoverable (LaTeX substitutes 0pt), so we define them as 0pt
+% to silence the errors while leaving list spacing exactly as it renders today.
+\newskip\abovelistskipi   \abovelistskipi=0pt
+\newskip\belowlistskipi   \belowlistskipi=0pt
+\newskip\abovelistskipii  \abovelistskipii=0pt
+\newskip\belowlistskipii  \belowlistskipii=0pt
+% -----------------------------------------------------------------------------
+
 % if you have landscape tables
 \usepackage[figuresright]{rotating}
 % booktabs provides \toprule/\midrule/\bottomrule/\addlinespace used in Table 1
@@ -201,7 +212,7 @@
 
 \begin{abstract}
 %% Text of abstract
-Spatio-temporal graph neural networks (STGNNs) localize faults accurately in distribution grids instrumented with only a few micro-phasor measurement units ($\mu$PMUs), but their evaluations assume every sensor always reports, which deployed systems do not guarantee. Following the STGNN methodology of Karabulut et al.\ (2026) on the IEEE 123-bus feeder, we train five architectures on our own dataset, the strongest reaching a soft-voting macro-F1 of $0.85$, and present what is to our knowledge the first systematic evaluation of STGNN robustness to $\mu$PMU loss, dropping $k \in \{0,1,2,5,10\}$ of 25 sensors at inference. Clean accuracy predicts robustness poorly: the most accurate architecture degrades the fastest, falling below $0.10$ at 40\% loss. Dropout-aware training, which masks measurement nodes during training, raises retention at 40\% loss from $5.7\%$ to $80.3\%$ on that backbone at no inference cost, and improves all five architectures. An availability-gated architectural variant matches but does not surpass it, indicating that sensor-dropout robustness is best addressed during training rather than through the architecture.
+Spatio-temporal graph neural networks (STGNNs) localize faults accurately in distribution grids instrumented with only a few micro-phasor measurement units ($\mu$PMUs), but their evaluations assume every sensor always reports, which deployed systems do not guarantee. Following the STGNN methodology of Karabulut et al.\ (2026) on the IEEE 123-bus feeder, we train five architectures on our own dataset, the strongest reaching a soft-voting macro-F1 of $0.85$, and present what is to our knowledge the first systematic evaluation of STGNN robustness to $\mu$PMU loss, dropping $k \in \{0,1,2,5,10\}$ of 25 sensors at inference. Within the architectures evaluated here, clean accuracy predicts robustness poorly: the most accurate one degrades the fastest, falling below $0.10$ at 40\% loss. Dropout-aware training, which masks measurement nodes during training, raises retention at 40\% loss from $5.7\%$ to $80.3\%$ on that backbone ($p<0.01$, paired over three training seeds) at measured parity in inference latency and parameter count, and improves all five architectures. An availability-gated architectural variant matches but does not surpass it, indicating that sensor-dropout robustness is best addressed during training rather than through the architecture.
 
 
 \end{abstract}
@@ -224,7 +235,9 @@ Fault localization \sep Spatio-temporal graph neural networks \sep Sensor dropou
 %% Start line numbering here if you want
 %%
 % \linenumbers
-\vspace*{-6pt}
+% Shorten page 1's text block by three lines so the \cortext/\ead footnotes clear
+% the fixed-position ecrc copyright block; without this they overprint each other.
+\enlargethispage{-3\baselineskip}
 %% main text
 
 \section{Introduction}
@@ -242,6 +255,9 @@ We therefore re-implement the four STGNN baselines of \cite{Karabulut2026} (RGCN
 \label{sec:related}
 
 Early approaches estimate the fault position from circuit physics. Krishnathevar and Ngu~\cite{krishnathevar2012} give a generalized one-end impedance formulation that resolves the multiple-estimation ambiguity, in which a single measured impedance maps to several candidate positions on a branching feeder; Liu et al.~\cite{liu2023} instead time the fault-induced wavefront, sharpening the arrival instants with an improved ensemble empirical mode decomposition and a Teager energy operator. Data-driven alternatives relax the need for an exact circuit model: Livani et al.~\cite{livani2013} identify the faulted line of the IEEE 123-bus feeder with support-vector machines over post-fault RMS voltages and fault-current-indicator signals. All three assume measurement coverage dense enough to observe the relevant impedances or wavefronts, and none represents which buses are electrically adjacent. Table~\ref{tab:related} positions them, and the work below, along the axes that matter here: multi-architecture comparison, sparse observability, evaluation under test-time sensor failure, and mitigation of the resulting loss.
+
+
+Encoding the feeder as a graph restores the structure that feature-vector models discard. Chen et al.~\cite{chen2020} apply a spectral graph convolutional network with Chebyshev filters to the IEEE 123- and 37-bus systems and harden it with a data augmentation against measurement noise and data loss, the closest precedent for the training-time mitigation we study, although it is applied to a static, single-snapshot classifier over the full grid graph. Fan et al.~\cite{fan2024} pursue reconstruction instead, pairing a variational graph autoencoder with GraphSAGE to recover latent node information under noise. Both classify a single snapshot, so neither represents how a fault signature evolves over the milliseconds following inception. Spatio-temporal models supply that time axis by placing a temporal encoder ahead of message passing, as in Nguyen et al.~\cite{nguyen2022} and Ngo et al.~\cite{ngo2025}, who combine a one-dimensional CNN with a GCN and with graph attention respectively. This paper builds directly on Karabulut et al.~\cite{Karabulut2026}, who benchmark RGCN, RGSAGE, and RGATv2 spatial encoders on a shared GRU temporal encoder over the IEEE 123-bus feeder. Their \emph{measured-only} graph promotes only instrumented buses to nodes, so message passing operates over the sensing infrastructure rather than the physical feeder, beating a purely recurrent baseline by up to 11 F1 points at roughly one-sixth of the training time. A companion study~\cite{Karabulut2025} instead varies the grid configuration the detector is transferred to.
 
 % ---------------------------------------------------------------------------
 % Positioning table (Table 1). Declared AFTER the first paragraph of Related
@@ -277,12 +293,12 @@ Early approaches estimate the fault position from circuit physics. Krishnathevar
     Liu et al.\ (2023) \cite{liu2023}
       & Traveling wave, multi-branch & L & Distribution
       & \no & \no & \no & \no \\
-
+    \addlinespace
     \multicolumn{8}{@{}l}{\textit{Non-graph data-driven}} \\
     Livani et al.\ (2013) \cite{livani2013}
       & SVM, faulty-line identification & L & IEEE 123-bus
       & \no & \no & \no & \no \\
-
+    \addlinespace
     \multicolumn{8}{@{}l}{\textit{Static GNN}} \\
     Chen et al.\ (2020) \cite{chen2020}
       & Spectral GCN (Chebyshev) & L & IEEE 123-, 37-bus
@@ -290,7 +306,7 @@ Early approaches estimate the fault position from circuit physics. Krishnathevar
     Fan et al.\ (2024) \cite{fan2024}
       & VGAE $+$ GraphSAGE & L & Distribution
       & \no & \no & \no & \no \\
-
+    \addlinespace
     \multicolumn{8}{@{}l}{\textit{Spatio-temporal GNN}} \\
     Nguyen et al.\ (2022) \cite{nguyen2022}
       & 1D-CNN $+$ GCN & D$+$C$+$L & Microgrid
@@ -298,12 +314,12 @@ Early approaches estimate the fault position from circuit physics. Krishnathevar
     Ngo et al.\ (2025) \cite{ngo2025}
       & GAT $+$ 1D-CNN & D$+$C$+$L & Distribution
       & \no & \no & \no & \no \\
-
+    \addlinespace
     \multicolumn{8}{@{}l}{\textit{Sparse / missing measurement}} \\
     Zhang et al.\ (2025) \cite{zhang2025}
       & GDIA-GCL: imputation $+$ contrastive & L & Distribution
       & \no & \yes & \pt & \yes \\
-
+    \addlinespace
     \multicolumn{8}{@{}l}{\textit{Base paper and this work}} \\
     Karabulut et al.\ (2026) \cite{Karabulut2026}
       & STGNN: RGCN, RGSAGE, RGATv2 & D$+$L & IEEE 123-bus
@@ -315,8 +331,6 @@ Early approaches estimate the fault position from circuit physics. Krishnathevar
     \bottomrule
   \end{tabular}
 \end{table*}
-
-Encoding the feeder as a graph restores the structure that feature-vector models discard. Chen et al.~\cite{chen2020} apply a spectral graph convolutional network with Chebyshev filters to the IEEE 123- and 37-bus systems and harden it with a data augmentation against measurement noise and data loss, the closest precedent for the training-time mitigation we study, although it is applied to a static, single-snapshot classifier over the full grid graph. Fan et al.~\cite{fan2024} pursue reconstruction instead, pairing a variational graph autoencoder with GraphSAGE to recover latent node information under noise. Both classify a single snapshot, so neither represents how a fault signature evolves over the milliseconds following inception. Spatio-temporal models supply that time axis by placing a temporal encoder ahead of message passing, as in Nguyen et al.~\cite{nguyen2022} and Ngo et al.~\cite{ngo2025}, who combine a one-dimensional CNN with a GCN and with graph attention respectively. This paper builds directly on Karabulut et al.~\cite{Karabulut2026}, who benchmark RGCN, RGSAGE, and RGATv2 spatial encoders on a shared GRU temporal encoder over the IEEE 123-bus feeder. Their \emph{measured-only} graph promotes only instrumented buses to nodes, so message passing operates over the sensing infrastructure rather than the physical feeder, beating a purely recurrent baseline by up to 11 F1 points at roughly one-sixth of the training time. A companion study~\cite{Karabulut2025} instead varies the grid configuration the detector is transferred to.
 
 Zhang et al.~\cite{zhang2025} confront incomplete measurement directly: a training-free graph Dirichlet imputation reconstructs absent bus measurements by minimizing the graph Dirichlet energy, and a GCN trained with graph contrastive learning then keeps fault signatures separable under the resulting scarcity. This is the most developed treatment of missing data in this task, and it is instructive for what it assumes: that the set of unmeasured buses is a fixed property of the network, known when both the imputer and the classifier are built.
 
@@ -491,7 +505,7 @@ Dropout-aware training removes the train-test mismatch exposed in Section~\ref{s
   \end{algorithmic}
 \end{algorithm}
 
-All other training details are identical to the baseline (Section~\ref{sec:setup}), so any robustness difference is attributable solely to the augmentation, which is applied only during training and adds no parameters or inference-time cost.
+All other training details are identical to the baseline (Section~\ref{sec:setup}), so any robustness difference is attributable solely to the augmentation, which is applied only during training and adds no parameters or inference-time cost (measured in Section~\ref{sec:res-cost}).
 
 \subsection{SDR-STGNN: Availability-Gated Graph Aggregation}
 \label{sec:sdr}
@@ -681,7 +695,7 @@ The results reveal a clear trade-off between clean accuracy and robustness; the 
     \toprule
     \multirow{2}{*}{Model}
       & \multicolumn{5}{c}{Standard-training macro-F1 at $k$}
-      & \multicolumn{2}{c}{Dropout-aware macro-F1}
+      & \multicolumn{2}{c}{DA macro-F1}
       & \multicolumn{2}{c}{AUDC} & \multicolumn{2}{c}{Ret.@10 (\%)} \\
     \cmidrule(lr){2-6}\cmidrule(lr){7-8}\cmidrule(lr){9-10}\cmidrule(l){11-12}
       & $k{=}0$ & $k{=}1$ & $k{=}2$ & $k{=}5$ & $k{=}10$
@@ -691,13 +705,13 @@ The results reveal a clear trade-off between clean accuracy and robustness; the 
     RGATv2      & 0.522 & 0.490 & 0.444 & 0.302 & 0.157 & 0.553 & 0.505
                 & $0.626{\pm}0.112$ & $0.961{\pm}0.014$ & $31.0{\pm}16.4$ & $91.4{\pm}2.8$ \\
     RGCN        & 0.712 & 0.664 & 0.610 & \textbf{0.418} & \textbf{0.164} & 0.613 & 0.533
-                & $0.608{\pm}0.047$ & $0.940{\pm}0.011$ & $23.2{\pm}7.0$ & $87.0{\pm}1.9$ \\
+                & $0.608{\pm}0.047$ & $0.940{\pm}0.011$ & $23.2{\pm}\phantom{0}7.0$ & $87.0{\pm}1.9$ \\
     RGSAGE-Mean & 0.786 & 0.720 & \textbf{0.647} & 0.393 & 0.108 & 0.673 & 0.550
-                & $0.541{\pm}0.041$ & $0.922{\pm}0.034$ & $13.8{\pm}6.4$ & $81.9{\pm}8.4$ \\
+                & $0.541{\pm}0.041$ & $0.922{\pm}0.034$ & $13.8{\pm}\phantom{0}6.4$ & $81.9{\pm}8.4$ \\
     GRU         & 0.286 & 0.273 & 0.252 & 0.111 & 0.051 & 0.300 & 0.078
-                & $0.522{\pm}0.081$ & $0.781{\pm}0.038$ & $17.9{\pm}4.4$ & $25.4{\pm}5.8$ \\
+                & $0.522{\pm}0.081$ & $0.781{\pm}0.038$ & $17.9{\pm}\phantom{0}4.4$ & $25.4{\pm}5.8$ \\
     RGSAGE-Max  & \textbf{0.846} & \textbf{0.736} & 0.590 & 0.236 & 0.048 & \textbf{0.839} & \textbf{0.674}
-                & $0.402{\pm}0.020$ & $0.913{\pm}0.006$ & $5.7{\pm}1.8$ & $80.3{\pm}1.3$ \\
+                & $0.402{\pm}0.020$ & $0.913{\pm}0.006$ & $\phantom{0}5.7{\pm}\phantom{0}1.8$ & $80.3{\pm}1.3$ \\
     \bottomrule
   \end{tabular}
 \end{table*}
@@ -722,7 +736,7 @@ Table~\ref{tab:aware} compares four ways to cope with sensor loss on the identic
 
 \textbf{Imputation baseline:} A natural alternative to a training-time fix is to reconstruct dropped sensors before inference. As a lightweight control, the no-training analogue of graph-based imputation~\cite{zhang2025}, we fill each dropped node's three voltage channels with the per-timestep mean of its \emph{available} undirected $1$-hop neighbors and present the result to the standard-trained model as observed (mask set to $1$, the most favorable setting for imputation); dropped nodes are selected exactly as in the zeroing sweep, so the only change is the fill. Imputation gains little over zeroing (AUDC $0.402\!\to\!0.476$; $k=10$ retention $5.7\%\!\to\!11.8\%$) and stays far below dropout-aware training (AUDC $0.913$), because the reconstructed values are still fed to a model never trained to distrust them.
 
-Dropout-aware training raises the AUDC of RGSAGE-Max from $0.402$ to $0.913$ and its $k=10$ retention from $5.7\%$ to $80.3\%$: where the standard model collapses to a macro-F1 of $0.048$ at $40\%$ sensor loss, the dropout-aware variant still reaches $0.674\pm0.017$, an absolute gain of $0.626$ macro-F1 points. Clean performance is essentially unchanged ($0.839\pm0.011$ against $0.846\pm0.007$ at $k=0$, within one standard deviation), and because the augmentation alters only the training data it adds no parameters and no inference-time cost (Section~\ref{sec:dropout-aware}).
+Dropout-aware training raises the AUDC of RGSAGE-Max from $0.402$ to $0.913$ and its $k=10$ retention from $5.7\%$ to $80.3\%$: where the standard model collapses to a macro-F1 of $0.048$ at $40\%$ sensor loss, the dropout-aware variant still reaches $0.674\pm0.017$, an absolute gain of $0.626$ macro-F1 points. Clean performance is essentially unchanged ($0.839\pm0.011$ against $0.846\pm0.007$ at $k=0$, within one standard deviation and not significant at $p=0.181$; Section~\ref{sec:res-significance}), and because the augmentation alters only the training data it adds no parameters and no measurable inference-time cost, both confirmed by measurement in Section~\ref{sec:res-cost}.
 
 The availability-gated SDR-STGNN matches that robustness but does not exceed it: its AUDC is $0.892$ and its $k=10$ retention $75.2\%$, both slightly below the ungated model, and its curve lies below the dropout-aware curve for all $k\ge1$. At $k=0$ the gate of Eq.~\eqref{eq:gate} is inactive, so the architecture reduces exactly to its backbone and the two dropout-aware variants score identically ($0.839$, within seed noise). The structural gate thus adds nothing beyond the training-time augmentation, leaving dropout-aware training the most effective and most practical mitigation evaluated here.
 
@@ -787,25 +801,123 @@ The availability-gated SDR-STGNN matches that robustness but does not exceed it:
 
 To test whether the gain is specific to the RGSAGE-Max backbone, we retrain every baseline with the identical augmentation and re-evaluate under the same sweep; the resulting values appear in the dropout-aware columns of Table~\ref{tab:degradation}. Robustness improves for all five architectures. The four spatial GNNs rise from AUDC $0.40$--$0.63$ to $0.91$--$0.96$ and from at most $31\%$ to $80$--$91\%$ retention at $k=10$. The cost in clean accuracy, however, is not uniform: RGSAGE-Max loses under $0.01$ macro-F1 at $k=0$, but RGCN drops $0.099$ ($0.712\to0.613$) and RGSAGE-Mean $0.113$ ($0.786\to0.673$), so the result that robustness comes at no cost to clean accuracy holds for the backbone we adopt rather than for the family as a whole. We did not isolate the cause; one untested explanation is that max-pooling selects a single surviving neighbor activation and is therefore largely unperturbed by masking, whereas mean and normalized-sum aggregation have the statistics of their neighborhood averages shifted by it, making the clean objective harder to fit within the same training budget. Because retention normalizes by each model's own clean score, the relative leaders are again not the strongest in absolute terms: dropout-aware RGSAGE-Max reaches $0.674$ macro-F1 at $k=10$, well above RGATv2's $0.505$ despite RGATv2's higher retention. The GNN-free GRU also improves (AUDC $0.52\to0.78$) but its retention stays limited ($25\%$), since without a spatial mechanism it cannot exploit surviving sensors. Robustness recovery is therefore a general property of the training scheme, strongest where the architecture can route information around a failure.
 
+\subsection{Statistical Significance}
+\label{sec:res-significance}
+
+Every comparison above is a mean over three training seeds, which is a small sample, so we state explicitly which differences survive a test. Table~\ref{tab:significance} reports paired two-sided $t$-tests on the seed-wise differences ($n=3$, $\mathrm{df}=2$) for the six mitigation claims, Holm--Bonferroni adjusted across the family with the two expected null results included rather than exempted. The seed is the paired unit because every variant is trained from the same three seeds on identical data and splits, so the pairing removes seed-to-seed variation in training difficulty as a nuisance factor. We deliberately do not rely on a Wilcoxon signed-rank test: at $n=3$ its smallest attainable two-sided $p$-value is $0.25$, so it cannot reject at any conventional level whatever the effect size, and reporting it would only obscure that this is a property of the sample size rather than of the data.
+
+The positive claims survive adjustment. Dropout-aware training gains $0.626$ macro-F1 at $k=10$ (95\% CI $[0.557, 0.695]$, $p_{\text{Holm}}=0.003$), $74.6$ percentage points of retention and $0.511$ AUDC over standard training (both $p_{\text{Holm}}=0.003$), and exceeds mean-imputation by $0.574$ macro-F1 at $k=10$ ($p_{\text{Holm}}=0.008$). Extending the same test to every level and every architecture, the gain is significant at each $k\ge1$ ($p_{\text{Holm}}\le0.042$) and the AUDC gain is significant for all five architectures ($p_{\text{Holm}}\le0.027$), so the cross-architecture claim of Section~\ref{sec:res-agnostic} does not rest on the backbone alone. The two claims we make \emph{as} null results test as null: the clean-accuracy change at $k=0$ is $-0.008$ with a CI spanning zero ($p=0.181$), and dropout-aware training's $0.021$ AUDC edge over SDR-STGNN is not significant ($p=0.098$), which is the statistical form of ``matches but does not surpass''. Mean-imputation's $0.051$ gain over zeroing at $k=10$ is likewise not significant ($p=0.102$), sharpening Section~\ref{sec:res-aware}: on this evidence imputation is not distinguishable from doing nothing.
+
+Two cross-architecture orderings need an explicit caveat, which reflects the limit of a three-seed design rather than a weakness in the effects themselves. The clean-accuracy ranking of Table~\ref{tab:baseline} reaches only $p=0.023$ for its top pair (RGSAGE-Max over RGSAGE-Mean) and no adjacent pair survives Holm adjustment across the four. Neither does the accuracy--robustness inversion: RGCN's absolute macro-F1 at $k=10$ exceeds RGSAGE-Max's in every one of the three seeds, by a factor of $2.4$ to $6.7$ ($\Delta=0.116$), yet $p=0.076$, because the \emph{size} of the gap varies with the seed even though its sign does not. A complementary bootstrap locates that noise. Resampling the $6{,}175$ test events at $k=0$ --- events, not windows, since one simulated fault contributes $40$ correlated windows --- puts the RGSAGE-Max-over-RGSAGE-Mean gap at $+0.042$ macro-F1 with a 95\% CI of $[+0.034, +0.051]$ ($p<0.001$) for a single seed, and the standard-versus-dropout-aware clean gap at $-0.001$, CI $[-0.008, +0.005]$. Test-set sampling error is several times narrower than the corresponding seed-level interval, so what bounds the architecture-ranking conclusions is the number of training seeds, not the size of the test set, and we report those orderings as consistent observations at three seeds rather than as significant differences.
+
+% ---------------------------------------------------------------------------
+% Significance tests.  Generated by scripts/run_significance_tests.py from the
+% per-seed values already on disk (results/dropout_study{,_aware,_sdr}/
+% degradation_curves.csv + results/dropout_study_impute/imputation_summary.json).
+% Verbatim copy of paper/tables/significance.tex -- regenerate, do not hand-edit.
+% ---------------------------------------------------------------------------
+\begin{table}[!tb]
+  \centering
+  \caption{Paired two-sided $t$-tests over training seeds 42/43/44
+           ($n=3$, $\mathrm{df}=2$) on the mitigation claims, all on the
+           RGSAGE-Max backbone. $\Delta$ is the mean seed-wise difference in
+           the stated metric (F1 points, AUDC, or percentage points for
+           Ret.@10); $p_{\text{Holm}}$ is Holm-Bonferroni adjusted over all
+           six tests, the two expected null results included. Std\ =\ standard
+           training, DA\ =\ dropout-aware.}
+  \label{tab:significance}
+  \scriptsize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{@{}lcccc@{}}
+    \toprule
+    Comparison & $\Delta$ & $95\%$ CI & $p$ & $p_{\text{Holm}}$ \\
+    \midrule
+    DA vs.\ Std, clean F1 ($k{=}0$) & $-0.008$ & $[-0.024,\,+0.009]$ & $0.181$ & $0.196$ \\
+    DA vs.\ Std, F1 at $k{=}10$ & $+0.626$ & $[+0.557,\,+0.695]$ & $<\!0.001$ & $0.003$ \\
+    DA vs.\ Std, Ret.@10 & $+74.6$ & $[+67.2,\,+82.0]$ & $<\!0.001$ & $0.003$ \\
+    DA vs.\ Std, AUDC & $+0.511$ & $[+0.450,\,+0.571]$ & $<\!0.001$ & $0.003$ \\
+    DA vs.\ imputation, F1 at $k{=}10$ & $+0.574$ & $[+0.449,\,+0.699]$ & $0.003$ & $0.008$ \\
+    DA vs.\ SDR-STGNN, AUDC & $+0.021$ & $[-0.010,\,+0.052]$ & $0.098$ & $0.196$ \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Computational Cost}
+\label{sec:res-cost}
+
+Table~\ref{tab:runtime} measures the cost claims made above. Dropout-aware training alters only the training data, so it must leave inference untouched, and it does: the standard and dropout-aware RGSAGE-Max checkpoints have identical parameter counts ($95{,}258$) and time identically, $0.639$ against $0.640$\,ms per single-event forward pass --- a $0.3\%$ difference, an order of magnitude inside the $\pm0.02$\,ms run-to-run spread --- at $6{,}038$ windows/s in both cases. The augmentation's cost falls entirely on training and is small: $13.7$ against $13.4$ minutes per epoch, a $2.7\%$ overhead for drawing and applying the masks, or $0.2$\,h over a $6.9$\,h run.
+
+SDR-STGNN's gate, by contrast, is a genuine inference cost. It adds no parameters, being a multiplicative mask rather than a learned module, but it raises single-event latency by $18\%$ ($0.755$ against $0.639$\,ms) and lowers throughput by $2\%$, because availability has to be recomputed and applied at every hop. Read with Section~\ref{sec:res-aware}, where it does not exceed the augmentation, the gate buys no measured robustness for that latency.
+
+The remaining columns supply implementation details. Activation memory is $145$\,MiB at batch $32$ for every model, because all five share the same GRU-128 temporal encoder (Section~\ref{sec:setup}), whose per-node sequence activations dominate the graph layers; the weights themselves span only $0.21$--$1.40$\,MiB, so model size is not the binding constraint for a substation deployment. Training one seed took $4.7$\,h (GRU) to $12.3$\,h (RGATv2, $24.6$ minutes per epoch for its four attention heads). Convergence is the one number that is not comfortable: the best validation epoch averages $27.7$--$28.7$ of the $30$-epoch budget for the three stable spatial GNNs, so they were still improving when training stopped and the accuracies reported here should be read as a floor rather than a converged optimum. Only the temporal-only GRU ($25.0$) and RGATv2 ($24.7$) peak appreciably earlier, and for RGATv2 that reflects its instability at this depth rather than convergence: its best epoch ranges from $19$ to $29$ across the three seeds.
+
+% ---------------------------------------------------------------------------
+% Runtime / efficiency.  Generated by scripts/run_runtime_benchmark.py:
+%   inference columns measured on this machine's T1000 over synthetic batches;
+%   training columns read from each run's metrics_by_epoch.csv (train_seconds,
+%   argmax of val_graph_f1).  Verbatim copy of paper/tables/runtime.tex.
+% ---------------------------------------------------------------------------
+\begin{table*}[!tb]
+  \centering
+  \caption{Cost of each model and of the dropout-aware augmentation, on one
+           NVIDIA T1000 (8\,GB). Inference is timed over synthetic batches of
+           the true input shape $[B,25,20,6]$: single-event latency at $B{=}1$
+           and throughput at $B{=}32$, with the activation memory the
+           forward pass allocates (peak minus resident weights and cuBLAS
+           workspace). Training columns are wall-clock numbers recorded by the
+           runs that produced the results (30 epochs, mean over seeds
+           42/43/44); ``best ep.'' is the epoch of highest validation
+           soft-voted graph F1, i.e.\ the checkpoint actually reported.
+           Std\ =\ standard training, DA\ =\ dropout-aware.}
+  \label{tab:runtime}
+  \footnotesize
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabular}{@{}llccccccc@{}}
+    \toprule
+    \multirow{2}{*}{Model} & \multirow{2}{*}{Train.}
+      & \multirow{2}{*}{Params}
+      & \multicolumn{3}{c}{Inference} & \multicolumn{3}{c}{Training} \\
+    \cmidrule(lr){4-6}\cmidrule(l){7-9}
+      & & & Lat. (ms) & Windows/s & Act.\ mem. (MiB)
+      & min/epoch & Total (h) & Best ep. \\
+    \midrule
+    GRU & Std & $55.8$k & $0.35$ & $5{,}548$ & $145$ & $9.4$ & $4.7$ & $25.0$ \\
+    RGCN & Std & $74.8$k & $0.69$ & $5{,}934$ & $145$ & $10.6$ & $5.3$ & $27.7$ \\
+    RGSAGE-Mean & Std & $95.3$k & $0.90$ & $5{,}606$ & $145$ & $10.8$ & $5.4$ & $28.3$ \\
+    RGSAGE-Max & Std & $95.3$k & $0.64$ & $6{,}038$ & $145$ & $13.4$ & $6.7$ & $28.7$ \\
+    RGATv2 & Std & $366.4$k & $1.38$ & $4{,}670$ & $145$ & $24.6$ & $12.3$ & $24.7$ \\
+    RGSAGE-Max & DA & $95.3$k & $0.64$ & $6{,}038$ & $145$ & $13.7$ & $6.9$ & $28.0$ \\
+    SDR-STGNN & DA & $95.3$k & $0.75$ & $5{,}909$ & $145$ & $13.9$ & $7.0$ & $29.0$ \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
 \section{Discussion}
 \label{sec:discussion}
  
 \subsection{Robustness Ranking of the Baseline Architectures}
 
-The five baselines expose an inverse relationship between clean accuracy and robustness: the accuracy ranking (RGSAGE-Max $>$ RGSAGE-Mean $>$ RGCN $>$ RGATv2 $>$ GRU) is essentially reversed by the robustness (AUDC) ranking (Tables~\ref{tab:baseline}--\ref{tab:degradation}). The firm conclusion is the inversion at the extremes: the strongest clean model degrades the fastest, retaining only $5.7\%$ at $k=10$ against RGCN's $23.2\%$. The ordering \emph{among} the mid-tier baselines is indicative rather than established, because the spatial depth was selected on RGSAGE-Max and then applied unchanged to every architecture (Section~\ref{sec:res-baseline}); a per-architecture depth could plausibly reorder them, and would in particular raise RGATv2, whose high relative retention rests on a clean score depressed by instability at that depth.
+The five baselines expose an inverse relationship between clean accuracy and robustness: the accuracy ranking (RGSAGE-Max $>$ RGSAGE-Mean $>$ RGCN $>$ RGATv2 $>$ GRU) is essentially reversed by the robustness (AUDC) ranking (Tables~\ref{tab:baseline}--\ref{tab:degradation}). The clearest signal is the inversion at the extremes: the strongest clean model degrades the fastest, retaining only $5.7\%$ at $k=10$ against RGCN's $23.2\%$, in the same direction in all three seeds although the three-seed paired test does not reach significance ($p=0.076$, Section~\ref{sec:res-significance}). The ordering \emph{among} the mid-tier baselines is indicative rather than established, because the spatial depth was selected on RGSAGE-Max and then applied unchanged to every architecture (Section~\ref{sec:res-baseline}); a per-architecture depth could plausibly reorder them, and would in particular raise RGATv2, whose high relative retention rests on a clean score depressed by instability at that depth.
 
 This ordering follows from how each operator treats the zeroed embedding a dropped sensor propagates (Section~\ref{sec:dropout-eval}). The max pooling of Eq.~\eqref{eq:rgsage} forwards the single largest activation in a neighborhood, so one corrupted message can dominate a live node's update, making RGSAGE-Max the most fragile despite being the strongest clean model, whereas the normalized sum of Eq.~\eqref{eq:rgcn} and mean pooling average that message against surviving ones and degrade more gracefully. Attention (Eq.~\eqref{eq:rgat}) could in principle down-weight a dropped neighbor, but its coefficients are computed from features and are not availability-aware. GRU performs no spatial aggregation, so it is insensitive to neighbors' dropout but capped by the absence of spatial reasoning.
 
 The aggregation operator is therefore a weak lever for robustness: even the most robust baseline retains under a third of its accuracy at $40\%$ dropout. Deployment-level robustness comes from training instead. Dropout-aware training raises retention from $5.7\%$ to $80.3\%$ on the RGSAGE-Max backbone (Table~\ref{tab:aware}) and, altering only the input masking, applies unchanged to every architecture (Table~\ref{tab:degradation}, DA columns). SDR-STGNN confirms this from the opposite side: silencing every dropped node at every hop also removes the multi-hop paths that would otherwise route information around a failure, so the gate adds nothing over the augmentation. Practically, on this feeder an operator could lose roughly 10 of 25 $\mu$PMUs to maintenance or communication faults while macro-F1 stays above $0.67$, provided the model is trained with the augmentation, which supports resilient monitoring of distribution feeders (relevant to UN SDG~7 and SDG~11) without additional sensing hardware.
 
+\subsection{Why Dropout-Aware Training Works}
+\label{sec:disc-mechanism}
+
+It is worth separating \emph{that} the augmentation works from \emph{why}, because the mechanism determines when it should be expected to transfer. Each node's input carries three availability-mask channels alongside its three phase voltages (Section~\ref{sec:dataset}), and those channels are not trivial: only 14 of the 25 $\mu$PMUs are three-phase, so the rest present patterns such as $(1,0,0)$. They are, however, entirely \emph{static} --- identical in every training window and at every timestep, because the phase instrumentation of a feeder does not change. A network trained on that corpus can therefore read the mask only as a fixed per-node fingerprint, never as a live availability signal, and it never receives a gradient from a node whose availability changes. Dropping a sensor at inference zeroes all six of its channels, so its mask becomes $(0,0,0)$: a pattern that node has never once presented during training. The model has no learned response to it and instead reads the zeroed voltages as a legitimate near-zero measurement --- and the max-aggregation argument above explains why one such reading then dominates a live node's update. Dropout-aware training is the first thing that makes the mask vary within a node's own history, so $(0,0,0)$ acquires the meaning ``this neighbor is dark now'', and the network learns the down-weighting for itself, from data, rather than being handed it by the architecture.
+
+Three of our results are what that account predicts. First, an explicit architectural gate should then be largely redundant, because the model has already learned the function the gate hard-codes --- and SDR-STGNN does not exceed the augmentation ($\Delta$AUDC $=0.021$, $p=0.098$; Table~\ref{tab:significance}). Second, supplying plausible numbers should not substitute for the training signal, because the deficit is misplaced trust rather than absent values: mean-imputation hands the standard-trained model a neighbor-averaged reading and even sets the mask to $1$, yet gains only $0.051$ macro-F1 at $k=10$ ($p=0.102$), while the augmentation gains $0.574$ over it. Third, the augmentation can only exploit redundancy the architecture can actually reach, so its benefit should scale with spatial connectivity --- and the AUDC gain is largest on RGSAGE-Max ($+0.511$) and smallest on the temporal-only GRU ($+0.259$), whose retention at $k=10$ stops at $25\%$ against RGSAGE-Max's $80\%$ precisely because it has no message passing with which to route around a dark node. Taken together: dropout-aware training does not reconstruct the missing measurement, it trains the model out of depending on any particular one, and the four-hop receptive field over a $25$-node tree is what leaves it somewhere else to look.
+
 \subsection{Limitations}
 
-Eight limitations bound these findings. All experiments use the IEEE 123-bus feeder in its default configuration, so generalization across network sizes and topologies, including the reconfigured (``green'') topology of \cite{Karabulut2026}, remains open (Section~\ref{sec:repro}). Our missingness model drops sensors independently and uniformly at random per window, whereas real $\mu$PMU failures are often correlated (co-located units, a shared communication path, or a substation outage fail together) and persistent, so structured failures may degrade, and respond to mitigation, differently. Every number reported here is consequently an average over random sensor subsets rather than a worst case: because only 6 of the 25 fault buses are instrumented, losing the $\mu$PMUs nearest a fault should hurt considerably more than losing the same number at random, and we did not evaluate that targeted setting. Voltages are also taken directly from the simulator, without additive measurement noise, quantization, or communication latency, so the full-observability accuracies are optimistic relative to field $\mu$PMU data. Our $1.65$\,M-window corpus yields a strongest-baseline macro-F1 of $0.846$, not directly comparable to \cite{Karabulut2026}, which uses a different corpus (Section~\ref{sec:repro}). The four message-passing layers were chosen from a single-seed depth sweep on RGSAGE-Max and then held fixed for all five architectures; combined with RGATv2's seed variance ($\pm0.087$ at $k=0$), this makes the cross-architecture orderings in Tables~\ref{tab:baseline} and~\ref{tab:degradation} indicative rather than firm (Section~\ref{sec:res-degrade}). Our imputation comparison covers only lightweight graph mean-imputation (Section~\ref{sec:res-aware}), not learned reconstruction such as the Dirichlet/contrastive pipeline of \cite{zhang2025} or the VGAE of \cite{fan2024}, so whether a stronger imputer could close the gap is unresolved. Finally, dropout-aware training samples $k\in\{0,1,2,5\}$, so the $k=10$ evaluation probes beyond the training distribution; recovery remains strong there, but we ran no ablation over the training dropout grid, leaving open whether including $k=10$ during training would raise the $k=10$ result further or cost additional clean accuracy.
+Nine limitations bound these findings. All experiments use the IEEE 123-bus feeder in its default configuration, so generalization across network sizes and topologies, including the reconfigured (``green'') topology of \cite{Karabulut2026}, remains open (Section~\ref{sec:repro}). Our missingness model drops sensors independently and uniformly at random per window, whereas real $\mu$PMU failures are often correlated (co-located units, a shared communication path, or a substation outage fail together) and persistent, so structured failures may degrade, and respond to mitigation, differently. Every number reported here is consequently an average over random sensor subsets rather than a worst case: because only 6 of the 25 fault buses are instrumented, losing the $\mu$PMUs nearest a fault should hurt considerably more than losing the same number at random, and we did not evaluate that targeted setting. Voltages are also taken directly from the simulator, without additive measurement noise, quantization, or communication latency, so the full-observability accuracies are optimistic relative to field $\mu$PMU data. Our $1.65$\,M-window corpus yields a strongest-baseline macro-F1 of $0.846$, not directly comparable to \cite{Karabulut2026}, which uses a different corpus (Section~\ref{sec:repro}). The four message-passing layers were chosen from a single-seed depth sweep on RGSAGE-Max and then held fixed for all five architectures; combined with RGATv2's seed variance ($\pm0.087$ at $k=0$), this makes the cross-architecture orderings in Tables~\ref{tab:baseline} and~\ref{tab:degradation} indicative rather than firm (Section~\ref{sec:res-degrade}). Our imputation comparison covers only lightweight graph mean-imputation (Section~\ref{sec:res-aware}), not learned reconstruction such as the Dirichlet/contrastive pipeline of \cite{zhang2025} or the VGAE of \cite{fan2024}, so whether a stronger imputer could close the gap is unresolved. Statistical power is bounded by the three training seeds: the mitigation effects are large enough to clear Holm adjustment at $n=3$ (Table~\ref{tab:significance}), but the cross-architecture orderings are not, and a nonparametric test cannot reject at this sample size at all, so settling those orderings would need more seeds rather than a different test (Section~\ref{sec:res-significance}). Finally, dropout-aware training samples $k\in\{0,1,2,5\}$, so the $k=10$ evaluation probes beyond the training distribution; recovery remains strong there, but we ran no ablation over the training dropout grid, leaving open whether including $k=10$ during training would raise the $k=10$ result further or cost additional clean accuracy.
 
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 
-Building on the STGNN fault-localization methodology of \cite{Karabulut2026}, this work contributes a measurement and a negative result. The measurement is that clean accuracy is an unreliable indicator of robustness to $\mu$PMU loss: the highest-performing baseline under full observability degraded the fastest as sensors were removed, in absolute as well as relative terms. The negative result is that an availability-gated architecture, SDR-STGNN, achieved comparable but not superior robustness to a purely training-time fix, so on this task the aggregation operator is a weak lever and robustness is better bought during training. That fix, dropout-aware training, raised the retained macro-F1 at $40\%$ sensor dropout from $5.7\%$ to $80.3\%$ on the RGSAGE-Max backbone at no inference cost and with no measurable loss of clean accuracy, and improved every architecture tested, although on RGCN and RGSAGE-Mean it cost roughly $0.1$ macro-F1 under full observability. Future work will investigate correlated and spatially structured sensor failures, worst-case rather than average-case sensor loss, larger and more diverse feeder datasets, cross-topology generalization to reconfigured feeders, and adaptive availability-gating mechanisms.
+Building on the STGNN fault-localization methodology of \cite{Karabulut2026}, this work contributes a measurement and a negative result. The measurement is that clean accuracy is an unreliable indicator of robustness to $\mu$PMU loss: the highest-performing baseline under full observability degraded the fastest as sensors were removed, in absolute as well as relative terms. The negative result is that an availability-gated architecture, SDR-STGNN, achieved comparable but not superior robustness to a purely training-time fix, so on this task the aggregation operator is a weak lever and robustness is better bought during training. That fix, dropout-aware training, raised the retained macro-F1 at $40\%$ sensor dropout from $5.7\%$ to $80.3\%$ on the RGSAGE-Max backbone ($p_{\text{Holm}}=0.003$) at measured parity in inference latency and parameter count and with no measurable loss of clean accuracy, and improved every architecture tested, although on RGCN and RGSAGE-Mean it cost roughly $0.1$ macro-F1 under full observability. Future work will investigate correlated and spatially structured sensor failures, worst-case rather than average-case sensor loss, larger and more diverse feeder datasets, cross-topology generalization to reconfigured feeders, and adaptive availability-gating mechanisms.
  
 \section*{Acknowledgements}
 

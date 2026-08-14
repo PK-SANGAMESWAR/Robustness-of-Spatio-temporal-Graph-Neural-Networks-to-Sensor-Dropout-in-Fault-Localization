@@ -112,6 +112,18 @@ not mix them with current numbers.
   sets the mask to 1 (most favourable to imputation), then feeds the **standard-trained**
   RGSAGE-Max. Defaults: `--model rgsage_max --seeds 42 43 44 --k-levels 0 1 2 5 10`
   → `results/dropout_study_impute/imputation_summary.json`. See `IMPUTATION.md`.
+- **Significance tests (DONE, no GPU):** `run_significance_tests.py` — paired two-sided
+  t-tests over training seeds 42/43/44 (n=3, df=2) with 95% CIs + Holm-Bonferroni per family,
+  built *only* from per-seed numbers already on disk; plus a paired **cluster bootstrap** over
+  the 6175 test events (not windows — 40 correlated windows per event) at k=0 from
+  `predictions_test.csv`. → `results/statistics/significance_tests.{json,csv}` +
+  `paper/tables/significance.tex`. Wilcoxon is computed but **not** relied on (n=3 floor = 0.25).
+- **Runtime/efficiency (DONE):** `run_runtime_benchmark.py` — inference latency/throughput/
+  activation-memory/params measured on synthetic `[B,25,20,6]` batches (the real corpus is
+  per-event `.npz`, so a loader-based timing would measure decompression); training
+  sec/epoch + total hours + best-validation epoch read from each run's `metrics_by_epoch.csv`.
+  → `results/runtime/{runtime_inference,runtime_training}.csv`, `runtime_summary.json`,
+  `paper/tables/runtime.tex`.
 - **100-run sweep (STAGED, parked):** `run_fullscale100_seed42_sweep.py` → would write
   `results/fullscale_final_100/`. Same frozen config, only DATA_ROOT differs. NOT launched.
 - **Paper dataset assets:** `build_dataset_assets.py` → `paper/tables/dataset_info.tex` +
@@ -145,6 +157,10 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
   `paper/figures/sdr_robustness_summary.csv`.
 - **Imputation baseline:** `dropout_study_impute/imputation_summary.json` — per-k `f1_mean/std`,
   `per_seed_f1`, `audc_mean`, `ret10_mean`; `policy=neighbour_mean_impute`, seeds 42/43/44.
+- **Statistics:** `statistics/significance_tests.json` — every test carries `a_per_seed`/
+  `b_per_seed`, `mean_diff`, `ci95_*`, `t_stat`, `p_ttest`, `p_holm`, `cohens_dz`, plus
+  `event_level_bootstrap`. **Runtime:** `runtime/runtime_summary.json` (`derived` block holds
+  the ratios the paper quotes).
 - Per-run metrics.json keys: `test_graph.f1` (soft-voted macro-F1), `test_node_diagnostic.f1`
   (per-window), `test_graph.per_class.{precision,recall}` (class 0 = no-fault),
   `best_validation_graph_f1`.
@@ -188,6 +204,27 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
   `paper/figures/sdr_robustness_summary.csv` + `results/dropout_study_impute/`.
 - **Multi-seed (50-run):** SDR-STGNN + all 5 dropout-aware models trained at seeds 42/43/44
   (deviation from the runbook's single-seed; run via a scratchpad orchestrator, autonomous).
+- **What is / is not statistically significant at n=3** (`results/statistics/`): the mitigation
+  claims ARE — dropout-aware vs standard at k=10 (Δ=+0.626, p_Holm=0.003), Ret.@10 (+74.6 pp),
+  AUDC (+0.511), and vs imputation at k=10 (+0.574, p_Holm=0.008); the AUDC gain holds for all
+  5 architectures (p_Holm ≤ 0.027). The nulls test as null, which is what the paper claims:
+  clean-F1 cost −0.008 (p=0.181) and DA-over-SDR AUDC +0.021 (p=0.098) — i.e. the gate
+  statistically MATCHES. **NOT significant:** the accuracy/robustness inversion (RGCN over
+  RGSAGE-Max at k=10, Δ=+0.116, p=0.076 — same sign in all 3 seeds, 2.4–6.7×, but the gap size
+  varies), the k=0 architecture ranking (best pair p=0.023, nothing survives Holm), and
+  imputation over zeroing at k=10 (+0.051, p=0.102). Don't upgrade these to "significant".
+- **Cost facts (`results/runtime/`):** dropout-aware = **identical** params (95,258) and latency
+  (0.639 vs 0.640 ms @B=1; 6038 windows/s both) → the "no inference cost" claim is now measured,
+  not asserted; its only cost is **+2.7% training** sec/epoch. SDR-STGNN's gate adds 0 params but
+  **+18% latency** for no robustness gain. Activation memory 145 MiB for ALL models (the shared
+  GRU-128 encoder dominates). Best-validation epoch 27.7–28.7 of 30 for RGCN/RGSAGE-*, so those
+  models were **still improving** at the budget's end — report accuracies as a floor.
+- **Mask channels are static, not all-ones** (verified on `dataset_fullscale_50` test split):
+  they encode per-μPMU phase instrumentation — only **14 of 25** nodes are three-phase, the rest
+  present patterns like (1,0,0) — and are identical in every window and timestep. Dropout zeroes
+  all 6 channels of a dropped node, so its mask becomes (0,0,0), a pattern that node never shows
+  in standard training. This is the paper's mechanism for why dropout-aware training works; don't
+  restate it as "the mask is always 1".
 - **Green-feeder scenario: ❌ CUT (2026-08-04), out of scope.** Not a contribution booster
   (a second-axis stress test only) and would need a new green corpus — dropped before the
   deadline. No green dataset/runs/claims; `configure_green_feeder` stays as dead/future-work
