@@ -2,3 +2,73 @@
 + date -Is
 2026-08-15T13:46:26+05:30
 + uv run python scripts/run_persistent_dropout_study.py --results-dir results/fullscale_final --variant standard --models rgsage_max --seeds 42 43 44
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] rgsage_max (standard) seed=42 persistent k=[0, 1, 2, 5, 10] x 3 masks ...
+  [persistent] rgsage_max seed=42 k=0: F1=0.8526
+  [persistent] rgsage_max seed=42 k=1: F1=0.7253
+  [persistent] rgsage_max seed=42 k=2: F1=0.5642
+  [persistent] rgsage_max seed=42 k=5: F1=0.2130
+  [persistent] rgsage_max seed=42 k=10: F1=0.0500
+[eval] rgsage_max (standard) seed=43 persistent k=[0, 1, 2, 5, 10] x 3 masks ...
+  [persistent] rgsage_max seed=43 k=0: F1=0.8475
+  [persistent] rgsage_max seed=43 k=1: F1=0.7488
+  [persistent] rgsage_max seed=43 k=2: F1=0.6103
+  [persistent] rgsage_max seed=43 k=5: F1=0.2402
+  [persistent] rgsage_max seed=43 k=10: F1=0.0318
+[eval] rgsage_max (standard) seed=44 persistent k=[0, 1, 2, 5, 10] x 3 masks ...
+  [persistent] rgsage_max seed=44 k=0: F1=0.8389
+  [persistent] rgsage_max seed=44 k=1: F1=0.7377
+  [persistent] rgsage_max seed=44 k=2: F1=0.6007
+  [persistent] rgsage_max seed=44 k=5: F1=0.2466
+  [persistent] rgsage_max seed=44 k=10: F1=0.0600
+
+=== Persistent per-event dropout (standard), seeds [42, 43, 44] ===
+  rgsage_max   k= 0: F1 = 0.846 ± 0.007
+  rgsage_max   k= 1: F1 = 0.737 ± 0.012
+  rgsage_max   k= 2: F1 = 0.592 ± 0.024
+  rgsage_max   k= 5: F1 = 0.233 ± 0.018
+  rgsage_max   k=10: F1 = 0.047 ± 0.014
+
+Wrote /home/ubuntu/Fault-Localization/results/dropout_study_persistent/persistent_per_seed_standard.csv
+      /home/ubuntu/Fault-Localization/results/dropout_study_persistent/persistent_curves_standard.csv
+++ date -Is
++ echo '=== STANDARD EXIT=0 2026-08-15T14:16:39+05:30 ==='
+=== STANDARD EXIT=0 2026-08-15T14:16:39+05:30 ===
++ uv run python scripts/run_persistent_dropout_study.py --results-dir results/dropout_aware --variant dropout_aware --models rgsage_max --seeds 42 43 44
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] rgsage_max (dropout_aware) seed=42 persistent k=[0, 1, 2, 5, 10] x 3 masks ...
+  [persistent] rgsage_max seed=42 k=0: F1=0.8515
+  [persistent] rgsage_max seed=42 k=1: F1=0.8403
+  [persistent] rgsage_max seed=42 k=2: F1=0.8271
+  [persistent] rgsage_max seed=42 k=5: F1=0.7880
+  [persistent] rgsage_max seed=42 k=10: F1=0.6858
+[eval] rgsage_max (dropout_aware) seed=43 persistent k=[0, 1, 2, 5, 10] x 3 masks ...
+  [persistent] rgsage_max seed=43 k=0: F1=0.8334
+  [persistent] rgsage_max seed=43 k=1: F1=0.8221
+  [persistent] rgsage_max seed=43 k=2: F1=0.8093
+  [persistent] rgsage_max seed=43 k=5: F1=0.7751
+  [persistent] rgsage_max seed=43 k=10: F1=0.6758
+[eval] rgsage_max (dropout_aware) seed=44 persistent k=[0, 1, 2, 5, 10] x 3 masks ...
+  [persistent] rgsage_max seed=44 k=0: F1=0.8314
+  [persistent] rgsage_max seed=44 k=1: F1=0.8187
+  [persistent] rgsage_max seed=44 k=2: F1=0.8075
+  [persistent] rgsage_max seed=44 k=5: F1=0.7640
+  [persistent] rgsage_max seed=44 k=10: F1=0.6530
+
+=== Persistent per-event dropout (dropout_aware), seeds [42, 43, 44] ===
+  rgsage_max   k= 0: F1 = 0.839 ± 0.011
+  rgsage_max   k= 1: F1 = 0.827 ± 0.012
+  rgsage_max   k= 2: F1 = 0.815 ± 0.011
+  rgsage_max   k= 5: F1 = 0.776 ± 0.012
+  rgsage_max   k=10: F1 = 0.672 ± 0.017
+
+Wrote /home/ubuntu/Fault-Localization/results/dropout_study_persistent/persistent_per_seed_dropout_aware.csv
+      /home/ubuntu/Fault-Localization/results/dropout_study_persistent/persistent_curves_dropout_aware.csv
+++ date -Is
++ echo '=== AWARE EXIT=0 2026-08-15T14:46:51+05:30 ==='
+=== AWARE EXIT=0 2026-08-15T14:46:51+05:30 ===
+++ date -Is
++ echo '=== ALL DONE 2026-08-15T14:46:51+05:30 ==='
+=== ALL DONE 2026-08-15T14:46:51+05:30 ===
