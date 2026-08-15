@@ -1,0 +1,6 @@
+model,variant,k,f1_mean,f1_std,acc_mean,n_train_seeds,policy,err_kind,f1_per_train_seed
+rgsage_max,standard,0,0.8463237909091997,0.006952676960350249,0.9144844804318488,3,targeted_nearest_fault,train_seed_std,"[0.85262, 0.847489, 0.838862]"
+rgsage_max,standard,1,0.44787571661447334,0.03916320954412867,0.7181686909581647,3,targeted_nearest_fault,train_seed_std,"[0.480394, 0.404401, 0.458832]"
+rgsage_max,standard,2,0.36105010671259263,0.028655148944888693,0.6562766531713901,3,targeted_nearest_fault,train_seed_std,"[0.389272, 0.331981, 0.361897]"
+rgsage_max,standard,5,0.20556196493109558,0.034724667443890904,0.3889271255060729,3,targeted_nearest_fault,train_seed_std,"[0.23456, 0.167081, 0.215045]"
+rgsage_max,standard,10,0.04759337240105726,0.037586217554653176,0.10861673414304994,3,targeted_nearest_fault,train_seed_std,"[0.088108, 0.013859, 0.040814]"

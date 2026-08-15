@@ -1,0 +1,80 @@
+++ date -Is
++ echo '=== STANDARD START 2026-08-14T16:12:28+05:30 ==='
+=== STANDARD START 2026-08-14T16:12:28+05:30 ===
++ uv run python scripts/run_targeted_dropout_study.py --results-dir results/fullscale_final --models rgsage_max --seeds 42 43 44 --variant standard --output-dir results/dropout_study_targeted
+[rank] building proximity rank (compiling feeder in OpenDSS) ...
+[rank] wrote /home/ubuntu/Fault-Localization/results/dropout_study_targeted/proximity_rank.npy
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] rgsage_max (standard) seed=42 targeted k=[0, 1, 2, 5, 10] ...
+  [targeted] rgsage_max seed=42 k=0: F1=0.8526
+  [targeted] rgsage_max seed=42 k=1: F1=0.4804
+  [targeted] rgsage_max seed=42 k=2: F1=0.3893
+  [targeted] rgsage_max seed=42 k=5: F1=0.2346
+  [targeted] rgsage_max seed=42 k=10: F1=0.0881
+[eval] rgsage_max (standard) seed=43 targeted k=[0, 1, 2, 5, 10] ...
+  [targeted] rgsage_max seed=43 k=0: F1=0.8475
+  [targeted] rgsage_max seed=43 k=1: F1=0.4044
+  [targeted] rgsage_max seed=43 k=2: F1=0.3320
+  [targeted] rgsage_max seed=43 k=5: F1=0.1671
+  [targeted] rgsage_max seed=43 k=10: F1=0.0139
+[eval] rgsage_max (standard) seed=44 targeted k=[0, 1, 2, 5, 10] ...
+  [targeted] rgsage_max seed=44 k=0: F1=0.8389
+  [targeted] rgsage_max seed=44 k=1: F1=0.4588
+  [targeted] rgsage_max seed=44 k=2: F1=0.3619
+  [targeted] rgsage_max seed=44 k=5: F1=0.2150
+  [targeted] rgsage_max seed=44 k=10: F1=0.0408
+
+=== Targeted dropout (standard), seeds [42, 43, 44] ===
+  rgsage_max   k= 0: F1 = 0.846 ± 0.007
+  rgsage_max   k= 1: F1 = 0.448 ± 0.039
+  rgsage_max   k= 2: F1 = 0.361 ± 0.029
+  rgsage_max   k= 5: F1 = 0.206 ± 0.035
+  rgsage_max   k=10: F1 = 0.048 ± 0.038
+
+Wrote /home/ubuntu/Fault-Localization/results/dropout_study_targeted/targeted_per_seed_standard.csv
+      /home/ubuntu/Fault-Localization/results/dropout_study_targeted/targeted_curves_standard.csv
+++ date -Is
++ echo '=== STANDARD EXIT=0 2026-08-14T16:24:52+05:30 ==='
+=== STANDARD EXIT=0 2026-08-14T16:24:52+05:30 ===
+++ date -Is
++ echo '=== AWARE START 2026-08-14T16:24:52+05:30 ==='
+=== AWARE START 2026-08-14T16:24:52+05:30 ===
++ uv run python scripts/run_targeted_dropout_study.py --results-dir results/dropout_aware --models rgsage_max --seeds 42 43 44 --variant dropout_aware --output-dir results/dropout_study_targeted
+[rank] loaded cached proximity rank from /home/ubuntu/Fault-Localization/results/dropout_study_targeted/proximity_rank.npy
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[eval] rgsage_max (dropout_aware) seed=42 targeted k=[0, 1, 2, 5, 10] ...
+  [targeted] rgsage_max seed=42 k=0: F1=0.8515
+  [targeted] rgsage_max seed=42 k=1: F1=0.7659
+  [targeted] rgsage_max seed=42 k=2: F1=0.7090
+  [targeted] rgsage_max seed=42 k=5: F1=0.5891
+  [targeted] rgsage_max seed=42 k=10: F1=0.5579
+[eval] rgsage_max (dropout_aware) seed=43 targeted k=[0, 1, 2, 5, 10] ...
+  [targeted] rgsage_max seed=43 k=0: F1=0.8334
+  [targeted] rgsage_max seed=43 k=1: F1=0.7655
+  [targeted] rgsage_max seed=43 k=2: F1=0.7047
+  [targeted] rgsage_max seed=43 k=5: F1=0.6211
+  [targeted] rgsage_max seed=43 k=10: F1=0.5293
+[eval] rgsage_max (dropout_aware) seed=44 targeted k=[0, 1, 2, 5, 10] ...
+  [targeted] rgsage_max seed=44 k=0: F1=0.8314
+  [targeted] rgsage_max seed=44 k=1: F1=0.7324
+  [targeted] rgsage_max seed=44 k=2: F1=0.6702
+  [targeted] rgsage_max seed=44 k=5: F1=0.5889
+  [targeted] rgsage_max seed=44 k=10: F1=0.4744
+
+=== Targeted dropout (dropout_aware), seeds [42, 43, 44] ===
+  rgsage_max   k= 0: F1 = 0.839 ± 0.011
+  rgsage_max   k= 1: F1 = 0.755 ± 0.019
+  rgsage_max   k= 2: F1 = 0.695 ± 0.021
+  rgsage_max   k= 5: F1 = 0.600 ± 0.019
+  rgsage_max   k=10: F1 = 0.521 ± 0.042
+
+Wrote /home/ubuntu/Fault-Localization/results/dropout_study_targeted/targeted_per_seed_dropout_aware.csv
+      /home/ubuntu/Fault-Localization/results/dropout_study_targeted/targeted_curves_dropout_aware.csv
+++ date -Is
++ echo '=== AWARE EXIT=0 2026-08-14T16:37:05+05:30 ==='
+=== AWARE EXIT=0 2026-08-14T16:37:05+05:30 ===
+++ date -Is
++ echo '=== ALL DONE 2026-08-14T16:37:05+05:30 ==='
+=== ALL DONE 2026-08-14T16:37:05+05:30 ===

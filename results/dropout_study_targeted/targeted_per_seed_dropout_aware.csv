@@ -1,0 +1,16 @@
+model,variant,seed,k,f1_seed,acc_seed,policy
+rgsage_max,dropout_aware,42,0,0.8515282499439987,0.9165101214574899,targeted_nearest_fault
+rgsage_max,dropout_aware,42,1,0.7659202093617464,0.8719757085020243,targeted_nearest_fault
+rgsage_max,dropout_aware,42,2,0.7090385948810589,0.8420323886639676,targeted_nearest_fault
+rgsage_max,dropout_aware,42,5,0.5891370329075486,0.7803643724696356,targeted_nearest_fault
+rgsage_max,dropout_aware,42,10,0.5579429534086038,0.7552226720647773,targeted_nearest_fault
+rgsage_max,dropout_aware,43,0,0.8334353102817723,0.910825910931174,targeted_nearest_fault
+rgsage_max,dropout_aware,43,1,0.765543037906072,0.8751902834008097,targeted_nearest_fault
+rgsage_max,dropout_aware,43,2,0.7046822803019264,0.8434615384615385,targeted_nearest_fault
+rgsage_max,dropout_aware,43,5,0.6211326711747619,0.7982145748987854,targeted_nearest_fault
+rgsage_max,dropout_aware,43,10,0.5292787191233048,0.7402186234817814,targeted_nearest_fault
+rgsage_max,dropout_aware,44,0,0.8313655622556073,0.9074777327935223,targeted_nearest_fault
+rgsage_max,dropout_aware,44,1,0.7323525664398123,0.8564696356275303,targeted_nearest_fault
+rgsage_max,dropout_aware,44,2,0.670227417260818,0.8240890688259109,targeted_nearest_fault
+rgsage_max,dropout_aware,44,5,0.5889490722824472,0.7838744939271255,targeted_nearest_fault
+rgsage_max,dropout_aware,44,10,0.47443081201759435,0.7213805668016194,targeted_nearest_fault

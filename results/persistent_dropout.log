@@ -1,0 +1,4 @@
++ cd /home/ubuntu/Fault-Localization
++ date -Is
+2026-08-15T13:46:26+05:30
++ uv run python scripts/run_persistent_dropout_study.py --results-dir results/fullscale_final --variant standard --models rgsage_max --seeds 42 43 44
