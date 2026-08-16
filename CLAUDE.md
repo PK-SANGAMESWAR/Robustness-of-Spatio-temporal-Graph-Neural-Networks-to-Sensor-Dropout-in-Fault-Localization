@@ -55,8 +55,14 @@ Only these markdown files exist:
   verified figure assignments and anticipated questions (added 2026-08-16).
 - `results/RESULTS.md` — current headline results table + a clearly-marked historical appendix.
 - `REVIEW.md` — **empty placeholder** created by the author, untracked. Not a real doc yet.
+- `.rules/` — **the operating rules** (updated 2026-08-16): `00-execution.md` (what may be
+  launched without asking vs. what must stop and report), `10-integrity.md` (one variable at a
+  time, never fabricate a number, n=3 discipline), `20-paper.md` (edit-don't-restructure, page
+  cap, framing), `30-reporting.md` (**the claims that may not be upgraded** — read before writing
+  any result), `40-data.md` (frozen corpus, splits, bugfix provenance). Replaces the single
+  `CUDA.md` and rescues the surviving rules from the deleted `paper/.rules/`.
 - Generated, not hand-written: `results/sdr_stgnn/sdr_stgnn/seed_000*/dropout_curve.md`,
-  `.rules/CUDA.md`, `.pytest_cache/README.md`.
+  `.pytest_cache/README.md`.
 
 **Deleted — do not cite, do not resurrect unless asked** (recoverable via
 `git show <sha>:<path>`): `PROGRESS.md`, `NEXT-STEPS.md`, `FIGURES-GUIDE.md`,
@@ -216,8 +222,10 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
   page count can only be checked on Overleaf. `preview-local.pdf` is the last exported PDF (13 pp).
 - `figures/`, `tables/` — generated assets for Overleaf upload. `figures/*.prebugfix.png` are the
   pre-bugfix versions, kept for comparison only.
-- **Page cap = 12** (ICMLDE, per `REVIEW.md`). The deleted `.rules/50-pagelimit.md` said 10; that
-  file is gone — 12 is the number to work to.
+- **Page cap = 12** (ICMLDE, per the deleted `paper/REVIEW.md`). The deleted
+  `paper/.rules/50-pagelimit.md` said 10; both files are gone — **12** is the number to work to,
+  and it is recorded in `.rules/20-paper.md`. (The root `REVIEW.md` is an empty placeholder and
+  is not that review.)
 
 ## Key facts (verified against code — safe to reuse without re-checking)
 - Dataset: 50-run corpus `dataset_fullscale_50` = 1.65M **windows** (825×50×40; event-level
@@ -288,6 +296,9 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
   broken but training unaffected).
 
 ## Hard rules
+**These are the summary — `.rules/` is the authority. Read `.rules/30-reporting.md` before
+writing up any result, and `.rules/00-execution.md` before launching any run.**
+
 Identical frozen data/splits across models; change one variable at a time; code passing
 tests ≠ validated (confirm with a real run); dropout paper text must match `masking.py`;
 **report claims faithfully — SDR-STGNN does not beat dropout-aware training, don't overclaim.**
