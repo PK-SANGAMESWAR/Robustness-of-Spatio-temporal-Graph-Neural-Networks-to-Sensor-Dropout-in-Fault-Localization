@@ -8,13 +8,23 @@ numbers (NOT a reproduction — no "reproduce"/0.95-matching language; keep attr
 model, kept as an honest ablation — it MATCHES but does not beat dropout-aware training).
 Target venue ICMLDE 2026, deadline **15 Aug 2026**.
 
-**Status (2026-08-14, deadline is TOMORROW): all experiments DONE and re-run post-bugfix; the
-paper is a complete draft.** Every model is trained at seeds 42/43/44, every degradation curve
-is 3-seed, an imputation baseline has been added, and `paper/overleaf.tex` has all sections
-written (abstract → conclusion + bibliography). What remains is submission polish:
-**page count (`paper/preview-local.pdf` = 13 pp vs. the 12-page cap — trimming is the live
-task)**, iThenticate/similarity check, and the remaining `paper/REVIEW.md` items. The 100-run
-sweep is still parked (do NOT launch without being asked).
+**Status (2026-08-16, ICMLDE deadline 15 Aug has passed — confirm with the author whether this
+is now a resubmission/extension target before doing deadline-driven work): all experiments DONE
+and re-run post-bugfix; the paper is a complete draft.** Every model is trained at seeds
+42/43/44, every degradation curve is 3-seed, imputation + targeted + persistent dropout
+baselines have been added, and `paper/overleaf.tex` has all sections written (abstract →
+conclusion + bibliography). Remaining polish: **page count (`paper/preview-local.pdf` = 13 pp
+vs. the 12-page cap)**, iThenticate/similarity check. The 100-run sweep is still parked (do NOT
+launch without being asked).
+
+**Two late experiments (2026-08-15, commit `20b5b68`) are in the paper but were undocumented in
+markdown until 2026-08-16 — see "Key facts" below:** targeted (worst-case) dropout and
+persistent (per-event) dropout, both on the RGSAGE-Max backbone at seeds 42/43/44.
+
+**A large doc cleanup happened in `0f04bc8`→`20b5b68`.** ~25 markdown files were deleted
+(`PROGRESS.md`, `NEXT-STEPS.md`, `FIGURES-GUIDE.md`, all runbooks, `docs/`, `IMP/`,
+`paper/ISSUES.md`, `paper/REVIEW.md`, `CHANGES.md`, …). They are recoverable from git history
+but are **not** current state. The doc map below lists only what actually exists on disk.
 
 **Mask-diversity bugfix (2026-08-13, commit `6a00c4e`/`798406e`) — every dropout number was
 re-generated.** `evaluate_at_dropout` passed a constant `mask_seed` to
@@ -26,40 +36,41 @@ unchanged. Effect on results: **shifts in the 2nd–3rd decimal only, no conclus
 Pre-bugfix CSVs/figures are preserved as `*.prebugfix.{csv,json,png}` — do not delete, and do
 not mix them with current numbers.
 
-## Authoritative docs (read these for state/plan; don't re-derive)
-- `PROGRESS.md` — full project journey + execution log (§14). Source of truth for the journey;
-  for *current* status trust this file's Status line + `results/` on disk.
-- `NEXT-STEPS.md` — the locked execution plan (Steps 1–6; Step 6 VOID). Supersedes older roadmaps.
-- `IMPUTATION.md` — the reviewer-requested imputation baseline: what it is, how it was run,
-  and how it is wired into the paper. Read before touching `run_imputation_baseline.py`.
-- `FIGURES-GUIDE.md` — every figure, ranked, with axes/takeaway/key numbers and whether it is
-  in `overleaf.tex`. **Its numbers predate the mask-diversity bugfix — trust the CSVs on disk.**
-- `RUN-SDR-50RUN-RUNBOOK.md` — runbook for the SDR contribution on the 50-run corpus.
-- `PROBLEM.md` — problem statement / scope. `QUESTIONS.md` — user's open questions.
-- `RUN-100RUN-SWEEP.md` — **runbook: how to launch/monitor the full-scale (100-run/3.30M)
-  sweep in a fresh session.** Follow it only if explicitly asked to run 100-run.
-- `CURRENT-TRAINING.md` — **STALE** (2026-08-07 snapshot; the 8 missing model-seed dropout
-  evaluations it lists have since been run). Don't treat it as current status.
+## Authoritative docs — THE COMPLETE LIST (verified on disk 2026-08-16)
+
+**`paper/overleaf.tex` is now the single source of truth for the science.** It is ahead of every
+markdown file: it already documents the targeted and persistent dropout experiments with
+p-values. When a doc and the `.tex` disagree, the `.tex` wins; when the `.tex` and a CSV in
+`results/` disagree, the CSV wins.
+
+Only these markdown files exist:
+- `CLAUDE.md` — this file. Repo map + status + key facts.
+- `IMPUTATION.md` — the reviewer-requested imputation baseline: what it is, how it was run, how
+  it is wired into the paper. **Current and accurate.** Read before touching
+  `run_imputation_baseline.py`.
+- `PROBLEM.md` — problem statement / scope.
+- `QUESTIONS.md` — the author's questions + answers (Q1 seeds: resolved; Q2 100-run: answered).
 - `README.md` — public GitHub readme. Repo is pushed to GitHub (private).
-- `paper/ISSUES.md` + `paper/REVIEW.md` — **the current paper-editing authority**, replacing the
-  deleted `.rules/`. `ISSUES.md` = per-section revision checklist (global constraints:
-  **edit only, no large structural rewrites** — AI-plagiarism risk — and **never fabricate a
-  number**). `REVIEW.md` = an external review of an *earlier* draft; its Section-2 blockers
-  (author to-do notes in abstract/Fig. 2 caption, `[?]` citations, three typos, uncited
-  `Karabulut2025`) are **already fixed**. Still open from it: only the
-  **12-page cap** (now 13 pp). Its other items are DONE: em-dash standardisation (only 8
-  `---` remain outside comments), `\eqref` for equation cross-refs, and ≥300 dpi figures
-  (both embedded PNGs export at 400 dpi).
-- `IMP/paper-points.md`, `IMP/points-for-paper.md` — the author's own raw framing notes
-  (honesty on dataset size, "same protocol, our own regeneration", no numeric replication claim).
-- Background/history, not current state: `APPROACH.md`, `IMPLEMENT.md` (base-paper audit
-  transcript), `FULLSCALE-GENERATION.md` (dataset-generation spec), `model-run.md` (copy-paste
-  train commands), `docs/` (architecture/dataset/model notes + `reproduction_log.md`),
-  `results/RESULTS.md`.
-- **DELETED in `6a00c4e` (do not cite, do not resurrect unless asked):** `PROVENANCE.md`
-  (the append-only AI-provenance ledger — the per-session logging obligation is gone with it),
-  `WRONG-CLAIMS.md`, `GREEN-FEEDER-PLAN.md`, `paper/PAPER-CLAUDE.md`, `paper/.rules/`,
-  `paper/{paper-issue.md,paper-issue.tex,plan-paper.md}` and the `paper/0*.md` markdown drafts.
+- `PPT-GUIDE-REVIEW.md` — slide-by-slide content for the guide review presentation, with
+  verified figure assignments and anticipated questions (added 2026-08-16).
+- `results/RESULTS.md` — current headline results table + a clearly-marked historical appendix.
+- `REVIEW.md` — **empty placeholder** created by the author, untracked. Not a real doc yet.
+- Generated, not hand-written: `results/sdr_stgnn/sdr_stgnn/seed_000*/dropout_curve.md`,
+  `.rules/CUDA.md`, `.pytest_cache/README.md`.
+
+**Deleted — do not cite, do not resurrect unless asked** (recoverable via
+`git show <sha>:<path>`): `PROGRESS.md`, `NEXT-STEPS.md`, `FIGURES-GUIDE.md`,
+`CURRENT-TRAINING.md`, `RUN-SDR-50RUN-RUNBOOK.md`, `RUN-100RUN-SWEEP.md`,
+`FULLSCALE-GENERATION.md`, `IMPLEMENT.md`, `APPROACH.md`, `model-run.md` (all in `0f04bc8`);
+`docs/**`, `IMP/**` (`ed47a52`); `paper/ISSUES.md`, `paper/ISSUES2.md`, `paper/REVIEW.md`
+(`9691654`); `CHANGES.md` (`20b5b68`); `PROVENANCE.md`, `WRONG-CLAIMS.md`,
+`GREEN-FEEDER-PLAN.md`, `paper/PAPER-CLAUDE.md`, `paper/.rules/`, `paper/0*.md` (`6a00c4e`).
+
+**The two paper-editing rules from the deleted `paper/ISSUES.md` still apply** and are restated
+here so they survive: **edit, don't restructure** (large rewrites carry AI-plagiarism risk), and
+**never fabricate a number**. The only open item from the deleted `paper/REVIEW.md` is the
+**12-page cap** (currently 13 pp); its other items (em-dash standardisation, `\eqref` cross-refs,
+≥300 dpi figures) are all DONE.
 
 ## Source package: `fault_localization/`
 - `config/constants.py` — **all dataset/protocol constants** (FAULT_BUSES, PMU_BUSES, 11
@@ -78,8 +89,11 @@ not mix them with current numbers.
   `drop_edges` computed but discarded → only `zero_messages` is live), `evaluator.py`
   (`evaluate_dropout_curve` = one pass over the loader covering every (k, mask-offset) combo;
   per-batch mask seed `mask_seed*10000 + batch_idx`; soft-vote matches `voting.py`),
-  `training.py` (`DropoutAugmentedLoader`). Neighbour-mean **imputation is not a masking
-  policy** — it lives in `scripts/run_imputation_baseline.py`.
+  `training.py` (`DropoutAugmentedLoader`), `targeted.py` (worst-case selection: k μPMUs nearest
+  the fault bus by hop distance on the full 123-bus topology; deterministic given the label),
+  `persistent.py` (per-event selection from `(event_id, k, mask_seed)`, held across the event's
+  40 windows). Neighbour-mean **imputation is not a masking policy** — it lives in
+  `scripts/run_imputation_baseline.py`.
 - `experiments/` — `runner.py` (train/eval loop, builds model via `_model`, supports
   grad_clip_norm/warmup_epochs/gnn_layers/disable_edges/dropout_study), `cli.py` (train
   entrypoint + flags), `config.py` (yaml load + recursive merge + validate), `train.py`
@@ -108,6 +122,18 @@ not mix them with current numbers.
   curves; **`--seeds 42 43 44` aggregates training-seed error bars**), `build_sdr_result_figures.py`,
   `build_dropout_comparison.py`, `build_sdr_schematics.py`, `run_sdr_contribution.py` (orchestrator).
   De-risk: `smoke_test_dropout.py`.
+- **Targeted (worst-case) dropout (DONE, 3 seeds, `20b5b68`):** `run_targeted_dropout_study.py`
+  — drops the k μPMUs **topologically nearest the fault bus** (hop distance over the full
+  123-bus topology, not the measured-only graph), so selection is a deterministic function of
+  the label and there are **no mask seeds**; error bars are over training seeds only. No-fault
+  windows have no fault bus and fall back to random selection, so the reported macro-F1 is a
+  **conservative bound** on the true worst case. Summary: `build_targeted_summary.py`.
+  → `results/dropout_study_targeted/`. Selection logic: `fault_localization/dropout/targeted.py`.
+- **Persistent (per-event) dropout (DONE, 3 seeds, `20b5b68`):** `run_persistent_dropout_study.py`
+  — draws the dropped set **once per event** and holds it across that event's 40 windows (how a
+  real μPMU failure behaves) instead of redrawing per window. Everything else identical, so the
+  curve difference isolates mask persistence. Summary: `build_persistent_summary.py`.
+  → `results/dropout_study_persistent/`. Logic: `fault_localization/dropout/persistent.py`.
 - **Imputation baseline (DONE, 3 seeds):** `run_imputation_baseline.py` — fills each dropped
   node's 3 voltage channels with the per-timestep mean of its *available* 1-hop neighbours and
   sets the mask to 1 (most favourable to imputation), then feeds the **standard-trained**
@@ -158,6 +184,13 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
   `paper/figures/sdr_robustness_summary.csv`.
 - **Imputation baseline:** `dropout_study_impute/imputation_summary.json` — per-k `f1_mean/std`,
   `per_seed_f1`, `audc_mean`, `ret10_mean`; `policy=neighbour_mean_impute`, seeds 42/43/44.
+- **Targeted dropout:** `dropout_study_targeted/` — `targeted_curves_{standard,dropout_aware}.csv`
+  (+ `*_per_seed_*.csv`, `targeted_summary.json` which also carries the paired `*_random` arm for
+  the comparison, and `proximity_rank.npy` = the precomputed fault-bus→μPMU hop ranking).
+  `policy=targeted_nearest_fault`, RGSAGE-Max only.
+- **Persistent dropout:** `dropout_study_persistent/` — `persistent_curves_{standard,dropout_aware}.csv`
+  (+ per-seed CSVs carrying `f1_per_mask_seed`, `persistent_summary.json` with the `*_random` arm).
+  `policy=persistent_per_event`, RGSAGE-Max only.
 - **Statistics:** `statistics/significance_tests.json` — every test carries `a_per_seed`/
   `b_per_seed`, `mean_diff`, `ci95_*`, `t_stat`, `p_ttest`, `p_holm`, `cohens_dz`, plus
   `event_level_bootstrap`. **Runtime:** `runtime/runtime_summary.json` (`derived` block holds
@@ -203,6 +236,25 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
   the reconstructed values still go to a model never trained to distrust them.
   **Report faithfully — do not claim the gate wins.** Source of truth:
   `paper/figures/sdr_robustness_summary.csv` + `results/dropout_study_impute/`.
+- **Targeted (worst-case) dropout finding (final, 3 training seeds, RGSAGE-Max):** dropping the
+  k μPMUs nearest the fault is **much more damaging where it matters** — standard RGSAGE-Max
+  falls to **0.448±0.039 at k=1** vs 0.736±0.013 under random loss (p=0.010), a **3.6× larger**
+  drop from clean; 0.361 vs 0.590 at k=2 (p=0.017). From k≥5 the two policies agree (the model
+  has collapsed either way). Dropout-aware training **is also penalized** (AUDC 0.913→**0.747**,
+  p=0.003; p≤0.014 at every k) — worst-case loss is a **distinct stressor, not one the mitigation
+  absorbs** — but it still retains **+0.307 to +0.473** macro-F1 over standard under the same
+  targeting (p≤0.008), and from k=2 up its *worst-case* score beats standard's *average-case*
+  (0.695 vs 0.590 at k=2, p=0.042; 0.521 vs 0.048 at k=10, p=0.004). At k=1 the two are
+  **indistinguishable** (+0.018, p=0.33) — don't claim a win there.
+- **Persistent (per-event) dropout finding: a clean NULL.** Holding the dropped set across an
+  event's 40 windows changes **nothing** — no point on either curve moves by more than **0.003**
+  macro-F1 (standard AUDC 0.402→0.401, dropout-aware 0.913→0.913; Ret@10 5.7%→5.6% and
+  80.3%→80.1%), and **no** difference survives Holm across the 12 paired comparisons
+  (min p_Holm = 0.46). **Reason:** the decision rule is per-window — soft voting pools the 25
+  nodes of *one* window, never the 40 windows of an event, so a window's prediction depends only
+  on its own mask, whose marginal distribution is identical under both schemes. **This
+  equivalence does NOT transfer to an event-level rule** — per-window resampling would flatter
+  that by supplying 40 differently-masked views of a failure that presents only once.
 - **Multi-seed (50-run):** SDR-STGNN + all 5 dropout-aware models trained at seeds 42/43/44
   (deviation from the runbook's single-seed; run via a scratchpad orchestrator, autonomous).
 - **What is / is not statistically significant at n=3** (`results/statistics/`): the mitigation
@@ -229,8 +281,9 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
 - **Green-feeder scenario: ❌ CUT (2026-08-04), out of scope.** Not a contribution booster
   (a second-axis stress test only) and would need a new green corpus — dropped before the
   deadline. No green dataset/runs/claims; `configure_green_feeder` stays as dead/future-work
-  code. Paper no longer promises it. See `NEXT-STEPS.md` Step 6 (VOID); the `WRONG-CLAIMS.md`
-  and `GREEN-FEEDER-PLAN.md` that used to document this were deleted in `6a00c4e`.
+  code. Paper no longer promises it (it survives only as a future-work clause: "cross-topology
+  generalization to reconfigured feeders"). The `NEXT-STEPS.md` Step 6, `WRONG-CLAIMS.md`, and
+  `GREEN-FEEDER-PLAN.md` that documented this were all deleted — this bullet is now the record.
 - Stabilization (grad-clip 1.0 + warmup 3) on EVERY run. GPU = T1000 8GB (NVML monitoring
   broken but training unaffected).
 
@@ -239,6 +292,7 @@ Identical frozen data/splits across models; change one variable at a time; code 
 tests ≠ validated (confirm with a real run); dropout paper text must match `masking.py`;
 **report claims faithfully — SDR-STGNN does not beat dropout-aware training, don't overclaim.**
 The 50-run SDR chain runs autonomously to completion; STOP + report before the 100-run sweep.
-When editing `overleaf.tex`: **edit, don't restructure** (`paper/ISSUES.md`), never invent a
-number, and re-check any quoted result against the CSV/JSON on disk — several markdown docs
-still quote pre-bugfix values.
+When editing `overleaf.tex`: **edit, don't restructure** (rule inherited from the deleted
+`paper/ISSUES.md`), never invent a number, and re-check any quoted result against the CSV/JSON
+on disk. `paper/overleaf.tex` does not compile locally (`ecrc.sty` missing) — page count can
+only be checked on Overleaf.

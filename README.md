@@ -6,10 +6,11 @@ voltage sensors), plus a study of their **robustness to μPMU sensor dropout** �
 degradation curves under missing sensors and dropout-aware training that recovers
 accuracy.
 
-This repository reproduces the STGNN baselines of Karabulut et al. (2026),
+This repository **adopts the methodology** of Karabulut et al. (2026),
 *"Robustness of Spatio-temporal Graph Neural Networks for Fault Location in
-Partially Observable Distribution Grids"*, and adds the sensor-dropout robustness
-contribution on top of the existing models (not a new architecture).
+Partially Observable Distribution Grids"*, and reports **our own** numbers on a
+corpus we regenerate ourselves — it is *not* a numeric reproduction of that paper.
+On top of those baselines it adds the sensor-dropout robustness contribution.
 
 ## Task
 
@@ -27,12 +28,33 @@ All baselines are spatio-temporal (temporal GRU encoder + a spatial GNN):
 
 ## Contribution: sensor-dropout robustness
 
-- **4a — degradation curves:** evaluate each trained model with `k ∈ {0,1,2,5,10}`
+- **Degradation curves:** evaluate each trained model with `k ∈ {0,1,2,5,10}`
   μPMUs dropped at inference. Dropout = feature masking (voltage + availability
   channels zeroed; graph intact). Masks are **paired** across models — the same
   nodes are dropped for every model at a given `(k, seed)` — for a fair comparison.
-- **4b — dropout-aware training:** retrain with random node masking during
-  training, then re-run 4a to measure how much accuracy is recovered at each `k`.
+- **Dropout-aware training** (the headline mitigation): retrain with random node
+  masking during training, then re-run the sweep to measure recovery at each `k`.
+- **SDR-STGNN** (ablation): an availability-gated aggregator in which dropped nodes
+  emit no messages. Reported honestly — it *matches* but does **not** beat
+  dropout-aware training, at +18 % inference latency.
+- **Comparison baselines:** neighbour-mean imputation (impute-then-infer on the
+  standard model), **targeted** worst-case dropout (drop the k μPMUs nearest the
+  fault), and **persistent** per-event dropout (a failed sensor stays dark for the
+  whole event).
+
+### Headline results (RGSAGE-Max backbone, seeds 42/43/44)
+
+| | clean F1 | F1 @ k=10 | retention | AUDC |
+|---|---|---|---|---|
+| Standard training | 0.846 | 0.048 | 5.7 % | 0.402 |
+| + neighbour-mean imputation | 0.846 | 0.099 | 11.8 % | 0.476 |
+| **+ dropout-aware training** | 0.839 | **0.674** | **80.3 %** | **0.913** |
+| SDR-STGNN (gated) | 0.839 | 0.632 | 75.2 % | 0.892 |
+
+`k=10` is 10 of 25 μPMUs, i.e. 40 % of the fleet offline. Dropout-aware training
+costs **no** inference latency or parameters (measured) and +2.7 % training time.
+The most accurate architecture under full observability is also the most fragile
+under sensor loss.
 
 ## Repository layout
 
@@ -41,12 +63,13 @@ fault_localization/     # source package
   data/                 # dataset + IEEE-123 OpenDSS source files (.dss)
   models/               # GRU, RGCN, RGSAGE, RGATv2
   simulation/ graph/    # OpenDSS time-stepped sim + substation-rooted graph
-  dropout/              # sensor-dropout masking, evaluator, dropout-aware training
+  dropout/              # sensor-dropout masking, evaluator, dropout-aware training,
+                        #   targeted (worst-case) + persistent (per-event) selection
   experiments/          # CLI, config loading, training runner
 config/                 # base + per-model YAML configs
 scripts/                # dataset generation, sweeps, summary + figure builders
-paper/                  # paper drafts
-docs/                   # design / methodology notes
+paper/                  # overleaf.tex + generated figures/ and tables/
+results/                # all run outputs, summary CSVs, statistics, runtime
 tests/                  # unit + regression tests
 ```
 
@@ -102,17 +125,29 @@ Outputs land under `results/fullscale_final/` (metrics, summary CSVs, figures).
 ## Running the sensor-dropout study
 
 ```bash
-# 4a — inference-time degradation curves for the trained models
+# inference-time degradation curves for the trained models
 uv run python scripts/run_dropout_study.py \
     --results-dir results/fullscale_final --data-root <dataset> \
-    --output-dir results/dropout_study
+    --output-dir results/dropout_study --seeds 42 43 44
 
-# 4b — dropout-aware retraining, then re-evaluate + overlay
+# dropout-aware retraining, then re-evaluate + overlay
 uv run python scripts/run_dropout_aware_sweep.py
 uv run python scripts/run_dropout_study.py \
     --results-dir results/dropout_aware --data-root <dataset> \
-    --output-dir results/dropout_study_aware
+    --output-dir results/dropout_study_aware --seeds 42 43 44
 uv run python scripts/build_dropout_comparison.py
+
+# SDR-STGNN ablation
+uv run python scripts/run_sdr_stgnn.py --seed 42
+
+# comparison baselines
+uv run python scripts/run_imputation_baseline.py          # impute-then-infer
+uv run python scripts/run_targeted_dropout_study.py       # worst-case dropout
+uv run python scripts/run_persistent_dropout_study.py     # per-event dropout
+
+# analysis (no GPU needed)
+uv run python scripts/run_significance_tests.py           # paired t-tests + bootstrap
+uv run python scripts/run_runtime_benchmark.py            # latency / memory / params
 ```
 
 ## Tests
@@ -123,13 +158,23 @@ uv run pytest
 
 ## Status
 
-Active research code (targeting an ICMLDE 2026 submission). The baseline is
-reproduced at depth-4. All five baselines are trained at seeds 42/43/44, and
-full-observability accuracy is reported as mean ± std over those seeds. The
-sensor-dropout degradation curves are seed-averaged for RGSAGE-Max and the two
-robustness variants (dropout-aware RGSAGE-Max and SDR-STGNN); the other four
-baselines' degradation curves are reported on the seed-42 checkpoint. See
-`PROGRESS.md` and `NEXT-STEPS.md` for the current execution state.
+Active research code (ICMLDE 2026 submission). All experiments are complete and
+the paper is a full draft.
+
+- All five baselines trained at seeds **42/43/44**; accuracy reported mean ± std.
+- **Every** degradation curve is 3-seed (3 training seeds × 3 mask seeds) — for all
+  five architectures, the dropout-aware variants, and SDR-STGNN.
+- Imputation, targeted (worst-case), and persistent (per-event) dropout baselines
+  are done on the RGSAGE-Max backbone.
+- Significance testing (paired t-tests + Holm, event-level cluster bootstrap) and a
+  runtime/memory benchmark are in `results/statistics/` and `results/runtime/`.
+
+Frozen at depth-4 (a documented deviation from the base paper's single layer, which
+was unstable here). The 100-run / 3.30 M-window corpus is generated but the sweep on
+it is **parked**, not launched.
+
+`CLAUDE.md` is the repo map and current-status file; `paper/overleaf.tex` is the
+source of truth for all reported numbers.
 
 ## License
 

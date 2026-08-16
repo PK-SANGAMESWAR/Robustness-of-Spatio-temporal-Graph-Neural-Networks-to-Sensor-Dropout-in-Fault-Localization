@@ -1,3 +1,13 @@
+# QUESTIONS.md — author's open questions + answers
+
+**Q1: ✅ RESOLVED (2026-08-13).** The 3-seed requirement below was met in full: all 5 baselines,
+all 5 dropout-aware variants, and SDR-STGNN are trained at seeds **42/43/44**, and *every*
+degradation curve is 3 training seeds × 3 mask seeds. The paper reports mean ± std throughout,
+plus paired t-tests with Holm correction (`results/statistics/`). Nothing was shipped
+single-seed.
+
+---
+
 1. Next doubt is currently we are runing all models on 1 seed for 100 full dataset , so if i had to write a conf is this comparison of all seed with my new contibution enough or had i to test with all thew seeds mentioned ? 
 
 Answered like : 
@@ -31,3 +41,25 @@ Bottom line: single seed = enough to write the draft and prove the mechanism; 3 
 Want me to note in QUESTIONS.md that seeds 43/44 are required for the contribution figures (not optional), so it doesn't slip?
 
 2. Will the architecture of models change if we try full scale training to 100 percent of dataset -> 3.30 M or will we do the dataset training on same architecture as we did for 1.5 M ie 50 percent of full dataset?
+
+Answered:
+-> **Same architecture, unchanged.** The 100-run sweep is staged in
+`scripts/run_fullscale100_seed42_sweep.py` and it differs from the 50-run sweep in **one thing
+only: `DATA_ROOT`**. Identical model definitions, identical frozen config (GNN depth 4, 30
+epochs, unweighted CE, grad-clip 1.0, 3 warm-up epochs), identical splits logic.
+
+That is deliberate, and it is what makes the comparison meaningful. The project's hard rule is
+*change one variable at a time* — if you scaled the corpus **and** retuned the architecture, a
+change in accuracy could not be attributed to either. Doubling the data with everything else
+frozen answers exactly one question: *does more data help at this architecture?*
+
+Two caveats worth knowing before launching it:
+- Best-validation epoch is already **27.7–28.7 of 30** for RGCN/RGSAGE-*, i.e. those models are
+  still improving when the budget ends. On 2× the data they may be *more* under-trained, so a
+  flat or worse result would be ambiguous — it could mean "more data doesn't help" or "30 epochs
+  is now too few". Consider raising the epoch budget if you run it, and say so explicitly.
+- Cost: the 50-run sweep was 4.7–12.3 GPU-hours *per run*, ×5 models ×3 seeds. At 2× data,
+  budget roughly double.
+
+**Status: the 100-run corpus is generated (`dataset_fullscale_100`, 3.30M windows) but the sweep
+is PARKED — do not launch it without being asked.**

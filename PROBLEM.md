@@ -11,16 +11,26 @@
 - 3 fault resistances (0.1, 1, 10 Ω)
 - Load variation sampled uniformly between 0.5–1.3 p.u.
 - 1 ms voltage sampling with 20 ms sliding windows around each fault event
-- 50 runs/scenario, ~1.65M windows (reduced-scale reproduction; the paper's own
-  100-run/scenario figure is internally inconsistent — see docs/reproduction_log.md),
+- 50 runs/scenario, ~1.65M windows (reduced scale — we regenerate our own corpus
+  rather than reproducing the paper's numbers; the paper's reported 2.5M is not
+  reconstructable from the 825-scenario grid, a documented deviation),
   26-class label space (25 fault locations + 1 no-fault class)
 
 **4. What novelty I am bringing** The base paper assumes all μPMU sensors are **always available and functional**. In real grids, sensors fail, lose communication, or are removed. My contribution is to:
 
 - **Quantify** how much fault-localization accuracy degrades when μPMUs drop out at inference time (across the baseline models: GRU, RGCN, RGSAGE-Mean/Max, RGATv2), and
 - **Introduce dropout-aware training** — randomly masking measurement nodes during training — as a simple, low-cost method to make the models more robust to sensor loss.
+- **Ablate an architectural alternative** (SDR-STGNN, an availability-gated aggregator) and report honestly that it *matches* rather than beats the training-side fix.
+- **Stress the mitigation** against three harder settings: neighbour-mean imputation as a competing fix, **targeted** worst-case dropout (the k μPMUs nearest the fault), and **persistent** per-event dropout (a failed sensor stays dark for a whole event).
 
 **5. What change I bring over the base paper**
 
 - Base paper → evaluates STGNN fault localization under a *fixed, fully available* sensor set.
-- My work → evaluates and **improves robustness under sensor dropout and (optionally) measurement noise**, reporting degradation curves and showing that dropout-aware training recovers a significant portion of the lost accuracy, especially in the challenging reconfigured ("green") feeder scenario.
+- My work → evaluates and **improves robustness under sensor dropout and (optionally) measurement noise**, reporting degradation curves and showing that dropout-aware training recovers most of the lost accuracy (retention at 40 % sensor loss: 5.7 % → 80.3 %) at no inference cost.
+
+> **Scope note (2026-08-04): the reconfigured "green" feeder scenario was CUT.** An earlier
+> version of this document promised it. It would have needed a whole new corpus and was a
+> second-axis stress test rather than a contribution booster, so it was dropped before the
+> deadline. No green dataset, runs, or claims exist; `configure_green_feeder` remains in the
+> code as dead/future-work. The paper mentions reconfigured feeders only as future work.
+> Measurement noise, also floated earlier, was likewise not run.
