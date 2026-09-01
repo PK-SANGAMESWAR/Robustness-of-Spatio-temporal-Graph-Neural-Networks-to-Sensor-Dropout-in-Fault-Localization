@@ -1,0 +1,16 @@
+model,variant,seed,k,f1_seed,f1_mask_std,f1_per_mask_seed,policy
+rgsage_max,standard,42,0,0.852620215380119,0.0,[0.85262],correlated_connected_block
+rgsage_max,standard,42,1,0.7225847156839746,0.0008707241801339066,"[0.723397, 0.721665, 0.722692]",correlated_connected_block
+rgsage_max,standard,42,2,0.6568301807932762,0.0008624852539816269,"[0.655928, 0.657646, 0.656916]",correlated_connected_block
+rgsage_max,standard,42,5,0.4509481894529988,0.0009554072926112578,"[0.45068, 0.450155, 0.452009]",correlated_connected_block
+rgsage_max,standard,42,10,0.1844235965428368,0.0005332015995049924,"[0.184268, 0.185017, 0.183985]",correlated_connected_block
+rgsage_max,standard,43,0,0.8474890455017674,0.0,[0.847489],correlated_connected_block
+rgsage_max,standard,43,1,0.7486050829886836,0.0003265894784414341,"[0.748576, 0.748294, 0.748945]",correlated_connected_block
+rgsage_max,standard,43,2,0.6725902454667728,0.0008829305926854346,"[0.672122, 0.673609, 0.67204]",correlated_connected_block
+rgsage_max,standard,43,5,0.42881976471242306,0.0018776224470212193,"[0.426665, 0.429687, 0.430107]",correlated_connected_block
+rgsage_max,standard,43,10,0.08310383636589626,0.00045735728262446125,"[0.08264, 0.083117, 0.083554]",correlated_connected_block
+rgsage_max,standard,44,0,0.8388621118457128,0.0,[0.838862],correlated_connected_block
+rgsage_max,standard,44,1,0.7400057522554495,0.0005027374677715818,"[0.740343, 0.740246, 0.739428]",correlated_connected_block
+rgsage_max,standard,44,2,0.6631200943128389,0.001467642890547781,"[0.661661, 0.663103, 0.664596]",correlated_connected_block
+rgsage_max,standard,44,5,0.47576717543720654,0.001799903663854761,"[0.474208, 0.477737, 0.475356]",correlated_connected_block
+rgsage_max,standard,44,10,0.1923299496273806,0.0005852629847105132,"[0.192681, 0.192655, 0.191654]",correlated_connected_block

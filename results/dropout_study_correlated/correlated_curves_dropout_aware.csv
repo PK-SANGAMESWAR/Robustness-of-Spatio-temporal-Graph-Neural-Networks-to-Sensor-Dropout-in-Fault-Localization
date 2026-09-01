@@ -1,0 +1,6 @@
+model,variant,k,f1_mean,f1_std,n_train_seeds,n_mask_seeds,policy,err_kind,f1_per_train_seed
+rgsage_max,dropout_aware,0,0.8387763741604594,0.011091831058128514,3,3,correlated_connected_block,train_seed_std,"[0.851528, 0.833435, 0.831366]"
+rgsage_max,dropout_aware,1,0.8272745919297474,0.010856425971366586,3,3,correlated_connected_block,train_seed_std,"[0.839671, 0.822693, 0.81946]"
+rgsage_max,dropout_aware,2,0.8116362306980544,0.01147292673831135,3,3,correlated_connected_block,train_seed_std,"[0.824356, 0.808485, 0.802068]"
+rgsage_max,dropout_aware,5,0.7619726552662943,0.010839872341427045,3,3,correlated_connected_block,train_seed_std,"[0.771679, 0.763964, 0.750275]"
+rgsage_max,dropout_aware,10,0.6655181518811806,0.017006579150114158,3,3,correlated_connected_block,train_seed_std,"[0.681829, 0.666834, 0.647892]"

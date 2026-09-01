@@ -1,0 +1,16 @@
+model,variant,seed,k,f1_seed,f1_mask_std,f1_per_mask_seed,policy
+rgsage_max,dropout_aware,42,0,0.8515282499439987,0.0,[0.851528],correlated_connected_block
+rgsage_max,dropout_aware,42,1,0.839670737082852,0.00024000777139262917,"[0.839927, 0.839635, 0.839451]",correlated_connected_block
+rgsage_max,dropout_aware,42,2,0.8243555449634062,0.0004554575662632198,"[0.823887, 0.824797, 0.824382]",correlated_connected_block
+rgsage_max,dropout_aware,42,5,0.7716786684558782,0.0006504226441541242,"[0.772426, 0.771365, 0.771244]",correlated_connected_block
+rgsage_max,dropout_aware,42,10,0.681828691694864,0.0011831669463043051,"[0.681169, 0.683195, 0.681122]",correlated_connected_block
+rgsage_max,dropout_aware,43,0,0.8334353102817723,0.0,[0.833435],correlated_connected_block
+rgsage_max,dropout_aware,43,1,0.8226932054325354,0.0001297564221438607,"[0.822779, 0.822544, 0.822757]",correlated_connected_block
+rgsage_max,dropout_aware,43,2,0.8084847399275036,0.00031021438591919087,"[0.808157, 0.808523, 0.808774]",correlated_connected_block
+rgsage_max,dropout_aware,43,5,0.7639641949202435,0.0007709488968606539,"[0.7632, 0.76395, 0.764742]",correlated_connected_block
+rgsage_max,dropout_aware,43,10,0.6668338086781403,0.001480726751995647,"[0.668375, 0.666705, 0.665422]",correlated_connected_block
+rgsage_max,dropout_aware,44,0,0.8313655622556073,0.0,[0.831366],correlated_connected_block
+rgsage_max,dropout_aware,44,1,0.8194598332738546,0.00030921025225432526,"[0.819785, 0.81917, 0.819424]",correlated_connected_block
+rgsage_max,dropout_aware,44,2,0.8020684072032532,0.00025704477490296,"[0.80197, 0.80236, 0.801875]",correlated_connected_block
+rgsage_max,dropout_aware,44,5,0.7502751024227615,0.0002295011563982644,"[0.750342, 0.750463, 0.750019]",correlated_connected_block
+rgsage_max,dropout_aware,44,10,0.6478919552705372,0.0008804130447474354,"[0.646876, 0.648383, 0.648417]",correlated_connected_block

@@ -13,8 +13,11 @@ is now a resubmission/extension target before doing deadline-driven work): all e
 and re-run post-bugfix; the paper is a complete draft.** Every model is trained at seeds
 42/43/44, every degradation curve is 3-seed, imputation + targeted + persistent dropout
 baselines have been added, and `paper/overleaf.tex` has all sections written (abstract →
-conclusion + bibliography). Remaining polish: **page count (`paper/preview-local.pdf` = 13 pp
-vs. the 12-page cap)**, iThenticate/similarity check. The 100-run sweep is still parked (do NOT
+conclusion + bibliography). Remaining polish: **page count — the paper is 15 pp (measured
+2026-08-17 via `scripts/build_paper_preview.sh`), NOT the 13 pp recorded previously; and the
+"12-page cap" is itself unverified, since both docs stating it were deleted and disagreed
+(10 vs 12) and the 15 Aug deadline has passed — confirm the venue before cutting**,
+iThenticate/similarity check. The 100-run sweep is still parked (do NOT
 launch without being asked).
 
 **Two late experiments (2026-08-15, commit `20b5b68`) are in the paper but were undocumented in
@@ -75,8 +78,8 @@ Only these markdown files exist:
 **The two paper-editing rules from the deleted `paper/ISSUES.md` still apply** and are restated
 here so they survive: **edit, don't restructure** (large rewrites carry AI-plagiarism risk), and
 **never fabricate a number**. The only open item from the deleted `paper/REVIEW.md` is the
-**12-page cap** (currently 13 pp); its other items (em-dash standardisation, `\eqref` cross-refs,
-≥300 dpi figures) are all DONE.
+**12-page cap** (paper is actually **15 pp** — see the page-count correction above); its other
+items (em-dash standardisation, `\eqref` cross-refs, ≥300 dpi figures) are all DONE.
 
 ## Source package: `fault_localization/`
 - `config/constants.py` — **all dataset/protocol constants** (FAULT_BUSES, PMU_BUSES, 11
@@ -218,14 +221,89 @@ Frozen sweep config applied via CLI flags (`--gnn-layers 4
   + limitations), Conclusion, Acknowledgements, GenAI declaration, bibliography.
   Framing: dropout-aware training is the headline; SDR-STGNN is an ablation.
   The wide tables use `table*` (full-width) to avoid two-column overflow.
-- **It does not compile locally** — `ecrc.sty` (Elsevier CRC) is not installed on this machine, so
-  page count can only be checked on Overleaf. `preview-local.pdf` is the last exported PDF (13 pp).
+- **It DOES compile locally now** (fixed 2026-08-17). `ecrc.sty` is vendored in `paper/texlib/`
+  with two blank placeholder logo PDFs; run `bash scripts/build_paper_preview.sh` for the page
+  count. The build is a PREVIEW only — Elsevier's real logos are not redistributable, so submit
+  from Overleaf. **Correction: the paper is 15 pp at commit `f203e57`, not 13.** The "13 pp"
+  recorded here came from `paper/preview-local.pdf`, which does not exist on disk (and is not in
+  git history), so the figure was never verifiable. Treat any earlier page count as void.
 - `figures/`, `tables/` — generated assets for Overleaf upload. `figures/*.prebugfix.png` are the
   pre-bugfix versions, kept for comparison only.
 - **Page cap = 12** (ICMLDE, per the deleted `paper/REVIEW.md`). The deleted
   `paper/.rules/50-pagelimit.md` said 10; both files are gone — **12** is the number to work to,
   and it is recorded in `.rules/20-paper.md`. (The root `REVIEW.md` is an empty placeholder and
   is not that review.)
+
+## 2026-08-17 reviewer-hardening pass (NEW — read before touching the paper)
+
+A pass over the paper's weak points. Some closed, some in flight, some deliberately not done.
+
+**New source modules**
+- `dropout/noise.py` — additive Gaussian measurement noise, specified in **per-unit voltage** and
+  applied in normalized space as `sigma_pu / std_c`; gated by the availability mask so
+  uninstrumented phases and dropped nodes get none. Verified: 0.00502 p.u. realized at
+  σ=0.005, exactly 0 elsewhere, mask channels untouched.
+- `dropout/correlated.py` — contiguous outage: the dropped set is grown as a **connected**
+  subgraph of the 25-node tree from a uniform root.
+
+**New scripts** (all `uv run python scripts/<x>.py`)
+- `run_noise_robustness_study.py` — noise × dropout grid on frozen checkpoints. **DONE, 3 seeds,
+  both arms** → `results/dropout_study_noise/`.
+- `run_correlated_dropout_study.py` — contiguous sweep. **DONE, 3 seeds, both arms.**
+- `run_localization_metrics.py` — splits macro-F1 into 26-class / 25-class(localization) /
+  class-0(detection); dumps predictions per (k,offset). QUEUED.
+- `run_classical_baseline.py` — **non-deep, non-graph** baselines (logreg + random forest) on
+  375 summary features, identical splits and mask seeds. **DONE.**
+- `run_reviewer_retrains.py` — the retrain queue (`--arms scenario kgrid10 seeds`, tiered,
+  resumable). QUEUED, ~33 GPU-h.
+- `build_scenario_heldout_split.py` — builds `dataset_fullscale_50_scenario/` (splits only;
+  `processed/` is a **symlink** to the frozen corpus, which is never modified).
+- `build_absolute_audc.py`, `build_correlated_marginals.py`, `run_new_policy_significance.py`,
+  `build_paper_preview.sh`.
+
+**New findings (all traceable to `results/`)**
+- **The frozen split shares 825 of 825 scenarios between train and test.** It partitions the 50
+  runs of each scenario, not the scenarios, so reported accuracy measures generalization to
+  unseen *load conditions* of a known configuration. `dataset_fullscale_50_scenario` (575/125/125
+  scenarios, 0 overlap, all 26 classes per split) is the held-out counterpart; retrains queued.
+- **A classical baseline nearly matches the GNNs.** Logreg **0.713** / RF **0.633** at k=0 on
+  **8% of the training data**, against RGSAGE-Max 0.846 and RGCN 0.712. The GNN margin over a
+  linear model is 0.133, not the 0.560 the GRU (0.286) implies. `results/classical_baseline/`.
+- **RF is the most dropout-robust untreated model in the study**: Ret@10 **35.9%**, AUDC_abs
+  0.470, above RGCN's 23.2%/0.432. The old claim "no baseline retains more than a third" is now
+  scoped to the five networks. Dropout-aware training still dominates everything (80.3%, 0.766).
+- **Contiguous outages are MILDER than scattered ones**, not harsher (standard RGSAGE-Max:
+  0.452 vs 0.236 at k=5). **But no contiguous-vs-scattered difference survives Holm at n=3**
+  (min p_Holm 0.054) — report as an observation. **Confound:** the contiguous policy's per-node
+  drop marginals are far from uniform (0.18–0.87 vs 0.40 at k=10), so it does not isolate spatial
+  correlation; an incidence-matched control was NOT run. At k=1 the policies provably coincide
+  and both the marginal gap (2%) and the F1 gap (+0.001) vanish — the harness check.
+  For the **dropout-aware** model the policy is irrelevant (|Δ| ≤ 0.012).
+- **Measurement noise costs real accuracy, and dropout-aware training does NOT help against it.**
+  Standard RGSAGE-Max at k=0: 0.846 → 0.786 (σ=5e-4 p.u.) → 0.579 (σ=2e-3) → 0.345 (σ=1e-2, the
+  IEEE C37.118 1% TVE cap), i.e. ≈ **0.6 / 2.1 / 4.1 sensors' worth** of loss. Dropout-aware is
+  **not better at any σ** at k=0 (−0.008 to −0.034, all CIs span zero, p ≥ 0.107) — a clean null,
+  and the sharpest confirmation of the mask mechanism: **noise leaves the mask at 1**, so the
+  learned "(0,0,0) = dark" response has nothing to fire on. DA's *dropout* advantage does survive,
+  attenuated: at k=10, +0.627 (clean) → +0.579 → +0.428 → +0.209; only the first two survive Holm
+  over the 50-test noise family (p_Holm 0.029 / 0.023), so claim "continues to help", NOT
+  "undiminished". **Noise and dropout compound below the floor**: σ=0.01 with k=10 gives 0.018,
+  under the 0.026 trivial baseline. **CAUTION:** an early truncated-subset run suggested a far
+  worse collapse (~77% loss at σ=0.002); that was an artifact of few classes being present in a
+  400-batch subset. The full-split number is a 33% loss. Never size this from a subset.
+- **Absolute-scale AUDC** (`results/statistics/absolute_audc.csv`) — recomputes Eq. 8 on raw
+  macro-F1. The accuracy/robustness inversion survives (RGCN 0.432 > RGSAGE-Max 0.340), but
+  **RGATv2's top relative-AUDC position is a normalization artifact** (0.626 relative → 0.324
+  absolute, 4th of 5) and is no longer claimed as robustness.
+- **Trivial reference:** an always-"no fault" classifier scores 26-class macro-F1 **0.0256**.
+  Standard RGSAGE-Max at k=10 (0.048) is only **1.9×** that, i.e. localization is gone while
+  detection survives.
+
+**Deliberately NOT done:** per-architecture depth selection (the full RGATv2 fix — its claim was
+neutralized in prose instead); a learned imputation baseline (Feature Propagation / VGAE), now
+cited as a named gap; the incidence-matched contiguous control.
+
+**Paper is 17 pp** after these additions (15 at `f203e57`). See the page-count correction above.
 
 ## Key facts (verified against code — safe to reuse without re-checking)
 - Dataset: 50-run corpus `dataset_fullscale_50` = 1.65M **windows** (825×50×40; event-level
@@ -305,5 +383,5 @@ tests ≠ validated (confirm with a real run); dropout paper text must match `ma
 The 50-run SDR chain runs autonomously to completion; STOP + report before the 100-run sweep.
 When editing `overleaf.tex`: **edit, don't restructure** (rule inherited from the deleted
 `paper/ISSUES.md`), never invent a number, and re-check any quoted result against the CSV/JSON
-on disk. `paper/overleaf.tex` does not compile locally (`ecrc.sty` missing) — page count can
-only be checked on Overleaf.
+on disk. `paper/overleaf.tex` now compiles locally — `bash scripts/build_paper_preview.sh`
+prints the page count (preview only; submit from Overleaf).

@@ -1,0 +1,15 @@
+base: experiment_base.yaml
+benchmark_version: zone_refine
+model:
+  name: zone_refine
+  aggregator: max          # same local backbone as the strongest baseline
+  learn_templates: true    # physics initialises, gradients may move them
+  use_physics_zones: true  # false = ablation Z3 (hierarchy kept, physics removed)
+# Frozen recipe (depth 4 / 30 epochs / grad-clip 1.0 / warmup 3) via CLI flags.
+dropout_study:
+  enabled: true
+  dropout_aware_training: false
+  policy: zero_messages
+  train_k_range: [0, 1, 2, 5]
+  k_levels: [0, 1, 2, 5, 10]
+  n_mask_seeds: 3

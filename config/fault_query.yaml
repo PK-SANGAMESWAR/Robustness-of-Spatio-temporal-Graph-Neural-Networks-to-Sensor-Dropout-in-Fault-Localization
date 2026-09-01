@@ -1,0 +1,22 @@
+base: experiment_base.yaml
+benchmark_version: fault_query
+model:
+  name: fault_query
+  aggregator: max        # same local backbone as the strongest baseline
+  num_heads: 4
+  alpha_init: 0.1        # per-head distance weight, before softplus
+# Ablation switches (all on for the headline model); see
+# scripts/run_fault_query_ablations.py for the one-at-a-time variants.
+  use_distance_bias: true
+  use_availability_mask: true
+  use_reliability: true
+  use_local_gnn: true
+# Frozen recipe (depth 4 / 30 epochs / grad-clip 1.0 / warmup 3) is applied via
+# CLI flags by scripts/run_fault_query.py, matching every other sweep.
+dropout_study:
+  enabled: true
+  dropout_aware_training: false
+  policy: zero_messages
+  train_k_range: [0, 1, 2, 5]
+  k_levels: [0, 1, 2, 5, 10]
+  n_mask_seeds: 3

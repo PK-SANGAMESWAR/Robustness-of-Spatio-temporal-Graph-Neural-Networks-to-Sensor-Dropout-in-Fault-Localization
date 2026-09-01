@@ -11,7 +11,9 @@ import torch
 
 from fault_localization.data.dataset import WindowGraphDataset, make_dataloader
 from fault_localization.data.manifest import create_manifest, verify_manifest, write_manifest
-from fault_localization.models import GRUBaseline, RGSAGE, RGCN, RGATv2, SDRSTGNN
+from fault_localization.models import (GRUBaseline, RGSAGE, RGCN, RGATv2,
+                                      SDRSTGNN, FaultQuerySTGNN,
+                                      ZoneRefineSTGNN)
 from .config import validate_config
 from .evaluate import evaluate_loader
 from .seed import seed_everything
@@ -33,6 +35,40 @@ def _model(config, edge):
             edge, aggregator=m.get("aggregator", "max"),
             gnn_hidden_dim=m.get("gnn_hidden_dim", 64),
             num_layers=config.get("gnn_layers", 1),
+            **common,
+        )
+    if name == "zone_refine":
+        from fault_localization.graph.sensitivity import load_sensitivity
+        # Static feeder physics; cached .npz, so no OpenDSS at training time.
+        phys = load_sensitivity(
+            m.get("node_mapping_path",
+                  f"{config['data_root']}/processed/node_mapping.json"))
+        return ZoneRefineSTGNN(
+            edge, phys["zone_templates"], phys["zone_of_class"],
+            aggregator=m.get("aggregator", "max"),
+            gnn_hidden_dim=m.get("gnn_hidden_dim", 64),
+            num_layers=config.get("gnn_layers", 1),
+            learn_templates=m.get("learn_templates", True),
+            use_physics_zones=m.get("use_physics_zones", True),
+            **common,
+        )
+    if name == "fault_query":
+        from fault_localization.graph.fault_distance import load_fault_hop_distance
+        # Static feeder geometry; cached .npy, so no OpenDSS at training time.
+        hop_distance = load_fault_hop_distance(
+            m.get("node_mapping_path",
+                  f"{config['data_root']}/processed/node_mapping.json"))
+        return FaultQuerySTGNN(
+            edge, hop_distance,
+            aggregator=m.get("aggregator", "max"),
+            gnn_hidden_dim=m.get("gnn_hidden_dim", 64),
+            num_layers=config.get("gnn_layers", 1),
+            num_heads=m.get("num_heads", 4),
+            alpha_init=m.get("alpha_init", 0.1),
+            use_distance_bias=m.get("use_distance_bias", True),
+            use_availability_mask=m.get("use_availability_mask", True),
+            use_reliability=m.get("use_reliability", True),
+            use_local_gnn=m.get("use_local_gnn", True),
             **common,
         )
     if name.startswith("rgsage"):
