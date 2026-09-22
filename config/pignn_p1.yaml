@@ -1,0 +1,16 @@
+# P1 — Type C: physics in the GRAPH (impedance-weighted messages).
+# Backbone identical to RGSAGE-Max; the only change is that each message is
+# scaled by exp(-softplus(gamma) * |Z|/median|Z|). One extra scalar parameter.
+base: experiment_base.yaml
+benchmark_version: pignn_p1
+model:
+  name: pignn
+  aggregator: max
+  use_impedance_weights: true
+  use_sensitivity_bias: false
+  gamma_init: 1.0
+# Screening runs evaluate clean val/test only; degradation curves are run on the
+# selected arm afterwards, so the screen is not paying for five k-levels x three
+# mask seeds per arm.
+dropout_study:
+  enabled: false

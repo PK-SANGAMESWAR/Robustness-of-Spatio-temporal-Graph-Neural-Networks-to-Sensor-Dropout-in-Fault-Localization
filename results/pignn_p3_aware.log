@@ -1,0 +1,9 @@
+waiting for the P3 noise grid to finish...
+noise grid done; starting P3+dropout-aware at 2026-09-10 12:14:35
+########## P3+AWARE seed=42 ##########
+results/pignn_p3_aware/pignn/seed_00042
+########## P3+AWARE seed=43 ##########
+results/pignn_p3_aware/pignn/seed_00043
+########## P3+AWARE seed=44 ##########
+results/pignn_p3_aware/pignn/seed_00044
+########## P3+AWARE ALL SEEDS DONE ##########

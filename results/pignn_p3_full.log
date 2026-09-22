@@ -1,0 +1,31 @@
+########## P3 FULL seed=42 ##########
+PIGNN screen — arms ['p3'], seed 42, 30 epochs
+Reference: RGSAGE-Max val_graph_f1 @ epoch 30 = 0.844 (same budget, no re-run needed)
+[run] uv run python -m fault_localization.experiments.cli train --config config/pignn_p3.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pignn_p3_full --epochs 30 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
+results/pignn_p3_full/pignn/seed_00042
+[ok] pignn_p3_full seed=42 — 455.3 min
+
+=== screen complete ===
+  p3: test_graph_f1=0.8661  best_val=0.8645
+  baseline RGSAGE-Max @ e30: val=0.8436
+########## P3 FULL seed=43 ##########
+PIGNN screen — arms ['p3'], seed 43, 30 epochs
+Reference: RGSAGE-Max val_graph_f1 @ epoch 30 = 0.844 (same budget, no re-run needed)
+[run] uv run python -m fault_localization.experiments.cli train --config config/pignn_p3.yaml --seed 43 --data-root dataset_fullscale_50 --benchmark-version pignn_p3_full --epochs 30 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
+results/pignn_p3_full/pignn/seed_00043
+[ok] pignn_p3_full seed=43 — 450.4 min
+
+=== screen complete ===
+  p3: test_graph_f1=0.8296  best_val=0.8340
+  baseline RGSAGE-Max @ e30: val=0.8436
+########## P3 FULL seed=44 ##########
+PIGNN screen — arms ['p3'], seed 44, 30 epochs
+Reference: RGSAGE-Max val_graph_f1 @ epoch 30 = 0.844 (same budget, no re-run needed)
+[run] uv run python -m fault_localization.experiments.cli train --config config/pignn_p3.yaml --seed 44 --data-root dataset_fullscale_50 --benchmark-version pignn_p3_full --epochs 30 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
+results/pignn_p3_full/pignn/seed_00044
+[ok] pignn_p3_full seed=44 — 451.1 min
+
+=== screen complete ===
+  p3: test_graph_f1=0.8449  best_val=0.8500
+  baseline RGSAGE-Max @ e30: val=0.8436
+########## P3 FULL ALL SEEDS DONE ##########

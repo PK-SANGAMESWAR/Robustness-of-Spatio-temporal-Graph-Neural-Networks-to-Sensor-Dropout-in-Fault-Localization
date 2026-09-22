@@ -1,0 +1,142 @@
+########## ARM p3 ##########
+[eval] pignn (p3) seed=42 sigma=[0.0, 0.0005, 0.002, 0.01] k=[0, 1, 2, 5, 10] ...
+  [noise] pignn seed=42 sigma=0.0 k=0: F1=0.8061
+  [noise] pignn seed=42 sigma=0.0 k=1: F1=0.6258
+  [noise] pignn seed=42 sigma=0.0 k=2: F1=0.4262
+  [noise] pignn seed=42 sigma=0.0 k=5: F1=0.0793
+  [noise] pignn seed=42 sigma=0.0 k=10: F1=0.0119
+  [noise] pignn seed=42 sigma=0.0005 k=0: F1=0.7589
+  [noise] pignn seed=42 sigma=0.0005 k=1: F1=0.5994
+  [noise] pignn seed=42 sigma=0.0005 k=2: F1=0.4040
+  [noise] pignn seed=42 sigma=0.0005 k=5: F1=0.0759
+  [noise] pignn seed=42 sigma=0.0005 k=10: F1=0.0119
+  [noise] pignn seed=42 sigma=0.002 k=0: F1=0.5949
+  [noise] pignn seed=42 sigma=0.002 k=1: F1=0.4886
+  [noise] pignn seed=42 sigma=0.002 k=2: F1=0.3487
+  [noise] pignn seed=42 sigma=0.002 k=5: F1=0.0676
+  [noise] pignn seed=42 sigma=0.002 k=10: F1=0.0117
+  [noise] pignn seed=42 sigma=0.01 k=0: F1=0.3781
+  [noise] pignn seed=42 sigma=0.01 k=1: F1=0.2828
+  [noise] pignn seed=42 sigma=0.01 k=2: F1=0.1839
+  [noise] pignn seed=42 sigma=0.01 k=5: F1=0.0338
+  [noise] pignn seed=42 sigma=0.01 k=10: F1=0.0091
+
+=== Noise x dropout (p3), seeds [42] ===
+  pignn        sigma=0.0    k= 0: F1 = 0.806 ± 0.000
+  pignn        sigma=0.0    k= 1: F1 = 0.626 ± 0.000
+  pignn        sigma=0.0    k= 2: F1 = 0.426 ± 0.000
+  pignn        sigma=0.0    k= 5: F1 = 0.079 ± 0.000
+  pignn        sigma=0.0    k=10: F1 = 0.012 ± 0.000
+  pignn        sigma=0.0005 k= 0: F1 = 0.759 ± 0.000
+  pignn        sigma=0.0005 k= 1: F1 = 0.599 ± 0.000
+  pignn        sigma=0.0005 k= 2: F1 = 0.404 ± 0.000
+  pignn        sigma=0.0005 k= 5: F1 = 0.076 ± 0.000
+  pignn        sigma=0.0005 k=10: F1 = 0.012 ± 0.000
+  pignn        sigma=0.002  k= 0: F1 = 0.595 ± 0.000
+  pignn        sigma=0.002  k= 1: F1 = 0.489 ± 0.000
+  pignn        sigma=0.002  k= 2: F1 = 0.349 ± 0.000
+  pignn        sigma=0.002  k= 5: F1 = 0.068 ± 0.000
+  pignn        sigma=0.002  k=10: F1 = 0.012 ± 0.000
+  pignn        sigma=0.01   k= 0: F1 = 0.378 ± 0.000
+  pignn        sigma=0.01   k= 1: F1 = 0.283 ± 0.000
+  pignn        sigma=0.01   k= 2: F1 = 0.184 ± 0.000
+  pignn        sigma=0.01   k= 5: F1 = 0.034 ± 0.000
+  pignn        sigma=0.01   k=10: F1 = 0.009 ± 0.000
+
+Wrote /home/ubuntu/Fault-Localization/results/pignn_noise/noise_per_seed_p3.csv
+      /home/ubuntu/Fault-Localization/results/pignn_noise/noise_curves_p3.csv
+########## ARM p2 ##########
+[eval] pignn (p2) seed=42 sigma=[0.0, 0.0005, 0.002, 0.01] k=[0, 1, 2, 5, 10] ...
+  [noise] pignn seed=42 sigma=0.0 k=0: F1=0.8091
+  [noise] pignn seed=42 sigma=0.0 k=1: F1=0.6517
+  [noise] pignn seed=42 sigma=0.0 k=2: F1=0.4668
+  [noise] pignn seed=42 sigma=0.0 k=5: F1=0.0958
+  [noise] pignn seed=42 sigma=0.0 k=10: F1=0.0104
+  [noise] pignn seed=42 sigma=0.0005 k=0: F1=0.7772
+  [noise] pignn seed=42 sigma=0.0005 k=1: F1=0.6057
+  [noise] pignn seed=42 sigma=0.0005 k=2: F1=0.4283
+  [noise] pignn seed=42 sigma=0.0005 k=5: F1=0.0814
+  [noise] pignn seed=42 sigma=0.0005 k=10: F1=0.0096
+  [noise] pignn seed=42 sigma=0.002 k=0: F1=0.5642
+  [noise] pignn seed=42 sigma=0.002 k=1: F1=0.4604
+  [noise] pignn seed=42 sigma=0.002 k=2: F1=0.3361
+  [noise] pignn seed=42 sigma=0.002 k=5: F1=0.0614
+  [noise] pignn seed=42 sigma=0.002 k=10: F1=0.0088
+  [noise] pignn seed=42 sigma=0.01 k=0: F1=0.3443
+  [noise] pignn seed=42 sigma=0.01 k=1: F1=0.2513
+  [noise] pignn seed=42 sigma=0.01 k=2: F1=0.1595
+  [noise] pignn seed=42 sigma=0.01 k=5: F1=0.0257
+  [noise] pignn seed=42 sigma=0.01 k=10: F1=0.0071
+
+=== Noise x dropout (p2), seeds [42] ===
+  pignn        sigma=0.0    k= 0: F1 = 0.809 ± 0.000
+  pignn        sigma=0.0    k= 1: F1 = 0.652 ± 0.000
+  pignn        sigma=0.0    k= 2: F1 = 0.467 ± 0.000
+  pignn        sigma=0.0    k= 5: F1 = 0.096 ± 0.000
+  pignn        sigma=0.0    k=10: F1 = 0.010 ± 0.000
+  pignn        sigma=0.0005 k= 0: F1 = 0.777 ± 0.000
+  pignn        sigma=0.0005 k= 1: F1 = 0.606 ± 0.000
+  pignn        sigma=0.0005 k= 2: F1 = 0.428 ± 0.000
+  pignn        sigma=0.0005 k= 5: F1 = 0.081 ± 0.000
+  pignn        sigma=0.0005 k=10: F1 = 0.010 ± 0.000
+  pignn        sigma=0.002  k= 0: F1 = 0.564 ± 0.000
+  pignn        sigma=0.002  k= 1: F1 = 0.460 ± 0.000
+  pignn        sigma=0.002  k= 2: F1 = 0.336 ± 0.000
+  pignn        sigma=0.002  k= 5: F1 = 0.061 ± 0.000
+  pignn        sigma=0.002  k=10: F1 = 0.009 ± 0.000
+  pignn        sigma=0.01   k= 0: F1 = 0.344 ± 0.000
+  pignn        sigma=0.01   k= 1: F1 = 0.251 ± 0.000
+  pignn        sigma=0.01   k= 2: F1 = 0.159 ± 0.000
+  pignn        sigma=0.01   k= 5: F1 = 0.026 ± 0.000
+  pignn        sigma=0.01   k=10: F1 = 0.007 ± 0.000
+
+Wrote /home/ubuntu/Fault-Localization/results/pignn_noise/noise_per_seed_p2.csv
+      /home/ubuntu/Fault-Localization/results/pignn_noise/noise_curves_p2.csv
+########## ARM p1 ##########
+[eval] pignn (p1) seed=42 sigma=[0.0, 0.0005, 0.002, 0.01] k=[0, 1, 2, 5, 10] ...
+  [noise] pignn seed=42 sigma=0.0 k=0: F1=0.8005
+  [noise] pignn seed=42 sigma=0.0 k=1: F1=0.6664
+  [noise] pignn seed=42 sigma=0.0 k=2: F1=0.5153
+  [noise] pignn seed=42 sigma=0.0 k=5: F1=0.1848
+  [noise] pignn seed=42 sigma=0.0 k=10: F1=0.0413
+  [noise] pignn seed=42 sigma=0.0005 k=0: F1=0.7893
+  [noise] pignn seed=42 sigma=0.0005 k=1: F1=0.6491
+  [noise] pignn seed=42 sigma=0.0005 k=2: F1=0.4986
+  [noise] pignn seed=42 sigma=0.0005 k=5: F1=0.1771
+  [noise] pignn seed=42 sigma=0.0005 k=10: F1=0.0401
+  [noise] pignn seed=42 sigma=0.002 k=0: F1=0.5453
+  [noise] pignn seed=42 sigma=0.002 k=1: F1=0.4621
+  [noise] pignn seed=42 sigma=0.002 k=2: F1=0.3872
+  [noise] pignn seed=42 sigma=0.002 k=5: F1=0.1534
+  [noise] pignn seed=42 sigma=0.002 k=10: F1=0.0363
+  [noise] pignn seed=42 sigma=0.01 k=0: F1=0.2686
+  [noise] pignn seed=42 sigma=0.01 k=1: F1=0.2089
+  [noise] pignn seed=42 sigma=0.01 k=2: F1=0.1586
+  [noise] pignn seed=42 sigma=0.01 k=5: F1=0.0572
+  [noise] pignn seed=42 sigma=0.01 k=10: F1=0.0209
+
+=== Noise x dropout (p1), seeds [42] ===
+  pignn        sigma=0.0    k= 0: F1 = 0.800 ± 0.000
+  pignn        sigma=0.0    k= 1: F1 = 0.666 ± 0.000
+  pignn        sigma=0.0    k= 2: F1 = 0.515 ± 0.000
+  pignn        sigma=0.0    k= 5: F1 = 0.185 ± 0.000
+  pignn        sigma=0.0    k=10: F1 = 0.041 ± 0.000
+  pignn        sigma=0.0005 k= 0: F1 = 0.789 ± 0.000
+  pignn        sigma=0.0005 k= 1: F1 = 0.649 ± 0.000
+  pignn        sigma=0.0005 k= 2: F1 = 0.499 ± 0.000
+  pignn        sigma=0.0005 k= 5: F1 = 0.177 ± 0.000
+  pignn        sigma=0.0005 k=10: F1 = 0.040 ± 0.000
+  pignn        sigma=0.002  k= 0: F1 = 0.545 ± 0.000
+  pignn        sigma=0.002  k= 1: F1 = 0.462 ± 0.000
+  pignn        sigma=0.002  k= 2: F1 = 0.387 ± 0.000
+  pignn        sigma=0.002  k= 5: F1 = 0.153 ± 0.000
+  pignn        sigma=0.002  k=10: F1 = 0.036 ± 0.000
+  pignn        sigma=0.01   k= 0: F1 = 0.269 ± 0.000
+  pignn        sigma=0.01   k= 1: F1 = 0.209 ± 0.000
+  pignn        sigma=0.01   k= 2: F1 = 0.159 ± 0.000
+  pignn        sigma=0.01   k= 5: F1 = 0.057 ± 0.000
+  pignn        sigma=0.01   k=10: F1 = 0.021 ± 0.000
+
+Wrote /home/ubuntu/Fault-Localization/results/pignn_noise/noise_per_seed_p1.csv
+      /home/ubuntu/Fault-Localization/results/pignn_noise/noise_curves_p1.csv
+########## ALL ARMS DONE ##########

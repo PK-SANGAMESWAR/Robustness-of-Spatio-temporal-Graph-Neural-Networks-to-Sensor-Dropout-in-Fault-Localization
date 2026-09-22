@@ -1,0 +1,27 @@
+PIGNN screen — arms ['p3', 'p1', 'p2'], seed 42, 15 epochs
+Reference: RGSAGE-Max val_graph_f1 @ epoch 15 = 0.816 (same budget, no re-run needed)
+[run] uv run python -m fault_localization.experiments.cli train --config config/pignn_p3.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pignn_p3 --epochs 15 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+results/pignn_p3/pignn/seed_00042
+[ok] pignn_p3 seed=42 — 229.6 min
+[run] uv run python -m fault_localization.experiments.cli train --config config/pignn_p1.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pignn_p1 --epochs 15 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+PIGNN screen — arms ['p3', 'p1', 'p2'], seed 42, 15 epochs
+Reference: RGSAGE-Max val_graph_f1 @ epoch 15 = 0.816 (same budget, no re-run needed)
+[skip] pignn_p3 seed=42 — already complete
+[run] uv run python -m fault_localization.experiments.cli train --config config/pignn_p1.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pignn_p1 --epochs 15 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
+results/pignn_p1/pignn/seed_00042
+[ok] pignn_p1 seed=42 — 229.6 min
+[run] uv run python -m fault_localization.experiments.cli train --config config/pignn_p2.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pignn_p2 --epochs 15 --gnn-layers 4 --grad-clip-norm 1.0 --warmup-epochs 3
+results/pignn_p2/pignn/seed_00042
+[ok] pignn_p2 seed=42 — 224.6 min
+
+=== screen complete ===
+  p3: test_graph_f1=0.8061  best_val=0.8111
+  p1: test_graph_f1=0.8005  best_val=0.8069
+  p2: test_graph_f1=0.8091  best_val=0.8110
+  baseline RGSAGE-Max @ e15: val=0.8162

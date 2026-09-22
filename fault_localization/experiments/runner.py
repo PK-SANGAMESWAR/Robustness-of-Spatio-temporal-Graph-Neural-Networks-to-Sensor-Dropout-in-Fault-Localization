@@ -13,7 +13,7 @@ from fault_localization.data.dataset import WindowGraphDataset, make_dataloader
 from fault_localization.data.manifest import create_manifest, verify_manifest, write_manifest
 from fault_localization.models import (GRUBaseline, RGSAGE, RGCN, RGATv2,
                                       SDRSTGNN, FaultQuerySTGNN,
-                                      ZoneRefineSTGNN)
+                                      ZoneRefineSTGNN, PIGNNSage)
 from .config import validate_config
 from .evaluate import evaluate_loader
 from .seed import seed_everything
@@ -71,6 +71,33 @@ def _model(config, edge):
             use_local_gnn=m.get("use_local_gnn", True),
             **common,
         )
+    if name == "pignn":
+        # PIGNN screening arms P1/P2 (models/pignn.py). Both physics artifacts
+        # are static feeder properties cached beside the dataset, so no OpenDSS
+        # is needed at training time. With both switches off this is byte-for-
+        # byte RGSAGE (asserted in tests/test_pignn.py).
+        edge_attr = None
+        sensitivity = None
+        if m.get("use_impedance_weights", False):
+            edge_attr = np.load(f"{config['data_root']}/processed/edge_attr.npy")
+        if m.get("use_sensitivity_bias", False):
+            from fault_localization.graph.sensitivity import load_sensitivity
+            sensitivity = load_sensitivity(
+                m.get("node_mapping_path",
+                      f"{config['data_root']}/processed/node_mapping.json")
+            )["sensitivity"]
+        return PIGNNSage(
+            edge, edge_attr, sensitivity,
+            aggregator=m.get("aggregator", "max"),
+            gnn_hidden_dim=m.get("gnn_hidden_dim", 64),
+            num_layers=config.get("gnn_layers", 1),
+            use_impedance_weights=m.get("use_impedance_weights", False),
+            use_sensitivity_bias=m.get("use_sensitivity_bias", False),
+            gamma_init=m.get("gamma_init", 1.0),
+            beta_init=m.get("beta_init", 0.1),
+            **common,
+        )
+
     if name.startswith("rgsage"):
         return RGSAGE(
             edge, m["aggregator"],
@@ -188,6 +215,23 @@ def run(config, resume=False):
     warmup_epochs = config["training"].get("warmup_epochs", 0)
     base_lr = config["training"]["learning_rate"]
 
+    # ----------------------------------------------------------------
+    # P3 — physics-consistency loss (models/physics_loss.py). Off unless the
+    # config asks for it, so every existing benchmark keeps a pure-CE objective.
+    # ----------------------------------------------------------------
+    phys_cfg = config.get("physics_loss", {})
+    physics = None
+    if phys_cfg.get("enabled", False):
+        from fault_localization.graph.sensitivity import load_sensitivity
+        signatures = load_sensitivity(
+            phys_cfg.get("node_mapping_path",
+                         f"{config['data_root']}/processed/node_mapping.json")
+        )["sensitivity"]
+        physics = {
+            "lam": float(phys_cfg.get("lambda", 1.0)),
+            "signatures": torch.as_tensor(signatures, dtype=torch.float32),
+        }
+
     for epoch in range(epochs):
         if warmup_epochs > 0:
             lr_scale = min(1.0, (epoch + 1) / warmup_epochs)
@@ -199,7 +243,8 @@ def run(config, resume=False):
             val_ds, config["training"]["batch_size"], shuffle=False, num_workers=num_workers,
         )
 
-        tr = train_epoch(model, train_loader, opt, device, grad_clip_norm=grad_clip_norm)
+        tr = train_epoch(model, train_loader, opt, device,
+                         grad_clip_norm=grad_clip_norm, physics=physics)
         va = validate_epoch(
             model, val_loader, device, config["metrics"]["f1_average"],
         )
@@ -211,6 +256,8 @@ def run(config, resume=False):
             "val_graph_f1": va["graph"]["f1"],
             "val_node_f1": va["node"]["f1"],
         }
+        if "phys_loss" in tr:
+            row["train_phys_loss"] = tr["phys_loss"]
         history.append(row)
 
         torch.save(

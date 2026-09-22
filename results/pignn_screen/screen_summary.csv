@@ -1,0 +1,4 @@
+arm,label,type,status,epochs,test_graph_f1,best_val_f1,baseline_val_at_same_epoch,delta_val_vs_baseline
+p3,P3  physics in the LOSS,Type A,ok,15,0.8061,0.8111,0.8162,-0.0051
+p1,P1  physics in the GRAPH,Type C,ok,15,0.8005,0.8069,0.8162,-0.0093
+p2,P2  physics in the PRIOR,Type D,ok,15,0.8091,0.811,0.8162,-0.0052

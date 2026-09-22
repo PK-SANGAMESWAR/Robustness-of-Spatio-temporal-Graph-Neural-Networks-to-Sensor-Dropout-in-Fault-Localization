@@ -1,0 +1,86 @@
+# P3 + dropout-aware training -- the complementary-failure-modes test.
+#
+# Measured, on this corpus:
+#   dropout-aware training  fixes dropout (Ret@10 5.7% -> 80.3%) and is a
+#                           proven NULL against noise (p >= 0.107).
+#   P3 physics loss         helps under noise (+0.034 vs standard at
+#                           sigma=0.01, k=0, n=1) and HURTS under dropout.
+#
+# The two mitigations therefore fail in opposite directions, which is the
+# argument for combining them. This config is config/dropout_aware/
+# rgsage_max.yaml with exactly one thing added: the physics loss. Both
+# model-side switches stay off, so no parameter is added either
+# (95,258 -- identical to the dropout-aware baseline it is paired with).
+
+benchmark_version: pignn_p3_aware
+data_root: dataset_fullscale_50
+device: cuda
+dropout_study:
+  dropout_aware_training: true
+  enabled: false
+  k_levels:
+  - 0
+  - 1
+  - 2
+  - 5
+  - 10
+  n_mask_seeds: 3
+  policy: zero_messages
+  train_k_range:
+  - 0
+  - 1
+  - 2
+  - 5
+feeder_config: default
+gnn_layers: 4
+metrics:
+  f1_average: macro
+  labels:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 25
+model:
+  aggregator: max
+  dropout: 0.35
+  gnn_hidden_dim: 64
+  name: pignn
+  temporal_hidden_dim: 128
+  use_impedance_weights: false
+  use_sensitivity_bias: false
+output_root: results
+physics_loss:
+  enabled: true
+  lambda: 5.0
+seed: 42
+training:
+  batch_size: 32
+  checkpoint_metric: graph_f1
+  deterministic: true
+  epochs: 30
+  grad_clip_norm: 1.0
+  learning_rate: 0.001
+  warmup_epochs: 3
+  weight_decay: 0.0001

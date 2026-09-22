@@ -1,0 +1,35 @@
+[
+  {
+    "arm": "p3",
+    "label": "P3  physics in the LOSS",
+    "type": "Type A",
+    "status": "ok",
+    "epochs": 15,
+    "test_graph_f1": 0.8061,
+    "best_val_f1": 0.8111,
+    "baseline_val_at_same_epoch": 0.8162,
+    "delta_val_vs_baseline": -0.0051
+  },
+  {
+    "arm": "p1",
+    "label": "P1  physics in the GRAPH",
+    "type": "Type C",
+    "status": "ok",
+    "epochs": 15,
+    "test_graph_f1": 0.8005,
+    "best_val_f1": 0.8069,
+    "baseline_val_at_same_epoch": 0.8162,
+    "delta_val_vs_baseline": -0.0093
+  },
+  {
+    "arm": "p2",
+    "label": "P2  physics in the PRIOR",
+    "type": "Type D",
+    "status": "ok",
+    "epochs": 15,
+    "test_graph_f1": 0.8091,
+    "best_val_f1": 0.811,
+    "baseline_val_at_same_epoch": 0.8162,
+    "delta_val_vs_baseline": -0.0052
+  }
+]

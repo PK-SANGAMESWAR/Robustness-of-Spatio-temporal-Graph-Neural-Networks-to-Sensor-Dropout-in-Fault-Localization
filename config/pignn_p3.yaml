@@ -1,0 +1,29 @@
+# P3 — Type A: physics in the LOSS (sag-pattern consistency residual).
+# The model is byte-for-byte RGSAGE-Max (both P1/P2 switches off); ONLY the
+# objective changes, to CE + lambda * L_phys. Zero extra parameters and zero
+# inference cost -- the physics exists only during training.
+#
+# lambda = 5.0 is not a guess: measured on 60 real training batches at init,
+# CE = 3.453 and L_phys = 0.156 (ratio 22.2x), so lambda = 5.0 puts the physics
+# term at 18.4% of the objective -- meaningful but not dominant. Sensitivity to
+# lambda is a follow-up, per arXiv 2509.25158's warning that physics losses are
+# hyperparameter-fragile.
+#
+# NOTE: an earlier calibration gave lambda = 1.0 from L_phys = 0.920. That was
+# measured with a broken deviation (see models/physics_loss.py); the residual
+# was near-constant, which inflated it. The number here is post-fix.
+base: experiment_base.yaml
+benchmark_version: pignn_p3
+model:
+  name: pignn
+  aggregator: max
+  use_impedance_weights: false
+  use_sensitivity_bias: false
+physics_loss:
+  enabled: true
+  lambda: 5.0
+# Screening runs evaluate clean val/test only; degradation curves are run on the
+# selected arm afterwards, so the screen is not paying for five k-levels x three
+# mask seeds per arm.
+dropout_study:
+  enabled: false
