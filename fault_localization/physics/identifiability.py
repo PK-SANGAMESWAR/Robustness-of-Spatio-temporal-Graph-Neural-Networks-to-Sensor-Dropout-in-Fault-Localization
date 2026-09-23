@@ -109,3 +109,71 @@ def worst_case_per_location(d: np.ndarray) -> np.ndarray:
     """``min_{f2 != f1} D(f1, f2)`` -- which locations are structurally hard."""
     masked = np.where(np.eye(d.shape[0], dtype=bool), np.inf, d)
     return masked.min(axis=1)
+
+
+def effective_r_levels(mu: np.ndarray, sigma_eps: float, mask: np.ndarray | None = None,
+                       l_index: int | None = None) -> dict:
+    """How many of the 15 R grid points are actually *distinguishable*?
+
+    For each ``(f, tau)`` this counts the distinct signatures along the R axis:
+    greedily, a grid point opens a new level when its signature differs from
+    every level already opened by more than ``sigma_eps`` in max-abs p.u. over
+    the instrumented channels.
+
+    Why it matters (``03_STAGE_B_operator.md`` S1.7).  R is profiled, not
+    regressed, so the minimiser is free to pick any grid point -- and every
+    extra *usable* degree of freedom along that axis improves the fit at **every**
+    candidate location, which quietly weakens discrimination rather than
+    improving it.  If the axis is effectively 6-valued rather than 15-valued,
+    the operator discriminates better than the grid size suggests, and the
+    identifiability section (S2.1) should say so instead of quoting 15.
+
+    Parameters
+    ----------
+    mu:
+        ``[f, tau, R, L, 25, 3]``.
+    sigma_eps:
+        Two signatures closer than this everywhere are one level.
+    mask:
+        ``[25, 3]`` instrumented channels; all channels if omitted.
+    l_index:
+        Which L slice to measure on.  Defaults to the middle of the grid.
+
+    Returns
+    -------
+    dict with the per-``(f, tau)`` level counts and their distribution.
+    """
+    n_f, n_t, n_r, n_l = mu.shape[:4]
+    li = n_l // 2 if l_index is None else int(l_index)
+    sel = mu[:, :, :, li]                                   # [f, tau, R, 25, 3]
+    if mask is not None:
+        m = np.asarray(mask) > 0
+        sel = sel[..., m]                                   # [f, tau, R, C]
+    else:
+        sel = sel.reshape(n_f, n_t, n_r, -1)
+
+    counts = np.zeros((n_f, n_t), dtype=np.int32)
+    for fi in range(n_f):
+        for ti in range(n_t):
+            levels: list[np.ndarray] = []
+            for ri in range(n_r):
+                sig = sel[fi, ti, ri]
+                # ``any``, not ``all``: a grid point is a duplicate when it matches
+                # *some* level already opened, not when it matches every one of
+                # them.  (With ``all`` a repeat of level 0 still differs from
+                # levels 1..n, so every point opened a new level and the count was
+                # always n_r.  ``any`` also handles the empty case correctly --
+                # ``any([])`` is False, so the first point always opens a level.)
+                if any(np.abs(sig - kept).max() <= sigma_eps for kept in levels):
+                    continue
+                levels.append(sig)
+            counts[fi, ti] = max(len(levels), 1)
+    flat = counts.reshape(-1)
+    return {
+        "sigma_eps": float(sigma_eps), "l_index": li, "n_grid_points": int(n_r),
+        "counts": counts,
+        "mean_levels": float(flat.mean()),
+        "median_levels": float(np.median(flat)),
+        "min_levels": int(flat.min()), "max_levels": int(flat.max()),
+        "effective_fraction": float(flat.mean() / n_r),
+    }

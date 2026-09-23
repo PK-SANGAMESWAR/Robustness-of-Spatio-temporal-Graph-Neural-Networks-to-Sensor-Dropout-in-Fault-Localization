@@ -17,7 +17,7 @@ seeds identical across models.
 | Targeted | k nearest the fault | `results/dropout_study_targeted/` |
 | Silent failures | 4 types × s ∈ {1,2,3} | new |
 | Measurement noise | σ ∈ {5e-4, 2e-3, 1e-2} p.u., σ₀ set to match in the residual | `results/dropout_study_noise/` (standard + DA) |
-| OOD resistance | {3,5,20,30} Ω × k ∈ {0,5,10} — open the sealed set here, once | new |
+| OOD resistance | {3,5,20,30} Ω × k ∈ {0,5,10} — open the sealed set here, once. **Report split by grounded vs ungrounded** (see below) | new |
 
 **Models.** B1, B1ᵃ (matched filter), B2 (PSM), logreg/RF, both impute-then-infer rows, all 5
 baselines standard, all 5 dropout-aware, SDR-STGNN, R1–R7, B2ᵃ, G0–G3. `[Corrected 2026-09-22]`
@@ -26,6 +26,18 @@ Only the new models need the existing conditions re-run; the Paper-1 numbers are
 
 **Check.** Before opening the sealed OOD set, verify its hash against `data/ood_test.sha256`.
 Record the date it was opened in `14_PREREGISTRATION.md`.
+
+**Split the OOD-resistance results by grounded vs ungrounded — pre-registered, not post-hoc.**
+`[Added 2026-09-23]` The extrapolation claim rests on the operator holding a dense, continuous
+representation of R. Where the sag is **non-monotone in R** — 9.4 % of grid cells, of which 83 %
+are ungrounded (`03_STAGE_B_operator.md` S1.3) — a dense grid does **not** guarantee that the
+profiled argmin_R lands near the truth, because the objective along that axis has more than one
+basin. So the physics advantage on unseen R may be concentrated in grounded faults.
+
+If it is, that is an honest refinement that *strengthens* the paper: it says where model-based
+extrapolation works and where the axis itself is ambiguous. Discovering it in review instead
+would not. Register the split in `14_PREREGISTRATION.md` before the sealed set is opened, so it
+is a pre-planned stratification rather than a subgroup found after the fact.
 
 **Tables produced.** T5 (all models × k) · T6 (baseline ladder) · T8 (OOD) · T9 (silent failures)
 · T10 (structured + noise).
@@ -60,9 +72,23 @@ models untouched.
 
 | Perturbation | Levels |
 |---|---|
+| **Regulator tap position off by ±1 step** `[Added 2026-09-23 — lead with this one]` | ±1 tap on each regulator |
 | Line impedances, random per segment | ±2 %, ±5 %, ±10 % |
 | Load composition (constant-P vs a ZIP mix) | one alternative |
 | One unmodelled lateral, or a small unmodelled DER | one scenario |
+
+**The tap perturbation is the strongest scenario in this table, and it is not synthetic.** It is a
+model error **measured in this corpus**: with the build path corrected, 1.8 % of events still
+differ from the table by **6.4–7.3e-3 p.u.**, which is one regulator tap step, because the
+corpus's tap position at fault inception depends on 40 steps of Daily history that a fresh
+compile does not reproduce (`03_STAGE_B_operator.md` S1.4, `scripts/audit_build_path.py`).
+
+That makes it the *realistic* model error for this feeder rather than an invented one:
+regulators carry memory, and **no model-based operator can know the tap state unless it is
+telemetered** — which on a real feeder it usually is not. A power-systems reviewer recognises
+this immediately, in a way that "line impedances perturbed by ±5 %" does not. It also lands where
+the contrast is most interesting: **16 of the 18 measured cases sit at R = 10 Ω**. Point at the
+18 corpus events by name when reporting it.
 
 **Check.** Gain over R0 as a function of mismatch level, for PSM (B2), fusion-only (S2.6 on R0)
 and R5.

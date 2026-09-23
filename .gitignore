@@ -50,3 +50,15 @@ BasePaper.pdf
 # OS / editor cruft
 # ---------------------------------------------------------------------------
 .DS_Store
+
+# ---------------------------------------------------------------------------
+# PC-STGNN physics operator tables (results/pcstgnn/operator/**).
+#
+# Regenerable in minutes -- a 17-point-L table is ~9 minutes serial, ~2 at 8
+# workers (scripts/check_operator_fidelity.py, physics/table.build_table) -- and
+# large: 12 MB at L step 0.1 rising to 81 MB at 0.0125.  What must be committed
+# is the *provenance*: grid.json (axes, step, solve mode, prefault freeze) and
+# build_log.csv (per-slot convergence), both of which are small and are kept.
+# The .npy arrays themselves are build artefacts, like the rho cache.
+# ---------------------------------------------------------------------------
+results/pcstgnn/operator/**/*.npy

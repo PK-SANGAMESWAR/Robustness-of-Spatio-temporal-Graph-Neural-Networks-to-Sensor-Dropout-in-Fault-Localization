@@ -30,7 +30,14 @@ it is what lets you say "λ = 0 recovers the Paper-1 model exactly."
 
 ## S4.2 — Gradient audit — guards the bug that was in the first draft
 
-**Do.** On a single batch, finite-difference check.
+**Do.** `[Corrected 2026-09-23]` Finite-difference check on **three batches**, not one. A single
+batch cannot exercise the paths that differ, and two of the three are the ones that break:
+
+1. **A batch containing w = 20 windows**, so the L₁/L₂ loss mask is active and non-trivial.
+2. **A batch at k = 10**, so |A| is small and |D| is large — the λ₂ term's intended regime.
+3. **A batch at k = 0 with no synthetic drops**, so **|D| = 0**. This is the commonest case in
+   training and the one the first-draft `r̃/|D|` formulation would have turned into NaN on every
+   step. The λ₂ term must contribute exactly 0 here and the gradient must stay finite.
 
 **Check.**
 - ∂L₁/∂w ≠ 0 for network weights w
@@ -104,7 +111,7 @@ paired reference; R8 added as the ablation of the new default.
 | R5 | + β fusion — full PC-STGNN | physics as evidence at test time | 3 |
 | R6 | R5 with a shuffled location→signature map | "it's regularisation, not physics" | 3 |
 | R7 | Size-matched wider RGSAGE-Max | "it's just a bigger model" | 1 |
-| R8 | **R5 trained noise-free** | **the ablation of the new default — expected to degenerate: β saturates, network contribution → 0** | **3** |
+| R8 | **R5 trained noise-free** | **the ablation of the new default — expected to degenerate: β saturates, network contribution → 0** | **1** |
 | B2ᵃ | learned R̂ head instead of profiling | shows why profiling beats regression on OOD R | 1 |
 
 `[Corrected 2026-09-22]` Seed counts follow the S0.5 rule (one run ≈ 7 h). Promote R1/R3/R7 to
@@ -122,18 +129,20 @@ objection with a one-row answer, so run it.
 B2ᵃ is expected to fail on OOD R: a head trained on {0.1, 1, 10} Ω collapses to a three-way
 classifier. That failure is a result worth a table row.
 
-R8 is a negative control that is also a mechanism result: if the fusion degenerates without
-noise, that is the sharpest available confirmation of S2.0ᵃ consequence 4, and it is the exact
-counterpart of Paper 1's "dropout-aware training does not help against noise" null. It carries a
-claim, so it carries 3 seeds (`.rules/10-integrity.md`, n = 3 discipline).
+R8 is a negative control and a mechanism check: if the fusion degenerates without noise, that is
+the sharpest available confirmation of S2.0ᵃ consequence 4. `[Corrected 2026-09-23 — 1 seed, not
+3.]` Under the degeneracy ruling, noise-free R5 is an **oracle condition**: its job is to be a
+labelled upper bound, and an upper bound does not need three-seed error bars the way a contested
+comparison does. One seed states it; the ~14 GPU-h freed goes to a **second retrained
+model-mismatch level** (`08_STAGE_G_eval.md` S6.2), because mismatch is now a primary axis and
+one retrained point is an anecdote while two make a trend.
 
-**Cost.** `[Corrected 2026-09-23]` R0ⁿ 3 + R1 1 + R2 3 + R3 1 + R4 3 + R5 3 + R6 3 + R7 1 + R8 3
-+ B2ᵃ 1 = **22 new runs × 7 h ≈ 154 GPU-h** (R7 wider: somewhat more). R0's 3 runs stay done and
-are no longer part of this count. This is ≈ 42 GPU-h above the previous plan — the price of
-adding the paired noise reference (R0ⁿ, +21 h) and the degeneracy control (R8, +21 h), both of
-which the S2.0ᵃ ruling makes load-bearing. **Trim lever if the budget binds:** R8 → 1 seed, and
-report it as a diagnostic rather than a claim; do **not** trim R0ⁿ, which is the comparison's
-paired reference.
+**Cost.** `[Corrected 2026-09-23]` R0ⁿ 3 + R1 1 + R2 3 + R3 1 + R4 3 + R5 3 + R6 3 + R7 1 + R8 1
++ B2ᵃ 1 = **20 new runs × 7 h ≈ 140 GPU-h** (R7 wider: somewhat more). R0's 3 runs stay done and
+are no longer part of this count. Net ≈ +28 GPU-h over the pre-ruling plan: the paired noise
+reference R0ⁿ (+21 h) and R8 at one seed (+7 h). **R0ⁿ never loses seeds** — it is the
+comparison's paired reference, and trimming it would put the noise-augmentation confound straight
+back into every physics claim.
 
 **Table produced.** T7 — core ablation.
 **Figure produced.** F-E2 — ablation bar chart with seed spread (optional if T7 is clear).

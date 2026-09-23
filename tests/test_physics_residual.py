@@ -229,3 +229,113 @@ def test_heldout_residual_uses_the_hypothesis_profiled_on_a(tiny_table):
     # The true hypothesis explains the held-out sensor perfectly too.
     assert float(rho_d[0, f]) == pytest.approx(0.0, abs=1e-5)
     assert int(rho_d.argmin()) == f
+
+
+# ---------------------------------------------------------------------------
+# Adversarial degenerate inputs (12_CHECKLISTS.md sampling rule, S3.4)
+#
+# The spec's original per-channel average r~ = r/|A| divided by the number of
+# surviving channels, which is zero when every sensor is dropped -- and r~_f(D)
+# divided by |D|, which is zero on every clean batch, i.e. the lambda_2 arm would
+# have hit it constantly.  The shifted/halved rho of 01_SPEC.md §4 removed both
+# divisions.  These tests pin that: they are the regression guard for a NaN that
+# the rewrite made structurally impossible, and they fail loudly if any future
+# change reintroduces a normalisation by |A| or |D|.
+# ---------------------------------------------------------------------------
+
+
+def test_empty_D_gives_zero_not_nan(smooth_table):
+    """|D| = 0 is the *normal* case at k = 0: every clean batch hits it."""
+    table = smooth_table
+    rng = np.random.default_rng(7)
+    s = torch.from_numpy(rng.normal(1.0, 0.05, (4, 25, 3)).astype(np.float32))
+    a = torch.ones(4, 25, 3)
+    _, hyp = R.rho(s, a, table, 1e-3, chunk_f=26)
+    d_empty = torch.zeros(4, 25, 3)
+    rho_d = R.rho_heldout(s, d_empty, table, hyp, 1e-3)
+    assert torch.isfinite(rho_d).all()
+    assert torch.equal(rho_d, torch.zeros_like(rho_d))
+
+
+def test_all_channels_dropped_gives_zero_not_nan(smooth_table):
+    """|A| = 0: no evidence, so rho is flat and P_phys uniform -- never NaN."""
+    table = smooth_table
+    s = torch.zeros(3, 25, 3)
+    a = torch.zeros(3, 25, 3)
+    rho, hyp = R.rho(s, a, table, 1e-3, chunk_f=26)
+    assert torch.isfinite(rho).all()
+    assert torch.equal(rho, torch.zeros_like(rho))
+    p = R.p_phys(rho)
+    assert torch.allclose(p, torch.full_like(p, 1.0 / 26), atol=1e-6)
+    assert torch.isfinite(R.rho_loo(s, a, table, torch.zeros(3, dtype=torch.long), 1e-3)).all()
+
+
+def test_single_surviving_channel_is_finite(smooth_table):
+    """|A| = 1 -- the thinnest non-empty evidence the residual can be asked for."""
+    table = smooth_table
+    rng = np.random.default_rng(11)
+    s = torch.from_numpy(rng.normal(1.0, 0.05, (2, 25, 3)).astype(np.float32))
+    a = torch.zeros(2, 25, 3)
+    a[:, 4, 1] = 1.0
+    rho, hyp = R.rho(s, a, table, 1e-3, chunk_f=26)
+    assert torch.isfinite(rho).all()
+    assert (rho >= 0).all()
+    loo = R.rho_loo(s, a, table, R.psm_predict(rho), 1e-3)
+    assert torch.isfinite(loo).all()
+    # Only the one instrumented node can carry a trust score; the rest are gated off.
+    assert float(loo[:, [i for i in range(25) if i != 4]].abs().max()) == 0.0
+
+
+def test_exact_ties_are_resolved_without_nan(smooth_table):
+    """Two locations fitting equally well: rho has two zeros, and that is legal."""
+    table = smooth_table.clone()
+    table[5] = table[9]                       # locations 5 and 9 now identical
+    s = table[5, 7].reshape(1, 25, 3).clone()
+    a = torch.ones(1, 25, 3)
+    rho, _ = R.rho(s, a, table, 1e-3, chunk_f=26)
+    assert torch.isfinite(rho).all()
+    assert int((rho[0] == 0).sum()) == 2
+    assert float(R.margin(rho)) == 0.0        # zero margin: indistinguishable
+    assert int(R.psm_predict(rho)) in (5, 9)
+
+
+def test_pc_loss_lambda2_is_zero_when_D_is_empty(smooth_table):
+    """The end-to-end guard: the lambda_2 arm on a clean batch contributes 0."""
+    from fault_localization.models.common import pc_loss
+
+    table = smooth_table
+    rng = np.random.default_rng(3)
+    s = torch.from_numpy(rng.normal(1.0, 0.05, (4, 25, 3)).astype(np.float32))
+    a = torch.ones(4, 25, 3)
+    rho_a, hyp = R.rho(s, a, table, 1e-3, chunk_f=26)
+    rho_d = R.rho_heldout(s, torch.zeros(4, 25, 3), table, hyp, 1e-3)
+    out = {
+        "logits": torch.randn(4, 25, 26, requires_grad=True),
+        "p_graph": torch.full((4, 26), 1.0 / 26),
+        "rho_A": rho_a,
+        "rho_D": rho_d,
+    }
+    y = torch.randint(0, 26, (4,))
+    both = pc_loss(out, y, lam1=1.0, lam2=1.0)
+    only1 = pc_loss(out, y, lam1=1.0, lam2=0.0)
+    assert torch.isfinite(both["total"])
+    assert float(both["l2"]) == 0.0
+    assert torch.allclose(both["total"], only1["total"])
+
+
+def test_effective_r_levels_collapses_duplicate_resistances():
+    """A table whose R axis repeats itself is effectively lower-dimensional."""
+    from fault_localization.physics import identifiability as I
+
+    rng = np.random.default_rng(5)
+    mu = rng.normal(1.0, 0.05, (3, 2, 15, 3, 25, 3)).astype(np.float32)
+    # Collapse the R axis onto 5 distinct values, each repeated 3 times.
+    for r in range(15):
+        mu[:, :, r] = mu[:, :, r % 5]
+    out = I.effective_r_levels(mu, sigma_eps=1e-4)
+    assert out["mean_levels"] == 5.0
+    assert out["effective_fraction"] == 5 / 15
+    # A coarse tolerance merges everything; a fine one keeps all 15 distinct.
+    assert I.effective_r_levels(mu, sigma_eps=10.0)["mean_levels"] == 1.0
+    mu2 = rng.normal(1.0, 0.05, (3, 2, 15, 3, 25, 3)).astype(np.float32)
+    assert I.effective_r_levels(mu2, sigma_eps=1e-6)["mean_levels"] == 15.0

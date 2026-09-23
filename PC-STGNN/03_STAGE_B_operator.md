@@ -226,8 +226,20 @@ and document it as the single calibrated scalar of the operator.
 (9.4 % of cells, S1.3), argmin_R is ambiguous *by construction*, so folding those cells into the
 average reads an identifiability property as a grid-density failure.
 
-**Pass.** Discretisation costs < 0.01 macro-F1; argmin_R within one grid step on the large
-majority of events.
+**Pass.** `[Corrected 2026-09-23]` Discretisation costs < 0.01 macro-F1; argmin_R within one grid
+step, measured on the **full training split** and reported **by R and by fault type** — not on
+"the large majority of events", which names no sample and no stratum (`12_CHECKLISTS.md` §0).
+The stratification is not cosmetic: the non-monotone cells are 83 % ungrounded (S1.3), so a
+pooled number would average the ambiguous cells into the clean ones and report neither.
+
+**Also report the effective dimensionality of the R axis.** Per (f, τ), count how many of the 15
+grid points give a signature differing by more than σ_ε from all the others
+(`physics/identifiability.effective_r_levels`). Profiling over a non-monotone axis gives the
+minimiser more usable freedom, which improves the fit at *every* candidate location and quietly
+weakens discrimination — so if the axis is effectively 6-valued rather than 15-valued, the
+operator's discrimination is better than the grid size suggests and the paper should say so.
+It is a few lines of numpy on the table that already exists, and it feeds the identifiability
+section (S2.1) directly.
 
 **Branch.** Either fails → densify to 25 log-spaced points (≈ 117 k solves with the L axis, still
 < 1 h). Report the chosen grid and this test.

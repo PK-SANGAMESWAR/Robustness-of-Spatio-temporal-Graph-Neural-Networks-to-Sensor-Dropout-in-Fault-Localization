@@ -13,11 +13,11 @@ assumed 3–4 h per run and was ~2× low.
 | S4.1 null test | 1 | 7 | may be stopped early once curves match |
 | λ tuning (15-epoch) | 6 | ≈ 21 | |
 | **R0ⁿ — dropout-aware + noise aug, no physics** | **3** | **≈ 21** | `[Added 2026-09-23]` the paired reference for every ablation arm, forced by the noise-augmentation default (`06` S4.3ᵇ). Not optional: without it, R5 vs R0 confounds noise augmentation with physics |
-| Core ablation R1–R8 (seed plan of `06`) | 19 | ≈ 133 | `[Corrected 2026-09-23]` seed swap R4 ↔ R7 (R4 3, R7 1), plus **R8** (R5 trained noise-free, 3 seeds) as the ablation of the new default. R7 wider: +10–20 % |
+| Core ablation R1–R8 (seed plan of `06`) | 17 | ≈ 119 | `[Corrected 2026-09-23]` seed swap R4 ↔ R7 (R4 3, R7 1), plus **R8** (R5 trained noise-free) at **1 seed** — it is an oracle condition, i.e. a labelled upper bound, not a contested comparison. R7 wider: +10–20 % |
 | B2ᵃ learned-R̂ head | 1 | 7 | |
 | Gate study G0 ×3, G1 ×1, G2 ×3, G3 ×1 | 8 | ≈ 60–70 | G2/G3 two-pass: ≈ 1.3× |
-| Model-mismatch retrain at ±5 % | 1 | 7 | |
-| **Total** | **≈ 39** | **≈ 262–277 h ≈ 11–12 days** continuous | `[Corrected 2026-09-23]` +42 h over the previous ≈ 220–235 h: R0ⁿ (+21) and R8 (+21), both made load-bearing by the S2.0ᵃ degeneracy ruling. **Trim lever:** R8 → 1 seed (−14 h), reported as a diagnostic. Never trim R0ⁿ |
+| Model-mismatch retrains at **two** levels | 2 | 14 | `[Corrected 2026-09-23]` ±5 % plus one of ±2 %/±10 %, funded by R8's freed seeds. Mismatch is a primary axis now; one retrained point is an anecdote, two make a trend |
+| **Total** | **≈ 38** | **≈ 255–270 h ≈ 11 days** continuous | `[Corrected 2026-09-23]` ≈ +35 h over the pre-ruling ≈ 220–235 h: R0ⁿ (+21), R8 at 1 seed (+7), second mismatch retrain (+7). **Never trim R0ⁿ** — it is the paired reference that keeps noise augmentation out of the physics claim |
 | Optional: promote R1/R3/R7/G1/G3 to 3 seeds | +10 | +70 | only after Gate 4 |
 
 ## CPU-only work

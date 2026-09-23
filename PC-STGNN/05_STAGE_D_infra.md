@@ -66,6 +66,17 @@ loader's stored mean/std, `data/dataset.py:30–31`), mask, sum, min over the (�
 
 **Check.**
 1. Correctness against a slow reference loop on 100 samples — exact to float tolerance.
+   `[Extended 2026-09-23]` 100 samples is fine for an *exactness* check (a mismatch shows on the
+   first sample, not the hundredth), but it says nothing about **degenerate inputs**, which are
+   not rare events — they are normal operating points. Add them as explicit cases:
+   - **|D| = 0** — no synthetic drops. This is *every* batch at k = 0, i.e. the λ₂ term's
+     commonest input, and the spec's original `r̃_f(D) = r_f(D)/|D|` would have divided by zero on
+     all of them. The shifted/halved ρ of `01_SPEC.md` §4 removed the division; the test pins it.
+   - **|A| = 0** — every channel dropped. ρ must be flat and `P_phys` uniform, never NaN.
+   - **|A| = 1** — a single surviving channel, the thinnest non-empty evidence.
+   - **exact ties** — two locations with identical signatures: ρ has two zeros, the margin is
+     0, and PSM picks one. Legal, and must not NaN.
+   All five are in `tests/test_physics_residual.py` and pass.
 2. Speed: under ~5 ms per batch of 32 on the T1000 (the min is over 2,805 hypotheses × 75
    channels per candidate; LOO multiplies by 25).
 
