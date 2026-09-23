@@ -81,6 +81,7 @@ def simulate_fault_event(
     run_id: int,
     rng: Random,
     feeder_config: str = "default",
+    seed: int | None = None,
 ) -> tuple[np.ndarray, dict]:
     """Simulate a single fault event and return the recording + metadata.
 
@@ -97,6 +98,13 @@ def simulate_fault_event(
         Random instance for sampling the load multiplier.
     feeder_config:
         ``"default"`` or ``"green"`` (open 60-160, close 54-94).
+    seed:
+        Value to record in ``meta["seed"]``.  Defaults to
+        ``deterministic_seed(...)``, which is what generated the frozen corpus
+        and is unchanged.  It must be passed for out-of-distribution events,
+        because ``deterministic_seed`` indexes ``FAULT_RESISTANCES`` and
+        therefore *raises* for any resistance outside {0.1, 1, 10} -- see
+        ``deterministic_seed_ood`` and ``PC-STGNN/04_STAGE_C_gonogo.md`` S2.0.
 
     Returns
     -------
@@ -156,7 +164,8 @@ def simulate_fault_event(
         "resistance": resistance,
         "run_id": run_id,
         "load_multiplier": load_multiplier,
-        "seed": deterministic_seed(fault_bus, fault_type, resistance, run_id),
+        "seed": (deterministic_seed(fault_bus, fault_type, resistance, run_id)
+                 if seed is None else int(seed)),
         "feeder_config": feeder_config,
         "feature_format": "voltages_0-2_mask_3-5",
     }

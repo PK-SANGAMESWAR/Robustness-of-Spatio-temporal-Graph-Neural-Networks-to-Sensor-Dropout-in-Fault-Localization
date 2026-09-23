@@ -119,7 +119,17 @@ def compile_feeder(master_path: Path | None = None) -> None:
         master_path = ensure_feeder_files()
 
     logger.info("Compiling feeder: %s", master_path)
-    dss.run_command(f"Compile [{master_path}]")
+    # OpenDSS's ``Compile`` chdir's the *process* into the directory of the .dss
+    # file so that the Redirect lines inside it resolve, and never changes back.
+    # Those Redirects all run inside this call, so restoring the caller's
+    # directory afterwards cannot affect the circuit -- but leaving it changed
+    # silently breaks every relative path the caller uses next, including
+    # dataset paths in tests and output paths in the audit scripts.
+    previous_cwd = os.getcwd()
+    try:
+        dss.run_command(f"Compile [{Path(master_path).resolve()}]")
+    finally:
+        os.chdir(previous_cwd)
 
     if not dss.Solution.Converged():
         dss.Solution.Solve()
