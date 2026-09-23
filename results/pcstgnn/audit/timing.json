@@ -1,0 +1,141 @@
+{
+  "per_solve_seconds": {
+    "reuse": 0.002488294008653611,
+    "daily": 0.007294195289723575
+  },
+  "solves_per_second_single_core": 401.88176980785687,
+  "workers_assumed": 20,
+  "per_daily_event_seconds": 0.017016999248880893,
+  "fault_steps": 3,
+  "tables": {
+    "0.05": {
+      "n_l": 17,
+      "n_solves": 70142,
+      "serial_minutes": 2.908898639249693,
+      "parallel_minutes": 0.14544493196248467,
+      "size_mb": 21.0375
+    },
+    "0.025": {
+      "n_l": 33,
+      "n_solves": 136158,
+      "serial_minutes": 5.64668559383764,
+      "parallel_minutes": 0.28233427969188196,
+      "size_mb": 40.8375
+    }
+  },
+  "ood": {
+    "pilot_events": 1100,
+    "test_events": 11000,
+    "pilot_hours_serial": 0.005199638659380273,
+    "test_hours_serial": 0.05199638659380273,
+    "pilot_hours_parallel": 0.0002599819329690136,
+    "test_hours_parallel": 0.0025998193296901365
+  },
+  "training_csv_rows": [
+    {
+      "n_seeds": "3",
+      "epochs_run": "30",
+      "sec_per_epoch_mean": "564.3403748653933",
+      "sec_per_epoch_std": "4.070699115829688",
+      "total_hours_mean": "4.70283645721161",
+      "total_hours_std": "0.033922492631913895",
+      "best_epoch_mean": "25.0",
+      "best_epoch_std": "2.6457513110645907",
+      "best_epoch_per_seed": "[22, 26, 27]",
+      "sec_per_epoch_per_seed": "[568.901080710829, 561.074850416913, 563.0451934684378]",
+      "label": "GRU",
+      "model": "gru",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": "3",
+      "epochs_run": "30",
+      "sec_per_epoch_mean": "635.6424201629642",
+      "sec_per_epoch_std": "6.107616096027203",
+      "total_hours_mean": "5.2970201680247015",
+      "total_hours_std": "0.050896800800226995",
+      "best_epoch_mean": "27.666666666666668",
+      "best_epoch_std": "2.309401076758503",
+      "best_epoch_per_seed": "[29, 25, 29]",
+      "sec_per_epoch_per_seed": "[642.6073244385576, 633.1194239649145, 631.2005120854204]",
+      "label": "RGCN",
+      "model": "rgcn",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": "3",
+      "epochs_run": "30",
+      "sec_per_epoch_mean": "648.3818113652524",
+      "sec_per_epoch_std": "2.5445881564229755",
+      "total_hours_mean": "5.403181761377103",
+      "total_hours_std": "0.02120490130352485",
+      "best_epoch_mean": "28.333333333333332",
+      "best_epoch_std": "1.5275252316519468",
+      "best_epoch_per_seed": "[30, 28, 27]",
+      "sec_per_epoch_per_seed": "[651.3142339841618, 647.0756065365703, 646.7555935750249]",
+      "label": "RGSAGE-Mean",
+      "model": "rgsage_mean",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": "3",
+      "epochs_run": "30",
+      "sec_per_epoch_mean": "802.1572814039937",
+      "sec_per_epoch_std": "3.0894360338223246",
+      "total_hours_mean": "6.684644011699948",
+      "total_hours_std": "0.025745300281853057",
+      "best_epoch_mean": "28.666666666666668",
+      "best_epoch_std": "1.5275252316519468",
+      "best_epoch_per_seed": "[27, 29, 30]",
+      "sec_per_epoch_per_seed": "[804.8692438539894, 802.8084274194669, 798.7941729385251]",
+      "label": "RGSAGE-Max",
+      "model": "rgsage_max",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": "3",
+      "epochs_run": "30",
+      "sec_per_epoch_mean": "1478.915077293297",
+      "sec_per_epoch_std": "12.628475825175087",
+      "total_hours_mean": "12.324292310777473",
+      "total_hours_std": "0.10523729854312594",
+      "best_epoch_mean": "24.666666666666668",
+      "best_epoch_std": "5.131601439446884",
+      "best_epoch_per_seed": "[26, 29, 19]",
+      "sec_per_epoch_per_seed": "[1493.2580167760295, 1474.0214282018133, 1469.4657869020477]",
+      "label": "RGATv2",
+      "model": "rgatv2",
+      "variant": "standard"
+    },
+    {
+      "n_seeds": "3",
+      "epochs_run": "30",
+      "sec_per_epoch_mean": "824.056058102603",
+      "sec_per_epoch_std": "1.7688759228400779",
+      "total_hours_mean": "6.867133817521691",
+      "total_hours_std": "0.01474063269033391",
+      "best_epoch_mean": "28.0",
+      "best_epoch_std": "1.0",
+      "best_epoch_per_seed": "[28, 27, 29]",
+      "sec_per_epoch_per_seed": "[822.0166440934253, 824.9782207337984, 825.1733094805852]",
+      "label": "RGSAGE-Max",
+      "model": "rgsage_max",
+      "variant": "dropout-aware"
+    },
+    {
+      "n_seeds": "3",
+      "epochs_run": "30",
+      "sec_per_epoch_mean": "834.8846087857046",
+      "sec_per_epoch_std": "3.8226692758147256",
+      "total_hours_mean": "6.957371739880872",
+      "total_hours_std": "0.031855577298455645",
+      "best_epoch_mean": "29.0",
+      "best_epoch_std": "1.0",
+      "best_epoch_per_seed": "[28, 30, 29]",
+      "sec_per_epoch_per_seed": "[839.2837759064821, 832.9985485495844, 832.3715019010473]",
+      "label": "SDR-STGNN",
+      "model": "sdr_stgnn",
+      "variant": "dropout-aware"
+    }
+  ]
+}

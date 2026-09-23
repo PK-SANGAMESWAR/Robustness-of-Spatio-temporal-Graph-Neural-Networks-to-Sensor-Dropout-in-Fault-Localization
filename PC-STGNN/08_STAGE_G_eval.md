@@ -33,7 +33,16 @@ Record the date it was opened in `14_PREREGISTRATION.md`.
 extrapolation — the headline) · F-G4 (noise robustness) · F-G5 (structured vs random vs
 persistent dropout).
 
-## S6.2 — Model-mismatch study — answers the leakage objection with evidence
+## S6.2 — Model-mismatch study — **a primary results axis** `[Promoted 2026-09-23]`
+
+**This is no longer a robustness appendix.** S0.4 measured the nominal table against the corpus at
+1.02e-12 p.u.: the operator *is* the generator, so every clean, in-distribution comparison in the
+project is an oracle reference and cannot carry the contribution
+(`04_STAGE_C_gonogo.md` S2.0ᵃ). A perturbed table is not the generator — which makes this study,
+alongside measurement noise, the place where the real evidence lives. It is a main-body axis with
+a main-body figure (F-G6), reported beside the oracle column, never in place of it.
+
+The original framing, which still holds:
 
 The sharpest criticism you will face is not "you used test events" — `12_CHECKLISTS.md` handles
 that. It is:

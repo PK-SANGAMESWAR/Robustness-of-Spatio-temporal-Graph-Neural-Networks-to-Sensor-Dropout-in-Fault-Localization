@@ -1,0 +1,35 @@
+{
+  "n_events": 5,
+  "events": [
+    "51_AB_0p1_0009",
+    "42_ABCG_1p0_0040",
+    "51_BG_10p0_0049",
+    "65_ABG_0p1_0015",
+    "53_BC_1p0_0027"
+  ],
+  "tolerance_pu": 0.001,
+  "grid_worst_err_pu": {
+    "daily/1": 5.706218739742752e-06,
+    "daily/2": 9.547535140264074e-08,
+    "daily/3": 1.458227982809035e-09,
+    "daily/5": 1.014743844507393e-12,
+    "reuse/1": 5.706218739742752e-06,
+    "reuse/2": 9.547535140264074e-08,
+    "reuse/3": 1.458227982809035e-09,
+    "reuse/5": 1.014743844507393e-12,
+    "snapshot/1": 5.706218739742752e-06,
+    "snapshot/2": 9.547535140264074e-08,
+    "snapshot/3": 1.458227982809035e-09,
+    "snapshot/5": 1.014743844507393e-12
+  },
+  "frozen_err_pu": 1.014743844507393e-12,
+  "unfrozen_err_pu": 4.7966090245488147e-05,
+  "freeze_assertion_passes": true,
+  "reuse_matches_daily": true,
+  "within_tolerance": true,
+  "sigma_eps_pu": 1.014743844507393e-12,
+  "prefault_freeze": 0.9995306966048793,
+  "recommended_mode": "reuse",
+  "recommended_fault_steps": 5,
+  "pass": true
+}

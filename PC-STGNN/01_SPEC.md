@@ -7,6 +7,12 @@ If any line here changes, restart from Gate 1.
 per-bus vector. The load-ensemble operator of the first draft is kept at the end of §2 as the
 rejected alternative.
 
+`[Corrected 2026-09-23]` §2, §4, §6 and §7 amended per `../PC-STGNN-PLAN.md` §2: the L-grid step
+is decided by S1.2 rather than defaulted (§2); the residual is the **shifted, halved** quantity ρ
+in Gaussian log-likelihood units, replacing the per-channel average r̃ (§4); fusion is stated as
+the **per-node** broadcast (a product of experts) it actually is (§6); and the LOO score is
+defined as **subtract-then-re-minimise** (§7).
+
 ## 1. Inherited constants (Paper 1)
 
 | Item | Value |
@@ -40,7 +46,7 @@ code in OpenDSS snapshot mode.
 | f — candidate location | 25, plus the no-fault hypothesis f = 0 |
 | τ — fault type | 11 |
 | R — fault resistance | 15, log-spaced 0.05 → 30 Ω |
-| L — load multiplier | 17, linear 0.5 → 1.3 (step 0.05) — **an explicit axis, because the corpus load is a scalar** |
+| L — load multiplier | linear 0.5 → 1.3 — **an explicit axis, because the corpus load is a scalar**. `[Corrected 2026-09-23]` The step is **decided by S1.2**, not defaulted: 0.05 (17 points) and 0.025 (33 points, ≈ 140 k solves) are both affordable on 24 cores, and with σ_ε ≈ 1e-3 p.u. against ≈ 2–5e-3 p.u. of voltage change per 0.05 of load, discretisation — not fidelity — is the likely dominant error. The chosen step is recorded in `operator/grid.json` |
 | i, p — sensor, phase | 25 × 3 = 75 channels, of which only the instrumented ones are ever used |
 
 For each (f, τ, R, L) run one snapshot solve at load L × 0.99953 (the frozen pre-fault
@@ -51,8 +57,8 @@ modulation) and store
 μ₀[L, i, p]           no-fault magnitude at load L (the f = 0 hypothesis)
 ```
 
-Cost: 25 × 11 × 15 × 17 = 70,125 solves + 17 for μ₀ ≈ 25–30 min at ~45 solves/s (measure in
-S0.5), ≈ 21 MB in float32.
+Cost at step 0.05: 25 × 11 × 15 × 17 = 70,125 solves + 17 for μ₀, ≈ 21 MB in float32; at step
+0.025, 136,125 + 33 solves and ≈ 41 MB. Wall-clock from the S0.5 solve rate.
 
 **Why L is profiled, not marginalised.** The only within-scenario randomness in the corpus is
 one scalar L; the 50 runs of a scenario lie on a 1-D curve μ(L). A diagonal "load std" is the
@@ -85,24 +91,55 @@ are still excluded from L₁ and L₂ (they are identifiable from the window id 
 
 ## 4. Residual — inputs only
 
+`[Corrected 2026-09-23]` The per-channel average r̃ = r/|A| of the first draft is replaced by the
+**shifted, halved** residual ρ. Reason: with L profiled and σ_ε ≈ 1e-3 p.u., a wrong hypothesis
+contributes per-channel terms of order (0.1/1e-3)² = 1e4, so summed over ≤ 75 channels r_f reaches
+1e5–1e6 for wrong locations while the true one is ≈ |A|. Dividing by |A| does not remove that
+scale — it only rescales it — so λ₁ would have needed to be ≈ 1e-5 and any usable β would have
+saturated the softmax. Subtracting the minimum and halving puts the quantity in Gaussian
+log-likelihood units, where a difference of 1 is one nat and λ, β of order 1 are meaningful.
+
 ```
 r_f(A)  = min over (τ, R, L) of  Σ_{(i,p)∈A}  (s_ip − μ[f,τ,R,L,i,p])² / (σ_ε² + σ₀²)      f = 1…25
 r₀(A)   = min over L         of  Σ_{(i,p)∈A}  (s_ip − μ₀[L,i,p])²        / (σ_ε² + σ₀²)      f = 0
-r̃_f(A) = r_f(A) / |A|
+
+ρ_f     = ( r_f − min_g r_g ) / 2            ≥ 0, one exact zero, scale-free
+P_phys  = softmax(−ρ)
 ```
 
-- σ_ε — a **fixed** per-channel floor, set a priori from the snapshot-vs-daily equivalence error
-  measured in S0.4 (order 1e-3 p.u.). It is not fitted on data. It exists so the residual is
+`residual.py` returns ρ together with the argmin hypothesis (τ*, R*, L*) per f. PSM = argmin_f ρ_f
+= argmax_f P_phys. Fusion, L₁, L₂, the LOO score, the identifiability score of §5 in
+`11_METRICS.md` and every reported diagnostic (ρ_true, margin ρ_(2) − ρ_(1)) use ρ. β = 0 still
+recovers the baseline exactly, so the S4.1 null test is unaffected.
+
+- σ_ε — a **fixed** per-channel floor. It is not fitted on data. It exists so the residual is
   finite on channels the fault barely moves.
+  `[Corrected 2026-09-23]` It can **not** be set from the snapshot-vs-Daily equivalence error as
+  this section originally said: S0.4 measured that error at **1.02e-12 p.u.**, because the
+  operator is not an approximation of the corpus — it is the corpus's own generator re-run. A
+  floor of that size would make the residual absurdly over-confident. Two consequences, both
+  load-bearing:
+  - **On the nominal table σ_ε is a numerical quantity, not a physical one.** Its true source is
+    **grid discretisation** — the corpus's L is continuous while the table's L is on a grid — so
+    it is measured in S1.2 and calibrated in S1.6, and it changes if the grid changes. It does
+    not describe any physical measurement error, and the paper must not imply that it does.
+  - **It carries a stated physical floor.** σ_ε is never set below the µPMU accuracy class
+    (IEEE C37.118 1 % TVE; the noise grid is `05_STAGE_D_infra.md` §"injectors"), so the residual
+    scale still means something in the perturbed-table and noisy settings — which, per the
+    degeneracy ruling in `04_STAGE_C_gonogo.md` S2.0ᵃ, is where the evidence now lives.
+    Outside the oracle setting the effective denominator is σ_ε² + σ₀² and is dominated by σ₀.
 - σ₀ — the injected measurement-noise level under the noise experiments (0 on the clean corpus).
-- r̃_f(D) reuses the (τ*, R*, L*) profiled at f from A alone, then scores at the sensors in D.
+- ρ_f(D) reuses the (τ*, R*, L*) profiled at f from A alone, then scores at the sensors in D, and
+  is shifted by its own minimum over f in the same way.
 
 Properties this buys:
 - (τ, R, L) profiled, not regressed → defined at resistances never seen in training.
 - Sum over A only → dropout handled by construction.
 - Depends on inputs alone → no differentiable table interpolation, no solver in the training
-  loop, and r̃ can be precomputed from the raw `.npz` (in p.u., no normalisation issue) and cached
+  loop, and ρ can be precomputed from the raw `.npz` (in p.u., no normalisation issue) and cached
   for the whole corpus.
+- Shift-invariant to any per-window constant → the scale of ρ is set by hypothesis *contrast*,
+  not by |A|, so it stays comparable across dropout levels.
 
 ## 5. Architectural rule (hard)
 
@@ -116,16 +153,32 @@ The physics operator is a function of the inputs only. No network output is ever
 
 ## 6. PC-STGNN
 
+`[Corrected 2026-09-23]` Fusion is applied **per node**, before the soft vote — not to a
+graph-level logit vector. The per-node cross-entropy of `models/common.py:52`, the soft vote of
+`models/voting.py`, `dropout/evaluator.py` and every loader therefore stay untouched.
+
 ```
-z'_f = z_f − β · r̃_f(A)                                   f = 0 … 25
+z'_{n,f} = z_{n,f} − β · ρ_f(A)        same ρ broadcast to every node n     (β learned, init 0)
 
-L = CE(z', y) + λ₁ · Σ_f P(f|X)·r̃_f(A) + λ₂ · Σ_f P(f|X)·r̃_f(D)
+Σ_n softmax(z'_n)_f  ∝  Σ_n exp(z_{n,f}) · exp(−β ρ_f) / Z_n
+```
 
-λ₁ = λ₂ = β = 0   ⟹   exactly dropout-aware RGSAGE-Max
+Each node's distribution is reweighted multiplicatively by the same physics prior before the
+votes are summed: a **product of experts** per node, not an additive graph-level bias. The paper
+must describe it that way.
+
+```
+L = CE(z', y) + λ₁ · Σ_f P(f|X)·ρ_f(A) + λ₂ · Σ_f P(f|X)·ρ_f(D)
+
+P(f|X) = normalised soft-vote scores        λ₁ = λ₂ = β = 0 ⟹ exactly dropout-aware RGSAGE-Max
 ```
 
 λ₁ = expected residual on the available sensors. λ₂ = the same operator on the held-out sensors —
 a leave-k-out physics-consistency term. Both are differentiable through P(f|X).
+
+w = 20 windows (0 post-inception samples, §3) are excluded from the λ terms by a loss mask
+derived from `window_id`. That is the **only** use of the window index anywhere, it applies at
+training time only, and it never enters the residual itself.
 
 Do not use a reconstruction loss of the form ‖μ[f̂, …] − s_true‖². f̂ is an arg-min index and
 constant in the weights, so that term has zero gradient and R4 would be silently identical to R3.
@@ -142,10 +195,15 @@ to do better than that pilot.
 ## 7. PCRG-STGNN
 
 - Pass 1 gives f̂ = argmax z'.
-- For each available sensor i: refit (τ, R, L) at f̂ on A \ {i}; read the normalised error at
-  i → r̃ᵢ^LOO. Leaving the sensor out stops a corrupted sensor pulling the fit toward itself and
-  hiding its own error.
-- Gate: gᵢ = mᵢ · σ(−α (r̃ᵢ^LOO − c)), with α, c learned.
+- For each available sensor i: **subtract, then re-minimise**. Build the per-channel error tensor
+  E[hypothesis, channel] at f̂ once; zero sensor i's channels; take the min over the hypothesis
+  axis *again* → the refit (τ*, R*, L*) on A \ {i}; read sensor i's normalised error **at that
+  refit** → ρᵢ^LOO. `[Corrected 2026-09-23]` Reading sensor i's term at the *global* argmin
+  (τ*, R*, L*) fitted on all of A is the in-sample score, not a LOO score: it lets a corrupted
+  sensor pull the fit toward itself and hide its own error, and it would make the S5.2 comparison
+  a variant against itself. `residual.py` implements both — `rho_loo` and `rho_insample` — and the
+  difference between them is the S5.2 result.
+- Gate: gᵢ = mᵢ · σ(−α (ρᵢ^LOO − c)), with α, c learned.
 - Pass 2: scale sensor i's input embedding and soft-vote weight by gᵢ, then re-run the 4-layer
   RGSAGE-Max and head. **Not** hop-level silencing — Paper 1 showed that cuts the multi-hop paths
   that route around a lost node (SDR-STGNN AUDC 0.892 vs 0.913).
@@ -156,9 +214,9 @@ Total new learnable parameters: three scalars (β, α, c).
 
 | Quantity | Depends on network? | Gradient flows to |
 |---|---|---|
-| r̃_f(A), r̃_f(D), r̃ᵢ^LOO | No — inputs only | nothing |
-| z'_f = z_f − β·r̃_f | Yes | network via z, and β |
-| Σ_f P(f\|X)·r̃_f | Yes, through P | network via P |
+| ρ_f(A), ρ_f(D), ρᵢ^LOO | No — inputs only | nothing |
+| z'_{n,f} = z_{n,f} − β·ρ_f | Yes | network via z, and β |
+| Σ_f P(f\|X)·ρ_f | Yes, through P | network via P |
 | gᵢ | only through α, c | α, c |
 | Pass-2 output | Yes, gᵢ·hᵢ | network via hᵢ |
 | μ, μ₀, σ_ε | — | never |

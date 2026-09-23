@@ -12,22 +12,23 @@ assumed 3–4 h per run and was ~2× low.
 | Dropout-aware baselines (4 × 3 seeds) | 0 | 0 | **done** — `results/dropout_aware/` |
 | S4.1 null test | 1 | 7 | may be stopped early once curves match |
 | λ tuning (15-epoch) | 6 | ≈ 21 | |
-| Core ablation R1–R7 (seed plan of `06`) | 16 | ≈ 115 | R7 wider: +10–20 % |
+| **R0ⁿ — dropout-aware + noise aug, no physics** | **3** | **≈ 21** | `[Added 2026-09-23]` the paired reference for every ablation arm, forced by the noise-augmentation default (`06` S4.3ᵇ). Not optional: without it, R5 vs R0 confounds noise augmentation with physics |
+| Core ablation R1–R8 (seed plan of `06`) | 19 | ≈ 133 | `[Corrected 2026-09-23]` seed swap R4 ↔ R7 (R4 3, R7 1), plus **R8** (R5 trained noise-free, 3 seeds) as the ablation of the new default. R7 wider: +10–20 % |
 | B2ᵃ learned-R̂ head | 1 | 7 | |
 | Gate study G0 ×3, G1 ×1, G2 ×3, G3 ×1 | 8 | ≈ 60–70 | G2/G3 two-pass: ≈ 1.3× |
 | Model-mismatch retrain at ±5 % | 1 | 7 | |
-| **Total** | **≈ 33** | **≈ 220–235 h ≈ 9–10 days** continuous | |
-| Optional: promote R1/R3/R4/R7/G1/G3 to 3 seeds | +12 | +85 | only after Gate 4 |
+| **Total** | **≈ 39** | **≈ 262–277 h ≈ 11–12 days** continuous | `[Corrected 2026-09-23]` +42 h over the previous ≈ 220–235 h: R0ⁿ (+21) and R8 (+21), both made load-bearing by the S2.0ᵃ degeneracy ruling. **Trim lever:** R8 → 1 seed (−14 h), reported as a diagnostic. Never trim R0ⁿ |
+| Optional: promote R1/R3/R7/G1/G3 to 3 seeds | +10 | +70 | only after Gate 4 |
 
 ## CPU-only work
 
 | Item | Cost |
 |---|---|
-| Signature table (70 k snapshot solves) | ≈ 25–30 min at ~45 solves/s — measure in S0.5 |
+| Signature table (70 k solves at L-step 0.05; 136 k at 0.025) | `[Measured 2026-09-23, S0.5]` **2.9 min** and **5.6 min** *serial* — 402 solves/s in `reuse` mode, ≈ 9× the planned rate, because the estimate was paying the OpenDSS compile on every solve. Cost is no longer an input to the S1.2 grid choice (`03_STAGE_B` S1.2 selects on ρ-margin usability) |
 | L-grid / R-grid studies | < 1 h |
 | Perturbed tables (3–5) | ≈ 2–2.5 h |
-| OOD-pilot (1,100 events × 60 Daily-mode steps) | ≈ 25 min |
-| OOD-test (11,000 events × 60 steps) | ≈ 4–5 h |
+| OOD-pilot (1,100 events × 60 Daily-mode steps) | `[Measured 2026-09-23]` ≈ **20 s** (17 ms/event) |
+| OOD-test (11,000 events × 60 steps) | `[Measured 2026-09-23]` ≈ **3 min**, not 4–5 h |
 | All evaluation | inference — minutes per model per condition; the Paper-1 conditions are reused for the existing models |
 
 ## Schedule

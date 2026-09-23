@@ -103,6 +103,14 @@ def aggregate_over_seeds(per_seed_rows: "list[dict]",
             "acc_mean": float(g["acc_seed"].mean()),
             "n_train_seeds": n, "n_mask_seeds": int(g["n_mask_seeds"].iloc[0]),
             "policy": g["policy"].iloc[0], "err_kind": err_kind,
+            # The mask realisation is a pure function of (k, mask offset,
+            # batch_idx, batch size) -- see dropout/evaluator.py -- so a curve
+            # is only reproducible to the bit if the batch size is recorded
+            # with it.  It never was, which is the whole reason the stored
+            # Paper-1 curves and a fresh re-evaluation differ by ~1e-3 macro-F1
+            # at k > 0 (PC-STGNN Stage A, S0.1).  Recorded from here on.
+            "batch_size": (int(g["batch_size"].iloc[0])
+                           if "batch_size" in g.columns else -1),
             "seeds": json.dumps(sorted(int(s) for s in g["seed"])),
             "f1_per_train_seed": json.dumps([round(float(x), 6) for x in f1s]),
         })
@@ -145,7 +153,7 @@ def evaluate_all_models(args) -> "list[dict]":
                     "model": model_name, "seed": seed, "k": k,
                     "f1_seed": r["f1_mean"], "acc_seed": r["acc_mean"],
                     "mask_std": r["f1_std"], "n_mask_seeds": r["n_mask_seeds"],
-                    "policy": r["policy"],
+                    "policy": r["policy"], "batch_size": int(args.batch_size),
                 })
     if not per_seed_rows:
         return []

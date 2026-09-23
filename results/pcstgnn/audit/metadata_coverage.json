@@ -1,0 +1,45 @@
+{
+  "pass": true,
+  "n_events": 50,
+  "coverage": {
+    "fault_bus": 50,
+    "fault_type": 50,
+    "resistance": 50,
+    "run_id": 50,
+    "load_multiplier": 50,
+    "seed": 50,
+    "feeder_config": 50
+  },
+  "full_coverage": true,
+  "shapes": {
+    "(25, 60, 6)": 50
+  },
+  "n_seed_mismatch": 0,
+  "seed_mismatch_examples": [],
+  "regeneration": [
+    {
+      "event": "65_AB_0p1_0047",
+      "load_stored": 0.6019535912308289,
+      "load_regen": 0.6019535912308289,
+      "load_exact": true,
+      "max_abs_diff": 0.0,
+      "bit_identical": true
+    },
+    {
+      "event": "72_BG_1p0_0012",
+      "load_stored": 1.193557743604278,
+      "load_regen": 1.193557743604278,
+      "load_exact": true,
+      "max_abs_diff": 0.0,
+      "bit_identical": true
+    },
+    {
+      "event": "108_BC_1p0_0003",
+      "load_stored": 0.5999852154613265,
+      "load_regen": 0.5999852154613265,
+      "load_exact": true,
+      "max_abs_diff": 0.0,
+      "bit_identical": true
+    }
+  ]
+}

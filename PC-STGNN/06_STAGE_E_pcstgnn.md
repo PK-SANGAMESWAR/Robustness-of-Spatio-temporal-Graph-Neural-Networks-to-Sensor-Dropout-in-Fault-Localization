@@ -16,6 +16,7 @@ Stage C is your evidence that this operator is different in kind.
 ## S4.1 — The null test — run before anything else
 
 **Do.** Train the new model with λ₁ = λ₂ = β = 0, gate off, seed 42.
+`scripts/run_pcstgnn_null_test.py`.
 
 **Check.** Loss curve and per-epoch validation F1 against the existing R0 run
 (`results/dropout_aware/rgsage_max/seed_00042/metrics_by_epoch.csv`).
@@ -58,22 +59,60 @@ rules, both stated in the paper.)
 
 **Figure produced.** F-E1 — validation F1 vs λ₁ (appendix).
 
+## S4.3ᵇ — Noise augmentation is the default training condition `[Added 2026-09-23]`
+
+**Every arm below is trained with measurement-noise augmentation on.** Noise-free training is now
+the *ablation*, not the default. The reason is `04_STAGE_C_gonogo.md` S2.0ᵃ consequence 4: on
+noise-free data ρ_true = 0 and `softmax(−ρ)` is one-hot, so β learns to trust physics completely,
+the network's contribution goes to zero, and PC-STGNN degenerates into PSM with extra steps.
+There is nothing for the fusion to learn. Training under noise is what gives the physics prior a
+finite, informative dynamic range — and it is the realistic operating point besides.
+
+Three implementation requirements come with it:
+
+- **σ is drawn per window** from Paper 1's existing grid **including 0** — σ ∈ {0, 5e-4, 2e-3,
+  1e-2} p.u. — exactly as `DropoutAugmentedLoader` draws k, so the model sees clean and noisy
+  windows and the clean case is not abandoned. Reuse `dropout/noise.py` unchanged; the
+  augmentation wrapper mirrors `dropout/training.py`.
+- **σ₀ in the residual denominator equals the σ actually injected into that window**
+  (`PC-STGNN-PLAN.md` §6). The residual must not be evaluated at a σ₀ the observation does not
+  have, or the physics prior is mis-scaled in exactly the direction that hides the effect.
+- **Dropout augmentation stays on** — this is a dropout-aware backbone and that is not the
+  variable under test. Noise augmentation is added *on top of* the Paper-1 dropout-aware recipe.
+
+**This forces a new reference run, and it is not optional.** R0 as it exists on disk
+(`results/dropout_aware/rgsage_max/`) was trained without noise augmentation. Comparing a
+noise-augmented R5 against it would confound noise augmentation with physics fusion and break the
+project's first rule (one variable at a time). **R0ⁿ — the Paper-1 dropout-aware recipe plus noise
+augmentation, no physics — is the paired reference for every arm in S4.4, at 3 seeds.** The
+existing R0 remains the Paper-1 anchor and the S4.1 null-test target; it is not the ablation
+baseline any more.
+
 ## S4.4 — Core ablation — 30 epochs, everything else frozen
+
+`[Corrected 2026-09-23]` All arms trained with noise augmentation (S4.3ᵇ); R0ⁿ replaces R0 as the
+paired reference; R8 added as the ablation of the new default.
 
 | # | Variant | Answers the objection | Seeds |
 |---|---|---|---|
-| R0 | Dropout-aware RGSAGE-Max | reference (already trained) | 3 (done) |
+| R0 | Dropout-aware RGSAGE-Max, no noise aug | Paper-1 anchor, S4.1 null target (already trained) | 3 (done) |
+| R0ⁿ | **R0 + noise augmentation, no physics** | **the paired reference — isolates noise aug from physics** | **3 (new)** |
 | R1 | + type head only | "the auxiliary task is doing it" | 1 |
 | R2 | + learned MLP decoder on D, parameter-matched | "any decoder / masked autoencoding would do it" | 3 |
 | R3 | + λ₁ (residual on A) | physics as a training constraint | 1 |
-| R4 | + λ₂ (residual on held-out D) | does held-out consistency add over in-sample? | 1 |
+| R4 | + λ₂ (residual on held-out D) | does held-out consistency add over in-sample? | **3** |
 | R5 | + β fusion — full PC-STGNN | physics as evidence at test time | 3 |
 | R6 | R5 with a shuffled location→signature map | "it's regularisation, not physics" | 3 |
 | R7 | Size-matched wider RGSAGE-Max | "it's just a bigger model" | 1 |
+| R8 | **R5 trained noise-free** | **the ablation of the new default — expected to degenerate: β saturates, network contribution → 0** | **3** |
 | B2ᵃ | learned R̂ head instead of profiling | shows why profiling beats regression on OOD R | 1 |
 
-`[Corrected 2026-09-22]` Seed counts follow the S0.5 rule (one run ≈ 7 h). Promote R1/R3/R4/R7 to
+`[Corrected 2026-09-22]` Seed counts follow the S0.5 rule (one run ≈ 7 h). Promote R1/R3/R7 to
 3 seeds only if Gate 4 passes and budget remains.
+
+`[Corrected 2026-09-23]` **Seed swap R4 ↔ R7.** λ₂ is the novel loss term and R4 is the only arm that isolates it, so R4 gets 3 seeds; R7 (size-matched wider backbone) answers a one-line objection with a one-row answer and gets 1. Without error bars on R4 the λ₂ → λ₁ comparison — the one that says whether held-out
+physics consistency adds anything over in-sample — cannot be read at all, whereas R7 only has to
+land on the right side of a large gap.
 
 R6 and R2 carry the burden of proof. The target pattern is F1_real > F1_none ≈ F1_shuffled.
 
@@ -83,7 +122,18 @@ objection with a one-row answer, so run it.
 B2ᵃ is expected to fail on OOD R: a head trained on {0.1, 1, 10} Ω collapses to a three-way
 classifier. That failure is a result worth a table row.
 
-**Cost.** 3+1+3+1+1+3+3+1+1 = 17 runs × 7 h ≈ 120 GPU-h (R7 wider: somewhat more).
+R8 is a negative control that is also a mechanism result: if the fusion degenerates without
+noise, that is the sharpest available confirmation of S2.0ᵃ consequence 4, and it is the exact
+counterpart of Paper 1's "dropout-aware training does not help against noise" null. It carries a
+claim, so it carries 3 seeds (`.rules/10-integrity.md`, n = 3 discipline).
+
+**Cost.** `[Corrected 2026-09-23]` R0ⁿ 3 + R1 1 + R2 3 + R3 1 + R4 3 + R5 3 + R6 3 + R7 1 + R8 3
++ B2ᵃ 1 = **22 new runs × 7 h ≈ 154 GPU-h** (R7 wider: somewhat more). R0's 3 runs stay done and
+are no longer part of this count. This is ≈ 42 GPU-h above the previous plan — the price of
+adding the paired noise reference (R0ⁿ, +21 h) and the degeneracy control (R8, +21 h), both of
+which the S2.0ᵃ ruling makes load-bearing. **Trim lever if the budget binds:** R8 → 1 seed, and
+report it as a diagnostic rather than a claim; do **not** trim R0ⁿ, which is the comparison's
+paired reference.
 
 **Table produced.** T7 — core ablation.
 **Figure produced.** F-E2 — ablation bar chart with seed spread (optional if T7 is clear).
@@ -92,7 +142,8 @@ classifier. That failure is a result worth a table row.
 
 - [ ] S4.1 null test exact
 - [ ] S4.2 gradients non-zero on both λ terms; table receives none
-- [ ] R5 > R0 on validation, in the pre-registered conditions, sign-consistent across 3 seeds
+- [ ] **R5 > R0ⁿ** (not R0) on validation, in the pre-registered conditions, sign-consistent
+      across 3 seeds — read at the noise operating points, never at clean k = 0 (S2.0ᵃ)
 
 **If R5 ≈ R0 on validation.** Do not proceed to Stage F expecting a rescue. Go straight to
 Stage G, run the OOD and noise evaluations, and write the "physics buys generalisation, not

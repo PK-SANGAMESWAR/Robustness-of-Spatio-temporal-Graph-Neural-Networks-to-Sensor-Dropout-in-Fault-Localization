@@ -95,3 +95,71 @@ def expanded_focal_loss(
 
     return loss.mean()
 
+
+
+# ---------------------------------------------------------------------------
+# PC-STGNN objective (PC-STGNN/01_SPEC.md §6)
+# ---------------------------------------------------------------------------
+
+def pc_loss(
+    out: dict,
+    targets: torch.Tensor,
+    lam1: float = 0.0,
+    lam2: float = 0.0,
+    loss_mask: torch.Tensor | None = None,
+) -> dict:
+    """``CE(z', y) + lam1 * E_P[rho(A)] + lam2 * E_P[rho(D)]``.
+
+    ``out`` is what :meth:`models.pc_stgnn.PCSTGNN.forward_pc` returns.  The two
+    physics terms are the expected residual under the model's own soft-vote
+    distribution ``P(f|X)``: the gradient reaches the network **through P**, not
+    through rho, which is a constant of the inputs.
+
+    ``loss_mask`` is ``[B]``, zero on windows with no post-inception samples
+    (w = 20).  Those windows carry a fault label while being physically
+    identical to a healthy window, so the physics necessarily prefers class 0
+    there and including them would train the model against a residual that is
+    right (``01_SPEC.md`` §3, ``02_STAGE_A_audit.md`` S0.3).  It is the only
+    place a window index is used anywhere, it applies at training time only, and
+    it never enters the residual itself.
+
+    Do **not** replace these with a reconstruction loss of the form
+    ``||mu[f_hat] - s_true||^2``: ``f_hat`` is an arg-min index and constant in
+    the weights, so that term has exactly zero gradient and the lambda_2 arm
+    would be silently identical to lambda_1 (``01_SPEC.md`` §6, audited by S4.2).
+    """
+    logits = out["logits"]
+    total = expanded_cross_entropy(logits, targets)
+    parts = {"ce": total.detach().clone()}
+
+    if lam1 or lam2:
+        p_graph = out["p_graph"]                       # [B, 26], sums to 1
+        weights = (torch.ones(p_graph.shape[0], device=p_graph.device)
+                   if loss_mask is None else loss_mask.to(p_graph.dtype))
+        denom = weights.sum().clamp(min=1.0)
+        for name, key, lam in (("l1", "rho_A", lam1), ("l2", "rho_D", lam2)):
+            if not lam:
+                continue
+            if key not in out:
+                raise KeyError(f"pc_loss needs out[{key!r}] for lambda_{name[-1]}")
+            term = ((p_graph * out[key]).sum(dim=-1) * weights).sum() / denom
+            parts[name] = term.detach().clone()
+            total = total + lam * term
+
+    parts["total"] = total
+    return parts
+
+
+def unlabelable_window_mask(window_ids, fault_start_step: int = 40,
+                            window_length: int = 20) -> torch.Tensor:
+    """``[B]`` mask, 0 on windows with zero post-inception samples.
+
+    Window ``w`` covers steps ``[w, w + window_length)``, so it contains
+    ``w + window_length - fault_start_step`` post-inception samples.  Exactly one
+    fault-labelled window per event (w = 20) has none.
+    """
+    keep = []
+    for wid in window_ids:
+        index = int(str(wid).rpartition("_w")[2])
+        keep.append(0.0 if index + window_length - fault_start_step == 0 else 1.0)
+    return torch.tensor(keep, dtype=torch.float32)

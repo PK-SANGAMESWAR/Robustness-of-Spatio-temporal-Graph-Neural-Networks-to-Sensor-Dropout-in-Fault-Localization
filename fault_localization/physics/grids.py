@@ -1,0 +1,120 @@
+"""Axes of the physics signature table, and the one constant the corpus hides.
+
+The operator of ``PC-STGNN/01_SPEC.md`` §2 is a fixed tensor
+``mu[f, tau, R, L, i, p]`` plus a no-fault row ``mu0[L, i, p]``.  This module
+owns the four hypothesis axes so that the table builder, the residual layer,
+the identifiability study and every audit script agree on their order and
+values without passing them around.
+
+Axis order is fixed and load-bearing: ``(f, tau, R, L, sensor, phase)``.  The
+residual flattens ``(tau, R, L)`` into one hypothesis axis, and
+``unravel_hypothesis`` is the only sanctioned way back, so that a reported
+``(tau*, R*, L*)`` can never drift out of step with the tensor it came from.
+"""
+
+from __future__ import annotations
+
+import numpy as np
+
+from fault_localization.config.constants import (
+    FAULT_BUSES,
+    FAULT_TYPES,
+    NUM_PHASES,
+    NUM_PMU_NODES,
+    PRE_FAULT_MS,
+)
+
+# ---------------------------------------------------------------------------
+# The frozen pre-fault load level
+# ---------------------------------------------------------------------------
+
+#: The load multiplier actually in force during the corpus's fault period.
+#:
+#: ``monitors.solve_prefault_timeseries`` rescales every load at the top of each
+#: of the 40 pre-fault steps by ``1 + 0.003*sin(2*pi*step/40)``, and the fault
+#: loop of ``simulation/runner.py`` (lines 138-150) **never rescales again** --
+#: it injects the fault and solves 20 more steps at whatever the loads were left
+#: at.  The last rescale is therefore pre-fault step 39, not step 40, so the
+#: fault solves run at ``L * (1 + 0.003*sin(2*pi*39/40))`` and the step-40 value
+#: of the sinusoid (exactly 1.0) is never applied.
+#:
+#: Getting this wrong shifts every signature by ~5e-4 p.u., which is the same
+#: order as the sigma_eps the operator is calibrated to -- so it is asserted,
+#: not assumed, by ``scripts/audit_snapshot_equivalence.py`` (Stage A S0.4).
+PREFAULT_FREEZE: float = float(1.0 + 0.003 * np.sin(2.0 * np.pi * (PRE_FAULT_MS - 1) / PRE_FAULT_MS))
+
+# ---------------------------------------------------------------------------
+# Hypothesis axes
+# ---------------------------------------------------------------------------
+
+#: 15 log-spaced fault resistances, 0.05 -> 30 ohm (``01_SPEC.md`` §2).
+#:
+#: Note that the corpus's own resistances {0.1, 1, 10} are deliberately *not*
+#: grid points -- the grid is geometric between the endpoints.  S1.7 measures
+#: how far the profiled ``R*`` lands from the true value for exactly this
+#: reason; a grid built around the training values would make that test
+#: vacuous and would flatter the operator on in-distribution resistance.
+R_GRID: np.ndarray = np.geomspace(0.05, 30.0, 15)
+
+L_MIN: float = 0.5
+L_MAX: float = 1.3
+DEFAULT_L_STEP: float = 0.05
+
+
+def l_grid(step: float = DEFAULT_L_STEP) -> np.ndarray:
+    """Load-multiplier axis over ``[0.5, 1.3]`` at the given step.
+
+    The step is a *decision*, not a default: S1.2 (``03_STAGE_B_operator.md``)
+    chooses the coarsest value whose linear-interpolation error stays under
+    1e-3 p.u., and records it in ``operator/grid.json``.  0.05 gives 17 points
+    and ~70k solves; 0.025 gives 33 points and ~140k.
+    """
+    if step <= 0:
+        raise ValueError("L step must be positive")
+    span = L_MAX - L_MIN
+    n = int(round(span / step)) + 1
+    if abs((n - 1) * step - span) > 1e-9:
+        raise ValueError(
+            f"L step {step} does not divide the range [{L_MIN}, {L_MAX}] exactly"
+        )
+    return np.linspace(L_MIN, L_MAX, n)
+
+
+# ---------------------------------------------------------------------------
+# Shapes
+# ---------------------------------------------------------------------------
+
+NUM_LOCATIONS: int = len(FAULT_BUSES)          # 25 candidate fault locations
+NUM_TYPES: int = len(FAULT_TYPES)              # 11
+NUM_R: int = len(R_GRID)                       # 15
+NUM_CHANNELS: int = NUM_PMU_NODES * NUM_PHASES  # 75 sensor-phase channels
+
+AXIS_ORDER: tuple[str, ...] = ("f", "tau", "R", "L", "sensor", "phase")
+
+
+def table_shape(l_step: float = DEFAULT_L_STEP) -> tuple[int, ...]:
+    """Shape of ``mu``: ``[25, 11, 15, n_L, 25, 3]``."""
+    return (NUM_LOCATIONS, NUM_TYPES, NUM_R, len(l_grid(l_step)), NUM_PMU_NODES, NUM_PHASES)
+
+
+def nofault_shape(l_step: float = DEFAULT_L_STEP) -> tuple[int, ...]:
+    """Shape of ``mu0``: ``[n_L, 25, 3]``."""
+    return (len(l_grid(l_step)), NUM_PMU_NODES, NUM_PHASES)
+
+
+def num_hypotheses(n_l: int) -> int:
+    """Size of the flattened ``(tau, R, L)`` hypothesis axis."""
+    return NUM_TYPES * NUM_R * n_l
+
+
+def unravel_hypothesis(index, n_l: int):
+    """Flat hypothesis index -> ``(tau_idx, r_idx, l_idx)``.
+
+    Inverse of ``tau_idx * NUM_R * n_l + r_idx * n_l + l_idx`` -- i.e. C order
+    over ``(tau, R, L)``, which is the order ``residual.py`` flattens the table
+    in and the only order any reported ``(tau*, R*, L*)`` may be decoded with.
+    """
+    index = np.asarray(index)
+    tau_idx, rem = np.divmod(index, NUM_R * n_l)
+    r_idx, l_idx = np.divmod(rem, n_l)
+    return tau_idx, r_idx, l_idx

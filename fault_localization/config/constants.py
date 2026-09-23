@@ -7,6 +7,8 @@ All values are reproduced from [BASE]:
   in Partially Observable Distribution Grids. arXiv:2604.20403.
 """
 
+import hashlib
+
 # ---------------------------------------------------------------------------
 # Fault and measurement locations (reproduced from [BASE] Table 1 / Fig. 2)
 # ---------------------------------------------------------------------------
@@ -163,6 +165,62 @@ GREEN_FEEDER_CLOSE_SWITCH_BUSES: tuple[int, int] = (54, 94)
 # ---------------------------------------------------------------------------
 
 GLOBAL_RANDOM_SEED: int = 42
+
+
+# ---------------------------------------------------------------------------
+# Out-of-distribution generation seeds (PC-STGNN Stage C)
+# ---------------------------------------------------------------------------
+
+OOD_SEED_OFFSET: int = 1_000_000_000
+"""Floor for every OOD seed.
+
+The corpus's own seeds are bounded above by
+``24*11*3*10_000 + 10*3*10_000 + 2*10_000 + 9_999 = 8_249_999``, so starting the
+OOD range at 1e9 makes the two sets disjoint by construction rather than by
+inspection.  ``test_ood_seed.py`` enumerates the whole corpus seed set and
+asserts it.
+"""
+
+OOD_SEED_SPAN: int = 2_147_483_647 - OOD_SEED_OFFSET
+"""Width of the OOD range, capped below 2**31 so the seeds remain valid for
+both ``random.Random`` and NumPy's legacy seeding."""
+
+
+def deterministic_seed_ood(
+    fault_bus: int,
+    fault_type: str,
+    resistance: float,
+    run_id: int,
+    set_name: str = "test",
+) -> int:
+    """Deterministic seed for an out-of-distribution event.
+
+    :func:`deterministic_seed` cannot be reused here for two independent
+    reasons, and both matter:
+
+    1. It computes ``FAULT_RESISTANCES.index(resistance)``, which **raises** for
+       any R outside {0.1, 1, 10} -- and every OOD event is by definition outside
+       that set.
+    2. Even if it did not, an OOD event must never collide with a corpus event's
+       seed, or the "unseen resistance" claim would rest on partially reused
+       random draws.
+
+    So this is a separate hash, offset into a disjoint range, keyed on the
+    resistance *value* rather than its index.  ``set_name`` separates the
+    throwaway Gate-2 pilot from the sealed test set: the two share no seeds, which
+    is what lets the pilot inform the go/no-go decision without contaminating the
+    set that carries the claim (``04_STAGE_C_gonogo.md`` S2.0).
+
+    ``deterministic_seed`` is deliberately left untouched -- the frozen corpus
+    was generated with it.
+    """
+    if fault_type not in FAULT_TYPES:
+        raise ValueError(f"Unknown fault type '{fault_type}'")
+    if fault_bus not in FAULT_BUSES:
+        raise ValueError(f"Unknown fault bus {fault_bus}")
+    key = f"ood|{set_name}|{fault_bus}|{fault_type}|{resistance!r}|{int(run_id)}"
+    digest = hashlib.blake2b(key.encode("utf-8"), digest_size=8).hexdigest()
+    return OOD_SEED_OFFSET + int(digest, 16) % OOD_SEED_SPAN
 
 
 def deterministic_seed(fault_bus: int, fault_type: str, resistance: float, run_id: int) -> int:
