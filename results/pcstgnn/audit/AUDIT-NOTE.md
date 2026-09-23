@@ -202,8 +202,10 @@ Worst |V_solve − V_corpus| over instrumented channels, p.u. Tolerance was 1e-3
 - **Freeze assertion passes empirically.** At `L × 0.99953` the error is 1.02e-12 p.u.; at
   `L × 1.0` it is **4.80e-05 p.u.** — seven orders of magnitude worse. The frozen pre-fault
   modulation is confirmed by measurement, not by reading the code.
-- **`reuse` mode is identical to `daily`**, bit for bit, so the fast build path is validated and
-  the 70k-solve table can use it.
+- **`reuse` mode is identical to `daily` on these five events — and that conclusion does NOT
+  generalise.** `[Falsified 2026-09-23; see "The build path" below.]` Measured against 1,000
+  events instead of 5, the standing-circuit path disagrees with the corpus by > 1e-3 p.u. on
+  **43.3 %** of them. The table must be built with a recompile per solve.
 - **Snapshot mode is also identical**, so the `01_SPEC.md` §2 wording ("built in OpenDSS snapshot
   mode") and the plan's Daily-path decision turn out to be equivalent here. No branch needed.
 
@@ -229,6 +231,82 @@ the *compile*, which `reuse` mode pays once.
 purely on interpolation error — there is no budget argument for the coarser grid. The GPU budget
 is unchanged (not re-measured; `results/runtime/runtime_training.csv` stands), so the reduced-seed
 rule still applies.
+
+## The build path — found while investigating the non-monotone cells `[Added 2026-09-23]`
+
+The author asked for the S1.3 non-monotone cells to be characterised before the full table build.
+That investigation turned up something larger, and it is the most consequential finding of the day.
+
+### `reuse` mode silently corrupts the operator
+
+`physics/table.build_table` defaulted to `mode="reuse", reuse_limit=500` — a standing circuit
+reused across 500 solves. OpenDSS carries **regulator tap positions** across solves on a standing
+circuit, so each hypothesis inherits the tap state left by whichever hypothesis the worker solved
+before it. Measured against 1,000 corpus events, each solved at its own stored (f, τ, R, L) and
+compared with the corpus's own settled post-fault level:
+
+| build path | median error | p95 | events > 1e-3 p.u. | ms/solve |
+|---|---|---|---|---|
+| `reuse`, never recompile | 4.9e-09 | 1.3e-02 | **43.3 %** | 4.4 |
+| recompile per solve (`daily`/`snapshot`/`reuse_limit=1`) | **1.0e-10** | 6.2e-09 | **1.8 %** | 8.1 |
+
+The error distribution is **bimodal** — either exact to 1e-10, or ≈ 6.5e-3 p.u., which is one
+regulator tap step. That is a discrete state difference, not numerical noise. The corpus
+recompiles per event (`simulation/runner.py`), so recompiling is what *matches the generator*.
+
+**S0.4 missed this because it sampled 5 events**, all of which happened to agree. The fast path it
+validated was the wrong one. `build_table` now defaults to `mode="daily", reuse_limit=1`; the
+table costs ~9 minutes serial instead of ~3, which is not a trade worth having an opinion about.
+
+### The residual 1.8 % is real, physical, and concentrated where it hurts
+
+With the corrected path, 18 of 1,000 events still differ by 6.4–7.3e-3 p.u., and **16 of the 18
+sit at R = 10 Ω** — the hard case the whole paper turns on. This is the corpus's own tap
+hysteresis: its tap position at inception depends on the 40-step Daily history that a fresh
+compile does not reproduce. Two consequences:
+
+- It is **the one genuinely physical contribution to σ_ε** that this corpus offers, and it is
+  ~6.5e-3 p.u. — far above the discretisation floor and of the same order as the 10 Ω sag itself.
+  S1.6 must calibrate with it in view, and S1.4 must report it by R.
+- It **slightly softens the degeneracy ruling, in the one place that matters**. The operator is
+  the exact generator for 98.2 % of events, so S2.0ᵃ stands unchanged as the project's framing —
+  but at 10 Ω there is a genuine, measurable model error, which is where the physics/learning
+  contrast is most interesting. Do not oversell this: it is 1.8 % of events, and it is not a
+  rescue. It is a footnote to S1.4 and a candidate line in the limitations section.
+
+### The non-monotone cells: real, but NOT control-driven
+
+On the real 15-point R grid (12,378 solves, 0 non-converged), **9.4 % of (f, τ, L) cells** have a
+sag depth that does not decrease monotonically with R — not the 3.3 % the smoke grid suggested —
+with violations up to **4.1e-2 p.u.** They cluster hard by fault type: **904 of 1,084 violations
+are ungrounded** (AB 264, BC 277, CA 304, ABC 59) against 15–47 for each grounded type, although
+ungrounded types are only 4 of 11. Every bus is affected; violations concentrate at both ends of
+the R grid.
+
+**The corpus shows the same behaviour.** Comparing corpus median sag against table sag at the
+corpus's own R ∈ {0.1, 1, 10}: the two agree on monotonicity for **273 of 275 (bus, type) cells**,
+and **all 17 corpus non-monotone cells are ungrounded**. Per the author's rule — if the corpus
+shows it, fidelity to the corpus wins — **the controls stay exactly as they are** and the fraction
+is reported in T3.
+
+**But the documented cause is wrong.** `03_STAGE_B_operator.md` S1.3 says a non-monotonic run
+"almost always means a regulator or cap-bank control interacted with the fault". Re-solving nine
+non-monotone cells with `ControlMode=OFF`: **4 of 9 remain non-monotone** (buses 80 and 89, types
+AB and CA). So for this feeder the effect is largely **intrinsic to ungrounded faults**, not a
+control artefact. Disabling controls does move the sags a lot (up to 0.168 p.u.), which is a
+second reason to leave them alone.
+
+**Correction to an earlier claim in this note.** The S0.3 write-up above suggested the three
+settling outliers and the non-monotone cells were "almost certainly the same mechanism". Tested:
+they are not. `55_BC_1p0_0007`'s slow settling **is** control-driven (7.09e-3 p.u. with controls
+STATIC, 1.4e-5 with them off), but the outlier cells are monotone in R, and most non-monotone
+cells survive controls being disabled. Two distinct phenomena that share only "ungrounded fault".
+
+### What this changes for S1.7
+
+At cells where sag is non-monotone in R, **argmin_R is ambiguous by construction**. S1.7's
+"argmin_R within one grid step" check must report those cells separately rather than averaging
+them in, or it will read an identifiability property as a grid-density failure.
 
 ## Decisions taken — author ruling, 2026-09-23
 

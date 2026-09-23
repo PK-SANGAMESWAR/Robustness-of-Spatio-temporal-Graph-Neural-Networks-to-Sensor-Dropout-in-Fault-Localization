@@ -82,9 +82,33 @@ OpenDSS engine each. Use load L × 0.99953 (S0.4).
 
 **Pass.** All three clean.
 
-**Branch.** Non-monotonic sag depth usually means a regulator or cap-bank control interaction.
-Decide once and match the corpus: either freeze controls in snapshot mode exactly as the corpus
-Daily-mode run had them, or allow them and document it. Re-run S0.4 after any change.
+**Branch.** `[Resolved 2026-09-23 by measurement — the decision is made, do not re-litigate it.]`
+Probed on the real 15-point R grid (12,378 solves, 0 non-converged):
+
+- **9.4 % of (f, τ, L) cells are non-monotone**, not the 3.3 % the smoke grid suggested, with
+  violations up to 4.1e-2 p.u.
+- They cluster by fault type: **904 of 1,084 violations are ungrounded** (AB/BC/CA/ABC), which
+  are only 4 of 11 types. Every bus is affected; no bus clustering.
+- **The corpus shows the same behaviour** — corpus and table agree on monotonicity for 273 of 275
+  (bus, type) cells at R ∈ {0.1, 1, 10}, and all 17 corpus non-monotone cells are ungrounded.
+
+**Decision: the controls stay exactly as the corpus had them, and the fraction is reported in
+T3.** Fidelity to the corpus wins, per the rule for this branch.
+
+**The cause stated above is wrong and is corrected here.** Re-solving nine non-monotone cells
+with `ControlMode=OFF` leaves **4 of 9 still non-monotone** (buses 80, 89; types AB, CA), so the
+effect is largely **intrinsic to ungrounded faults on this feeder**, not a regulator or cap-bank
+interaction. Disabling controls also shifts sags by up to 0.168 p.u., a second reason not to
+touch them.
+
+**Build-path requirement, found in the same pass — this one is not optional.** The circuit must be
+**recompiled for every solve**. OpenDSS carries regulator tap positions across solves on a
+standing circuit, so `build_table`'s old `mode="reuse", reuse_limit=500` default made each
+hypothesis inherit the previous one's tap state: measured against 1,000 corpus events, **43.3 %
+disagreed with the corpus by > 1e-3 p.u.**, against **1.8 %** when recompiling per solve (median
+1.0e-10, and the corpus itself recompiles per event). S0.4's "reuse is identical to daily" was
+true for the 5 events it sampled and false for 43 % of the corpus. `build_table` now defaults to
+`mode="daily", reuse_limit=1`: ~9 minutes serial instead of ~3.
 
 **Output.** `operator/mu.npy` [25,11,15,17,25,3], `operator/mu0.npy` [17,25,3],
 `operator/build_log.csv`
@@ -112,6 +136,19 @@ Read it accordingly: **a hit here is a bug report, not a fidelity measurement.**
 the discretisation scale means the build path diverged from the corpus's — a control state
 (regulator tap / cap bank) that differs between the table build and the Daily-mode corpus, a
 wrong load freeze factor, or a stale `.dss`. Hunt that; never absorb it into σ_ε.
+
+**It has already fired once, before the table was built** (2026-09-23): the standing-circuit
+build path carried regulator taps between hypotheses and disagreed with the corpus on 43.3 % of
+events. Fixed by recompiling per solve — see the S1.3 build-path note above. That is exactly the
+class of bug this check is now for, and it was found by running the check at scale rather than on
+5 events.
+
+**The floor this check leaves behind is real and belongs in S1.6.** With the corrected path,
+1.8 % of events still differ by 6.4–7.3e-3 p.u. — one regulator tap step — and **16 of 18 sit at
+R = 10 Ω**. This is the corpus's own tap hysteresis (its tap position at inception depends on a
+40-step Daily history a fresh compile cannot reproduce). Report |e| **by R**, so this is visible
+rather than averaged away, and carry it into σ_ε: it is the one physically-grounded contribution
+this corpus offers, and it is far above the discretisation floor.
 
 This is a good engineering outcome and a bad scientific one, and the honest response is to move
 the falsifiable content of Gate 1 to the checks that still have any. It is also the reason
@@ -185,6 +222,9 @@ and document it as the single calibrated scalar of the operator.
 2. Interpolation: for the corpus's own R ∈ {0.1, 1, 10}, check where the profiled argmin_R lands.
 
 **Check.** ΔF1 from halving the grid; distribution of argmin_R error in grid steps.
+`[Added 2026-09-23]` **Report the non-monotone cells separately.** Where sag is non-monotone in R
+(9.4 % of cells, S1.3), argmin_R is ambiguous *by construction*, so folding those cells into the
+average reads an identifiability property as a grid-density failure.
 
 **Pass.** Discretisation costs < 0.01 macro-F1; argmin_R within one grid step on the large
 majority of events.

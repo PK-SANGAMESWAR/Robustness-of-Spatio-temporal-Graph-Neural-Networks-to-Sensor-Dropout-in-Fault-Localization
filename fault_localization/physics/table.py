@@ -54,11 +54,11 @@ def _chunks(jobs, n_chunks):
 def build_table(
     out_dir: str | Path,
     workers: int = 20,
-    mode: str = "reuse",
+    mode: str = "daily",
     l_step: float = grids.DEFAULT_L_STEP,
     r_grid: np.ndarray | None = None,
     master: str | Path | None = None,
-    reuse_limit: int = 500,
+    reuse_limit: int = 1,
     sigma_eps: float | None = None,
     limit: int | None = None,
 ) -> dict:
@@ -67,6 +67,35 @@ def build_table(
     ``limit`` truncates the job list -- for smoke tests only; a truncated build
     writes ``complete: false`` into ``grid.json`` so it can never be mistaken for
     the real table.
+
+    **The circuit is recompiled for every solve, and that is not negotiable.**
+    The defaults were ``mode="reuse", reuse_limit=500`` until 2026-09-23, which
+    would have silently corrupted the operator: OpenDSS carries **regulator tap
+    positions** across solves on a standing circuit, so a hypothesis inherits the
+    tap state left by whichever hypothesis the worker happened to solve before
+    it.  Measured against 1,000 corpus events at their own (f, tau, R, L):
+
+    ======================  ==============  ===================
+    build path              median error    events > 1e-3 p.u.
+    ======================  ==============  ===================
+    reuse, never recompile  4.9e-09         **43.3 %**
+    recompile per solve     1.0e-10         **1.8 %**
+    ======================  ==============  ===================
+
+    The corpus recompiles per event (``simulation/runner.py``), so recompiling is
+    what *matches the generator*; reuse is a different circuit history.  S0.4
+    missed this because it sampled 5 events and reported ``reuse`` and ``daily``
+    as bit-identical -- true for those 5, false for 43 % of the corpus.
+
+    The cost is 8.1 ms/solve against 4.4 ms, i.e. a full 17-point-L table takes
+    ~9 minutes serial instead of ~3.  There is no scenario in which that is worth
+    a wrong operator.
+
+    The residual 1.8 % is not solver noise: it is ~6.5e-3 p.u. -- one regulator
+    tap step -- and **16 of the 18 cases sit at R = 10 ohm**, the hard case the
+    paper cares about.  It is the corpus's own tap hysteresis, which depends on
+    the 40-step Daily history a fresh compile cannot reproduce, and it is the one
+    genuinely physical contribution to sigma_eps (S1.4, S1.6).
     """
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)

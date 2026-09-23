@@ -119,9 +119,13 @@ def _extract() -> np.ndarray:
 #: How many solves to take before reading the uPMUs.
 #:
 #: Measured on the corpus by ``scripts/audit_window_census.py`` (S0.3): applying
-#: a fault produces a **settling transient** over the first post-inception
-#: steps.  On the worst of 400 events the voltage moves 1.4e-5 p.u. between
-#: steps 40 and 41, 4.7e-7 between 41 and 42, and is then constant to 1e-8.
+#: a fault takes a few solves to reach the settled level -- **solver settling**,
+#: not a transient of the feeder; this project makes no claim about temporal
+#: dynamics.  Over **all 41,250 events** the voltage moves <= 1.98e-05 p.u.
+#: between steps 40 and 41 for 41,247 of them, 6.99e-06 between 41 and 42, and
+#: is then constant to 1.1e-07.  Three events move 6.4-7.1e-03; one of those
+#: (``55_BC_1p0_0007``) is confirmed control-driven -- it reproduces with
+#: ControlMode=STATIC and vanishes with controls OFF.
 #:
 #: This matters for the table even though the numbers are small.  The corpus
 #: records 20 fault steps, so all but the first two windows to contain
