@@ -109,6 +109,51 @@ def interpolation_error(cand: dict, ref: dict, step: float, reference: float) ->
     return out
 
 
+def tap_discontinuities(ref: dict, reference_step: float, jump_threshold: float = 5e-3) -> dict:
+    """Locate the regulator-tap steps in mu(L) -- the floor no L grid can cross.
+
+    S1.2 originally asked for "the coarsest step whose interpolation error is
+    < 1e-3 p.u.".  That criterion is **not achievable at any affordable step**,
+    and this is why: mu(L) is not smooth.  A rising load eventually trips a
+    regulator tap, and at that load the whole feeder's voltage steps by ~one tap.
+    Linear interpolation across a step function errs by ~the step size no matter
+    how fine the grid, so the tail of the interpolation error is flat in the grid
+    step while the bulk converges normally.
+
+    The signature of a tap event, as opposed to anything fault-related, is that
+    it is **circuit-wide**: the same L interval moves a majority of (f, tau, R)
+    cells at once, and it moves the no-fault row mu0(L) too.  Both are checked.
+    """
+    mu, mu0 = ref["mu"], ref["mu0"]
+    mask = ref["mask"] > 0 if "mask" in ref else np.ones((25, 3), bool)
+    l_values = grids.l_grid(reference_step)
+
+    step = np.abs(np.diff(mu, axis=3))[..., mask]          # [f,t,R,L-1,C]
+    big = (step > jump_threshold).any(axis=-1)             # [f,t,R,L-1]
+    per_interval = big.sum(axis=(0, 1, 2))
+    n_cells = big[..., 0].size
+    nofault = np.abs(np.diff(mu0, axis=0))[..., mask].max(axis=-1)   # [L-1]
+
+    boundaries = []
+    for i in np.where(per_interval > 0.25 * n_cells)[0]:
+        boundaries.append({
+            "l_low": float(l_values[i]), "l_high": float(l_values[i + 1]),
+            "cells_moved_frac": float(per_interval[i] / n_cells),
+            "nofault_jump_pu": float(nofault[i]),
+        })
+    return {
+        "reference_step": reference_step, "jump_threshold": jump_threshold,
+        "max_adjacent_jump_pu": float(step.max()),
+        "median_adjacent_delta_pu": float(np.median(step)),
+        "n_tap_boundaries": len(boundaries),
+        "boundaries": boundaries,
+        "nofault_max_jump_pu": float(nofault.max()),
+        "implied_sigma_eps_floor_pu": float(np.median([b["nofault_jump_pu"]
+                                                       for b in boundaries]))
+        if boundaries else None,
+    }
+
+
 def _stratified_events(raw_dir: Path, n: int, seed: int):
     """Sample events stratified by (R, grounded/ungrounded), equally per stratum."""
     files = sorted(raw_dir.glob("*.npz"))
@@ -183,7 +228,7 @@ def margin_distribution(tbl: dict, step: float, s, a, y, sigma_eps_disc: float,
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--checks", nargs="+", default=["lgrid"], choices=["lgrid"],
+    ap.add_argument("--checks", nargs="+", default=["lgrid"], choices=["lgrid", "taps"],
                     help="bias/load/floor/rgrid land with S1.4-S1.7")
     ap.add_argument("--l-steps", type=float, nargs="+", default=[0.1, 0.05, 0.025])
     ap.add_argument("--reference-step", type=float, default=0.0125)
@@ -200,6 +245,25 @@ def main() -> int:
 
     out_root = Path(args.out_dir)
     out_root.mkdir(parents=True, exist_ok=True)
+
+    if "taps" in args.checks:
+        ref_dir = out_root / f"step_{str(args.reference_step).replace('.', 'p')}"
+        if not (ref_dir / "mu.npy").exists():
+            raise SystemExit(f"taps needs the reference table at {ref_dir}; run lgrid first")
+        taps = tap_discontinuities(T.load_table(ref_dir), args.reference_step)
+        print(f"[taps] {taps['n_tap_boundaries']} circuit-wide boundaries in "
+              f"L in [0.5, 1.3]; max adjacent jump {taps['max_adjacent_jump_pu']:.3e} p.u.; "
+              f"no-fault jump up to {taps['nofault_max_jump_pu']:.3e}")
+        for b in taps["boundaries"]:
+            print(f"    L {b['l_low']:.4f} -> {b['l_high']:.4f}: "
+                  f"{100*b['cells_moved_frac']:5.1f}% of cells move, "
+                  f"no-fault step {b['nofault_jump_pu']:.3e} p.u.")
+        path = out_root / "tap_discontinuities.json"
+        path.write_text(json.dumps(taps, indent=2))
+        print(f"wrote {path}")
+        if args.checks == ["taps"]:
+            return 0
+
     print(f"[build] candidates {args.l_steps} + reference {args.reference_step} "
           f"at {args.workers} workers", flush=True)
     built = build_candidates(out_root, args.l_steps, args.reference_step,
