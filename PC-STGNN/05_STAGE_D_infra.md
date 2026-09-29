@@ -67,16 +67,30 @@ per-batch-seed scheme as row 1, so the two rows are paired on identical dropped 
 | k | physics-impute F1 | neighbour-mean F1 |
 |---|---|---|
 | 0 | 0.846 ± 0.007 | 0.846 ± 0.007 (identical — k=0 is a no-op in both) |
-| 1 | 0.775 ± 0.019 | 0.739 ± 0.017 |
+| 1 | 0.775 ± 0.020 | 0.739 ± 0.017 |
 | 2 | 0.701 ± 0.044 | 0.637 ± 0.028 |
-| 5 | 0.480 ± 0.099 | 0.336 ± 0.043 |
-| 10 | 0.226 ± 0.114 | 0.099 ± 0.033 |
+| 5 | 0.479 ± 0.100 | 0.336 ± 0.043 |
+| 10 | 0.225 ± 0.114 | 0.099 ± 0.033 |
 
 AUDC (relative) 0.601 ± 0.098 vs 0.476 ± 0.042; AUDC (absolute) 0.508 ± 0.079 vs 0.403 ± 0.032;
-Ret@10 26.7 % ± 13.8 % vs 11.8 % ± 4.0 %. The physically-consistent fill beats the graph-mean fill
+Ret@10 26.6 % ± 13.8 % vs 11.8 % ± 4.0 %. The physically-consistent fill beats the graph-mean fill
 at every k > 0 and more than doubles Ret@10, at the cost of much larger seed variance at high k (a
 wrong PSM hypothesis under heavy dropout can pick a badly wrong fill, unlike the graph-mean's
 bounded worst case). `results/dropout_study_impute/physics_imputation_summary.json`.
+
+`[Corrected 2026-09-29]` **Batch-size fairness bug found and fixed post-hoc.** The first run above
+used `--batch-size 256` (for gram-method GPU throughput); the neighbour-mean baseline's documented
+command uses the default 32. Since the mask seed is `mask_seed*10000 + batch_idx`, this shifted
+which windows landed in which batch, so the "paired on identical dropped sets" claim above was
+**not actually true beyond the first 32-window batch** — verified directly: 64/100 of the first
+100 windows got a *different* dropped node between the two batch sizes. Rerunning at
+`--batch-size 32` (matching the baseline) and spot-checking two independent batch-size-32
+dataloaders under the shared seed formula confirms 0/128 mismatches — the fix holds. The corrected
+numbers are the ones in the table above; the delta from the flawed bsz=256 run was in the 4th
+decimal at every k (e.g. k=10: 0.2249 vs 0.2257; AUDC absolute unchanged at 0.508), so the
+aggregate comparison itself was never in doubt — only the literal per-window pairing claim was
+wrong. Flawed run preserved for the record at `/tmp/physics_imputation_summary.bsz256.json`
+(not in the repo).
 
 ## S3.4 — Residual computation layer
 

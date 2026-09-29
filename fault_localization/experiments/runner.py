@@ -71,6 +71,40 @@ def _model(config, edge):
             use_local_gnn=m.get("use_local_gnn", True),
             **common,
         )
+    if name == "pcstgnn":
+        # PC-STGNN (models/pc_stgnn.py), PC-STGNN/01_SPEC.md Sec 6. With every
+        # physics switch off (the S4.1 null test) this is byte-for-byte
+        # RGSAGE-Max (tests/test_pc_stgnn.py::test_all_switches_off_is_exactly_rgsage),
+        # which is what lets S4.1 claim "lambda = beta = 0 recovers Paper-1
+        # exactly". Table/norm_stats are only loaded when a physics switch
+        # actually needs them, mirroring the pignn branch below.
+        from fault_localization.models.pc_stgnn import PCSTGNN
+        use_fusion = m.get("use_fusion", False)
+        table = None
+        norm_stats = None
+        if use_fusion:
+            from fault_localization.physics import residual as _R
+            from fault_localization.physics import table as _T
+            from fault_localization.physics.observation import load_norm_stats
+            tbl = _T.load_table(m.get("operator_dir", "operator"))
+            table = _R.flatten_table(tbl["mu"], tbl["mu0"])
+            norm_stats = load_norm_stats(config["data_root"])
+        return PCSTGNN(
+            edge, table, norm_stats,
+            use_fusion=use_fusion,
+            beta_init=m.get("beta_init", 0.0),
+            sigma_eps=m.get("sigma_eps", 1e-3),
+            sigma0=m.get("sigma0", 0.0),
+            shuffle_seed=m.get("shuffle_seed"),
+            use_type_head=m.get("use_type_head", False),
+            num_fault_types=m.get("num_fault_types", 11),
+            use_decoder=m.get("use_decoder", False),
+            decoder_hidden=m.get("decoder_hidden", 64),
+            aggregator=m.get("aggregator", "max"),
+            gnn_hidden_dim=m.get("gnn_hidden_dim", 64),
+            num_layers=config.get("gnn_layers", 1),
+            **common,
+        )
     if name == "pignn":
         # PIGNN screening arms P1/P2 (models/pignn.py). Both physics artifacts
         # are static feeder properties cached beside the dataset, so no OpenDSS
