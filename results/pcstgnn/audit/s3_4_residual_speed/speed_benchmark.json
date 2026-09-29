@@ -1,0 +1,44 @@
+{
+  "device": "NVIDIA T1000 8GB",
+  "table_shape": [
+    26,
+    3366,
+    75
+  ],
+  "batch_size": 32,
+  "method": "direct",
+  "chunk_f": 1,
+  "sigma_eps": 0.0007255549105131452,
+  "threshold_ms": 5.0,
+  "rho_A": {
+    "mean_ms": 44.72851166501641,
+    "median_ms": 44.67743550776504,
+    "std_ms": 0.15124981518556668,
+    "min_ms": 44.61784701561555,
+    "max_ms": 45.32611800823361,
+    "n_iters": 30
+  },
+  "rho_D": {
+    "mean_ms": 0.6492295302450657,
+    "median_ms": 0.64769500750117,
+    "std_ms": 0.014250841544954856,
+    "min_ms": 0.6321709952317178,
+    "max_ms": 0.6959799793548882,
+    "n_iters": 30
+  },
+  "rho_LOO": {
+    "mean_ms": 2.775028497368718,
+    "median_ms": 2.7772834873758256,
+    "std_ms": 0.013105156730673568,
+    "min_ms": 2.7468420448713005,
+    "max_ms": 2.798471017740667,
+    "n_iters": 30
+  },
+  "passed": {
+    "rho_A": false,
+    "rho_D": true,
+    "rho_LOO": true
+  },
+  "gate3_speed_criterion_met": false,
+  "cache_needed": true
+}

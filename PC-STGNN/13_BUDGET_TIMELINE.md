@@ -38,7 +38,7 @@ assumed 3–4 h per run and was ~2× low.
 | 1 | A — audit | — |
 | 2–4 | B — operator + fidelity → Gate 1 | — |
 | 4–6 | C — identifiability, PSM, fusion → Gate 2 | — (nothing to pre-train: the baselines exist) |
-| 5–9 | D — silent injector, OOD sets, physics-impute baseline, residual layer | — |
+| 5–9 | D — silent injector, OOD sets, physics-impute baseline, residual layer. `[Corrected 2026-09-29]` **Gate 3 closed, all five items done** — see `05_STAGE_D_infra.md`. Physics-impute baseline evaluated on the full sweep (AUDC 0.601 rel / 0.508 abs vs neighbour-mean's 0.476 / 0.403); residual speed check measured 44.7 ms/batch (9x over budget, compute-bound) so `cache/rtilde_{test,val,train}.npy` was built instead (correctness verified to ~1e-5 vs the direct-method reference) | — |
 | 8–13 | E — null test, tuning, R1–R7 → Gate 4 | ablation runs |
 | 12–16 | F — detection AUROC, G0–G3 → Gate 5 | gate runs |
 | 15–19 | G — full sweep, OOD, model mismatch | mismatch retrain |
@@ -77,7 +77,7 @@ only the first pattern is evidence that the mechanism is physical rather than re
 | Where it lands | The paper you write |
 |---|---|
 | Gains on OOD R and noise, flat in-distribution | "Physics buys generalisation, not in-distribution accuracy." Honest, and the most likely outcome |
-| PSM ≥ STGNN on the clean corpus | Physics dominates in-distribution on a noise-free simulator corpus with a scalar load; show where learning still helps (noise, dropout, silent failures, model mismatch). Likely on this corpus — see Stage C priors |
+| PSM ≥ STGNN on the clean corpus | Physics dominates in-distribution on a noise-free simulator corpus with a scalar load; show where learning still helps (noise, dropout, silent failures, model mismatch). `[Corrected 2026-09-29]` **Retracted as "likely"** — measured (`04_STAGE_C_gonogo.md` S2.4, `results/pcstgnn/audit/s2_4_metric_check/`), the network beats PSM in-distribution at k=0 on every split (val 0.855 vs 0.772). This row is not the observed branch; Gate 2 fired on rows 1 and 2 instead (fusion gain under noise/dropout, and PSM's OOD-R resistance) |
 | Gains only under silent failures | Refocus on silent-failure robustness; PC is the enabling component, not the headline |
 | Gate AUROC < 0.75 | PC-STGNN paper + a bounded negative result on magnitude-only silent-failure detection |
 | No model gains, clear identifiability limit | Identifiability + benchmark paper: how much 25 sparse magnitude-only µPMUs can reveal. IEEE Access or SEGAN |

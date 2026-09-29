@@ -57,6 +57,27 @@ standard counterpart on AUDC (p_Holm ≤ 0.027, `results/statistics/`). Nothing 
 measurement recovery) and shows whether a *physically correct* fill beats a graph-mean fill when
 the downstream model was never trained to distrust either.
 
+`[Corrected 2026-09-29]` **Row 2 DONE.** `scripts/run_physics_imputation_baseline.py` — fills each
+dropped node with μ at `argmin_f rho_f(A)`'s profiled `(tau,R,L)`, normalised back through the
+loader's stored mean/std and broadcast across the window's 20 timesteps (the same quasi-static
+approximation `physics/observation.py` already makes). Same `mask_seed = 10000*k + offset` /
+per-batch-seed scheme as row 1, so the two rows are paired on identical dropped sets. Full sweep,
+3 training seeds, standard-trained RGSAGE-Max, k in {0,1,2,5,10}:
+
+| k | physics-impute F1 | neighbour-mean F1 |
+|---|---|---|
+| 0 | 0.846 ± 0.007 | 0.846 ± 0.007 (identical — k=0 is a no-op in both) |
+| 1 | 0.775 ± 0.019 | 0.739 ± 0.017 |
+| 2 | 0.701 ± 0.044 | 0.637 ± 0.028 |
+| 5 | 0.480 ± 0.099 | 0.336 ± 0.043 |
+| 10 | 0.226 ± 0.114 | 0.099 ± 0.033 |
+
+AUDC (relative) 0.601 ± 0.098 vs 0.476 ± 0.042; AUDC (absolute) 0.508 ± 0.079 vs 0.403 ± 0.032;
+Ret@10 26.7 % ± 13.8 % vs 11.8 % ± 4.0 %. The physically-consistent fill beats the graph-mean fill
+at every k > 0 and more than doubles Ret@10, at the cost of much larger seed variance at high k (a
+wrong PSM hypothesis under heavy dropout can pick a badly wrong fill, unlike the graph-mean's
+bounded worst case). `results/dropout_study_impute/physics_imputation_summary.json`.
+
 ## S3.4 — Residual computation layer
 
 **Do.** Implement r̃(A), r̃(D), r̃ᵢ^LOO as batched tensor ops: broadcast the
@@ -88,10 +109,44 @@ for training and the cache is used for evaluation only.
 
 **Output.** `cache/rtilde_{train,val,test}.npy`
 
+`[Corrected 2026-09-29]` **DONE — slow, cache built.** `scripts/run_residual_speed_benchmark.py`
+measured `method="direct"` (float32, the only form accurate enough for a differentiable training
+loop — see `residual.py`'s module docstring) at **44.7 ms/batch-of-32** on the T1000, 9x over
+budget, and confirmed compute-bound rather than a batching artefact (`chunk_f` 1→26 changed nothing
+— the actual table is 26 x 3366 x 75, not the 2,805-hypothesis count above, which predates the
+2026-09-25 R-grid fix). `method="gram"` (float64) is only ~2x faster per window on this GPU's weak
+fp64 throughput, not the "~800x" its docstring's general claim implies on faster hardware, and
+still exceeds 5 ms at batch 32. Numbers: `results/pcstgnn/audit/s3_4_residual_speed/speed_benchmark.json`.
+Built the branch's cache: `fault_localization/physics/cache.py::build_rtilde_cache`, keyed by
+`(window_id, k, mask_seed)` via a sha256-derived seed independent of batch assembly (Python's
+`hash()` on `str` is process-salted and unusable here) — verified against the direct-method
+reference to ~1e-5 float tolerance before the full build. Uses `method="gram"` (exact, and the
+build is offline so its float64/speed tradeoff is irrelevant). Covers k in {0,1,2,5,10} x 3 mask
+seeds (k=0 replicated across the offset axis to stay rectangular) x all windows of all 3 splits:
+`cache/rtilde_test.npy` (247,000 windows), `rtilde_val.npy` (248,000), `rtilde_train.npy`
+(1,155,000) — shapes and window counts verified against the splits, no NaNs. This is a new,
+independent seed source for training/caching use; it is **not** a drop-in replacement for the
+paper's `apply_sensor_dropout_batch` evaluation-protocol seeding, which is deliberately
+batch-order-dependent.
+
 ## GATE 3 — Infrastructure correctness
 
-- [ ] Injectors deterministic and shared-seeded across all models
-- [ ] Silent injectors verified to leave m = 1 and to skip uninstrumented phases
-- [ ] Residual matches the reference loop
-- [ ] Residual under 5 ms/batch, or cached
-- [ ] Physics-imputation baseline evaluated on the full sweep
+`[Corrected 2026-09-29]` **All five closed.**
+
+- [x] Injectors deterministic and shared-seeded across all models — verified programmatically
+      (all 6 injectors: masking/random, correlated, targeted, persistent, noise, silent return
+      byte-identical output across two calls at the same seed) and architecturally (every runner
+      — `run_targeted_dropout_study.py`, `run_persistent_dropout_study.py`,
+      `run_correlated_dropout_study.py`, `run_noise_robustness_study.py` — applies the injector
+      once per `(k, offset, batch_idx)` *outside* the `for model_name in args.models` loop, so
+      every model sees the identical corrupted batch at a given seed)
+- [x] Silent injectors verified to leave m = 1 and to skip uninstrumented phases —
+      `tests/test_silent.py::test_mask_channels_are_never_written`,
+      `test_uninstrumented_phases_are_untouched`, `test_deterministic_under_a_fixed_seed` (68/68
+      tests pass across `test_silent.py` + `test_physics_residual.py` + `test_gate_checks.py`)
+- [x] Residual matches the reference loop — `tests/test_physics_residual.py`, all pass including
+      the five degenerate-input cases (|D|=0, |A|=0, |A|=1, exact ties, planted-corruption LOO)
+- [x] Residual under 5 ms/batch, or cached — not under 5 ms (44.7 ms measured, S3.4); cache built
+      and verified instead: `cache/rtilde_{test,val,train}.npy`
+- [x] Physics-imputation baseline evaluated on the full sweep — S3.3 row 2, 3 seeds, full test
+      split, `results/dropout_study_impute/physics_imputation_summary.json`

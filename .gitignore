@@ -62,3 +62,10 @@ BasePaper.pdf
 # The .npy arrays themselves are build artefacts, like the rho cache.
 # ---------------------------------------------------------------------------
 results/pcstgnn/operator/**/*.npy
+
+# ---------------------------------------------------------------------------
+# The offline rho/r-tilde caches (fault_localization/physics/cache.py).
+# Regenerable from the frozen operator + raw_sim in a few hours
+# (scripts/build_rtilde_cache.py); rtilde_train.npy alone is ~3.7 GB.
+# ---------------------------------------------------------------------------
+/cache/
