@@ -21,7 +21,7 @@ disk since 2026-09-25, not a judgment call). The commit hash field is intentiona
 | Field | Value |
 |---|---|
 | Date filled in | 2026-09-29 |
-| Commit hash | **TBD — record on first commit of this version of the file** |
+| Commit hash | `9fb50b8` |
 | Gate-2 branch taken (from `04_STAGE_C_gonogo.md`) | **Both GO rows fired independently: row 1 (S2.6 improves F1 at 10 Ω / k=10 / under noise) and row 2 (S2.5: PSM holds on OOD-pilot R while the network collapses).** Full plan, reframed per S2.0ᵃ around noise, OOD resistance, silent failures and model mismatch as primary axes (not clean in-distribution k=0). |
 | Validation-only S2.6 numbers that motivated it (ΔF1 at k=0 / k=10 / 10 Ω / each σ₀, per seed) | Seed 42 only (script's documented budget, not yet 3-seed): k=0 **+0.039**, k=10 **+0.166**, 10 Ω (k=0) **+0.086**, σ=5e-4 **+0.037**, σ=2e-3 **+0.153**, σ=1e-2 **+0.213**. All positive; no seed spread yet available for this arm — a 3-seed confirmation is explicitly deferred to Stage D/E, not claimed here as final. |
 | OOD-pilot S2.5 contrast (PSM vs R0 F1 at 5 Ω and 20 Ω) | **Pooled across R ∈ {5,20} Ω** — neither `run_extrapolation_contrast.py` (network) nor `run_psm_full_eval.py` (PSM) stratifies the OOD-pilot result by individual R value, only the pooled pilot. Pooled k=0: network (dropout-aware RGSAGE-Max, 3-seed mean) **0.089 ± 0.006** vs. its own in-distribution test-split F1 of 0.839 (drop 0.750); PSM **0.539** vs. its own validation F1 of 0.772 (drop 0.233). An R-stratified (5 Ω vs 20 Ω separately) breakdown was not computed and would require re-running both scripts with a per-R filter — noted as a gap, not fabricated. |
