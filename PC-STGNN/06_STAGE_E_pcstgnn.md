@@ -24,6 +24,19 @@ Stage C is your evidence that this operator is different in kind.
 **Pass.** Exact reproduction. (`tests/test_pignn.py` already asserts byte-identity of the PIGNN
 model with all switches off against RGSAGE-Max — copy that pattern.)
 
+`[Corrected 2026-09-30]` **benchmark_version workaround, so this isn't rediscovered as a mystery
+later.** The null-test run trains under `--benchmark-version dropout_aware_null`
+(`results/dropout_aware_null/`), not R0's `dropout_aware` — its own manifest check would otherwise
+fail against R0's frozen `results/dropout_aware/manifest.json` (Aug 2), which predates
+`dataset_fullscale_50/splits/val_sample.txt` (a Stage C S2.3/S2.6 sample added 2026-09-25, read by
+`run_b1_deltav_baseline.py`/`run_inference_fusion.py`). Diffed the two manifests file-by-file:
+exactly one file added, zero files changed — and `WindowGraphDataset` (`data/dataset.py:36`) reads
+`splits/{split}.txt` by explicit name only, never a glob, so `val_sample.txt` was never reachable
+from the training path either way. R0's frozen manifest is left untouched as evidence; only the
+null-test run's own manifest is fresh. **What is actually being compared does not change**:
+`scripts/run_pcstgnn_null_test.py` still diffs its output against R0's original
+`results/dropout_aware/rgsage_max/seed_00042/metrics_by_epoch.csv`.
+
 **Branch on failure.** You have an unintended change in the data path, seeding, or graph
 construction. Find it now. Every attribution claim in the paper rests on this single property —
 it is what lets you say "λ = 0 recovers the Paper-1 model exactly."

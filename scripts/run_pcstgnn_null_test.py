@@ -18,10 +18,23 @@ must reproduce R0 (results/dropout_aware/rgsage_max/seed_00042/) exactly. Any
 divergence means an unintended change in the data path, seeding, or graph
 construction that would confound every later attribution claim in Stage E.
 
-Output: results/dropout_aware/pcstgnn/seed_00042/ (metrics.json,
-metrics_by_epoch.csv, checkpoint_best.pt, ...) -- same benchmark_version
-("dropout_aware") as R0, so both runs are checked against the same frozen
-dataset manifest.
+Output: results/dropout_aware_null/pcstgnn/seed_00042/ (metrics.json,
+metrics_by_epoch.csv, checkpoint_best.pt, ...) -- a SEPARATE benchmark_version
+from R0's ("dropout_aware"). This is a workaround, not a change to what is
+being compared: the training run itself is checked against a freshly written
+manifest under "dropout_aware_null" rather than R0's frozen
+results/dropout_aware/manifest.json, because that frozen manifest predates a
+benign, unrelated file (splits/val_sample.txt, a Stage C S2.3/S2.6 sample
+added 2026-09-25) that was never a training input but still trips the
+manifest's blanket root.rglob("*") hash. Diagnosed exhaustively this session:
+diffing the frozen manifest against a fresh one showed exactly one added file
+and zero changed files; WindowGraphDataset (data/dataset.py:36) reads
+splits/{split}.txt by explicit name only, never a glob, so val_sample.txt was
+never reachable from the training path regardless. R0's frozen manifest is
+left untouched as evidence; only the null test's own run is checked against
+the new snapshot. R0's own metrics_by_epoch.csv
+(results/dropout_aware/rgsage_max/seed_00042/) remains the comparison target
+unchanged.
 
 Usage:
     uv run python scripts/run_pcstgnn_null_test.py
@@ -39,9 +52,10 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
 SEED = 42
-BENCHMARK_VERSION = "dropout_aware"
-R0_DIR = REPO / "results" / BENCHMARK_VERSION / "rgsage_max" / f"seed_{SEED:05d}"
-NULL_DIR = REPO / "results" / BENCHMARK_VERSION / "pcstgnn" / f"seed_{SEED:05d}"
+R0_BENCHMARK_VERSION = "dropout_aware"
+TRAIN_BENCHMARK_VERSION = "dropout_aware_null"
+R0_DIR = REPO / "results" / R0_BENCHMARK_VERSION / "rgsage_max" / f"seed_{SEED:05d}"
+NULL_DIR = REPO / "results" / TRAIN_BENCHMARK_VERSION / "pcstgnn" / f"seed_{SEED:05d}"
 CONFIG = REPO / "config" / "dropout_aware" / "pcstgnn.yaml"
 
 
@@ -98,7 +112,7 @@ def main() -> int:
                 "--config", str(CONFIG),
                 "--seed", str(SEED),
                 "--data-root", args.data_root,
-                "--benchmark-version", BENCHMARK_VERSION,
+                "--benchmark-version", TRAIN_BENCHMARK_VERSION,
             ]
             print(f"[run] {' '.join(cmd)}", flush=True)
             result = subprocess.run(cmd)
