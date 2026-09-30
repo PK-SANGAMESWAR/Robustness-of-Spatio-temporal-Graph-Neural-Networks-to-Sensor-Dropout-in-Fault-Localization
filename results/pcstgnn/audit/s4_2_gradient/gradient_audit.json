@@ -1,0 +1,128 @@
+[
+  {
+    "batch": "w20_window_k0",
+    "k": 0,
+    "n_w20_windows": 1,
+    "|D|_total": 0,
+    "l1_value": 2.501793622970581,
+    "grad_l1_norm": 0.7527588605880737,
+    "grad_l1_nonzero": true,
+    "l2_value": 0.0,
+    "grad_l2_norm": 0.0,
+    "grad_l2_nonzero": false,
+    "beta_grad": 4.749288558959961,
+    "beta_grad_nonzero": true,
+    "alpha_c_status": "N/A -- not implemented in models/pc_stgnn.py (Stage F PCRG-STGNN)",
+    "leaves": {
+      "phys_table_requires_grad": false,
+      "sigma_eps_requires_grad": false,
+      "phys_table_in_parameters": false,
+      "sigma_eps_in_parameters": false
+    },
+    "mu_mu0_sigma_eps_no_grad": true,
+    "finite_difference": {
+      "l1": {
+        "weight_index": [
+          1,
+          53
+        ],
+        "autograd": -0.28140467405319214,
+        "numeric": -0.28145313262939453,
+        "abs_diff": 4.845857620239258e-05
+      },
+      "l2": {
+        "weight_index": [
+          0,
+          0
+        ],
+        "autograd": 0.0,
+        "numeric": 0.0,
+        "abs_diff": 0.0
+      }
+    }
+  },
+  {
+    "batch": "k10_large_D",
+    "k": 10,
+    "n_w20_windows": 0,
+    "|D|_total": 480,
+    "l1_value": 3.981393337249756,
+    "grad_l1_norm": 0.6497150659561157,
+    "grad_l1_nonzero": true,
+    "l2_value": 5.634073257446289,
+    "grad_l2_norm": 0.873771607875824,
+    "grad_l2_nonzero": true,
+    "beta_grad": -41.965415954589844,
+    "beta_grad_nonzero": true,
+    "alpha_c_status": "N/A -- not implemented in models/pc_stgnn.py (Stage F PCRG-STGNN)",
+    "leaves": {
+      "phys_table_requires_grad": false,
+      "sigma_eps_requires_grad": false,
+      "phys_table_in_parameters": false,
+      "sigma_eps_in_parameters": false
+    },
+    "mu_mu0_sigma_eps_no_grad": true,
+    "finite_difference": {
+      "l1": {
+        "weight_index": [
+          1,
+          53
+        ],
+        "autograd": -0.25079768896102905,
+        "numeric": -0.2505779266357422,
+        "abs_diff": 0.00021976232528686523
+      },
+      "l2": {
+        "weight_index": [
+          1,
+          53
+        ],
+        "autograd": -0.3218705952167511,
+        "numeric": -0.3218650817871094,
+        "abs_diff": 5.513429641723633e-06
+      }
+    }
+  },
+  {
+    "batch": "k0_no_drops",
+    "k": 0,
+    "n_w20_windows": 0,
+    "|D|_total": 0,
+    "l1_value": 2.696404457092285,
+    "grad_l1_norm": 0.4278222322463989,
+    "grad_l1_nonzero": true,
+    "l2_value": 0.0,
+    "grad_l2_norm": 0.0,
+    "grad_l2_nonzero": false,
+    "beta_grad": 116.0640869140625,
+    "beta_grad_nonzero": true,
+    "alpha_c_status": "N/A -- not implemented in models/pc_stgnn.py (Stage F PCRG-STGNN)",
+    "leaves": {
+      "phys_table_requires_grad": false,
+      "sigma_eps_requires_grad": false,
+      "phys_table_in_parameters": false,
+      "sigma_eps_in_parameters": false
+    },
+    "mu_mu0_sigma_eps_no_grad": true,
+    "finite_difference": {
+      "l1": {
+        "weight_index": [
+          12,
+          53
+        ],
+        "autograd": -0.14693962037563324,
+        "numeric": -0.14710426330566406,
+        "abs_diff": 0.00016464293003082275
+      },
+      "l2": {
+        "weight_index": [
+          0,
+          0
+        ],
+        "autograd": 0.0,
+        "numeric": 0.0,
+        "abs_diff": 0.0
+      }
+    }
+  }
+]

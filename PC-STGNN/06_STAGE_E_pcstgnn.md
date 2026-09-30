@@ -41,6 +41,13 @@ null-test run's own manifest is fresh. **What is actually being compared does no
 construction. Find it now. Every attribution claim in the paper rests on this single property —
 it is what lets you say "λ = 0 recovers the Paper-1 model exactly."
 
+`[Corrected 2026-09-30]` **PASSED — exact reproduction.** All 30 epochs of
+`results/dropout_aware_null/pcstgnn/seed_00042/metrics_by_epoch.csv` are byte-identical to
+`results/dropout_aware/rgsage_max/seed_00042/metrics_by_epoch.csv` on `train_loss`, `val_graph_f1`
+and `val_node_f1` (max abs diff 0.0 on every epoch, per `scripts/run_pcstgnn_null_test.py`'s own
+check); `best_validation_graph_f1` also matches exactly (0.8554909744946672). "λ = β = 0 recovers
+the Paper-1 model exactly" holds.
+
 ## S4.2 — Gradient audit — guards the bug that was in the first draft
 
 **Do.** `[Corrected 2026-09-23]` Finite-difference check on **three batches**, not one. A single
@@ -63,6 +70,31 @@ batch cannot exercise the paths that differ, and two of the three are the ones t
 **Why this exists.** A reconstruction loss of the form ‖μ[f̂,…] − s_true‖² has zero gradient — f̂
 is an arg-min index, constant in the weights. Under that formulation R4 would be silently
 identical to R3 and you would lose weeks finding out. Two hours here prevents that.
+
+`[Corrected 2026-09-30]` **PASSED, 12/12 applicable confirmations.** `scripts/run_pcstgnn_gradient_audit.py`
+→ `results/pcstgnn/audit/s4_2_gradient/gradient_audit.json`. On all three batches: ∂L₁/∂w and
+∂L₂/∂w computed directly from `forward_pc()`'s undetached `p_graph`/`rho_A`/`rho_D` via
+`torch.autograd.grad` (not `pc_loss`'s reported `"l1"`/`"l2"`, which are `.detach()`d for logging
+only — backward on those raises; `"total"` folds in CE and would contaminate the isolation), then
+cross-checked against a genuine finite-difference estimate at the weight element with the largest
+gradient magnitude (a fixed `[0,0]` landed on a coincidentally-zero element on the first attempt —
+caught and fixed before trusting the result). β receives a gradient on all three batches
+(4.7 / −42.0 / 116.1). μ (`phys_table`), μ₀ (folded into the same table) and σ_ε are confirmed
+`requires_grad=False` and absent from `model.parameters()` on all three.
+
+- **w = 20 batch**: ∂L₁/∂w ≠ 0 (norm 0.753, FD diff 4.9e-5); k = 0 here too, so ∂L₂/∂w = exactly 0
+  (both autograd and numeric) — the batch's *own* stated expectation, not a failure. Loss mask
+  independently confirmed non-vacuous: masked L₁ = 2.5018 vs. unmasked 2.4498 on the same batch.
+- **k = 10 batch**: ∂L₁/∂w ≠ 0 (0.650, FD diff 2.2e-4) and ∂L₂/∂w ≠ 0 (0.874, FD diff 5.5e-6);
+  `|D|_total = 480 = 10 dropped nodes × 3 channels × 16-sample batch`, arithmetic sanity-checked.
+- **k = 0 batch (no w = 20 window)**: ∂L₁/∂w ≠ 0 (0.428, FD diff 1.65e-4); ∂L₂/∂w = exactly 0,
+  finite — correct, since |D| = 0.
+
+**α, c: N/A on the current model — not a skipped check, a scope finding.** `01_SPEC.md` §8's
+gradient-audit table is the union of Stage E's fusion (β) and Stage F's PCRG-STGNN trust gate
+(α, c, §7); `fault_localization/models/pc_stgnn.py` (224 lines, read in full) implements only β —
+no `alpha`, no `c`, no gate mechanism exists yet. Re-check α/c when Stage F builds PCRG-STGNN
+(`07_STAGE_F_gate.md`), not before.
 
 ## S4.3 — Tuning
 
