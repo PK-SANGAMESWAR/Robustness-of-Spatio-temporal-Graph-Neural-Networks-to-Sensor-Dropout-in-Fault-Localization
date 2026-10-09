@@ -418,6 +418,86 @@ the physics-consistency loss is not contributing. That is a finding, not a failu
 passes, so ≈ 13 GPU-h per 15-epoch arm. 5 arms ≈ 65 GPU-h, 6 arms ≈ 78 GPU-h, plus ≈ 0.3 h
 scoring per arm.
 
+`[Result 2026-10-08]` **S4.3ᵉ RUN: SELECTED λ₁ = 0, λ₂ = 0.1.**
+- Script: `scripts/run_pcstgnn_tuning_aux.py`. Configs: `config/pcstgnn_tuning_aux/`.
+- Outputs: `results/pcstgnn_tuning_aux/lambda_selection.json`,
+  `results/pcstgnn_tuning_aux/fusion_decomposition_val_k0.json`, per-arm folders with
+  `metrics_by_epoch.csv` and `wallclock.json`. Log: `results/pcstgnn_tuning_aux/run.log`.
+- Validation split only. Every run has `test_evaluated: false`; no test-split file was written.
+- 5 arms run: the 4 grid arms, then the λ₂ = 0.1 arm at λ₁ = 0. Extension rule 1 did not fire
+  (λ₁ = 0.1 was the worst arm, not the best). No arm was early-stopped; every arm passed the
+  epoch-3 check and the collapse guard.
+- Runner change: `training.collapse_abort` (epoch-3 early stop) added to
+  `experiments/runner.py`, off unless a config sets it.
+
+**Arms.** Selected epoch = best validation fused F1 at k = 0. "Avg over k" = selection score
+(fused F1, mean over k ∈ {0, 1, 2, 5, 10}, 3 mask seeds). Network-only F1, "no fault" share and β
+are at the selected epoch (full validation split, k = 0, clean).
+
+| λ₁ | λ₂ | Best epoch | Fused F1, k=0 | Fused F1, avg over k | Fused F1, k=10 | Net-only F1 | Net "no fault" | β | Guard |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 0 | 10 | 0.8932 | 0.8778 | 0.8494 | 0.7375 | 52.8 % | 0.0222 | valid |
+| 0.01 | 0 | 12 | 0.8902 | 0.8777 | 0.8526 | 0.7876 | 52.7 % | 0.0286 | valid |
+| 0.0333 | 0 | 12 | 0.8581 | 0.8523 | 0.8426 | 0.7174 | 52.9 % | 0.0342 | valid |
+| 0.1 | 0 | 14 | 0.8225 | 0.8180 | 0.8146 | 0.7409 | 52.8 % | 0.0554 | valid |
+| **0** | **0.1** | **12** | **0.8937** | **0.8797** | **0.8534** | **0.7569** | **52.7 %** | **0.0284** | **valid** |
+
+**Fusion decomposition** (`fusion_decomposition_val_k0.json`). Full validation split, k = 0,
+clean, selected checkpoint, ρ from the k = 0 slice of `cache/rtilde_val.npy`. 124,000 fault and
+124,000 no-fault windows. The decomposition's fused F1 equals each arm's logged checkpoint F1
+exactly.
+
+| λ₁ | λ₂ | Fault: acc fused | net-only | PSM | fused = PSM | fused = net | No-fault: acc fused | net-only | PSM | fused = PSM | fused = net |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0 | 0 | 86.8 % | 71.1 % | 85.8 % | 91.5 % | 78.1 % | 100.0 % | 100.0 % | 49.8 % | 49.8 % | 100.0 % |
+| 0.01 | 0 | 86.9 % | 76.2 % | 85.8 % | 92.4 % | 82.4 % | 99.4 % | 100.0 % | 49.8 % | 50.4 % | 99.4 % |
+| 0.0333 | 0 | 86.5 % | 69.3 % | 85.8 % | 93.6 % | 74.6 % | 86.8 % | 100.0 % | 49.8 % | 61.1 % | 86.8 % |
+| 0.1 | 0 | 86.3 % | 71.2 % | 85.8 % | 94.7 % | 75.8 % | 74.2 % | 100.0 % | 49.8 % | 72.1 % | 74.2 % |
+| **0** | **0.1** | **86.9 %** | **73.3 %** | **85.8 %** | **92.7 %** | **79.7 %** | **99.9 %** | **100.0 %** | **49.8 %** | **49.9 %** | **99.9 %** |
+
+**Selection.** λ₁ = 0, λ₂ = 0.1 has the best validation fused F1 averaged over k: 0.8797 vs
+0.8778 for λ₁ = λ₂ = 0, a margin of +0.0019. It is guard-valid. This is a single seed at
+15 epochs; the margin is not a tested difference.
+
+**Observations** (single seed; recorded as observed, not as claims):
+- **λ₁ hurts monotonically.** Avg over k: 0.8778 (λ₁ = 0) ≈ 0.8777 (0.01) > 0.8523 (0.0333) >
+  0.8180 (0.1). By the interpretation stated in advance, **the physics-consistency loss λ₁ is not
+  contributing.** λ₁ = 0 is not beaten by any λ₁ > 0.
+- **The λ₁ loss shows up in no-fault windows.** Fused accuracy on no-fault windows falls
+  100.0 % → 99.4 % → 86.8 % → 74.2 % as λ₁ rises. Fault-window accuracy stays at 86.3–86.9 %.
+  The network alone is right on 100 % of no-fault windows in every arm. Larger λ₁ goes with a
+  larger β (0.022 → 0.055), and the physics term then overrides correct "no fault" calls (PSM is
+  right on only 49.8 % of no-fault windows).
+- **The collapse is fixed by the guard's definition, but on fault windows the fused prediction
+  still follows PSM.** It agrees with PSM on 91.5–94.7 % of fault windows (95.9 % in the
+  noise-free S4.3 selected arm). Fused fault accuracy (86.3–86.9 %) is about 1 point above PSM
+  alone (85.8 %) and well above the network alone (69.3–76.2 %). At clean k = 0 the network
+  supplies the "no fault" decision, and localization is still mostly physics. This is clean
+  k = 0 only; S2.0ᵃ says the fusion question is read under noise and dropout, not here.
+- **λ₂ = 0.1 is neutral to slightly positive** at λ₁ = 0: +0.0019 avg over k, +0.004 at k = 10.
+  R4 needs a nonzero λ₂, and this result does not argue against one.
+- **The network branch alone was still rising at epoch 15** in every arm: λ₁ = 0 reached 0.772 at
+  epoch 15 vs 0.738 at its selected epoch 10. The checkpoint rule selects on the fused F1, so
+  the selected network-only figures are below each arm's final-epoch value.
+
+**Compute.** Wall-clock on one T1000, from `wallclock.json` and file times:
+
+| Arm | Training incl. per-epoch validation (h) | Selection scoring (h) | Total (h) |
+|---|---|---|---|
+| λ₁ = 0, λ₂ = 0 | 13.03 | 1.49 | 14.52 |
+| λ₁ = 0.01, λ₂ = 0 | 13.01 | 1.49 | 14.51 |
+| λ₁ = 0.0333, λ₂ = 0 | 13.04 | 1.49 | 14.53 |
+| λ₁ = 0.1, λ₂ = 0 | 13.01 | 1.49 | 14.51 |
+| λ₁ = 0, λ₂ = 0.1 | 13.03 | 1.49 | 14.52 |
+| Fusion decomposition (all arms) | — | 0.08 | 0.08 |
+| **Total** | **65.12** | **7.54** | **72.67** |
+
+72.67 GPU-h from 2026-10-05 07:32 UTC to 2026-10-08 08:13 UTC. The pure training loop is about
+10.7 h per arm; the rest of the 13.0 h is the per-epoch validation passes. Scoring took about
+1.5 h per arm, not the estimated 0.3 h, because ρ is computed live for every k > 0 × 3 mask seeds.
+
+**S4.4 not started.** It waits for the author's decision.
+
 ## S4.3ᵇ — Noise augmentation is the default training condition `[Added 2026-09-23]`
 
 **Every arm below is trained with measurement-noise augmentation on.** Noise-free training is now
@@ -501,6 +581,86 @@ back into every physics claim.
 
 **Table produced.** T7 — core ablation.
 **Figure produced.** F-E2 — ablation bar chart with seed spread (optional if T7 is clear).
+
+### S4.4 — Frozen settings for Gate 4 runs `[Pre-registered 2026-10-09, before any Gate 4 run was started]`
+
+Frozen before training, per `PC-STGNN/S4.4_plan_draft.md` (2026-10-09 revision). Covers only the
+two Gate 4 arms, R0ⁿ and R5 — not the rest of the S4.4 table.
+
+**Epoch count: 20**, decided by a fixed rule applied to the S4.3ᵉ per-epoch record (fused F1 at
+k = 0, epoch 10 vs epoch 15, `results/pcstgnn_tuning_aux/<arm>/pcstgnn/seed_00042/metrics_by_epoch.csv`):
+
+| Arm (λ₁, λ₂) | Fused F1 @ epoch 10 | Fused F1 @ epoch 15 | Δ (15 − 10) |
+|---|---|---|---|
+| 0, 0 | 0.8932 | 0.8871 | −0.0061 |
+| 0.01, 0 | 0.8797 | 0.8851 | +0.0054 |
+| 0.0333, 0 | 0.8520 | 0.8338 | −0.0182 |
+| 0.1, 0 | 0.8147 | 0.8142 | −0.0005 |
+| 0, 0.1 (selected) | 0.8849 | 0.8853 | +0.0004 |
+
+Mean signed Δ over the 5 arms = **−0.0038**. Rule: mean Δ < 0.005 ⟹ 20 epochs, else 30. −0.0038 <
+0.005, so **20 epochs**. Caveat carried from the plan draft: this signed mean is pulled toward
+zero by cancellation (one arm moved −0.0182; the mean of *absolute* differences is 0.0061, which
+would flip the rule to 30 under that reading). The rule as specified is on the signed difference;
+applied literally here.
+
+**R0ⁿ settings** (`config/s4_4/r0n.yaml`): PCSTGNN, `use_fusion=False`, no type head, no decoder,
+no table. `pc_loss.enabled=true` purely for the noise-augmentation loader plumbing (noise
+augmentation is wired only through the `pc_loss` path, `experiments/runner.py:258-259`) —
+`lambda1=lambda2=aux_net_loss_weight=0`, i.e. γ=0, consistent with the design rule "γ applies
+only when fusion is ON" (`S4.4_plan_draft.md` Part 2). Noise augmentation on, σ ∈ {0, 5e-4, 2e-3,
+1e-2} p.u. Dropout-aware training on, k ∈ {0, 1, 2, 5}. `gnn_layers=4`. AdamW, batch 32, lr
+0.001, weight decay 0.0001, grad-clip 1.0, warmup 3 epochs. 95,258 parameters (measured,
+byte-identical backbone to RGSAGE-Max).
+
+**R5 settings** (`config/s4_4/r5.yaml`): PCSTGNN, `use_fusion=True` (β learned, init 0), real
+physics table, `λ₁=0, λ₂=0.1, γ=1` — the S4.3ᵉ-selected point. Noise augmentation and
+dropout-aware training identical to R0ⁿ. 95,259 parameters (measured) — the one-scalar
+difference from R0ⁿ is exactly `beta`.
+
+**Evaluation grid** (both arms, every seed, scored after training on that seed's checkpoint):
+k ∈ {0, 1, 2, 5, 10} × σ ∈ {0, 5e-4, 2e-3, 1e-2} p.u., 3 mask seeds per k > 0 (k = 0 computed once
+per σ, not repeated — matches `dropout/evaluator.py::evaluate_dropout_curve`'s own convention).
+**Fusion decomposition at every (k, σ) cell** for R5 (fused / network-only / PSM macro-F1,
+`fused_eq_psm`, `fused_eq_network_only`), method of
+`results/pcstgnn_tuning_aux/fusion_decomposition_val_k0.json` extended off the k=0-clean-only
+cache to the live ρ path at every cell. R0ⁿ has no physics table, so only fused(=network-only)
+F1 is reported per cell (`S4.4_plan_draft.md` Part 3: "the decomposition collapses... PSM is
+shared/arm-independent").
+
+**Early stop (collapse guard), applied to both arms:** at the end of epoch 3, if the
+network-only "no fault" share is > 95% or the network-only macro-F1 is ≤ 0.10, the run is stopped
+and recorded as **collapsed**. Wired via `training.collapse_abort` (epoch=3,
+max_class0_frac=0.95, min_net_f1=0.10) + `pc_loss.log_network_only=true`
+(`experiments/runner.py:383-387`). A collapsed run is not valid and stops the Gate 4 queue (see
+below) — it is not retried automatically.
+
+**`training.skip_test_eval: true` on every run.** The test split is never loaded by
+`runner.run()` for either arm — Gate 4 and the evaluation grid above both read the validation
+split only.
+
+**Gate 4 rule, quoted verbatim from the existing checklist below, unchanged by this
+pre-registration:**
+> - [ ] **R5 > R0ⁿ** (not R0) on validation, in the pre-registered conditions, sign-consistent
+>       across 3 seeds — read at the noise operating points, never at clean k = 0 (S2.0ᵃ)
+
+**Gate 4 completion estimate (training + scoring, 20 epochs, 3 seeds each):**
+
+| Component | Per-run | ×3 seeds |
+|---|---|---|
+| R0ⁿ training (20 epochs, measured rate) | 4.36 h | 13.07 h |
+| R0ⁿ scoring (full grid, measured: 2% sample x50) | 0.63 h | 1.88 h |
+| R5 training (20 epochs, 52 min/epoch given rate) | 17.33 h | 52.00 h |
+| R5 scoring (full grid, measured: 2% sample x50) | 5.93 h | 17.78 h |
+| **Gate 4 total** | — | **84.72 h ≈ 3.53 days** |
+
+Scoring costs are measured, not placeholders: 2% of the validation split (4,960 of 248,000
+windows) scored across the full (k, σ) grid with 3 mask seeds and (for the physics
+configuration) decomposition at every cell, then scaled x50 to the full split
+(`results/s4_4_timing/timing.json`, keys `scoring_physics_2pct` / `scoring_nonphysics_2pct`).
+Physics scoring costs ≈9.5x the non-physics rate — confirms the ρ computation, not the backbone
+forward pass, dominates scoring cost, consistent with the first-draft text's "ρ is computed live
+for every k > 0 x 3 mask seeds" explanation of the original S4.3ᵉ scoring cost.
 
 ## GATE 4
 
