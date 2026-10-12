@@ -662,6 +662,60 @@ Physics scoring costs ≈9.5x the non-physics rate — confirms the ρ computati
 forward pass, dominates scoring cost, consistent with the first-draft text's "ρ is computed live
 for every k > 0 x 3 mask seeds" explanation of the original S4.3ᵉ scoring cost.
 
+### S4.4 — Tooling incident `[2026-10-12, after R0ⁿ seed 1 training]`
+
+**a. Failure.** After R0ⁿ seed 1 finished training cleanly (20 epochs, best validation
+graph-F1 = 0.8126, not collapsed), the scorer (`scripts/score_s4_4_gate4_run.py`) crashed with
+`torch.OutOfMemoryError` on the 8GB T1000, inside `apply_measurement_noise_batch`. The Gate 4
+queue stopped itself at position 1 per its own exception handler — it was not restarted without
+authorisation.
+
+**b. Cause and fix.** The scorer cached the entire validation split (248,000 windows) as GPU
+tensors up front, then built a second full-split "noised" copy per σ level inside the loop —
+≈3 GB held twice over, on an 8 GB device, plus model/activation memory. This inverted the
+pattern `dropout/evaluator.py::evaluate_dropout_curve` already uses and documents the reason
+for: loop the (k, offset) — now (σ, k, offset) — combinations *inside* a single streaming pass
+over the `DataLoader`, so only the current 32-window batch is ever resident on the GPU. Fixed by
+rewriting the scorer to that single-pass structure, and separately made every window's noise
+and dropout-mask draw depend only on `(level, mask-seed offset, that window's fixed position in
+`dataset.records`)` — never on batch order, batch size, or shared RNG state (each draw gets its
+own fresh `Generator`/`Random`). One side effect of the fix: noise now varies by mask-seed
+offset even at k = 0 (the frozen seed formula ties noise to the offset unconditionally), so the
+old "k = 0 computed once per σ" dedup no longer applies — a deliberate, documented behavior
+change, not a regression. The orchestrator (`scripts/run_s4_4_gate4.py`) was also made
+resumable (skip training only if `checkpoint_best.pt` + `metrics.json` exist *and* the saved
+`config.yaml` matches `config/s4_4/<arm>.yaml` exactly; skip scoring only if
+`scoring_full_grid.json` exists) and now releases GPU memory (`gc.collect` +
+`torch.cuda.empty_cache`) after every training and scoring call.
+
+**c. Equivalence test result.** R0ⁿ seed 1's checkpoint, first 2% of the validation windows
+(4,960 of 248,000), every one of the 60 (σ, k, mask-seed-offset) cells, old cache-then-loop
+structure vs. the new single-streaming-pass structure, **both using the identical new per-window
+seed formula** (isolating the structural change from any seeding change): **max |Δ F1| = 0.0
+across all 60 cells** (tolerance was 1e-6). Separately, the new scorer run on the **full**
+validation split at σ = 0, k = 0 gives macro-F1 = 0.8126004083285524, identical to the logged
+`best_validation_graph_f1` to full float precision (diff = 0.0). Both checks passed; Part 3 of
+the fix task was not blocked.
+
+**d. No pre-registered setting changed.** R0ⁿ and R5's λ₁, λ₂, γ, β, fusion, noise grid, dropout
+grid, epoch count (20), collapse guard, and `skip_test_eval` are exactly as frozen above. Only
+the scoring *implementation* and the orchestrator's resume/cleanup behavior changed.
+
+**Gate 4 completion estimate, recomputed 2026-10-12** (training + scoring, 20 epochs, 3 seeds
+each; R0ⁿ's rate is now a direct measurement from its completed run, not an extrapolation):
+
+| Component | Per-run | Basis |
+|---|---|---|
+| R0ⁿ training | 5.87 h | measured (17.6 min/epoch × 20, R0ⁿ seed 1's actual run) |
+| R0ⁿ scoring | 0.95 h | **measured** (R0ⁿ seed 1's actual full-grid scoring, new scorer) |
+| R5 training | 17.33 h | given rate (52 min/epoch × 20), not yet re-measured under this queue |
+| R5 scoring | 8.95 h | **estimate**, not yet measured — old 2%×50 physics estimate (5.93 h) scaled by the real/old-estimate ratio observed for R0ⁿ's scoring (1.51×), since the new scorer's per-window determinism loop costs more than the 60/52 cell-count ratio alone suggests (that gives 6.84 h; 8.95 h is used as the more honest number pending a real measurement at R5 seed 1) |
+
+**Total, all 6 runs:** R0ⁿ seed 1 already complete (6.81 h actual) + 5 remaining runs (R5×3 at
+26.28 h each + R0ⁿ×2 at 6.81 h each) = **99.30 GPU-h ≈ 4.14 days total, ≈92.49 GPU-h ≈ 3.85 days
+remaining from 2026-10-12** → remaining-work completion **≈ 2026-10-16**, if uninterrupted. The
+R5 figure will be replaced with a real measurement once R5 seed 1 is scored.
+
 ## GATE 4
 
 - [x] S4.1 null test exact — PASSED 2026-09-30, byte-identical over 30 epochs (see S4.1)
