@@ -587,8 +587,11 @@ back into every physics claim.
 Frozen before training, per `PC-STGNN/S4.4_plan_draft.md` (2026-10-09 revision). Covers only the
 two Gate 4 arms, R0ⁿ and R5 — not the rest of the S4.4 table.
 
-**Epoch count: 20**, decided by a fixed rule applied to the S4.3ᵉ per-epoch record (fused F1 at
-k = 0, epoch 10 vs epoch 15, `results/pcstgnn_tuning_aux/<arm>/pcstgnn/seed_00042/metrics_by_epoch.csv`):
+**Epoch count: 30.** `[Amended 2026-10-12 14:40 IST / 2026-10-12T09:10:59Z — superseding the
+2026-10-09 value below, not deleting it]`
+
+~~**Epoch count: 20**, decided by a fixed rule applied to the S4.3ᵉ per-epoch record (fused F1 at
+k = 0, epoch 10 vs epoch 15, `results/pcstgnn_tuning_aux/<arm>/pcstgnn/seed_00042/metrics_by_epoch.csv`):~~
 
 | Arm (λ₁, λ₂) | Fused F1 @ epoch 10 | Fused F1 @ epoch 15 | Δ (15 − 10) |
 |---|---|---|---|
@@ -598,11 +601,21 @@ k = 0, epoch 10 vs epoch 15, `results/pcstgnn_tuning_aux/<arm>/pcstgnn/seed_0004
 | 0.1, 0 | 0.8147 | 0.8142 | −0.0005 |
 | 0, 0.1 (selected) | 0.8849 | 0.8853 | +0.0004 |
 
-Mean signed Δ over the 5 arms = **−0.0038**. Rule: mean Δ < 0.005 ⟹ 20 epochs, else 30. −0.0038 <
-0.005, so **20 epochs**. Caveat carried from the plan draft: this signed mean is pulled toward
+~~Mean signed Δ over the 5 arms = **−0.0038**. Rule: mean Δ < 0.005 ⟹ 20 epochs, else 30. −0.0038
+< 0.005, so **20 epochs**. Caveat carried from the plan draft: this signed mean is pulled toward
 zero by cancellation (one arm moved −0.0182; the mean of *absolute* differences is 0.0061, which
 would flip the rule to 30 under that reading). The rule as specified is on the signed difference;
-applied literally here.
+applied literally here.~~ *(2026-10-09 value, replaced below — kept, not deleted.)*
+
+**Amended 2026-10-12 14:40 IST / 2026-10-12T09:10:59Z. No Gate 4 comparison result existed.
+Reason: the deadline was removed, and Phase-1 used 30 epochs.** The 2026-10-09 rule above was a
+time-driven rule, picked under deadline pressure that no longer applies; the new choice (30,
+matching Phase-1) does not depend on any Gate 4 result — R5 seed 1 had reached only epoch 3 of
+20, un-scored, when this was decided. For the record, not as a factor in this decision: R0ⁿ
+seed 1's own 20-epoch run (now archived at `results/s4_4_pilot_20ep/`) had best epoch 18
+(validation graph-F1 0.8126004083285524) and val_graph_f1 = 0.7293 (epoch 10), 0.7810
+(epoch 15), 0.8110 (epoch 20) — still rising through epoch 20, consistent with 30 epochs giving
+more room, but this was not used to make the epoch-count decision above.
 
 **R0ⁿ settings** (`config/s4_4/r0n.yaml`): PCSTGNN, `use_fusion=False`, no type head, no decoder,
 no table. `pc_loss.enabled=true` purely for the noise-augmentation loader plumbing (noise
@@ -701,20 +714,41 @@ the fix task was not blocked.
 grid, epoch count (20), collapse guard, and `skip_test_eval` are exactly as frozen above. Only
 the scoring *implementation* and the orchestrator's resume/cleanup behavior changed.
 
-**Gate 4 completion estimate, recomputed 2026-10-12** (training + scoring, 20 epochs, 3 seeds
-each; R0ⁿ's rate is now a direct measurement from its completed run, not an extrapolation):
+~~**Gate 4 completion estimate, recomputed 2026-10-12** (training + scoring, 20 epochs, 3 seeds
+each; R0ⁿ's rate is now a direct measurement from its completed run, not an extrapolation):~~
 
-| Component | Per-run | Basis |
+| Component | Per-run (20 ep, superseded) | Basis |
 |---|---|---|
 | R0ⁿ training | 5.87 h | measured (17.6 min/epoch × 20, R0ⁿ seed 1's actual run) |
 | R0ⁿ scoring | 0.95 h | **measured** (R0ⁿ seed 1's actual full-grid scoring, new scorer) |
 | R5 training | 17.33 h | given rate (52 min/epoch × 20), not yet re-measured under this queue |
 | R5 scoring | 8.95 h | **estimate**, not yet measured — old 2%×50 physics estimate (5.93 h) scaled by the real/old-estimate ratio observed for R0ⁿ's scoring (1.51×), since the new scorer's per-window determinism loop costs more than the 60/52 cell-count ratio alone suggests (that gives 6.84 h; 8.95 h is used as the more honest number pending a real measurement at R5 seed 1) |
 
-**Total, all 6 runs:** R0ⁿ seed 1 already complete (6.81 h actual) + 5 remaining runs (R5×3 at
+~~**Total, all 6 runs:** R0ⁿ seed 1 already complete (6.81 h actual) + 5 remaining runs (R5×3 at
 26.28 h each + R0ⁿ×2 at 6.81 h each) = **99.30 GPU-h ≈ 4.14 days total, ≈92.49 GPU-h ≈ 3.85 days
-remaining from 2026-10-12** → remaining-work completion **≈ 2026-10-16**, if uninterrupted. The
-R5 figure will be replaced with a real measurement once R5 seed 1 is scored.
+remaining from 2026-10-12** → remaining-work completion **≈ 2026-10-16**, if uninterrupted.~~
+*(Superseded below by the epoch-count amendment, before this estimate could be refined with a
+real R5 measurement — kept, not deleted.)*
+
+**Gate 4 completion estimate, recomputed 2026-10-12 after the 30-epoch amendment.** Scoring
+costs are unchanged by the epoch-count change (scoring runs once per finished checkpoint,
+independent of how many epochs it took to get there); only training time scales with epochs.
+The queue restarts from zero (the 20-epoch R0ⁿ seed 1 and partial R5 seed 1 runs were moved to
+`results/s4_4_pilot_20ep/`, not reused), so there is no "already done" credit this time.
+
+| Component | Per-run (30 ep) | Basis |
+|---|---|---|
+| R0ⁿ training | 8.80 h | 17.6 min/epoch × 30 (measured rate) |
+| R0ⁿ scoring | 0.95 h | measured (unchanged by epoch count) |
+| R5 training | 26.00 h | 52 min/epoch × 30 (given rate) |
+| R5 scoring | 8.95 h | estimate (unchanged by epoch count; still not yet directly measured) |
+| **R0ⁿ total** | **9.75 h** | — |
+| **R5 total** | **34.95 h** | — |
+| **Gate 4 total (6 fresh runs)** | — | **3 × 9.75 + 3 × 34.95 = 134.10 GPU-h ≈ 5.59 days** |
+
+Starting fresh from 2026-10-12 → completion **≈ 2026-10-17/18**, if uninterrupted. The R5
+scoring figure will still be replaced with a real measurement once an R5 seed is scored under
+this queue.
 
 ## GATE 4
 
