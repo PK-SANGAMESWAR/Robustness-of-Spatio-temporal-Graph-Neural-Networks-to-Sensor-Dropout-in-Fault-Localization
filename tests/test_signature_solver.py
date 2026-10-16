@@ -45,11 +45,16 @@ def test_prefault_freeze_is_the_step_39_value():
 
 
 def test_grids_are_the_specified_axes():
-    assert grids.R_GRID.shape == (15,)
+    # [Corrected 2026-09-25] R_GRID is the original 15-pt log grid unioned with the
+    # corpus's own {0.1, 1, 10} Ohm -- 18 points, no longer uniformly log-spaced.
+    # See grids.py's R_GRID docstring: the pure log grid failed S1.5 (L* recovery
+    # 38.4%, need >90%) via R-L compensation from off-grid R_true.
+    assert grids.R_GRID.shape == (18,)
     assert grids.R_GRID[0] == pytest.approx(0.05)
     assert grids.R_GRID[-1] == pytest.approx(30.0)
-    ratios = grids.R_GRID[1:] / grids.R_GRID[:-1]
-    np.testing.assert_allclose(ratios, ratios[0], rtol=1e-9)   # log-spaced
+    for corpus_r in (0.1, 1.0, 10.0):
+        assert np.any(np.isclose(grids.R_GRID, corpus_r)), f"{corpus_r} must be on-grid"
+    assert np.all(np.diff(grids.R_GRID) > 0)                   # strictly increasing
     assert len(grids.l_grid(0.05)) == 17
     assert len(grids.l_grid(0.025)) == 33
     np.testing.assert_allclose(grids.l_grid(0.05)[[0, -1]], [0.5, 1.3])

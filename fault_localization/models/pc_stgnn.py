@@ -152,7 +152,7 @@ class PCSTGNN(RGSAGE):
     # Physics
     # ------------------------------------------------------------------
 
-    def _rho(self, x: torch.Tensor):
+    def _rho(self, x: torch.Tensor, sigma0=None):
         """``(rho [B, 26], hyp_star [B, 26], s, a)`` -- no gradient, ever.
 
         rho is a function of the inputs and the fixed table (``01_SPEC.md`` §5),
@@ -164,7 +164,8 @@ class PCSTGNN(RGSAGE):
         with torch.no_grad():
             s, a = observe(x, self.norm_mean, self.norm_std, self.obs_reduce)
             rho, hyp = phys.rho(s, a, self.phys_table, self.sigma_eps,
-                                self.sigma0, chunk_f=self.chunk_f)
+                                self.sigma0 if sigma0 is None else sigma0,
+                                chunk_f=self.chunk_f)
         return rho, hyp, s, a
 
     def _hidden(self, x: torch.Tensor) -> torch.Tensor:
@@ -186,24 +187,53 @@ class PCSTGNN(RGSAGE):
         rho, _, _, _ = self._rho(x)
         return logits - self.beta * rho[:, None, :]
 
-    def forward_pc(self, x, x_clean=None, drop_mask=None) -> dict:
+    def network_logits(self, x: torch.Tensor) -> torch.Tensor:
+        """Node logits of the learned backbone alone, with no physics term.
+
+        Used to monitor the S4.3ᶜ collapse guard: a fused model whose network branch
+        votes "no fault" everywhere has offloaded localization to the physics prior.
+        """
+        return RGSAGE.forward(self, x)
+
+    def forward_pc(self, x, x_clean=None, drop_mask=None, *,
+                   rho_a_override=None, hyp_override=None, sigma0=None) -> dict:
         """Everything the PC objective needs, from one pass.
 
         ``x_clean`` and ``drop_mask`` are the pre-masking batch and the dropped
         channels, available at training time from ``DropoutAugmentedLoader``.
         They feed ``rho(D)`` -- the leave-k-out consistency term -- and are never
         needed at inference.
+
+        ``rho_a_override``/``hyp_override`` let a caller supply a precomputed
+        ``rho(A)``/``hyp*`` instead of running :meth:`_rho`. At k=0 (no synthetic
+        dropout) the availability mask is just the window's own fixed, static
+        instrumentation pattern, so rho(A) is identical every time that window is
+        seen regardless of epoch -- a cached lookup (``physics/cache.py``'s
+        offline grid, cross-validated to the live path within float tolerance,
+        `05_STAGE_D_infra.md` S3.4) is exact, not an approximation. This never
+        touches gradients: rho is a function of the inputs alone (`01_SPEC.md`
+        Sec 5) and was already computed under ``no_grad`` either way.
+
+        ``sigma0`` (``[B]``, p.u.) overrides the model's scalar noise level with the
+        level actually injected into each window under noise augmentation
+        (S4.3ᵇ), so the residual is never evaluated at a sigma the observation lacks.
         """
         h = self._hidden(x)
         logits = self.classifier(h)
         out: dict[str, torch.Tensor] = {}
 
         rho_a = hyp = None
-        if self.phys_table.numel():
-            rho_a, hyp, _, _ = self._rho(x)
+        if rho_a_override is not None:
+            rho_a, hyp = rho_a_override, hyp_override
+            out["rho_A"] = rho_a
+            out["hyp_star"] = hyp
+        elif self.phys_table.numel():
+            rho_a, hyp, _, _ = self._rho(x, sigma0)
             out["rho_A"] = rho_a
             out["hyp_star"] = hyp
 
+        # Pre-fusion node logits, i.e. network_logits() from this same pass (S4.3d aux loss).
+        out["net_logits"] = logits
         if self.use_fusion:
             logits = logits - self.beta * rho_a[:, None, :]
 
@@ -215,7 +245,8 @@ class PCSTGNN(RGSAGE):
             with torch.no_grad():
                 s_clean, _ = observe(x_clean, self.norm_mean, self.norm_std, self.obs_reduce)
                 out["rho_D"] = phys.rho_heldout(s_clean, drop_mask, self.phys_table,
-                                                hyp, self.sigma_eps, self.sigma0)
+                                                hyp, self.sigma_eps,
+                                                self.sigma0 if sigma0 is None else sigma0)
 
         if self.use_type_head:
             out["type_logits"] = self.type_head(h)

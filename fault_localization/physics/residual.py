@@ -87,15 +87,27 @@ def channel_weights(a: torch.Tensor, sigma_eps, sigma0: float = 0.0) -> torch.Te
     ``sigma_eps`` may be a scalar or a per-channel array of length 75.
     ``sigma0`` is the injected measurement-noise level and is 0 on the clean
     corpus; under the noise experiments it **must** be set to the level actually
-    injected (``12_CHECKLISTS.md`` §C).
+    injected (``12_CHECKLISTS.md`` §C). It may be a scalar, or a ``[B]`` tensor
+    when noise augmentation draws a different level per window.
     """
     a_flat = a.reshape(a.shape[0], -1).to(torch.float32)
     if a_flat.shape[1] != NUM_CHANNELS:
         raise ValueError(f"availability must flatten to {NUM_CHANNELS} channels")
-    eps = torch.as_tensor(np.asarray(sigma_eps, dtype=np.float32), device=a_flat.device)
-    denom = eps.to(a_flat.dtype) ** 2 + float(sigma0) ** 2
-    if denom.numel() not in (1, NUM_CHANNELS):
+    # PCSTGNN registers sigma_eps as a buffer, so it follows the model's own .to(device)
+    # (e.g. onto CUDA), where np.asarray() on a GPU tensor raises -- move it instead.
+    eps = (sigma_eps.to(device=a_flat.device) if isinstance(sigma_eps, torch.Tensor)
+          else torch.as_tensor(np.asarray(sigma_eps, dtype=np.float32), device=a_flat.device))
+    if eps.numel() not in (1, NUM_CHANNELS):
         raise ValueError("sigma_eps must be scalar or per-channel (75)")
+    eps2 = eps.to(a_flat.dtype).reshape(-1) ** 2                      # [1] or [75]
+    if isinstance(sigma0, torch.Tensor) and sigma0.numel() > 1:
+        s0 = sigma0.to(device=a_flat.device, dtype=a_flat.dtype).reshape(-1, 1)
+        if s0.shape[0] != a_flat.shape[0]:
+            raise ValueError(f"per-window sigma0 must have {a_flat.shape[0]} entries, "
+                             f"got {s0.shape[0]}")
+        denom = eps2[None, :] + s0 ** 2                               # [B, 1|75]
+    else:
+        denom = eps2 + float(sigma0) ** 2
     return a_flat / denom
 
 

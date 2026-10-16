@@ -35,7 +35,7 @@ STATS = (MEAN, STD)
 def table():
     rng = np.random.default_rng(5)
     n_l = 3
-    mu = rng.normal(1.0, 0.05, (25, 11, 15, n_l, 25, 3)).astype(np.float32)
+    mu = rng.normal(1.0, 0.05, (25, 11, grids.NUM_R, n_l, 25, 3)).astype(np.float32)
     mu0 = rng.normal(1.0, 0.05, (n_l, 25, 3)).astype(np.float32)
     return R.flatten_table(mu, mu0)
 

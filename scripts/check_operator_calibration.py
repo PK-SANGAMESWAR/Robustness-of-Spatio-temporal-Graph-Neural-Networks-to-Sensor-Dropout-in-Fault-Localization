@@ -86,7 +86,7 @@ def check_bias(mu: np.ndarray, mask: np.ndarray, s, a, f_true, tau_true, r_idx, 
               r_true) -> dict:
     """S1.4 -- |e| at the STORED ground truth (f_true, tau_true, r_idx, l_idx)."""
     mu_true = mu[f_true - 1, tau_true, r_idx, l_idx]          # [B,25,3]
-    e = np.abs(s.numpy() - mu_true) * (mask[None] > 0)
+    e = np.abs(s.cpu().numpy() - mu_true) * (mask[None] > 0)
     m = mask > 0
     per_event_max = e.reshape(e.shape[0], -1)[:, m.reshape(-1)].max(axis=1)
     per_event_med = np.median(e.reshape(e.shape[0], -1)[:, m.reshape(-1)], axis=1)
@@ -148,7 +148,7 @@ def check_load(flat: torch.Tensor, s, a, f_true, tau_true, r_idx, l_idx, n_l: in
         for k0 in range(i, j, chunk):
             k1 = min(k0 + chunk, j)
             _r, hyp = R.raw_residual(s_o[k0:k1], a_o[k0:k1], row, sigma_eps=1.0, chunk_f=1)
-            ti, ri, li = grids.unravel_hypothesis(hyp[:, 0].numpy(), n_l)
+            ti, ri, li = grids.unravel_hypothesis(hyp[:, 0].cpu().numpy(), n_l)
             tau_star[k0:k1] = ti
             r_star[k0:k1] = ri
             l_star[k0:k1] = li
@@ -184,7 +184,7 @@ def check_floor(flat: torch.Tensor, s, a, f_true, sigma_eps: float, chunk: int =
     order = np.argsort(f_true)
     s_o, a_o, f_o = s[order], a[order], f_true[order]
     r_true_prof = np.empty(n, dtype=np.float64)
-    n_avail = a_o.sum(dim=(1, 2)).numpy()
+    n_avail = a_o.sum(dim=(1, 2)).cpu().numpy()
 
     i = 0
     while i < n:
@@ -196,7 +196,7 @@ def check_floor(flat: torch.Tensor, s, a, f_true, sigma_eps: float, chunk: int =
         for k0 in range(i, j, chunk):
             k1 = min(k0 + chunk, j)
             r_val, _hyp = R.raw_residual(s_o[k0:k1], a_o[k0:k1], row, sigma_eps=sigma_eps, chunk_f=1)
-            r_true_prof[k0:k1] = r_val[:, 0].numpy()
+            r_true_prof[k0:k1] = r_val[:, 0].cpu().numpy()
         i = j
 
     inv = np.empty_like(order)
@@ -219,8 +219,13 @@ def check_floor(flat: torch.Tensor, s, a, f_true, sigma_eps: float, chunk: int =
 
 
 def check_rgrid(mu: np.ndarray, mask: np.ndarray, r_grid: np.ndarray,
-                load_result: dict) -> dict:
-    """S1.7 -- monotonicity on THIS table, effective_r_levels, argmin_R by monotone/non-monotone."""
+                load_result: dict, sigma_eps: float) -> dict:
+    """S1.7 -- monotonicity on THIS table, effective_r_levels, argmin_R by monotone/non-monotone.
+
+    ``sigma_eps`` must be the same calibrated value S1.6 passes/rescales -- effective_r_levels's
+    "distinguishable" threshold is that noise floor, so a stale hardcoded value here would silently
+    disagree with S1.6 whenever sigma_eps is recalibrated (as it was in the 2026-09-25 R-grid fix).
+    """
     m = mask > 0
     # sag[f,tau,R,L] = deepest instrumented-channel sag = 1 - min(mu) over (i,p) in mask
     sag = 1.0 - mu[..., m].min(axis=-1)                       # [f,tau,R,L]
@@ -234,7 +239,7 @@ def check_rgrid(mu: np.ndarray, mask: np.ndarray, r_grid: np.ndarray,
         v_ungrounded = non_monotone[:, ungrounded, :].sum()
         frac_ungrounded_of_violations = float(v_ungrounded / non_monotone.sum())
 
-    eff = I.effective_r_levels(mu, sigma_eps=5.145e-3, mask=mask)
+    eff = I.effective_r_levels(mu, sigma_eps=sigma_eps, mask=mask)
 
     out = {
         "table_l_step": 0.05,
@@ -265,10 +270,12 @@ def main() -> int:
                          "starting point per 01_SPEC.md Sec.4 / S1.6")
     ap.add_argument("--max-events", type=int, default=None, help="smoke-test cap only")
     ap.add_argument("--out-dir", default=str(OUT_DIR))
+    ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = ap.parse_args()
 
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
+    device = torch.device(args.device)
 
     tbl = T.load_table(args.table_dir)
     mu, mask = tbl["mu"], tbl["mask"]
@@ -284,7 +291,8 @@ def main() -> int:
     print(f"[load] {len(paths)} training events", flush=True)
     s, a, f_true, tau_true, r_idx, l_idx, r_true, l_true = event_ground_truth(
         paths, l_grid_vals, r_grid_vals)
-    print(f"[load] observed in {time.perf_counter() - t0:.1f}s", flush=True)
+    s, a = s.to(device), a.to(device)
+    print(f"[load] observed in {time.perf_counter() - t0:.1f}s on {device}", flush=True)
 
     results = {"n_train_events": len(paths), "sigma_eps_used": args.sigma_eps}
     load_result = None
@@ -317,7 +325,7 @@ def main() -> int:
 
     if "rgrid" in args.checks:
         t0 = time.perf_counter()
-        results["S1.7_rgrid"] = check_rgrid(mu, mask, r_grid_vals, load_result or {})
+        results["S1.7_rgrid"] = check_rgrid(mu, mask, r_grid_vals, load_result or {}, args.sigma_eps)
         print(f"[rgrid] frac_non_monotone={results['S1.7_rgrid']['frac_non_monotone_in_R']:.4f}  "
               f"({time.perf_counter()-t0:.1f}s)", flush=True)
 

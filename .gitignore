@@ -80,3 +80,12 @@ paper/*.spl
 # Review 1 slide deck export (79 MB). Kept locally, not in git.
 # ---------------------------------------------------------------------------
 /REVIEW1.pdf
+
+# ---------------------------------------------------------------------------
+# OOD event sets (scripts/generate_ood_sets.py), ~278 MB. data/ood_test/ is the
+# SEALED test set: keep it out of git so it is never published or opened by a
+# checkout. Its hash, data/ood_test.sha256, is tracked. data/ood_pilot/ is a
+# throwaway Gate-2 set.
+# ---------------------------------------------------------------------------
+/data/ood_test/
+/data/ood_pilot/

@@ -2,6 +2,13 @@
 
     uv run python scripts/check_operator_fidelity.py --checks lgrid --workers 8
 
+``[Fixed 2026-09-25]`` ``margin_distribution`` now chunks over the event batch too
+(``chunk_b``), not just over ``chunk_f``. The R-grid fix (``grids.R_GRID`` 15->18 points,
+see ``results/pcstgnn/operator/S1.5_RGRID_CORRECTION.md``) grew H = 11*NUM_R*n_l enough
+that the old B=3000-at-once ``[B, chunk_f, H, 75]`` intermediate reached ~12-24GB for the
+larger L-step tables and was OOM-killed repeatedly on this 15GB box. Batching over B is a
+pure memory fix -- identical rho/margin/PSM per event, just computed in smaller pieces.
+
 ``lgrid`` (S1.2) **decides the L grid** and must therefore be run at full
 population, not on a convenience sample -- see the sampling rule in
 ``12_CHECKLISTS.md``.  It produces two things:
@@ -191,19 +198,33 @@ def _boot_ci(values, stat, n_boot=2000, seed=0):
 
 
 def margin_distribution(tbl: dict, step: float, s, a, y, sigma_eps_disc: float,
-                        chunk_f: int) -> list[dict]:
+                        chunk_f: int, chunk_b: int = 200) -> list[dict]:
     """Top-2 rho margin per candidate step, at each sigma_eps in SIGMA_GRID.
 
     The margin is the quantity beta and the lambda terms actually see, and the
     one S1.2 selects on (11_METRICS.md §2).
+
+    ``[Fixed 2026-09-25]`` ``raw_residual``'s ``[B, chunk_f, H, 75]`` intermediate scales
+    with H = 11*NUM_R*n_l, and NUM_R grew 15->18 in the R-grid fix. At the full
+    B=3000 margin sample and the original chunk_f=2, that intermediate is ~6-12GB
+    (two of them live at once) on a 15GB box -- OOM-killed every run at exactly the
+    step_0.05 table (H=3366), reproducibly. Batching over B here (chunk_b events at
+    a time, results concatenated before any statistic is computed) is a pure memory
+    fix: every rho/margin/psm value is identical to computing them in one shot.
     """
     flat = R.flatten_table(tbl["mu"], tbl["mu0"])
     rows = []
     for sigma in (*SIGMA_GRID, sigma_eps_disc):
-        rho, _hyp = R.rho(s, a, flat, sigma, chunk_f=chunk_f)
-        marg = R.margin(rho).numpy()
-        pred = R.psm_predict(rho).numpy()
-        rho_true = rho[torch.arange(len(y)), torch.as_tensor(y)].numpy()
+        rho_parts = []
+        for b0 in range(0, len(y), chunk_b):
+            b1 = min(b0 + chunk_b, len(y))
+            r_part, _hyp = R.rho(s[b0:b1], a[b0:b1], flat, sigma, chunk_f=chunk_f)
+            rho_parts.append(r_part)
+        rho = torch.cat(rho_parts, dim=0)
+        marg = R.margin(rho).cpu().numpy()
+        pred = R.psm_predict(rho).cpu().numpy()
+        rho_true = rho[torch.arange(len(y), device=rho.device),
+                       torch.as_tensor(y, device=rho.device)].cpu().numpy()
         lo, hi = _boot_ci(marg, np.median)
         rows.append({
             "l_step": step, "sigma_eps": float(sigma),
@@ -241,10 +262,12 @@ def main() -> int:
     ap.add_argument("--margin-seed", type=int, default=20260923)
     ap.add_argument("--chunk-f", type=int, default=2)
     ap.add_argument("--master", default=None)
+    ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = ap.parse_args()
 
     out_root = Path(args.out_dir)
     out_root.mkdir(parents=True, exist_ok=True)
+    device = torch.device(args.device)
 
     if "taps" in args.checks:
         ref_dir = out_root / f"step_{str(args.reference_step).replace('.', 'p')}"
@@ -283,8 +306,9 @@ def main() -> int:
     picks, strata, per = _stratified_events(Path(args.data_root) / "raw_sim",
                                             args.n_margin_events, args.margin_seed)
     s, a, y = _observe(picks)
+    s, a = s.to(device), a.to(device)
     print(f"\n[rho margin] {len(picks)} events, stratified by (R x grounded): "
-          f"{len(strata)} strata x {per} -- seed {args.margin_seed}", flush=True)
+          f"{len(strata)} strata x {per} -- seed {args.margin_seed} -- device={device}", flush=True)
     margins = []
     for step in sorted(args.l_steps, reverse=True):
         disc = next(r["p99"] for r in interp if r["l_step"] == step)

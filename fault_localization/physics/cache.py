@@ -277,3 +277,28 @@ def build_rtilde_cache(
 
 def load_rtilde_cache(path: str | Path) -> dict:
     return np.load(path, allow_pickle=True).item()
+
+
+def load_rho_k0_lookup(path: str | Path) -> tuple[dict[str, int], np.ndarray, np.ndarray]:
+    """``(window_id -> row, rho[W,26], hyp[W,26])`` at k=0 from a built ``rtilde_{split}.npy``.
+
+    k=0 has no mask seed of its own (dropout is a no-op, `build_rtilde_cache`'s docstring) --
+    every offset along the mask-seed axis is a duplicate of the same computed slice, so offset 0
+    is read and the rest ignored. The lookup is by window_id string, never by row position: the
+    cache's own build order (sorted raw-sim event keys) does not match a training split file's
+    order, so a positional/row-index assumption here would silently misassign rho to the wrong
+    window. Callers must look up every window_id individually, not assume alignment with any
+    other window_id list, however plausible.
+    """
+    d = np.load(path, allow_pickle=True).item()
+    k_levels = list(d["k_levels"])
+    if 0 not in k_levels:
+        raise ValueError(f"{path} has no k=0 slice (k_levels={k_levels})")
+    k0 = k_levels.index(0)
+    ids = [str(w) for w in d["window_id"]]
+    if len(ids) != len(set(ids)):
+        raise ValueError(f"{path} has duplicate window_id entries -- lookup would be ambiguous")
+    window_to_row = {wid: i for i, wid in enumerate(ids)}
+    rho0 = d["rho"][:, k0, 0, :]
+    hyp0 = d["hyp"][:, k0, 0, :]
+    return window_to_row, rho0, hyp0

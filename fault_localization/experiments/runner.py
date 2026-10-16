@@ -17,7 +17,7 @@ from fault_localization.models import (GRUBaseline, RGSAGE, RGCN, RGATv2,
 from .config import validate_config
 from .evaluate import evaluate_loader
 from .seed import seed_everything
-from .train import train_epoch, validate_epoch
+from .train import train_epoch, validate_epoch, pc_train_epoch
 
 
 def _model(config, edge):
@@ -224,11 +224,61 @@ def run(config, resume=False):
 
     num_workers = config["training"].get("num_workers", 0)
 
+    # ----------------------------------------------------------------
+    # PC-STGNN objective (PC-STGNN/01_SPEC.md Sec 6, models/common.py::pc_loss).
+    # Off unless the config asks for it, so the S4.1 null test and every other
+    # existing benchmark keep training through the plain train_epoch/CE path
+    # unchanged. When on, lambda_2 needs the pre-dropout batch and the dropped-
+    # channel mask, so the train loader is a PhysicsDropoutLoader regardless of
+    # the generic dropout_aware flag (k_range collapses to [0] if that flag is
+    # off, which still yields well-formed, all-zero drop_mask batches).
+    # ----------------------------------------------------------------
+    pc_cfg = config.get("pc_loss", {})
+    pc_enabled = bool(pc_cfg.get("enabled", False))
+    pc_lam1 = float(pc_cfg.get("lambda1", 0.0))
+    pc_lam2 = float(pc_cfg.get("lambda2", 0.0))
+    # S4.3d: gamma * CE on the network-only (pre-fusion) logits. 0 = objective unchanged.
+    pc_aux = float(pc_cfg.get("aux_net_loss_weight", 0.0))
+    # k=0 rho(A) cache (2026-09-30): at k=0 rho(A) is a fixed function of the window
+    # alone, so it is looked up from the offline grid (physics/cache.py, S3.4) instead
+    # of recomputed live -- verified equivalent before use, see
+    # scripts/verify_pcstgnn_rho_cache.py. k>0 stays live, unaffected. Off unless a
+    # cache path is given, so this never changes any run that doesn't ask for it.
+    pc_rho_k0_cache_path = pc_cfg.get("rho_k0_cache_path")
+    pc_rho_k0_cache = None
+    if pc_enabled and pc_rho_k0_cache_path:
+        from fault_localization.physics.cache import load_rho_k0_lookup
+        pc_rho_k0_cache = load_rho_k0_lookup(pc_rho_k0_cache_path)
+
+    # Measurement-noise augmentation (06_STAGE_E_pcstgnn.md S4.3b): sigma drawn per window
+    # from the grid, sigma0 in the residual = the sigma injected. Off unless asked for.
+    # Wired only through the PC loader so far; failing loudly beats a silent no-op.
+    noise_cfg = config.get("noise_augmentation", {})
+    noise_sigmas = list(noise_cfg.get("sigma_grid", [])) if noise_cfg.get("enabled", False) else None
+    if noise_sigmas and not pc_enabled:
+        raise NotImplementedError("noise_augmentation is only wired through the pc_loss path")
+    # S4.3c collapse monitor: network-only metrics on the validation split every epoch.
+    log_network_only = bool(pc_cfg.get("log_network_only", False))
+    collapse_abort = config["training"].get("collapse_abort")
+    if collapse_abort and not log_network_only:
+        raise ValueError("training.collapse_abort needs pc_loss.log_network_only")
+    collapsed = False
+
     def _make_train_loader(epoch: int):
         base_loader = make_dataloader(
             train_ds, config["training"]["batch_size"], shuffle=True,
             seed=config["seed"] + epoch, num_workers=num_workers,
         )
+        if pc_enabled:
+            from fault_localization.dropout.training import PhysicsDropoutLoader
+            return PhysicsDropoutLoader(
+                base_loader,
+                k_range=train_k_range if dropout_aware else [0],
+                rng_seed=config["seed"] + epoch,
+                policy=dropout_policy,
+                noise_sigmas=noise_sigmas,
+                norm_std=train_ds.std if noise_sigmas else None,
+            )
         if dropout_aware:
             from fault_localization.dropout.training import DropoutAugmentedLoader
             return DropoutAugmentedLoader(
@@ -277,8 +327,13 @@ def run(config, resume=False):
             val_ds, config["training"]["batch_size"], shuffle=False, num_workers=num_workers,
         )
 
-        tr = train_epoch(model, train_loader, opt, device,
-                         grad_clip_norm=grad_clip_norm, physics=physics)
+        if pc_enabled:
+            tr = pc_train_epoch(model, train_loader, opt, device,
+                                grad_clip_norm=grad_clip_norm, lam1=pc_lam1, lam2=pc_lam2,
+                                rho_k0_cache=pc_rho_k0_cache, aux_net_loss_weight=pc_aux)
+        else:
+            tr = train_epoch(model, train_loader, opt, device,
+                             grad_clip_norm=grad_clip_norm, physics=physics)
         va = validate_epoch(
             model, val_loader, device, config["metrics"]["f1_average"],
         )
@@ -292,6 +347,17 @@ def run(config, resume=False):
         }
         if "phys_loss" in tr:
             row["train_phys_loss"] = tr["phys_loss"]
+        if "l1" in tr:
+            row["train_l1"] = tr["l1"]
+        if "l2" in tr:
+            row["train_l2"] = tr["l2"]
+        if "aux" in tr:
+            row["train_aux"] = tr["aux"]
+        if pc_enabled and getattr(model, "use_fusion", False):
+            row["beta"] = float(model.beta.item())
+        if log_network_only and hasattr(model, "network_logits"):
+            row.update(_network_only_eval(model, val_loader, device,
+                                          config["metrics"]["f1_average"], train_ds.std))
         history.append(row)
 
         torch.save(
@@ -311,6 +377,32 @@ def run(config, resume=False):
             w = csv.DictWriter(h, fieldnames=history[0])
             w.writeheader()
             w.writerows(history)
+
+        # S4.3e early stop: a fusion run whose network-only branch is still collapsed at the
+        # guard epoch is aborted. Off unless the config asks for it.
+        if (collapse_abort and epoch + 1 == collapse_abort["epoch"]
+                and (row["val_net_class0_frac"] > collapse_abort["max_class0_frac"]
+                     or row["val_net_f1"] <= collapse_abort["min_net_f1"])):
+            collapsed = True
+            break
+
+    # Validation-only diagnostics (S4.3d) must never touch the test split.
+    if config["training"].get("skip_test_eval", False):
+        metrics = {
+            "selection_metric": "validation soft-voted graph F1",
+            "best_validation_graph_f1": best,
+            "test_evaluated": False,
+            "dropout_aware_training": dropout_aware,
+        }
+        if collapse_abort:
+            metrics["collapse_abort"] = dict(collapse_abort, triggered=collapsed)
+        if pc_enabled:
+            metrics["pc_loss"] = {"lambda1": pc_lam1, "lambda2": pc_lam2,
+                                  "aux_net_loss_weight": pc_aux}
+            if getattr(model, "use_fusion", False):
+                metrics["beta_final"] = float(model.beta.item())
+        _json(run_dir / "metrics.json", metrics)
+        return run_dir
 
     # ----------------------------------------------------------------
     # Test evaluation
@@ -339,6 +431,10 @@ def run(config, resume=False):
         "test_node_diagnostic": result["node"],
         "dropout_aware_training": dropout_aware,
     }
+    if pc_enabled:
+        metrics["pc_loss"] = {"lambda1": pc_lam1, "lambda2": pc_lam2}
+        if getattr(model, "use_fusion", False):
+            metrics["beta_final"] = float(model.beta.item())
     _json(run_dir / "metrics.json", metrics)
 
     import pandas as pd
@@ -361,6 +457,32 @@ def run(config, resume=False):
         _run_dropout_study(model, test_loader, device, config, ds_cfg, run_dir)
 
     return run_dir
+
+
+def _network_only_eval(model, loader, device, average, norm_std, noisy_sigma=1e-2):
+    """S4.3c collapse monitor: the learned branch alone, physics term removed.
+
+    Clean: macro-F1 and the fraction of windows voted "no fault" (class 0). Noisy: macro-F1
+    at sigma = 1e-2 p.u., noise from dropout/noise.py with a per-batch seed.
+    """
+    from sklearn.metrics import f1_score
+    from fault_localization.dropout.noise import apply_measurement_noise_batch
+    from fault_localization.models.voting import soft_vote
+    model.eval()
+    ys, clean, noisy = [], [], []
+    with torch.no_grad():
+        for batch_idx, batch in enumerate(loader):
+            x = batch["x"].to(device, non_blocking=True)
+            ys.extend(batch["y"].tolist())
+            clean.extend(soft_vote(model.network_logits(x))[1].cpu().tolist())
+            xn = apply_measurement_noise_batch(x, noisy_sigma, norm_std, seed=880000 + batch_idx)
+            noisy.extend(soft_vote(model.network_logits(xn))[1].cpu().tolist())
+    clean_np = np.asarray(clean)
+    return {
+        "val_net_f1": float(f1_score(ys, clean, average=average, zero_division=0)),
+        "val_net_class0_frac": float((clean_np == 0).mean()),
+        "val_net_f1_sigma1e-2": float(f1_score(ys, noisy, average=average, zero_division=0)),
+    }
 
 
 def _run_dropout_study(model, test_loader, device, config, ds_cfg, run_dir):

@@ -1,0 +1,77 @@
+benchmark_version: benchmark_v1.1_samplerfix
+data_root: dataset_fullscale_50
+device: cuda
+dropout_study:
+  dropout_aware_training: true
+  enabled: false
+  k_levels:
+  - 0
+  - 1
+  - 2
+  - 5
+  - 10
+  n_mask_seeds: 3
+  policy: zero_messages
+  train_k_range:
+  - 0
+  - 1
+  - 2
+  - 5
+feeder_config: default
+gnn_layers: 4
+metrics:
+  f1_average: macro
+  labels:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  - 13
+  - 14
+  - 15
+  - 16
+  - 17
+  - 18
+  - 19
+  - 20
+  - 21
+  - 22
+  - 23
+  - 24
+  - 25
+model:
+  aggregator: max
+  beta_init: 0.0
+  dropout: 0.35
+  gnn_hidden_dim: 64
+  name: pcstgnn
+  neighbor_sampling: false
+  sigma0: 0.0
+  sigma_eps: 0.0007255549105131452
+  temporal_hidden_dim: 128
+  use_fusion: true
+output_root: results
+pc_loss:
+  enabled: true
+  lambda1: 0.0333
+  lambda2: 1.0
+  rho_k0_cache_path: /home/ubuntu/Fault-Localization/cache/rtilde_train.npy
+seed: 42
+training:
+  batch_size: 32
+  checkpoint_metric: graph_f1
+  deterministic: true
+  epochs: 15
+  grad_clip_norm: 1.0
+  learning_rate: 0.001
+  warmup_epochs: 3
+  weight_decay: 0.0001

@@ -18,7 +18,6 @@ from fault_localization.physics import grids, residual as R
 def smooth_table():
     """A table whose hypotheses vary *smoothly*, as the real (tau, R, L) grid does.
 
-    ``tiny_table`` draws every hypothesis independently, which makes them all
     mutually far apart -- no single sensor can then move the arg-min, and the
     leave-one-out refit trivially returns the same fit as the in-sample one.
     The real operator is not like that: neighbouring grid points differ by
@@ -41,31 +40,37 @@ def smooth_table():
 
 @pytest.fixture(scope="module")
 def tiny_table():
-    """A small but correctly shaped table: 3 load points, so H = 11*15*3 = 495."""
+    """A small but correctly shaped table: 3 load points, so H = 11*NUM_R*3.
+
+    Uses ``grids.NUM_R`` (18 since the 2026-09-25 R-grid fix, was 15) rather than a
+    literal, so this fixture tracks whatever the real operator's R axis is.
+    """
     rng = np.random.default_rng(20260923)
     n_l = 3
-    mu = rng.normal(1.0, 0.05, (25, 11, 15, n_l, 25, 3)).astype(np.float32)
+    mu = rng.normal(1.0, 0.05, (25, 11, grids.NUM_R, n_l, 25, 3)).astype(np.float32)
     mu0 = rng.normal(1.0, 0.05, (n_l, 25, 3)).astype(np.float32)
     return mu, mu0, R.flatten_table(mu, mu0), n_l
 
 
 def test_flatten_table_keeps_the_no_fault_row(tiny_table):
     mu, mu0, table, n_l = tiny_table
+    n_r = grids.NUM_R
     assert table.shape == (26, grids.num_hypotheses(n_l), 75)
     # Row 0 is mu0 broadcast over (tau, R): every block of n_l entries repeats it.
     for l_idx in range(n_l):
         assert torch.allclose(table[0, l_idx], torch.from_numpy(mu0[l_idx].reshape(-1)))
-        assert torch.allclose(table[0, 7 * 15 * n_l + 2 * n_l + l_idx],
+        assert torch.allclose(table[0, 7 * n_r * n_l + 2 * n_l + l_idx],
                               torch.from_numpy(mu0[l_idx].reshape(-1)))
     # Row f+1 is location f, in C order over (tau, R, L).
-    assert torch.allclose(table[4, 3 * 15 * n_l + 6 * n_l + 1],
+    assert torch.allclose(table[4, 3 * n_r * n_l + 6 * n_l + 1],
                           torch.from_numpy(mu[3, 3, 6, 1].reshape(-1)))
 
 
 def test_unravel_inverts_the_flattening(tiny_table):
     _, _, _, n_l = tiny_table
-    for tau, r, l in [(0, 0, 0), (10, 14, 2), (5, 7, 1)]:
-        flat = tau * 15 * n_l + r * n_l + l
+    n_r = grids.NUM_R
+    for tau, r, l in [(0, 0, 0), (10, n_r - 1, 2), (5, 7, 1)]:
+        flat = tau * n_r * n_l + r * n_l + l
         assert grids.unravel_hypothesis(flat, n_l) == (tau, r, l)
 
 

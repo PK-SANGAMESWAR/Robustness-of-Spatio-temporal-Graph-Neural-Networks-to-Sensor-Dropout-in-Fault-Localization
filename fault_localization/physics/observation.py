@@ -77,8 +77,14 @@ def observe(x, mean, std, reduce: str = "last"):
         raise ValueError(f"expected 6 feature channels, got {x.shape[-1]}")
     flat = _reduce_window(x, reduce)                      # [B, N, 6]
     if torch is not None and isinstance(flat, torch.Tensor):
-        mean_t = torch.as_tensor(np.asarray(mean, dtype=np.float32), device=flat.device, dtype=flat.dtype)
-        std_t = torch.as_tensor(np.asarray(std, dtype=np.float32), device=flat.device, dtype=flat.dtype)
+        # mean/std arrive as plain numpy in most callers, but PCSTGNN registers them as
+        # buffers, so they follow the model's own .to(device) -- e.g. onto CUDA, where
+        # np.asarray() on a GPU tensor raises. Move an existing tensor instead of routing
+        # it through numpy; the numpy path below is unchanged for everyone else.
+        mean_t = (mean.to(device=flat.device, dtype=flat.dtype) if isinstance(mean, torch.Tensor)
+                 else torch.as_tensor(np.asarray(mean, dtype=np.float32), device=flat.device, dtype=flat.dtype))
+        std_t = (std.to(device=flat.device, dtype=flat.dtype) if isinstance(std, torch.Tensor)
+                else torch.as_tensor(np.asarray(std, dtype=np.float32), device=flat.device, dtype=flat.dtype))
         s = flat[..., :3] * std_t + mean_t
         a = (flat[..., 3:] > 0.5).to(flat.dtype)
         return s, a

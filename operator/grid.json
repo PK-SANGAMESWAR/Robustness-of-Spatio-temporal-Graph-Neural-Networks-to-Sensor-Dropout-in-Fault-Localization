@@ -50,16 +50,19 @@
   "r_grid": [
     0.05,
     0.07896040720598763,
+    0.1,
     0.12469491812270765,
     0.1969192302297256,
     0.3109764521125753,
     0.4910965458056451,
     0.7755436646853537,
+    1.0,
     1.2247448713915892,
     1.9341270753704967,
     3.054389229187607,
     4.823516346044722,
     7.617336296968577,
+    10.0,
     12.02935951667177,
     18.99686251727252,
     30.0
@@ -89,10 +92,10 @@
   "reuse_limit": 1,
   "master": null,
   "sigma_eps": null,
-  "n_solves": 70142,
+  "n_solves": 84167,
   "n_non_converged": 0,
   "n_nan": 0,
-  "seconds": 109.51731518888846,
+  "seconds": 74.80504310992546,
   "complete": true,
   "decision": {
     "status": "S1.2 selection, locked 2026-09-25",
@@ -106,5 +109,16 @@
     "evidence": "results/pcstgnn/operator/lgrid/lgrid_summary.json (n=3000 stratified, seed 20260923), results/pcstgnn/operator/lgrid/tap_discontinuities.json",
     "rationale": "At the pre-registered n=3000 stratified sample, the physically relevant noise grid (sigma in {1e-3, 5e-3, 1e-2} p.u.) produced essentially step-invariant rho-margin distributions across all three candidate steps, while finer grids primarily reduced the discretisation floor and modestly increased margin saturation at each step's own discretisation sigma (61.4% > 10 nat at 0.1, 62.6% at 0.05, 65.7% at 0.025). The mu(L) curve also contains genuine regulator-tap discontinuities (63 circuit-wide boundaries, jumps up to 1.4e-2 p.u. -- tap_discontinuities.json), making the original 1e-3 p.u. interpolation criterion unattainable by grid refinement and inappropriate as the selection criterion. Step 0.05 therefore provides an intermediate numerical floor (5.145e-3 p.u. discretisation sigma) without the additional saturation of 0.025, at no additional cost (table already built, 70,142 solves, 0 non-converged, 0 NaN).",
     "not_selected_on": "interpolation fidelity alone (see tap_discontinuities.json for why that criterion is unreachable here)"
+  },
+  "rgrid_correction": {
+    "status": "S1.5 R-grid corrective fix, locked 2026-09-25",
+    "problem": "S1.5 (the decisive load-axis test) failed on the original 15-pt log R grid: L* within 1 grid step = 38.4% on the full 28875-event training split, need >90%. Root cause (not a bug): the corpus training resistances {0.1,1,10} Ohm were deliberately kept off-grid (see the pre-correction R_GRID comment, preserved in git history), which let the joint profiled argmin over (tau,R,L) trade a nearby-but-wrong R against a compensating L shift, out-fitting the true (off-grid) point. R* itself still landed within 1 step 99.7% of the time -- only L* was corrupted.",
+    "remedies_compared": {
+      "dense25 (spec S1.7 branch-on-failure remedy: 25 log-spaced points, corpus R kept off-grid)": "FAILED: L* within 1 step = 58.6% overall (52.4%/32.2%/91.0% at R=0.1/1/10) -- still far below 90%. Pure density does not remove the R-L compensation mechanism.",
+      "hybrid (sorted(unique(15-pt log grid, {0.1,1,10})) = 18 points -- ADOPTED)": "PASSED: L* within 1 step = 97.3% overall (99.2%/98.8%/93.8% at R=0.1/1/10)."
+    },
+    "evidence": "results/pcstgnn/audit/s1_4_7/s1_4_7_summary.pre_rgrid_fix.json (failing run), results/pcstgnn/audit/s1_5_rgrid_diagnostic/rgrid_diagnostic.json (3-way comparison), results/pcstgnn/operator/operator_15pt_pre_S1.5fix/ (archived pre-fix table), results/pcstgnn/operator/rgrid_{hybrid,dense25}/ (candidate tables built for the comparison).",
+    "cost_of_the_fix": "S1.7 argmin_R-at-corpus-R sub-test is now much less informative at the three values that matter: r_star_exact_frac rises 64.8% -> 95.2%, partly by construction (R_true can now literally equal a grid point), not from improved operator fidelity. Not fully vacuous (95.2%, not 100%). Any future S1.7 R-interpolation claim should use off-corpus R values, not {0.1,1,10}.",
+    "not_redone": "S1.2 l_step=0.05 was re-checked (not re-decided) on 2026-09-25 against the corrected table: results/pcstgnn/operator/lgrid_post_rgrid_fix/lgrid_summary.json. Interpolation error per L step is essentially unchanged (confirms the R-grid fix does not touch L-axis smoothness); the step-invariance and saturation-ordering pattern S1.2 selected on is preserved (0.05 still sits in the middle). l_step=0.05 stands. Unexpected finding: PSM top-1 accuracy at each step's own discretisation sigma jumped 0.555/0.556/0.562 -> 0.865/0.904/0.942 for steps 0.1/0.05/0.025 -- the R-L compensation the S1.5 fix removed was also corrupting location attribution, not just L recovery. See results/pcstgnn/operator/S1.5_RGRID_CORRECTION.md."
   }
 }

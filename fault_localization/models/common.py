@@ -107,8 +107,14 @@ def pc_loss(
     lam1: float = 0.0,
     lam2: float = 0.0,
     loss_mask: torch.Tensor | None = None,
+    aux_net_weight: float = 0.0,
 ) -> dict:
-    """``CE(z', y) + lam1 * E_P[rho(A)] + lam2 * E_P[rho(D)]``.
+    """``CE(z', y) + lam1 * E_P[rho(A)] + lam2 * E_P[rho(D)] + gamma * CE(z, y)``.
+
+    The last term (``aux_net_weight`` = gamma, ``06_STAGE_E`` S4.3d) is the same
+    cross-entropy on the network-only logits ``z`` = ``out["net_logits"]`` (before the
+    beta fusion), so the backbone must localize without the physics term. Skipped
+    entirely at gamma = 0.
 
     ``out`` is what :meth:`models.pc_stgnn.PCSTGNN.forward_pc` returns.  The two
     physics terms are the expected residual under the model's own soft-vote
@@ -145,6 +151,11 @@ def pc_loss(
             term = ((p_graph * out[key]).sum(dim=-1) * weights).sum() / denom
             parts[name] = term.detach().clone()
             total = total + lam * term
+
+    if aux_net_weight:
+        aux = expanded_cross_entropy(out["net_logits"], targets)
+        parts["aux"] = aux.detach().clone()
+        total = total + aux_net_weight * aux
 
     parts["total"] = total
     return parts

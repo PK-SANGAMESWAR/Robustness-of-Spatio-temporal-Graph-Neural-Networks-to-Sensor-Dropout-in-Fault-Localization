@@ -28,14 +28,22 @@ every scoring call, in addition to score_run's own internal release.
 Progress is appended to results/s4_4/gate4_progress.json after every step so the state is
 inspectable without parsing logs.
 
+Heartbeat (added 2026-10-12, epoch-count amendment): a background thread watches each run's
+own metrics_by_epoch.csv for new rows while training.run() is in progress, and appends
+{"epoch": N, "utc": ...} to that run's heartbeat.log every time a new epoch row appears -- so
+progress is visible without parsing the CSV or waiting for the run to finish. Started just
+before runner_run() is called and stopped (joined) right after it returns, win or lose.
+
 Usage: uv run python scripts/run_s4_4_gate4.py
 """
 from __future__ import annotations
 
+import csv
 import gc
 import json
 import os
 import sys
+import threading
 import time
 import traceback
 from pathlib import Path
@@ -81,6 +89,43 @@ def _release_gpu() -> None:
     gc.collect()
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
+
+
+def _heartbeat_loop(run_dir: Path, stop_event: threading.Event, poll_seconds: float = 5.0) -> None:
+    """Appends {"epoch": N, "utc": ...} to run_dir/heartbeat.log for every new row that
+    appears in run_dir/metrics_by_epoch.csv, until stop_event is set. run_dir may not exist
+    yet when this starts (runner.run() creates it); that's fine, it just keeps polling."""
+    csv_path = run_dir / "metrics_by_epoch.csv"
+    heartbeat_path = run_dir / "heartbeat.log"
+    n_seen = 0
+    while not stop_event.is_set():
+        if csv_path.exists():
+            try:
+                with csv_path.open() as f:
+                    rows = list(csv.DictReader(f))
+            except (OSError, csv.Error):
+                rows = []
+            if len(rows) > n_seen:
+                run_dir.mkdir(parents=True, exist_ok=True)
+                with heartbeat_path.open("a") as hb:
+                    for row in rows[n_seen:]:
+                        hb.write(json.dumps({
+                            "epoch": int(row["epoch"]),
+                            "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                        }) + "\n")
+                n_seen = len(rows)
+        stop_event.wait(poll_seconds)
+
+
+def _run_with_heartbeat(run_dir: Path, fn, *args, **kwargs):
+    stop_event = threading.Event()
+    thread = threading.Thread(target=_heartbeat_loop, args=(run_dir, stop_event), daemon=True)
+    thread.start()
+    try:
+        return fn(*args, **kwargs)
+    finally:
+        stop_event.set()
+        thread.join(timeout=10)
 
 
 def _frozen_config(arm: str, seed: int) -> dict:
@@ -136,7 +181,7 @@ def main() -> int:
                               "utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
             try:
                 config = _frozen_config(arm, seed)
-                run_dir = runner_run(config)
+                run_dir = _run_with_heartbeat(run_dir, runner_run, config)
             except Exception:
                 tb = traceback.format_exc()
                 _stop_queue("exception", tb, position)
