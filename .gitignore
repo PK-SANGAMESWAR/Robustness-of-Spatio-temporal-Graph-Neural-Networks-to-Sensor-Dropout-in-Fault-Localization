@@ -69,3 +69,14 @@ results/pcstgnn/operator/**/*.npy
 # (scripts/build_rtilde_cache.py); rtilde_train.npy alone is ~3.7 GB.
 # ---------------------------------------------------------------------------
 /cache/
+
+# ---------------------------------------------------------------------------
+# Paper LaTeX build output. Scoped to paper/ — results/ logs stay tracked.
+# ---------------------------------------------------------------------------
+paper/*.log
+paper/*.spl
+
+# ---------------------------------------------------------------------------
+# Review 1 slide deck export (79 MB). Kept locally, not in git.
+# ---------------------------------------------------------------------------
+/REVIEW1.pdf

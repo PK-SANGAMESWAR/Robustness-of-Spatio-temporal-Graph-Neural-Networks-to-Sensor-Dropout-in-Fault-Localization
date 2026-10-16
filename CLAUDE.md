@@ -1,387 +1,150 @@
-# CLAUDE.md — repo map & orientation (READ THIS FIRST to avoid re-exploring)
+# CLAUDE.md — repo map, rules, current state
 
-**Project:** conference paper that **adopts** Karabulut et al. (2026)'s STGNN fault-localization
-methodology on the IEEE-123 feeder under partial μPMU observability and reports **our own**
-numbers (NOT a reproduction — no "reproduce"/0.95-matching language; keep attribution), plus the
-**sensor-dropout robustness** contribution: degradation curves + **dropout-aware training**
-(the effective, architecture-agnostic mitigation) + **SDR-STGNN** (an availability-gated
-model, kept as an honest ablation — it MATCHES but does not beat dropout-aware training).
-Target venue ICMLDE 2026, deadline **15 Aug 2026**.
+Read first. Checked against disk **2026-10-16**. Numbers live in `results/RESULTS.md`; this file: rules, map, pointers.
 
-**Status (2026-08-16, ICMLDE deadline 15 Aug has passed — confirm with the author whether this
-is now a resubmission/extension target before doing deadline-driven work): all experiments DONE
-and re-run post-bugfix; the paper is a complete draft.** Every model is trained at seeds
-42/43/44, every degradation curve is 3-seed, imputation + targeted + persistent dropout
-baselines have been added, and `paper/overleaf.tex` has all sections written (abstract →
-conclusion + bibliography). Remaining polish: **page count — the paper is 15 pp (measured
-2026-08-17 via `scripts/build_paper_preview.sh`), NOT the 13 pp recorded previously; and the
-"12-page cap" is itself unverified, since both docs stating it were deleted and disagreed
-(10 vs 12) and the 15 Aug deadline has passed — confirm the venue before cutting**,
-iThenticate/similarity check. The 100-run sweep is still parked (do NOT
-launch without being asked).
+## Project
+Three linked deliverables on the IEEE-123 feeder, 25 μPMUs, partial observability:
+1. **Paper 1** — adopts Karabulut et al. (2026)'s STGNN fault-localization methodology and reports **our own** numbers,
+   plus the sensor-dropout contribution: degradation curves, **dropout-aware training** (the headline mitigation),
+   **SDR-STGNN** (availability-gated ablation; matches, does not beat, dropout-aware training). Submitted as **Paper ID
+   1170** (ICMLDE 5.0 → Procedia Computer Science); reviews returned.
+2. **PC-STGNN** — Phase 2: the Paper-1 backbone with a fixed physics operator fused in. Plan/spec:
+   `PC-STGNN/00_INDEX.md` (read order, gate map, five guiding rules).
+3. **M.Tech thesis** — `thesis-for-college/`; rules in `thesis-for-college/thesis-rules.md`.
 
-**Two late experiments (2026-08-15, commit `20b5b68`) are in the paper but were undocumented in
-markdown until 2026-08-16 — see "Key facts" below:** targeted (worst-case) dropout and
-persistent (per-event) dropout, both on the RGSAGE-Max backbone at seeds 42/43/44.
-
-**A large doc cleanup happened in `0f04bc8`→`20b5b68`.** ~25 markdown files were deleted
-(`PROGRESS.md`, `NEXT-STEPS.md`, `FIGURES-GUIDE.md`, all runbooks, `docs/`, `IMP/`,
-`paper/ISSUES.md`, `paper/REVIEW.md`, `CHANGES.md`, …). They are recoverable from git history
-but are **not** current state. The doc map below lists only what actually exists on disk.
-
-**Mask-diversity bugfix (2026-08-13, commit `6a00c4e`/`798406e`) — every dropout number was
-re-generated.** `evaluate_at_dropout` passed a constant `mask_seed` to
-`apply_sensor_dropout_batch`, which reseeds per call, so the same `batch_size` node subsets
-repeated for every batch; the seed is now derived from `batch_idx`. `evaluate_dropout_curve`
-was also rewritten as a single pass over the loader (all (k, mask-offset) combos inside one
-batch loop) and `apply_sensor_dropout_batch` vectorised — both are pure speedups, masks
-unchanged. Effect on results: **shifts in the 2nd–3rd decimal only, no conclusion changed.**
-Pre-bugfix CSVs/figures are preserved as `*.prebugfix.{csv,json,png}` — do not delete, and do
-not mix them with current numbers.
-
-## Authoritative docs — THE COMPLETE LIST (verified on disk 2026-08-16)
-
-**`paper/overleaf.tex` is now the single source of truth for the science.** It is ahead of every
-markdown file: it already documents the targeted and persistent dropout experiments with
-p-values. When a doc and the `.tex` disagree, the `.tex` wins; when the `.tex` and a CSV in
-`results/` disagree, the CSV wins.
-
-Only these markdown files exist:
-- `CLAUDE.md` — this file. Repo map + status + key facts.
-- `IMPUTATION.md` — the reviewer-requested imputation baseline: what it is, how it was run, how
-  it is wired into the paper. **Current and accurate.** Read before touching
-  `run_imputation_baseline.py`.
-- `PROBLEM.md` — problem statement / scope.
-- `QUESTIONS.md` — the author's questions + answers (Q1 seeds: resolved; Q2 100-run: answered).
-- `README.md` — public GitHub readme. Repo is pushed to GitHub (private).
-- `PPT-GUIDE-REVIEW.md` — slide-by-slide content for the guide review presentation, with
-  verified figure assignments and anticipated questions (added 2026-08-16).
-- `results/RESULTS.md` — current headline results table + a clearly-marked historical appendix.
-- `REVIEW.md` — **empty placeholder** created by the author, untracked. Not a real doc yet.
-- `.rules/` — **the operating rules** (updated 2026-08-16): `00-execution.md` (what may be
-  launched without asking vs. what must stop and report), `10-integrity.md` (one variable at a
-  time, never fabricate a number, n=3 discipline), `20-paper.md` (edit-don't-restructure, page
-  cap, framing), `30-reporting.md` (**the claims that may not be upgraded** — read before writing
-  any result), `40-data.md` (frozen corpus, splits, bugfix provenance). Replaces the single
-  `CUDA.md` and rescues the surviving rules from the deleted `paper/.rules/`.
-- Generated, not hand-written: `results/sdr_stgnn/sdr_stgnn/seed_000*/dropout_curve.md`,
-  `.pytest_cache/README.md`.
-
-**Deleted — do not cite, do not resurrect unless asked** (recoverable via
-`git show <sha>:<path>`): `PROGRESS.md`, `NEXT-STEPS.md`, `FIGURES-GUIDE.md`,
-`CURRENT-TRAINING.md`, `RUN-SDR-50RUN-RUNBOOK.md`, `RUN-100RUN-SWEEP.md`,
-`FULLSCALE-GENERATION.md`, `IMPLEMENT.md`, `APPROACH.md`, `model-run.md` (all in `0f04bc8`);
-`docs/**`, `IMP/**` (`ed47a52`); `paper/ISSUES.md`, `paper/ISSUES2.md`, `paper/REVIEW.md`
-(`9691654`); `CHANGES.md` (`20b5b68`); `PROVENANCE.md`, `WRONG-CLAIMS.md`,
-`GREEN-FEEDER-PLAN.md`, `paper/PAPER-CLAUDE.md`, `paper/.rules/`, `paper/0*.md` (`6a00c4e`).
-
-**The two paper-editing rules from the deleted `paper/ISSUES.md` still apply** and are restated
-here so they survive: **edit, don't restructure** (large rewrites carry AI-plagiarism risk), and
-**never fabricate a number**. The only open item from the deleted `paper/REVIEW.md` is the
-**12-page cap** (paper is actually **15 pp** — see the page-count correction above); its other
-items (em-dash standardisation, `\eqref` cross-refs, ≥300 dpi figures) are all DONE.
-
-## Source package: `fault_localization/`
-- `config/constants.py` — **all dataset/protocol constants** (FAULT_BUSES, PMU_BUSES, 11
-  FAULT_TYPES, FAULT_RESISTANCES, load range 0.5–1.3, windowing: PRE_FAULT_MS=40 /
-  FAULT_DURATION_MS=20 / WINDOW_LENGTH=20 / WINDOWS_PER_EVENT=40, RUNS_PER_SCENARIO=100,
-  NUM_SCENARIOS=825, NUM_CLASSES=26, class map; GREEN_FEEDER_* switch buses). Single source
-  of truth for numbers.
-- `models/` — `gru.py` (GRUBaseline), `graphsage.py` (RGSAGE mean/max), `gcn.py` (RGCN),
-  `gatv2.py` (RGATv2), `common.py` (TemporalEncoder=shared 1-layer GRU-128; NodeClassifier
-  BN→ReLU→dropout0.35→Linear-26; weighted/focal CE), `voting.py` (soft_vote = sum node
-  softmax probs → argmax), `sdr_stgnn.py` (**SDRSTGNN** = RGSAGE-Max + availability-gated
-  aggregation: dropped nodes emit no messages; gate keyed on original availability at every
-  hop; k=0 ≡ RGSAGE-Max). All share GRU→[GNN]→head→soft-vote template. `num_layers` knob
-  = spatial depth (frozen config uses 4).
-- `dropout/` — the contribution's engine: `masking.py` (feature-masking, vectorised scatter;
-  `drop_edges` computed but discarded → only `zero_messages` is live), `evaluator.py`
-  (`evaluate_dropout_curve` = one pass over the loader covering every (k, mask-offset) combo;
-  per-batch mask seed `mask_seed*10000 + batch_idx`; soft-vote matches `voting.py`),
-  `training.py` (`DropoutAugmentedLoader`), `targeted.py` (worst-case selection: k μPMUs nearest
-  the fault bus by hop distance on the full 123-bus topology; deterministic given the label),
-  `persistent.py` (per-event selection from `(event_id, k, mask_seed)`, held across the event's
-  40 windows). Neighbour-mean **imputation is not a masking policy** — it lives in
-  `scripts/run_imputation_baseline.py`.
-- `experiments/` — `runner.py` (train/eval loop, builds model via `_model`, supports
-  grad_clip_norm/warmup_epochs/gnn_layers/disable_edges/dropout_study), `cli.py` (train
-  entrypoint + flags), `config.py` (yaml load + recursive merge + validate), `train.py`
-  (`train_epoch`/`validate_epoch`), `evaluate.py` (`evaluate_loader`→graph+node metrics),
-  `seed.py`, `reporting.py`.
-- `data/` — `dataset.py` (`WindowGraphDataset` returns `{"x":[N,S,6],"y"}`; `make_dataloader`;
-  normalizes only voltage channels 0–2), `manifest.py` (dataset fingerprint/verify).
-- `simulation/` — OpenDSS sim: `feeder.py` (incl. `configure_green_feeder` — reconfigured
-  topology, opens 60–160 / closes 54–94), `monitors.py` (Daily 1ms mode, voltage+mask
-  extraction), `fault_injection.py`, `runner.py` (per-event sim, load uniform(0.5,1.3)).
-- `processing/` — raw-sim → windows pipeline: `windowing.py`, `labels.py`, `splits.py`
-  (**event-level 70/15/15** — verified 0 leakage; `verify_no_leakage`), `normalization.py`,
-  `build_dataset.py`.
-- `graph/` — measured-only graph construction (`measured_only.py` = Algorithm 1
-  substation-rooted spanning tree; `edge_attributes.py`).
-- `validation/` — `dataset_checks.py`, `verify_dataset.py`, `visualization.py`.
-- `analysis/errors.py`. IEEE-123 DSS source files: `data/ieee123/*.DSS` + config yaml.
-
-## Scripts (`scripts/`) — all `uv run python scripts/<x>.py`
-- **Definitive 50-run sweep (DONE, 3 seeds):** `run_fullscale_final_sweep.py` (`SEEDS = [42,43,44]`)
-  → `results/fullscale_final/` — all 5 baselines × seeds 42/43/44. Summary/figures:
-  `build_fullscale_final_summary.py`, `build_fullscale_final_figures.py`. Metrics: `_metrics.py`.
-- **SDR contribution (DONE):** `run_sdr_stgnn.py` (train SDR-STGNN, `--seed`),
-  `run_dropout_aware_sweep.py` (dropout-aware; now takes `--models` **and `--seeds`**, resumable —
-  any (model, seed) with an existing metrics.json is skipped), `run_dropout_study.py` (degradation
-  curves; **`--seeds 42 43 44` aggregates training-seed error bars**), `build_sdr_result_figures.py`,
-  `build_dropout_comparison.py`, `build_sdr_schematics.py`, `run_sdr_contribution.py` (orchestrator).
-  De-risk: `smoke_test_dropout.py`.
-- **Targeted (worst-case) dropout (DONE, 3 seeds, `20b5b68`):** `run_targeted_dropout_study.py`
-  — drops the k μPMUs **topologically nearest the fault bus** (hop distance over the full
-  123-bus topology, not the measured-only graph), so selection is a deterministic function of
-  the label and there are **no mask seeds**; error bars are over training seeds only. No-fault
-  windows have no fault bus and fall back to random selection, so the reported macro-F1 is a
-  **conservative bound** on the true worst case. Summary: `build_targeted_summary.py`.
-  → `results/dropout_study_targeted/`. Selection logic: `fault_localization/dropout/targeted.py`.
-- **Persistent (per-event) dropout (DONE, 3 seeds, `20b5b68`):** `run_persistent_dropout_study.py`
-  — draws the dropped set **once per event** and holds it across that event's 40 windows (how a
-  real μPMU failure behaves) instead of redrawing per window. Everything else identical, so the
-  curve difference isolates mask persistence. Summary: `build_persistent_summary.py`.
-  → `results/dropout_study_persistent/`. Logic: `fault_localization/dropout/persistent.py`.
-- **Imputation baseline (DONE, 3 seeds):** `run_imputation_baseline.py` — fills each dropped
-  node's 3 voltage channels with the per-timestep mean of its *available* 1-hop neighbours and
-  sets the mask to 1 (most favourable to imputation), then feeds the **standard-trained**
-  RGSAGE-Max. Defaults: `--model rgsage_max --seeds 42 43 44 --k-levels 0 1 2 5 10`
-  → `results/dropout_study_impute/imputation_summary.json`. See `IMPUTATION.md`.
-- **Significance tests (DONE, no GPU):** `run_significance_tests.py` — paired two-sided
-  t-tests over training seeds 42/43/44 (n=3, df=2) with 95% CIs + Holm-Bonferroni per family,
-  built *only* from per-seed numbers already on disk; plus a paired **cluster bootstrap** over
-  the 6175 test events (not windows — 40 correlated windows per event) at k=0 from
-  `predictions_test.csv`. → `results/statistics/significance_tests.{json,csv}` +
-  `paper/tables/significance.tex`. Wilcoxon is computed but **not** relied on (n=3 floor = 0.25).
-- **Runtime/efficiency (DONE):** `run_runtime_benchmark.py` — inference latency/throughput/
-  activation-memory/params measured on synthetic `[B,25,20,6]` batches (the real corpus is
-  per-event `.npz`, so a loader-based timing would measure decompression); training
-  sec/epoch + total hours + best-validation epoch read from each run's `metrics_by_epoch.csv`.
-  → `results/runtime/{runtime_inference,runtime_training}.csv`, `runtime_summary.json`,
-  `paper/tables/runtime.tex`.
-- **100-run sweep (STAGED, parked):** `run_fullscale100_seed42_sweep.py` → would write
-  `results/fullscale_final_100/`. Same frozen config, only DATA_ROOT differs. NOT launched.
-- **Paper dataset assets:** `build_dataset_assets.py` → `paper/tables/dataset_info.tex` +
-  `paper/figures/{measured_only_graph,fault_signature}.png` (all counts from real data;
-  `--data-root`/`--runs-per-scenario` regenerate for 100-run).
-- **Dataset generation:** `generate_trend_dataset.py`, `generate_pmu_metadata.py`.
-- Older/diagnostic (context only): `run_trend_sweep.py`, `run_investigate_probes*.py`,
-  `run_fullscale50_seed42_sweep.py`, `build_{trend,seed42,investigate,fullscale}_*.py`.
-
-## Config (`config/`)
-`experiment_base.yaml` (base: device cuda, gnn_layers, training, dropout_study block) +
-per-model `{gru,rgcn,rgsage_mean,rgsage_max,rgatv2,sdr_stgnn}.yaml` (each `base:` experiment_base).
-`config/dropout_aware/{gru,rgcn,rgsage_mean,rgsage_max,rgatv2}.yaml` are generated by
-`run_dropout_aware_sweep.py` (dropout_aware_training=True) — all 5 now exist and are committed.
-Frozen sweep config applied via CLI flags (`--gnn-layers 4
---epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3`), not baked into the baseline yaml.
-
-## Results (`results/`)
-- `fullscale_final/<model>/seed_000{42,43,44}/` — **the definitive 50-run sweep**, all 5 baselines
-  × 3 seeds (metrics.json, checkpoint_best.pt, predictions_test.csv, metrics_by_epoch.csv,
-  confusion_matrix.csv, config.yaml). Aggregates: `benchmark_summary.csv` (mean±std over seeds,
-  the paper's Table 3 source) + `benchmark_comparison.csv` (per-seed rows). Figures →
-  `fullscale_final/figures/`.
-- **SDR contribution:** `sdr_stgnn/sdr_stgnn/seed_000{42,43,44}/` (+ auto `dropout_curve.json`),
-  `dropout_aware/<all 5 models>/seed_000{42,43,44}/`, and three 3-seed curve files —
-  `dropout_study/degradation_curves.csv` (standard, 5 models), `dropout_study_aware/…` (dropout-aware,
-  5 models), `dropout_study_sdr/…` (SDR-STGNN). Each row carries `f1_mean/f1_std/f1_per_train_seed`,
-  `n_train_seeds=3`, `n_mask_seeds=3`, `policy=zero_messages`, `err_kind=train_seed_std`.
-  Seed-42-only predecessors are kept as `*.bak.csv`, pre-bugfix ones as `*.prebugfix.csv`.
-  Result figures → `paper/figures/sdr_*.png` (+ `*.prebugfix.png`); summary
-  `paper/figures/sdr_robustness_summary.csv`.
-- **Imputation baseline:** `dropout_study_impute/imputation_summary.json` — per-k `f1_mean/std`,
-  `per_seed_f1`, `audc_mean`, `ret10_mean`; `policy=neighbour_mean_impute`, seeds 42/43/44.
-- **Targeted dropout:** `dropout_study_targeted/` — `targeted_curves_{standard,dropout_aware}.csv`
-  (+ `*_per_seed_*.csv`, `targeted_summary.json` which also carries the paired `*_random` arm for
-  the comparison, and `proximity_rank.npy` = the precomputed fault-bus→μPMU hop ranking).
-  `policy=targeted_nearest_fault`, RGSAGE-Max only.
-- **Persistent dropout:** `dropout_study_persistent/` — `persistent_curves_{standard,dropout_aware}.csv`
-  (+ per-seed CSVs carrying `f1_per_mask_seed`, `persistent_summary.json` with the `*_random` arm).
-  `policy=persistent_per_event`, RGSAGE-Max only.
-- **Statistics:** `statistics/significance_tests.json` — every test carries `a_per_seed`/
-  `b_per_seed`, `mean_diff`, `ci95_*`, `t_stat`, `p_ttest`, `p_holm`, `cohens_dz`, plus
-  `event_level_bootstrap`. **Runtime:** `runtime/runtime_summary.json` (`derived` block holds
-  the ratios the paper quotes).
-- Per-run metrics.json keys: `test_graph.f1` (soft-voted macro-F1), `test_node_diagnostic.f1`
-  (per-window), `test_graph.per_class.{precision,recall}` (class 0 = no-fault),
-  `best_validation_graph_f1`.
-- Others are historical: `benchmark_v1.1_samplerfix` (tiny, OLD model structure — won't
-  load), `fullscale_50_seed42` (pre-frozen depth-1), `diag_*` (depth/stability probes),
-  `trend_*` (medium-A).
-
-## Paper (`paper/`)
-- `overleaf.tex` — **the live paper** (Elsevier CRC/Procedia, `\documentclass[3p,times,procedia]`),
-  ~880 lines, **complete draft**: abstract, intro, related work (+`tab:related`), Materials &
-  Methods (dataset +`tab:dataset` +`fig:graph`, baselines, deviations `tab:deviations`,
-  dropout-eval protocol, dropout-aware training +`alg:aware`, SDR-STGNN), Setup, Results
-  (`tab:baseline`, `tab:degradation`, `fig:degradation`, `tab:aware` incl. the **imputation
-  baseline** row, cross-architecture subsection), Discussion (robustness ranking
-  + limitations), Conclusion, Acknowledgements, GenAI declaration, bibliography.
-  Framing: dropout-aware training is the headline; SDR-STGNN is an ablation.
-  The wide tables use `table*` (full-width) to avoid two-column overflow.
-- **It DOES compile locally now** (fixed 2026-08-17). `ecrc.sty` is vendored in `paper/texlib/`
-  with two blank placeholder logo PDFs; run `bash scripts/build_paper_preview.sh` for the page
-  count. The build is a PREVIEW only — Elsevier's real logos are not redistributable, so submit
-  from Overleaf. **Correction: the paper is 15 pp at commit `f203e57`, not 13.** The "13 pp"
-  recorded here came from `paper/preview-local.pdf`, which does not exist on disk (and is not in
-  git history), so the figure was never verifiable. Treat any earlier page count as void.
-- `figures/`, `tables/` — generated assets for Overleaf upload. `figures/*.prebugfix.png` are the
-  pre-bugfix versions, kept for comparison only.
-- **Page cap = 12** (ICMLDE, per the deleted `paper/REVIEW.md`). The deleted
-  `paper/.rules/50-pagelimit.md` said 10; both files are gone — **12** is the number to work to,
-  and it is recorded in `.rules/20-paper.md`. (The root `REVIEW.md` is an empty placeholder and
-  is not that review.)
-
-## 2026-08-17 reviewer-hardening pass (NEW — read before touching the paper)
-
-A pass over the paper's weak points. Some closed, some in flight, some deliberately not done.
-
-**New source modules**
-- `dropout/noise.py` — additive Gaussian measurement noise, specified in **per-unit voltage** and
-  applied in normalized space as `sigma_pu / std_c`; gated by the availability mask so
-  uninstrumented phases and dropped nodes get none. Verified: 0.00502 p.u. realized at
-  σ=0.005, exactly 0 elsewhere, mask channels untouched.
-- `dropout/correlated.py` — contiguous outage: the dropped set is grown as a **connected**
-  subgraph of the 25-node tree from a uniform root.
-
-**New scripts** (all `uv run python scripts/<x>.py`)
-- `run_noise_robustness_study.py` — noise × dropout grid on frozen checkpoints. **DONE, 3 seeds,
-  both arms** → `results/dropout_study_noise/`.
-- `run_correlated_dropout_study.py` — contiguous sweep. **DONE, 3 seeds, both arms.**
-- `run_localization_metrics.py` — splits macro-F1 into 26-class / 25-class(localization) /
-  class-0(detection); dumps predictions per (k,offset). QUEUED.
-- `run_classical_baseline.py` — **non-deep, non-graph** baselines (logreg + random forest) on
-  375 summary features, identical splits and mask seeds. **DONE.**
-- `run_reviewer_retrains.py` — the retrain queue (`--arms scenario kgrid10 seeds`, tiered,
-  resumable). QUEUED, ~33 GPU-h.
-- `build_scenario_heldout_split.py` — builds `dataset_fullscale_50_scenario/` (splits only;
-  `processed/` is a **symlink** to the frozen corpus, which is never modified).
-- `build_absolute_audc.py`, `build_correlated_marginals.py`, `run_new_policy_significance.py`,
-  `build_paper_preview.sh`.
-
-**New findings (all traceable to `results/`)**
-- **The frozen split shares 825 of 825 scenarios between train and test.** It partitions the 50
-  runs of each scenario, not the scenarios, so reported accuracy measures generalization to
-  unseen *load conditions* of a known configuration. `dataset_fullscale_50_scenario` (575/125/125
-  scenarios, 0 overlap, all 26 classes per split) is the held-out counterpart; retrains queued.
-- **A classical baseline nearly matches the GNNs.** Logreg **0.713** / RF **0.633** at k=0 on
-  **8% of the training data**, against RGSAGE-Max 0.846 and RGCN 0.712. The GNN margin over a
-  linear model is 0.133, not the 0.560 the GRU (0.286) implies. `results/classical_baseline/`.
-- **RF is the most dropout-robust untreated model in the study**: Ret@10 **35.9%**, AUDC_abs
-  0.470, above RGCN's 23.2%/0.432. The old claim "no baseline retains more than a third" is now
-  scoped to the five networks. Dropout-aware training still dominates everything (80.3%, 0.766).
-- **Contiguous outages are MILDER than scattered ones**, not harsher (standard RGSAGE-Max:
-  0.452 vs 0.236 at k=5). **But no contiguous-vs-scattered difference survives Holm at n=3**
-  (min p_Holm 0.054) — report as an observation. **Confound:** the contiguous policy's per-node
-  drop marginals are far from uniform (0.18–0.87 vs 0.40 at k=10), so it does not isolate spatial
-  correlation; an incidence-matched control was NOT run. At k=1 the policies provably coincide
-  and both the marginal gap (2%) and the F1 gap (+0.001) vanish — the harness check.
-  For the **dropout-aware** model the policy is irrelevant (|Δ| ≤ 0.012).
-- **Measurement noise costs real accuracy, and dropout-aware training does NOT help against it.**
-  Standard RGSAGE-Max at k=0: 0.846 → 0.786 (σ=5e-4 p.u.) → 0.579 (σ=2e-3) → 0.345 (σ=1e-2, the
-  IEEE C37.118 1% TVE cap), i.e. ≈ **0.6 / 2.1 / 4.1 sensors' worth** of loss. Dropout-aware is
-  **not better at any σ** at k=0 (−0.008 to −0.034, all CIs span zero, p ≥ 0.107) — a clean null,
-  and the sharpest confirmation of the mask mechanism: **noise leaves the mask at 1**, so the
-  learned "(0,0,0) = dark" response has nothing to fire on. DA's *dropout* advantage does survive,
-  attenuated: at k=10, +0.627 (clean) → +0.579 → +0.428 → +0.209; only the first two survive Holm
-  over the 50-test noise family (p_Holm 0.029 / 0.023), so claim "continues to help", NOT
-  "undiminished". **Noise and dropout compound below the floor**: σ=0.01 with k=10 gives 0.018,
-  under the 0.026 trivial baseline. **CAUTION:** an early truncated-subset run suggested a far
-  worse collapse (~77% loss at σ=0.002); that was an artifact of few classes being present in a
-  400-batch subset. The full-split number is a 33% loss. Never size this from a subset.
-- **Absolute-scale AUDC** (`results/statistics/absolute_audc.csv`) — recomputes Eq. 8 on raw
-  macro-F1. The accuracy/robustness inversion survives (RGCN 0.432 > RGSAGE-Max 0.340), but
-  **RGATv2's top relative-AUDC position is a normalization artifact** (0.626 relative → 0.324
-  absolute, 4th of 5) and is no longer claimed as robustness.
-- **Trivial reference:** an always-"no fault" classifier scores 26-class macro-F1 **0.0256**.
-  Standard RGSAGE-Max at k=10 (0.048) is only **1.9×** that, i.e. localization is gone while
-  detection survives.
-
-**Deliberately NOT done:** per-architecture depth selection (the full RGATv2 fix — its claim was
-neutralized in prose instead); a learned imputation baseline (Feature Propagation / VGAE), now
-cited as a named gap; the incidence-matched contiguous control.
-
-**Paper is 17 pp** after these additions (15 at `f203e57`). See the page-count correction above.
-
-## Key facts (verified against code — safe to reuse without re-checking)
-- Dataset: 50-run corpus `dataset_fullscale_50` = 1.65M **windows** (825×50×40; event-level
-  70/15/15, 0 leakage, 40.0 windows/event); 100-run `dataset_fullscale_100` = 3.30M. Exactly
-  50% no-fault. Paper's reported 2.5M is NOT reconstructable from 825 grid — documented deviation.
-- 6 of 25 fault buses are μPMU nodes → 19 fault locations unmeasured. Graph = 25-node
-  24-edge connected tree. One window = `[N=25, S=20, F=6]` (3 RMS volts + 3 mask channels).
-- Reproduction accepted at depth-4 (deviation from paper's 1 layer). **Unweighted CE frozen**
-  (train.py passes no `weight`; imbalance handled by the balanced corpus — 50% no-fault, 25
-  fault classes equal by factorial design — NOT by loss weighting; paper text fixed to match).
-- **SDR-STGNN finding (final, 3 training seeds × 3 mask seeds, post-bugfix):** robustness AUDC —
-  standard RGSAGE-Max **0.402** → neighbour-mean imputation **0.476** → dropout-aware **0.913**
-  → SDR-STGNN **0.892**. Retention at k=10: **5.7% → 11.8% → 80.3% → 75.2%**. The gate MATCHES
-  but does NOT beat dropout-aware training (it silences dropped nodes at every hop, blocking
-  multi-hop routing through recovered nodes), and imputation gains little over zeroing because
-  the reconstructed values still go to a model never trained to distrust them.
-  **Report faithfully — do not claim the gate wins.** Source of truth:
-  `paper/figures/sdr_robustness_summary.csv` + `results/dropout_study_impute/`.
-- **Targeted (worst-case) dropout finding (final, 3 training seeds, RGSAGE-Max):** dropping the
-  k μPMUs nearest the fault is **much more damaging where it matters** — standard RGSAGE-Max
-  falls to **0.448±0.039 at k=1** vs 0.736±0.013 under random loss (p=0.010), a **3.6× larger**
-  drop from clean; 0.361 vs 0.590 at k=2 (p=0.017). From k≥5 the two policies agree (the model
-  has collapsed either way). Dropout-aware training **is also penalized** (AUDC 0.913→**0.747**,
-  p=0.003; p≤0.014 at every k) — worst-case loss is a **distinct stressor, not one the mitigation
-  absorbs** — but it still retains **+0.307 to +0.473** macro-F1 over standard under the same
-  targeting (p≤0.008), and from k=2 up its *worst-case* score beats standard's *average-case*
-  (0.695 vs 0.590 at k=2, p=0.042; 0.521 vs 0.048 at k=10, p=0.004). At k=1 the two are
-  **indistinguishable** (+0.018, p=0.33) — don't claim a win there.
-- **Persistent (per-event) dropout finding: a clean NULL.** Holding the dropped set across an
-  event's 40 windows changes **nothing** — no point on either curve moves by more than **0.003**
-  macro-F1 (standard AUDC 0.402→0.401, dropout-aware 0.913→0.913; Ret@10 5.7%→5.6% and
-  80.3%→80.1%), and **no** difference survives Holm across the 12 paired comparisons
-  (min p_Holm = 0.46). **Reason:** the decision rule is per-window — soft voting pools the 25
-  nodes of *one* window, never the 40 windows of an event, so a window's prediction depends only
-  on its own mask, whose marginal distribution is identical under both schemes. **This
-  equivalence does NOT transfer to an event-level rule** — per-window resampling would flatter
-  that by supplying 40 differently-masked views of a failure that presents only once.
-- **Multi-seed (50-run):** SDR-STGNN + all 5 dropout-aware models trained at seeds 42/43/44
-  (deviation from the runbook's single-seed; run via a scratchpad orchestrator, autonomous).
-- **What is / is not statistically significant at n=3** (`results/statistics/`): the mitigation
-  claims ARE — dropout-aware vs standard at k=10 (Δ=+0.626, p_Holm=0.003), Ret.@10 (+74.6 pp),
-  AUDC (+0.511), and vs imputation at k=10 (+0.574, p_Holm=0.008); the AUDC gain holds for all
-  5 architectures (p_Holm ≤ 0.027). The nulls test as null, which is what the paper claims:
-  clean-F1 cost −0.008 (p=0.181) and DA-over-SDR AUDC +0.021 (p=0.098) — i.e. the gate
-  statistically MATCHES. **NOT significant:** the accuracy/robustness inversion (RGCN over
-  RGSAGE-Max at k=10, Δ=+0.116, p=0.076 — same sign in all 3 seeds, 2.4–6.7×, but the gap size
-  varies), the k=0 architecture ranking (best pair p=0.023, nothing survives Holm), and
-  imputation over zeroing at k=10 (+0.051, p=0.102). Don't upgrade these to "significant".
-- **Cost facts (`results/runtime/`):** dropout-aware = **identical** params (95,258) and latency
-  (0.639 vs 0.640 ms @B=1; 6038 windows/s both) → the "no inference cost" claim is now measured,
-  not asserted; its only cost is **+2.7% training** sec/epoch. SDR-STGNN's gate adds 0 params but
-  **+18% latency** for no robustness gain. Activation memory 145 MiB for ALL models (the shared
-  GRU-128 encoder dominates). Best-validation epoch 27.7–28.7 of 30 for RGCN/RGSAGE-*, so those
-  models were **still improving** at the budget's end — report accuracies as a floor.
-- **Mask channels are static, not all-ones** (verified on `dataset_fullscale_50` test split):
-  they encode per-μPMU phase instrumentation — only **14 of 25** nodes are three-phase, the rest
-  present patterns like (1,0,0) — and are identical in every window and timestep. Dropout zeroes
-  all 6 channels of a dropped node, so its mask becomes (0,0,0), a pattern that node never shows
-  in standard training. This is the paper's mechanism for why dropout-aware training works; don't
-  restate it as "the mask is always 1".
-- **Green-feeder scenario: ❌ CUT (2026-08-04), out of scope.** Not a contribution booster
-  (a second-axis stress test only) and would need a new green corpus — dropped before the
-  deadline. No green dataset/runs/claims; `configure_green_feeder` stays as dead/future-work
-  code. Paper no longer promises it (it survives only as a future-work clause: "cross-topology
-  generalization to reconfigured feeders"). The `NEXT-STEPS.md` Step 6, `WRONG-CLAIMS.md`, and
-  `GREEN-FEEDER-PLAN.md` that documented this were all deleted — this bullet is now the record.
-- Stabilization (grad-clip 1.0 + warmup 3) on EVERY run. GPU = T1000 8GB (NVML monitoring
-  broken but training unaffected).
+## Current state (2026-10-16)
+- **Revision 1170**: decision email 2026-10-10, deadline **2026-10-17**. Work lives in worktree
+  `/home/ubuntu/Fault-Localization-rev1170` (branch `revision-1170`, last commit `49fb80c`, 2026-10-11). Plan/log:
+  `resubmit/1170_revision_plan.md`, `resubmit/CHANGELOG-1170.md`. Whether the revision was submitted is not recorded
+  on disk — ask. Do not do revision work on `main`.
+- **PC-STGNN Gate 4** (arms R0ⁿ vs R5, 30 epochs, seeds 42/43/44) is **running** (`scripts/run_s4_4_gate4.py`,
+  restarted 2026-10-12 after the 30-epoch amendment). Live: `results/s4_4/gate4_progress.json` (5 of 6 runs scored at
+  last check; R5 seed 44 training). Settings: `PC-STGNN/06_STAGE_E_pcstgnn.md` § "S4.4 — Frozen settings" + amendments.
+  Quote no Gate 4 number before all 6 runs are scored; never use `results/s4_4_pilot_20ep/`.
+- `main` has large uncommitted PC-STGNN work (source, tests, `operator/`, configs). Do not reset, clean, or commit it unless asked.
 
 ## Hard rules
-**These are the summary — `.rules/` is the authority. Read `.rules/30-reporting.md` before
-writing up any result, and `.rules/00-execution.md` before launching any run.**
+`.rules/` was deleted in `f4b7e7b` (2026-09-01); these bullets replace it.
+- **Framing:** "adopt the methodology, report our own numbers". No "reproduce"/0.95-matching language. Keep every
+  `\cite{Karabulut2026}` credit for the dataset protocol and baselines.
+- **Never invent a number.** Re-check any quoted result on disk. Precedence: CSV/JSON > `paper/overleaf.tex` > docs.
+- **One variable at a time.** Identical frozen data, splits, epochs, optimiser, checkpoint rule.
+- **n = 3 discipline:** paired t-tests over seeds 42/43/44, Holm per family. Never upgrade a trend (list below).
+- **Paper edits: edit, don't restructure** (AI-plagiarism risk). Dropout text must match `dropout/masking.py`.
+- **Code passing tests ≠ validated** — confirm with a real run. Check `metrics_by_epoch.csv` for the best-val epoch
+  before trusting a new model's headline F1.
+- **Frozen corpus** `dataset_fullscale_50/` is never modified. Pre-bugfix (`*.prebugfix.{csv,json,png}`) and
+  seed-42-only `*.bak.csv` outputs are for comparison only — never mix with current numbers, never delete.
+- **Sealed OOD test set** `data/ood_test/` (hash in `data/ood_test.sha256`): do not open without the author's
+  go-ahead; record any opening in `PC-STGNN/14_PREREGISTRATION.md` §6 "Sealed-set log". `data/ood_pilot/` is a
+  throwaway Gate-2 set — never report its numbers.
+- **PC-STGNN wording:** "physics-consistent", never "PINN"; the operator is fixed, never learned or fitted on test
+  events (`PC-STGNN/00_INDEX.md`).
+- **Stop and ask before:** the 100-run sweep (`run_fullscale100_seed42_sweep.py`, parked), any new GPU run not in an
+  approved plan, opening a sealed set, or committing.
 
-Identical frozen data/splits across models; change one variable at a time; code passing
-tests ≠ validated (confirm with a real run); dropout paper text must match `masking.py`;
-**report claims faithfully — SDR-STGNN does not beat dropout-aware training, don't overclaim.**
-The 50-run SDR chain runs autonomously to completion; STOP + report before the 100-run sweep.
-When editing `overleaf.tex`: **edit, don't restructure** (rule inherited from the deleted
-`paper/ISSUES.md`), never invent a number, and re-check any quoted result against the CSV/JSON
-on disk. `paper/overleaf.tex` now compiles locally — `bash scripts/build_paper_preview.sh`
-prints the page count (preview only; submit from Overleaf).
+### Claims that may not be upgraded (details + sources: `results/RESULTS.md`)
+- SDR-STGNN **matches**, does not beat, dropout-aware training (AUDC 0.892 vs 0.913; p=0.098).
+- Imputation over zeroing at k=10 (+0.051, p=0.102): **not significant**.
+- Accuracy/robustness inversion (RGCN over RGSAGE-Max at k=10, +0.116, p=0.076; same sign in all 3 seeds, 2.4–6.7×):
+  **trend only**. k=0 architecture ranking: nothing survives Holm.
+- Targeted dropout: dropout-aware is **also penalized** (p≤0.014 at every k) but keeps +0.307 to +0.473 over standard
+  under the same targeting (p≤0.008); k=10 worst-case 0.521 vs standard average-case 0.048 (p=0.004); **no win at
+  k=1** (+0.018, p=0.33). A conservative bound (no-fault windows fall back to random selection).
+- Persistent dropout is a **null** because the decision rule is per-window; this does **not** transfer to an
+  event-level rule.
+- Noise, contiguous, absolute-AUDC, classical-baseline caveats: `results/RESULTS.md` §8.
+- Accuracies are a **floor** (best-val epoch 27.7–28.7 of 30 — still improving).
+- FaultQuery seed-42 `f1=0.5691` is an **epoch-1 checkpoint of a diverged run**, not a result; ZoneRefine seed 42
+  (test 0.803) has not cleared its gate.
+
+## Commands
+- Env: `uv` (Python ≥3.12, torch 2.5.1+cu121). Run `uv run python scripts/<x>.py`. Tests: `uv run pytest tests/`
+  (242 tests; `-m "not slow"` skips 2).
+- Frozen training flags (CLI, not in the yaml): `--gnn-layers 4 --epochs 30 --grad-clip-norm 1.0 --warmup-epochs 3`.
+  Entry point: `fault_localization/experiments/cli.py`.
+- Paper preview: `bash scripts/build_paper_preview.sh` (prints page count; vendored `ecrc.sty` + blank logos in
+  `paper/texlib/`; preview only — submit from Overleaf). Paper 1 was 17 pp at the last count (2026-08-17); the page
+  cap was never verified — confirm with the author before cutting.
+- GPU: one T1000 8 GB, no parallel runs. NVML is broken (`nvidia-smi` fails); training is fine.
+
+## Repo map
+**`fault_localization/`**
+- `config/constants.py` — single source for every dataset/protocol constant (fault/PMU buses, 11 fault types,
+  resistances, load 0.5–1.3, windowing, 825 scenarios, 26 classes).
+- `models/` — Paper 1: `gru.py`, `gcn.py` (RGCN), `graphsage.py` (RGSAGE mean/max), `gatv2.py`, `sdr_stgnn.py`; shared
+  `common.py` (GRU-128 encoder, node head, losses), `voting.py` (soft vote = sum of node softmaxes). All: GRU → GNN →
+  head → soft vote; `num_layers` = depth. Phase 2: `pc_stgnn.py`, `physics_loss.py` (P3 loss arm), `pignn.py` (P1/P2
+  grafts), `fault_query.py`, `zone_refine.py`.
+- `physics/` — fixed, zero-parameter operator (`01_SPEC.md`): `grids.py` (hypothesis axes), `signature_solver.py` +
+  `table.py` (build `operator/mu.npy`, `mu0.npy`), `observation.py`, `residual.py` (ρ), `cache.py` (precomputed ρ;
+  writes `cache/rtilde_{split}.npy`), `identifiability.py`.
+- `dropout/` — `masking.py` (only `zero_messages` is live), `evaluator.py` (one pass over all (k, mask-offset) combos;
+  per-batch seed `mask_seed*10000 + batch_idx`), `training.py` (`DropoutAugmentedLoader`), `targeted.py`,
+  `persistent.py`, `correlated.py`, `noise.py`, `silent.py` (mask stays 1, value wrong).
+- `graph/` — `measured_only.py` (Algorithm 1 tree), `edge_attributes.py`, `fault_distance.py`, `sensitivity.py`.
+- `experiments/` — `runner.py`, `cli.py`, `config.py`, `train.py`, `evaluate.py`, `seed.py`, `reporting.py`.
+  `data/` — `dataset.py` (`{"x":[N,S,6],"y"}`, normalizes voltage channels 0–2 only), `manifest.py`. `simulation/`
+  (OpenDSS), `processing/` (event-level 70/15/15 splits, `verify_no_leakage`), `validation/`, `analysis/`.
+
+**`scripts/`** (~96), grouped by prefix:
+- Paper 1 sweeps: `run_fullscale_final_sweep.py` → `results/fullscale_final/`; `run_dropout_aware_sweep.py`,
+  `run_sdr_stgnn.py`, `run_dropout_study.py --seeds 42 43 44`.
+- Dropout policies: `run_{targeted,persistent,correlated}_dropout_study.py`, `run_noise_robustness_study.py`,
+  `run_imputation_baseline.py` (see `IMPUTATION.md`).
+- Reviewer arms: `run_classical_baseline.py`, `run_localization_metrics.py`, `run_reviewer_retrains.py`,
+  `build_scenario_heldout_split.py`. Stats/cost: `run_significance_tests.py`, `run_new_policy_significance.py`,
+  `build_absolute_audc.py`, `run_runtime_benchmark.py`.
+- Phase 2: `build_signature_table.py`, `check_operator_*.py`, `run_identifiability_analysis.py`, `run_physics_*`,
+  `generate_ood_sets.py`, `run_pcstgnn_*`, `run_s4_4_gate4.py`, `score_s4_4_gate4_run.py`, `run_pignn_screen.py`,
+  `run_fault_query.py`, `run_zone_refine.py`.
+- Figures/tables: `build_*`. Older diagnostics: `run_trend_sweep.py`, `run_investigate_probes*.py`.
+
+**`config/`** — `experiment_base.yaml` + one yaml per model; `dropout_aware/` (generated); `reviewer/`, `s4_4/` (Gate 4
+arms), `pcstgnn_*/` (tuning/diagnostics).
+
+**`results/`** — `fullscale_final/` (definitive 5 baselines × 3 seeds; `benchmark_summary.csv` = Table 3),
+`dropout_aware/`, `sdr_stgnn/`, `dropout_study*/` (curves per policy), `classical_baseline/`, `statistics/`, `runtime/`,
+`pcstgnn*/`, `s4_4/`, `pignn_*`, `physics_baseline/`. Per-run `metrics.json`: `test_graph.f1` (soft-voted macro-F1),
+`test_node_diagnostic.f1`, `best_validation_graph_f1`. Historical (do not quote): `benchmark_v1.1_samplerfix`,
+`fullscale_50_seed42`, `diag_*`, `trend_*`.
+
+**Other top level** — `paper/` (`overleaf.tex` = Paper 1 source; submitted version is commit `e9453df`; `f4b7e7b`
+later added 74 lines for the scenario side-experiment; `figures/`, `tables/`), `resubmit/` (untracked copy of the
+worktree's revision files, identical on 2026-10-16; the worktree is authoritative), `operator/` (physics table),
+`dataset_fullscale_{50,100}/`, `dataset_fullscale_50_scenario/` (held-out splits; `processed/` is a symlink to the
+frozen corpus), `data/` (OOD sets), `cache/` (ρ cache), `PC-STGNN/`, `thesis-for-college/`, `PPT2/` + `PPT-*.md`
+(slide content), `docs/archive/` (stale docs), `fault-loc.tex` (another Paper 1 LaTeX copy from `f4b7e7b`; differs from `overleaf.tex`).
+
+## Docs map
+| Doc | Use |
+|---|---|
+| `results/RESULTS.md` | All Paper 1 headline numbers + §8 reviewer-hardening findings |
+| `PC-STGNN/00_INDEX.md` → `01_SPEC.md`, stages `02–09`, `10–14`; `PC-STGNN/REVIEW-2026-09-22.md`, `PC-STGNN-PLAN.md` | Phase 2 spec, gates, metrics, pre-registration; plan review and implementation plan |
+| `RETIRED_CLAIMS.md` | Claims killed by measurement — check before reusing an old claim |
+| `IMPUTATION.md` | Neighbour-mean imputation baseline (read before touching its script) |
+| `FAULTQUERY-ARCHITECTURE.md`, `PIGNN-SURVEY.md` | Phase 2 architecture options |
+| `PROBLEM.md`, `QUESTIONS.md`, `README.md` | Problem statement, author Q&A, public readme |
+| `REVIEW.md`, `REVIEW-new.md`, `PPT-{DATASETS,METHODOLOGY,REVIEW-PHASE2}.md`, `PPT2/` | College review rubrics; Phase 2 slide content |
+| `docs/archive/`: `NEXT.md` (stale handoff), `NEW-STRATEGY.md` (superseded by `PC-STGNN/`), `DONE.md` (author review of the PC-STGNN plan), Review 1 slide docs (`PPT-{GUIDE-REVIEW,SPEAKER-NOTES,INTRO-SLIDES,EVAL-STRATEGY}.md`, `REVIEW1-TALK-SCRIPT.md`) | History only (archived 2026-10-16) |
+| Deleted docs (`PROGRESS.md`, runbooks, the old `docs/**` tree, `.rules/`, …) | In git history only — do not cite or resurrect them unless asked |
+
+## Key facts (verified; safe to reuse)
+- Corpus `dataset_fullscale_50`: 825 scenarios × 50 runs × 40 windows = 1.65M windows; event-level 70/15/15, 0 leakage;
+  exactly 50% no-fault. `dataset_fullscale_100` = 3.30M (its sweep is parked). The base paper's 2.5M is not
+  reconstructable from the 825 grid (documented deviation).
+- **The split shares all 825 scenarios between train and test** (it splits runs, not scenarios): accuracy measures
+  generalization to unseen load conditions of known configurations.
+- 6 of 25 fault buses are μPMU nodes (19 fault locations unmeasured). Graph = 25-node, 24-edge tree. Window =
+  `[N=25, S=20, F=6]` (3 RMS voltages + 3 mask channels).
+- **Mask channels are static, not all-ones:** they encode per-μPMU phase instrumentation (14 of 25 nodes three-phase).
+  Dropout zeroes all 6 channels → mask (0,0,0), a pattern never seen in standard training. This is the mechanism
+  behind dropout-aware training.
+- Frozen config: depth 4 (deviation from the base paper's 1 layer), unweighted CE (balance comes from the corpus, not
+  loss weights), grad-clip 1.0 + 3 warm-up epochs on every run.
+- Every model is trained at seeds 42/43/44. Mask-diversity bugfix (`6a00c4e`/`798406e`, 2026-08-13): all dropout
+  numbers regenerated; shifts in the 2nd–3rd decimal only.
+- Trivial always-"no fault" classifier: 26-class macro-F1 **0.0256**. Green-feeder scenario: **cut** (2026-08-04);
+  `configure_green_feeder` is dead code; future work only.
+- **2026-08-17 reviewer-hardening pass** (noise, contiguous, classical baseline, absolute AUDC, scenario-held-out
+  split, "never size from a subset", the named learned-imputation gap): moved to `results/RESULTS.md` §8.

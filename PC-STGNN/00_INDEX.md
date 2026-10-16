@@ -1,7 +1,7 @@
 # PC-STGNN Project — File Index
 
 Extension of Paper 1 (*Dropout-Aware Training for Sensor-Robust Fault Localization with
-STGNNs*, IEEE 123-bus, 25 µPMUs). This directory supersedes `../NEW-STRATEGY.md`, which is the
+STGNNs*, IEEE 123-bus, 25 µPMUs). This directory supersedes `../docs/archive/NEW-STRATEGY.md`, which is the
 earlier single-file draft of the same plan and is kept for reference only.
 
 **Reviewed against the repo on 2026-09-22 — read `REVIEW-2026-09-22.md` first.** Edits made in

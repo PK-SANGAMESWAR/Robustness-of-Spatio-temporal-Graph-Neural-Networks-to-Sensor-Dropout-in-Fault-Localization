@@ -5,7 +5,7 @@
 
 ## 0. Context
 
-Paper 1 (dropout-aware STGNN, IEEE-123, 25 µPMUs) is a complete draft. `NEW-STRATEGY.md` is the
+Paper 1 (dropout-aware STGNN, IEEE-123, 25 µPMUs) is a complete draft. `docs/archive/NEW-STRATEGY.md` is the
 first single-file draft of the follow-up; `PC-STGNN/` (16 files, reviewed against the repo on
 2026-09-22) supersedes it and is the specification this plan implements. The method: a
 **fixed, zero-parameter physics operator** (an OpenDSS signature table μ[f,τ,R,L] over
