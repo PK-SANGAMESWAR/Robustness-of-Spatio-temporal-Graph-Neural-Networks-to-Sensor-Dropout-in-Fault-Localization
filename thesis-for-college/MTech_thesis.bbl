@@ -1,0 +1,175 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\citeauthoryear{Asiri and Somasundaram}{Asiri and
+  Somasundaram}{2025}]{asiri2025}
+Asiri, A. and Somasundaram, A. (2025).
+\newblock ``Graph convolution network for fraud detection in bitcoin
+  transactions.''\ {\em Scientific Reports}, 15, 11076.
+
+\bibitem[\protect\citeauthoryear{Brody, Alon, and Yahav}{Brody
+  et~al.}{2022}]{brody2022}
+Brody, S., Alon, U., and Yahav, E. (2022).
+\newblock ``How attentive are graph attention networks?.''\ {\em International
+  Conference on Learning Representations (ICLR)}.
+
+\bibitem[\protect\citeauthoryear{Chen, Hu, Zhang, Yu, and He}{Chen
+  et~al.}{2020}]{chen2020}
+Chen, K., Hu, J., Zhang, Y., Yu, Z., and He, J. (2020).
+\newblock ``Fault location in power distribution systems via deep graph
+  convolutional networks.''\ {\em IEEE Journal on Selected Areas in
+  Communications}, 38(1), 119--131.
+
+\bibitem[\protect\citeauthoryear{Dogoulis, Tit, and Cordy}{Dogoulis
+  et~al.}{2025}]{dogoulis2025}
+Dogoulis, P., Tit, K., and Cordy, M. (2025).
+\newblock ``{KCLNet}: physics-informed power flow prediction via constraints
+  projections.''\ {\em arXiv preprint arXiv:2506.12902}.
+
+\bibitem[\protect\citeauthoryear{Fan, Xia, Zhang, and Zhang}{Fan
+  et~al.}{2024}]{fan2024}
+Fan, M., Xia, J., Zhang, H., and Zhang, X. (2024).
+\newblock ``Fault location method of distribution network based on
+  {VGAE-GraphSAGE}.''\ {\em Processes}, 12(10), 2179.
+
+\bibitem[\protect\citeauthoryear{Hamilton, Ying, and Leskovec}{Hamilton
+  et~al.}{2017}]{hamilton2017}
+Hamilton, W., Ying, Z., and Leskovec, J. (2017).
+\newblock ``Inductive representation learning on large graphs.''\ {\em Advances
+  in Neural Information Processing Systems}, Vol.~30.  1024--1034.
+
+\bibitem[\protect\citeauthoryear{Jayapal and Annamalai}{Jayapal and
+  Annamalai}{2025}]{jayapal2025}
+Jayapal, S. and Annamalai, R. (2025).
+\newblock ``Graph neural network with {Hessian}-based locally linear embedding
+  for cancer metastasis analysis in lymph nodes using {DeepLab}
+  segmentation.''\ {\em IEEE Access}, 13, 46448--46458.
+
+\bibitem[\protect\citeauthoryear{Karabulut, Manna, and Develder}{Karabulut
+  et~al.}{2025}]{karabulut2025}
+Karabulut, B., Manna, C., and Develder, C. (2025).
+\newblock ``Generalization of graph neural network models for distribution grid
+  fault detection.''\ {\em arXiv preprint arXiv:2510.03571}.
+
+\bibitem[\protect\citeauthoryear{Karabulut, Manna, and Develder}{Karabulut
+  et~al.}{2026}]{karabulut2026}
+Karabulut, B., Manna, C., and Develder, C. (2026).
+\newblock ``Robustness of spatio-temporal graph neural networks for fault
+  location in partially observable distribution grids.''\ {\em arXiv preprint
+  arXiv:2604.20403}.
+
+\bibitem[\protect\citeauthoryear{Kipf and Welling}{Kipf and
+  Welling}{2016}]{kipf2016}
+Kipf, T.~N. and Welling, M. (2016).
+\newblock ``Semi-supervised classification with graph convolutional
+  networks.''\ {\em arXiv preprint arXiv:1609.02907}.
+
+\bibitem[\protect\citeauthoryear{Kirthan, Anbazhagan, Reddy, and
+  Kurunathan}{Kirthan et~al.}{2026}]{kirthan2026}
+Kirthan, P., Anbazhagan, M., Reddy, R., and Kurunathan, H. (2026).
+\newblock ``Towards uncertainty-calibrated traffic flow prediction using
+  combinatorial graph neural networks.''\ {\em Proceedings of the 12th
+  International Conference on Vehicle Technology and Intelligent Transport
+  Systems (VEHITS)}.  79--91.
+
+\bibitem[\protect\citeauthoryear{Krishnathevar and Ngu}{Krishnathevar and
+  Ngu}{2012}]{krishnathevar2012}
+Krishnathevar, R. and Ngu, E.~E. (2012).
+\newblock ``Generalized impedance-based fault location for distribution
+  systems.''\ {\em IEEE Transactions on Power Delivery}, 27(1), 449--451.
+
+\bibitem[\protect\citeauthoryear{Li and Deka}{Li and Deka}{2021}]{li2021ppgn}
+Li, W. and Deka, D. (2021).
+\newblock ``{PPGN}: physics-preserved graph networks for real-time fault
+  location in distribution systems with limited observation and labels.''\ {\em
+  arXiv preprint arXiv:2107.02275}.
+
+\bibitem[\protect\citeauthoryear{Liao, Bak-Jensen, Pillai, Wang, and Wang}{Liao
+  et~al.}{2021}]{liao2021}
+Liao, W., Bak-Jensen, B., Pillai, J.~R., Wang, Y., and Wang, Y. (2021).
+\newblock ``A review of graph neural networks and their applications in power
+  systems.''\ {\em arXiv preprint arXiv:2101.10025}.
+
+\bibitem[\protect\citeauthoryear{Liu, Xie, Yu, Wang, Zeng, Bi, et~al.}{Liu
+  et~al.}{2023}]{liu2023}
+Liu, F., Xie, L., Yu, K., Wang, Y., Zeng, X., Bi, L., et~al. (2023).
+\newblock ``A novel fault location method based on traveling wave for
+  multi-branch distribution network.''\ {\em Electric Power Systems Research},
+  224, 109753.
+
+\bibitem[\protect\citeauthoryear{Livani, Evrenosoglu, and Centeno}{Livani
+  et~al.}{2013}]{livani2013}
+Livani, H., Evrenosoglu, C.~Y., and Centeno, V.~A. (2013).
+\newblock ``A machine learning-based faulty line identification for smart
+  distribution network.''\ {\em North American Power Symposium (NAPS)}.  1--6.
+
+\bibitem[\protect\citeauthoryear{Ngo, Nguyen, Zhang, Schoder, Ginn, and Vu}{Ngo
+  et~al.}{2025}]{ngo2025}
+Ngo, Q.-H., Nguyen, B. L.~H., Zhang, J., Schoder, K., Ginn, H., and Vu, T.
+  (2025).
+\newblock ``Deep graph neural network for fault detection and identification in
+  distribution systems.''\ {\em Electric Power Systems Research}, 247, 111721.
+
+\bibitem[\protect\citeauthoryear{Nguyen, Vu, Nguyen, Panwar, and
+  Hovsapian}{Nguyen et~al.}{2022}]{nguyen2022}
+Nguyen, B. L.~H., Vu, T., Nguyen, T.-T., Panwar, M., and Hovsapian, R. (2022).
+\newblock ``1-{D} convolutional graph convolutional networks for fault
+  detection in distributed energy systems.''\ {\em IEEE 1st Industrial
+  Electronics Society Annual On-Line Conference (ONCON)}.  1--6.
+
+\bibitem[\protect\citeauthoryear{Nyangon}{Nyangon}{2026}]{nyangon2026}
+Nyangon, J. (2026).
+\newblock ``Engineering hybrid physics-informed neural networks for
+  next-generation electricity systems: a state-of-the-art review.''\ {\em arXiv
+  preprint arXiv:2605.21903}.
+
+\bibitem[\protect\citeauthoryear{Okoyomon, Yaniv, and Goebel}{Okoyomon
+  et~al.}{2025}]{okoyomon2025}
+Okoyomon, E., Yaniv, A., and Goebel, C. (2025).
+\newblock ``Physics-informed inductive biases for voltage prediction in
+  distribution grids.''\ {\em arXiv preprint arXiv:2509.25158}.
+
+\bibitem[\protect\citeauthoryear{Peng, Xia, Saikrishna, and Liu}{Peng
+  et~al.}{2022}]{peng2022}
+Peng, C., Xia, F., Saikrishna, V., and Liu, H. (2022).
+\newblock ``Physics-informed graph learning.''\ {\em arXiv preprint
+  arXiv:2202.10679}.
+
+\bibitem[\protect\citeauthoryear{Rong, Huang, Xu, and Huang}{Rong
+  et~al.}{2020}]{rong2020}
+Rong, Y., Huang, W., Xu, T., and Huang, J. (2020).
+\newblock ``{DropEdge}: towards deep graph convolutional networks on node
+  classification.''\ {\em International Conference on Learning Representations
+  (ICLR)}.
+
+\bibitem[\protect\citeauthoryear{Rossi, Kenlay, Gorinova, Chamberlain, Dong,
+  and Bronstein}{Rossi et~al.}{2021}]{rossi2021}
+Rossi, E., Kenlay, H., Gorinova, M.~I., Chamberlain, B.~P., Dong, X., and
+  Bronstein, M. (2021).
+\newblock ``On the unreasonable effectiveness of feature propagation in
+  learning on graphs with missing node features.''\ {\em arXiv preprint
+  arXiv:2111.12128}.
+
+\bibitem[\protect\citeauthoryear{Sachin, Narayanan, Trisha, Reddy, and
+  Mahadevan}{Sachin et~al.}{2025}]{sachin2025}
+Sachin, S., Narayanan, V.~S., Trisha, M.~S., Reddy, K.~H., and Mahadevan, A.
+  (2025).
+\newblock ``{AGNet}: an adaptive encoder-decoder {GNN} for spatio-temporal
+  forecasting.''\ {\em Proceedings of the International Conference on AI and
+  Robotics (AIR), Lecture Notes in Networks and Systems}.  131--149.
+
+\bibitem[\protect\citeauthoryear{Sangameswar and Anbazhagan}{Sangameswar and
+  Anbazhagan}{2026}]{sangameswar2026}
+Sangameswar, P.~K. and Anbazhagan, M. (2026).
+\newblock ``Dropout-aware training for sensor-robust fault localization with
+  spatio-temporal graph neural networks.''\ {\em International Conference on
+  Machine Learning and Data Engineering (ICMLDE 2026), Procedia Computer
+  Science, accepted}.
+
+\bibitem[\protect\citeauthoryear{Zhang, Hua, Ji, Qian, and Wang}{Zhang
+  et~al.}{2025}]{zhang2025}
+Zhang, L., Hua, D., Ji, T., Qian, T., and Wang, J. (2025).
+\newblock ``Fault location in power distribution networks with massive missing
+  data: a graph-based imputation and contrastive learning approach.''\ {\em
+  IEEE Transactions on Automation Science and Engineering}, 22, 16825--16837.
+
+\end{thebibliography}
