@@ -33,4 +33,8 @@
 > second-axis stress test rather than a contribution booster, so it was dropped before the
 > deadline. No green dataset, runs, or claims exist; `configure_green_feeder` remains in the
 > code as dead/future-work. The paper mentions reconfigured feeders only as future work.
-> Measurement noise, also floated earlier, was likewise not run.
+> ~~Measurement noise, also floated earlier, was likewise not run.~~ *(Stale as of 2026-10-15 —
+> measurement noise was later run: `run_noise_robustness_study.py`, DONE at 3 seeds, both arms,
+> `results/dropout_study_noise/` — see `CLAUDE.md`'s 2026-08-17 reviewer-hardening pass. Standard
+> RGSAGE-Max falls from 0.846 to 0.345 at σ=0.01 p.u., and dropout-aware training does not help
+> against noise. Kept, not deleted.)*

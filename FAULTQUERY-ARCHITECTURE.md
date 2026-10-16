@@ -6,6 +6,14 @@ retrain queue. **No accuracy number for this model exists yet.** Every result
 quoted below is from an *existing* model in `results/`, and is there to justify a
 design choice, never to claim a FaultQuery outcome.
 
+**[Superseded 2026-10-15]** The stage-3 pilot (seed 42, `results/fault_query/fault_query/seed_00042`)
+was run as of 2026-08-27 and diverged (train loss 1.09→0.65→0.85→1.73 by epoch 4; val
+graph-F1 collapsed from 0.567 at epoch 1 to ~the trivial floor by epoch 4, reaching only
+0.184 by epoch 30). Best-checkpoint selection saved the epoch-1 state, so `metrics.json`
+reports f1=0.5691 — not a valid converged result, and it fails the plan's stage-3 gate
+(0.846 ± 0.007). So a FaultQuery-STGNN number now exists on disk but should not be quoted
+as this model's accuracy; the optimization instability was still unresolved as of that run.
+
 Figure: `paper/figures/ppt_faultquery_architecture.png`
 (built by `scripts/build_faultquery_figure.py`).
 Plan: `~/.claude/plans/zesty-tickling-metcalfe.md`.
@@ -352,7 +360,9 @@ winning:
 | all parameter counts | measured from the instantiated model by `scripts/build_faultquery_figure.py` |
 
 **No FaultQuery-STGNN accuracy appears anywhere in this document, because none
-exists yet.**
+exists yet.** **[Superseded 2026-10-15 — see the status note at the top of this file: a
+seed-42 pilot was subsequently run and diverged; its f1=0.5691 is an invalid, non-converged
+number, not a usable accuracy result.]**
 
 ---
 

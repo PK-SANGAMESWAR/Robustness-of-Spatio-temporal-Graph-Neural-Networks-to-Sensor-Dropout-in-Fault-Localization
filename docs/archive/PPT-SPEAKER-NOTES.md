@@ -527,7 +527,7 @@ Honest Statistics at Three Seeds
 | Retention @ k=10 | +74.6 pp | 0.003 | ✅ significant |
 | AUDC | +0.511 | 0.003 | ✅ significant |
 | Dropout-aware > imputation @ k=10 | +0.574 | 0.008 | ✅ significant |
-| Clean-F1 cost | −0.008 | 0.196 | ✅ null, as claimed |
+| Clean-F1 cost | −0.008 | 0.181 | ✅ null, as claimed |
 | Dropout-aware over SDR-STGNN | +0.021 | 0.196 | ⟺ tie |
 | Accuracy/robustness inversion | +0.116 | 0.076 | ⚠️ trend only |
 | Imputation over zeroing @ k=10 | +0.051 | 0.102 | ⚠️ not significant |
@@ -575,6 +575,8 @@ LIMITATIONS
 
 NEXT
 •  Spatially correlated failure — a comms hub taking out a region
+   [Correction, 2026-10-15: this has since been run, 3 seeds, both arms —
+   results/dropout_study_correlated/. Update this bullet before presenting.]
 •  100-run corpus · real μPMU field data
 ```
 
@@ -593,6 +595,10 @@ beat that simple training-time fix.
 The limitations are one feeder, in simulation, with three seeds, and stress tests on a single
 backbone. The immediate next step is spatially correlated failure — a communications hub taking out
 a whole region, which is the one dropout geometry we have not tested. Thank you."
+[Correction, 2026-10-15: correlated/contiguous dropout has since been run (3 seeds, both arms,
+`results/dropout_study_correlated/`) — finding: milder than scattered loss, not harsher, though it
+does not survive Holm at n=3. Revise this closing line and pick a different "next step" before
+presenting.]
 
 **CLICKS** — one group per click. **TIME** — 1:15
 
@@ -640,8 +646,11 @@ Also measured. Holding the mask for a whole event changes nothing, because the d
 per-window. We flag that it would not hold for an event-level rule.
 
 **What about a whole substation region going down?**
-That is spatially correlated dropout — the one geometry we have *not* tested. It is our top
-future-work item.
+That is spatially correlated (contiguous) dropout. **[Correction, 2026-10-15]** This has since
+been run (3 seeds, both arms, `results/dropout_study_correlated/`): contiguous outages are milder
+than scattered ones, not harsher, though the difference does not survive Holm correction at n=3,
+and the per-node drop marginals are not matched between the two policies, so it is reported as an
+observation, not a confirmed effect. It is no longer untested future work.
 
 **Why only three seeds?**
 Between 4.7 and 12.3 GPU-hours per run on a single T1000, times five architectures times three

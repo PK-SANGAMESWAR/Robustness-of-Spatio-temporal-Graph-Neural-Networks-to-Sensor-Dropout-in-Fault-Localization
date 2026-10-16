@@ -5,20 +5,48 @@ All GPU figures use the **measured** per-run cost on the T1000
 dropout-aware; a 15-epoch tuning run ≈ 3.5 h; RGATv2 12.3 h (not needed here). The first draft
 assumed 3–4 h per run and was ~2× low.
 
+`[Corrected 2026-09-30]` These physics-free rates still apply to every PC-STGNN arm that does
+**not** load the signature table — R0ⁿ, R1, R2, R7, and S4.1's null test (`use_fusion=False`,
+table never loaded). Any arm with `use_fusion=True` or λ₁/λ₂ > 0 additionally pays the
+**measured live ρ(A) cost of 44.7 ms/batch-of-32** (`results/pcstgnn/audit/s3_4_residual_speed/
+speed_benchmark.json`, Gate 3, confirmed compute-bound and chunk_f-invariant), applied to the
+train split's 36,093 batches/epoch: **+6.7 h on a 15-epoch run, +13.4 h on a 30-epoch run**, on
+top of the backbone rate above. That gives two rates, not one:
+
+- Physics-free: 3.5 h (15 epochs) / 6.9 h (30 epochs) — R0ⁿ, R1, R2, R7, S4.1
+- **Physics-loaded: ≈10.2 h (15 epochs) / ≈20.3 h (30 epochs)** — every other arm below
+
 ## GPU budget
 
 | Block | Runs | GPU-h | Notes |
 |---|---|---|---|
 | Dropout-aware baselines (4 × 3 seeds) | 0 | 0 | **done** — `results/dropout_aware/` |
-| S4.1 null test | 1 | 7 | may be stopped early once curves match |
-| λ tuning (15-epoch) | 6 | ≈ 21 | |
-| **R0ⁿ — dropout-aware + noise aug, no physics** | **3** | **≈ 21** | `[Added 2026-09-23]` the paired reference for every ablation arm, forced by the noise-augmentation default (`06` S4.3ᵇ). Not optional: without it, R5 vs R0 confounds noise augmentation with physics |
-| Core ablation R1–R8 (seed plan of `06`) | 17 | ≈ 119 | `[Corrected 2026-09-23]` seed swap R4 ↔ R7 (R4 3, R7 1), plus **R8** (R5 trained noise-free) at **1 seed** — it is an oracle condition, i.e. a labelled upper bound, not a contested comparison. R7 wider: +10–20 % |
-| B2ᵃ learned-R̂ head | 1 | 7 | |
-| Gate study G0 ×3, G1 ×1, G2 ×3, G3 ×1 | 8 | ≈ 60–70 | G2/G3 two-pass: ≈ 1.3× |
-| Model-mismatch retrains at **two** levels | 2 | 14 | `[Corrected 2026-09-23]` ±5 % plus one of ±2 %/±10 %, funded by R8's freed seeds. Mismatch is a primary axis now; one retrained point is an anecdote, two make a trend |
-| **Total** | **≈ 38** | **≈ 255–270 h ≈ 11 days** continuous | `[Corrected 2026-09-23]` ≈ +35 h over the pre-ruling ≈ 220–235 h: R0ⁿ (+21), R8 at 1 seed (+7), second mismatch retrain (+7). **Never trim R0ⁿ** — it is the paired reference that keeps noise augmentation out of the physics claim |
-| Optional: promote R1/R3/R7/G1/G3 to 3 seeds | +10 | +70 | only after Gate 4 |
+| S4.1 null test | 1 | 7 | may be stopped early once curves match. `use_fusion=False`, table never loaded — unaffected by the live-ρ correction below. **PASSED, done** |
+| λ tuning (15-epoch) | 5 | ≈ 51 | `[Corrected 2026-09-30]` was "6 runs, ≈21 GPU-h". Run count corrected 6→5: the sweep is 3 λ₁ arms + 2 λ₂ arms (`06_STAGE_E_pcstgnn.md` S4.3's own "Do" bullet); there is no 6th arm — the λ₂ sweep's λ₂=0 baseline **is** the winning λ₁ run, not a separate retrain. Rate corrected from the physics-free 3.5 h/run to the measured physics rate **≈10.2 h/run** (every arm here has `use_fusion=True`, so every arm loads the table): 5 × 10.2 ≈ 51 |
+| **R0ⁿ — dropout-aware + noise aug, no physics** | **3** | **≈ 21** | `[Added 2026-09-23]` the paired reference for every ablation arm, forced by the noise-augmentation default (`06` S4.3ᵇ). Not optional: without it, R5 vs R0 confounds noise augmentation with physics. No physics table loaded — unaffected by the live-ρ correction |
+| Core ablation R1–R8 (seed plan of `06`) | 16 | ≈ 258 | `[Corrected 2026-09-23]` seed swap R4 ↔ R7 (R4 3, R7 1), plus **R8** (R5 trained noise-free) at **1 seed** — it is an oracle condition, i.e. a labelled upper bound, not a contested comparison. R7 wider: +10–20 %. `[Corrected 2026-09-30]` run count corrected 17→16 to match `06`'s current per-arm table (R1 1 + R2 3 + R3 1 + R4 3 + R5 3 + R6 3 + R7 1 + R8 1 = 16). Split by table use: **R1, R2, R7 (5 runs, no table)** at 6.9 h/run = 34.5; **R3, R4, R5, R6, R8 (11 runs, table loaded)** at ≈20.3 h/run = 223.8; row total 34.5 + 223.8 ≈ 258 |
+| B2ᵃ learned-R̂ head | 1 | ≈ 20 | `[Corrected 2026-09-30]` was 7 (physics-free rate assumed). B2ᵃ loads the table — physics rate applies: ≈20.3 |
+| **Stage E subtotal (S4.1 → B2ᵃ)** | **26** | **≈ 357** | `[Added 2026-09-30]` new row, for visibility only (sum of the five rows above: 7 + 51 + 21 + 258 + 20 ≈ 357). Not present before this correction because the rows it sums were themselves wrong |
+| Gate study G0 ×3, G1 ×1, G2 ×3, G3 ×1 | 8 | ≈ 60–70 | G2/G3 two-pass: ≈ 1.3×. `[Note 2026-09-30]` **Not recomputed by this correction.** Stage F's PCRG-STGNN (`07_STAGE_F_gate.md`) is not built yet, and its gate reuses the same ρ(A) fusion pathway plus a per-sensor LOO refit, so this row is very likely under-costed for the identical reason (rho_LOO alone measured fine at 2.8 ms/batch — Gate 3 — but that is on top of, not instead of, the ρ(A) pass). Revisit when Stage F exists; do not treat this row as validated |
+| Model-mismatch retrains at **two** levels | 2 | 14 | `[Corrected 2026-09-23]` ±5 % plus one of ±2 %/±10 %, funded by R8's freed seeds. Mismatch is a primary axis now; one retrained point is an anecdote, two make a trend. Out of scope for the 2026-09-30 correction (Stage G, unaffected either way — model-mismatch retrains reuse a fixed table, not the live path) |
+| **Total** | **≈ 36** | **≈ 431–441 h ≈ 18–18.4 days** continuous | `[Corrected 2026-09-30]` was ≈255–270 h ≈11 days. The +~176 h increase is almost entirely the Core-ablation row (+~139 h) and λ tuning (+~30 h); see the dated note below for why this was missed at Gate 3 close. **Gate study is still at its pre-correction, likely-optimistic rate** (see its row note) — the true total is probably higher than 441 h once Stage F is built and measured |
+| Optional: promote R1/R3/R7/G1/G3 to 3 seeds | +10 | ≈ +96 | `[Corrected 2026-09-30]` was "+70" (flat 7 h/run assumed for all five). Recomputed per arm: R1 +2 runs, no table (+13.8) + R3 +2 runs, table (+40.7) + R7 +2 runs, no table (+13.8) + G1 +2 / G3 +2, Stage-F rate unchanged (+28) = ≈96.3. Only after Gate 4 |
+
+`[Corrected 2026-09-30]` **Why this wasn't caught at Gate 3 close.** The 44.7 ms/batch live-ρ(A)
+cost was measured, and the "the layer stays online for masked inputs" design decision was made,
+on 2026-09-29 (`05_STAGE_D_infra.md` S3.4) — both the measurement and the decision were correct.
+But no PC-STGNN training loop existed yet to run that decision through: `forward_pc`/`pc_loss`
+had only been exercised by the S4.2 gradient audit, a CPU-only script checking three isolated
+batches, never by `experiments/runner.py`'s actual training loop. The GPU-hour *consequence* of
+"stays online" was therefore invisible at the moment the decision was recorded, and it was never
+propagated into this file — every rate above was carried over unchanged from
+`results/runtime/runtime_training.csv`, which is the physics-free RGSAGE-Max rate, because that
+was the only rate anyone had measured. This is a process gap (a decision's cost not reaching the
+budget doc that owns it), not a measurement error or a wrong decision, and it is being recorded
+here plainly rather than folded into a parenthetical so the same gap doesn't recur when Stage F's
+PCRG-STGNN is built (see the Gate-study row above, which is in exactly that position now). Found
+2026-09-30 while building and smoke-testing S4.3's tuning script — the first time `forward_pc`
+was ever run on a GPU-resident model with a loaded table.
 
 ## CPU-only work
 

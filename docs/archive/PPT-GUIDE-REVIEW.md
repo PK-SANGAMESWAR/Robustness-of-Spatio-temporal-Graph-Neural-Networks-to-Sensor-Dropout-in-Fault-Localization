@@ -371,6 +371,11 @@ afford dense μPMU deployment.
    reuses the existing pipeline
 ```
 > Add your actual month/date ranges to the first column before presenting.
+> **[Correction, 2026-10-15]** Spatially correlated (contiguous) dropout is no longer future
+> work — it was run 2026-08-17, 3 seeds, both standard and dropout-aware arms
+> (`results/dropout_study_correlated/`; see also `PPT-EVAL-STRATEGY.md` SLIDE E5). Update this
+> slide's "immediate next step" line before presenting; row 2 of the plan table above is done,
+> not planned.
 
 ---
 ---

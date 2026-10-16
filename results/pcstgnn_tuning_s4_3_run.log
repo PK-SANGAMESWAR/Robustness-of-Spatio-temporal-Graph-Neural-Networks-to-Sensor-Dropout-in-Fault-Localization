@@ -1,0 +1,35 @@
+S4.3 tuning sweep -- seed=42 epochs=15 data_root=dataset_fullscale_50 (serial, single GPU)
+[run] lambda1=0.1 lambda2=0.0: uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_tuning/lam1_0p1_lam2_0p0.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_tuning_lam1_0p1_lam2_0p0
+results/pcstgnn_tuning_lam1_0p1_lam2_0p0/pcstgnn/seed_00042
+  lambda1=0.1: val_f1_avg_over_k=0.8277 (k0 checkpoint sel=0.8323, beta=0.0378)
+[run] lambda1=0.3 lambda2=0.0: uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_tuning/lam1_0p3_lam2_0p0.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_tuning_lam1_0p3_lam2_0p0
+S4.3 tuning sweep -- seed=42 epochs=15 data_root=dataset_fullscale_50 (serial, single GPU)
+[skip] lambda1=0.1 lambda2=0.0 -- already complete at results/pcstgnn_tuning_lam1_0p1_lam2_0p0/pcstgnn/seed_00042
+  lambda1=0.1: val_f1_avg_over_k=0.8277 (k0 checkpoint sel=0.8323, beta=0.0378)
+[run] lambda1=0.3 lambda2=0.0: uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_tuning/lam1_0p3_lam2_0p0.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_tuning_lam1_0p3_lam2_0p0
+results/pcstgnn_tuning_lam1_0p3_lam2_0p0/pcstgnn/seed_00042
+  lambda1=0.3: val_f1_avg_over_k=0.8026 (k0 checkpoint sel=0.8049, beta=0.0508)
+[run] lambda1=1.0 lambda2=0.0: uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_tuning/lam1_1p0_lam2_0p0.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_tuning_lam1_1p0_lam2_0p0
+results/pcstgnn_tuning_lam1_1p0_lam2_0p0/pcstgnn/seed_00042
+  lambda1=1.0: val_f1_avg_over_k=0.8218 (k0 checkpoint sel=0.8293, beta=0.0795)
+[branch] best lambda1=0.1 at grid boundary -- extending to 0.0333
+[run] lambda1=0.0333 lambda2=0.0: uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_tuning/lam1_0p0333_lam2_0p0.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_tuning_lam1_0p0333_lam2_0p0
+results/pcstgnn_tuning_lam1_0p0333_lam2_0p0/pcstgnn/seed_00042
+  lambda1=0.0333: val_f1_avg_over_k=0.8501
+
+=== best lambda1 so far: 0.0333 (val_f1_avg_over_k=0.8501) ===
+
+[run] lambda1=0.0333 lambda2=0.1: uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_tuning/lam1_0p0333_lam2_0p1.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_tuning_lam1_0p0333_lam2_0p1
+results/pcstgnn_tuning_lam1_0p0333_lam2_0p1/pcstgnn/seed_00042
+  lambda1=0.0333 lambda2=0.1: val_f1_avg_over_k=0.8421 beta=0.0292
+[run] lambda1=0.0333 lambda2=1.0: uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_tuning/lam1_0p0333_lam2_1p0.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_tuning_lam1_0p0333_lam2_1p0
+results/pcstgnn_tuning_lam1_0p0333_lam2_1p0/pcstgnn/seed_00042
+  lambda1=0.0333 lambda2=1.0: val_f1_avg_over_k=0.8200 beta=0.0482
+
+=== S4.3 sweep complete ===
+selected lambda1 = 0.0333
+selected lambda2 = 0.0
+selected arm beta_final = 0.02220083773136139
+selected arm val_f1_avg_over_k (lambda-selection rule) = 0.8501
+selected arm checkpoint-selection val F1 at k=0 (Paper-1 rule) = 0.8533
+wrote /home/ubuntu/Fault-Localization/paper/figures/fe1_lambda1_sweep.png

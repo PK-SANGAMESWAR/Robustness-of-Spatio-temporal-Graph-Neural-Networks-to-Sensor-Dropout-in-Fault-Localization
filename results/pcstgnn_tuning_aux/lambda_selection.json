@@ -1,0 +1,136 @@
+{
+  "arms": {
+    "lam1_0p01_lam2_0p0": {
+      "aux_loss_at_best_epoch": 0.7086249727292494,
+      "best_epoch": 12,
+      "beta_at_best_epoch": 0.02859889343380928,
+      "beta_final_checkpoint_run": 0.03185557201504707,
+      "early_stopped_collapsed": false,
+      "epochs_run": 15,
+      "fused_f1_k0_checkpoint": 0.8902478636065445,
+      "guard_valid": true,
+      "lambda1": 0.01,
+      "lambda2": 0.0,
+      "net_class0_frac": 0.5269395161290322,
+      "net_f1_k0": 0.787629699784029,
+      "net_f1_sigma1e-2": 0.6953526401851243,
+      "train_loop_hours": 10.69581294279835,
+      "val_f1_avg_over_k": 0.8776618118909649,
+      "val_f1_per_k": {
+        "0": 0.8902478636065445,
+        "1": 0.8871859954920488,
+        "10": 0.852603132091772,
+        "2": 0.8845021568540753,
+        "5": 0.8737699114103843
+      },
+      "wall_hours": 13.015005814962917
+    },
+    "lam1_0p0333_lam2_0p0": {
+      "aux_loss_at_best_epoch": 0.7253209976631841,
+      "best_epoch": 12,
+      "beta_at_best_epoch": 0.03418523445725441,
+      "beta_final_checkpoint_run": 0.04426964372396469,
+      "early_stopped_collapsed": false,
+      "epochs_run": 15,
+      "fused_f1_k0_checkpoint": 0.8580643731187692,
+      "guard_valid": true,
+      "lambda1": 0.0333,
+      "lambda2": 0.0,
+      "net_class0_frac": 0.5289112903225807,
+      "net_f1_k0": 0.7174439612418452,
+      "net_f1_sigma1e-2": 0.6394740987432582,
+      "train_loop_hours": 10.712825807124755,
+      "val_f1_avg_over_k": 0.8522886123934883,
+      "val_f1_per_k": {
+        "0": 0.858064373118769,
+        "1": 0.8559943095085464,
+        "10": 0.8425637830374099,
+        "2": 0.8547708394816077,
+        "5": 0.8500497568211091
+      },
+      "wall_hours": 13.035526390075683
+    },
+    "lam1_0p0_lam2_0p0": {
+      "aux_loss_at_best_epoch": 0.7391490302290236,
+      "best_epoch": 10,
+      "beta_at_best_epoch": 0.022177228704094887,
+      "beta_final_checkpoint_run": 0.024304891005158424,
+      "early_stopped_collapsed": false,
+      "epochs_run": 15,
+      "fused_f1_k0_checkpoint": 0.8931551645036658,
+      "guard_valid": true,
+      "lambda1": 0.0,
+      "lambda2": 0.0,
+      "net_class0_frac": 0.5280282258064516,
+      "net_f1_k0": 0.7375304722390074,
+      "net_f1_sigma1e-2": 0.6572171465403011,
+      "train_loop_hours": 10.703475516581126,
+      "val_f1_avg_over_k": 0.8778266495081175,
+      "val_f1_per_k": {
+        "0": 0.8931551645036658,
+        "1": 0.888796227385047,
+        "10": 0.8494226316566874,
+        "2": 0.884820564185867,
+        "5": 0.8729386598093204
+      },
+      "wall_hours": 13.0282213959429
+    },
+    "lam1_0p0_lam2_0p1": {
+      "aux_loss_at_best_epoch": 0.717217701545319,
+      "best_epoch": 12,
+      "beta_at_best_epoch": 0.028441695496439934,
+      "beta_final_checkpoint_run": 0.03452874347567558,
+      "early_stopped_collapsed": false,
+      "epochs_run": 15,
+      "fused_f1_k0_checkpoint": 0.8936848594815321,
+      "guard_valid": true,
+      "lambda1": 0.0,
+      "lambda2": 0.1,
+      "net_class0_frac": 0.5271451612903226,
+      "net_f1_k0": 0.7569498653936275,
+      "net_f1_sigma1e-2": 0.6740407195215462,
+      "train_loop_hours": 10.708514443847493,
+      "val_f1_avg_over_k": 0.879745492591681,
+      "val_f1_per_k": {
+        "0": 0.8936848594815321,
+        "1": 0.8899317121737361,
+        "10": 0.8533948299270357,
+        "2": 0.8868184697070283,
+        "5": 0.874897591669073
+      },
+      "wall_hours": 13.029089928335614
+    },
+    "lam1_0p1_lam2_0p0": {
+      "aux_loss_at_best_epoch": 0.7122492409383063,
+      "best_epoch": 14,
+      "beta_at_best_epoch": 0.055413153022527695,
+      "beta_final_checkpoint_run": 0.056444719433784485,
+      "early_stopped_collapsed": false,
+      "epochs_run": 15,
+      "fused_f1_k0_checkpoint": 0.8225497765947556,
+      "guard_valid": true,
+      "lambda1": 0.1,
+      "lambda2": 0.0,
+      "net_class0_frac": 0.5282782258064516,
+      "net_f1_k0": 0.740930575195024,
+      "net_f1_sigma1e-2": 0.6615757934072,
+      "train_loop_hours": 10.69443523579083,
+      "val_f1_avg_over_k": 0.8179700176751339,
+      "val_f1_per_k": {
+        "0": 0.8225497765947556,
+        "1": 0.8202238168639976,
+        "10": 0.8146192163239457,
+        "2": 0.8182345264347862,
+        "5": 0.814222752158185
+      },
+      "wall_hours": 13.011569984621472
+    }
+  },
+  "preregistration_commit": "272ba01",
+  "rules": {
+    "checkpoint": "best validation fused macro-F1 at k=0",
+    "guard": "invalid if net-only F1 <= 0.10 or net-only no-fault share > 0.95 at the selected epoch, or early-stopped as collapsed at epoch 3",
+    "selection": "best validation fused macro-F1 averaged over k in {0,1,2,5,10}, 3 mask seeds, among guard-valid arms; ties -> smaller lambda1, then smaller lambda2"
+  },
+  "selected": "lam1_0p0_lam2_0p1"
+}

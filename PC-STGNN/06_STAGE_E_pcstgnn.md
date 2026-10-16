@@ -496,7 +496,10 @@ exactly.
 10.7 h per arm; the rest of the 13.0 h is the per-epoch validation passes. Scoring took about
 1.5 h per arm, not the estimated 0.3 h, because ρ is computed live for every k > 0 × 3 mask seeds.
 
-**S4.4 not started.** It waits for the author's decision.
+~~**S4.4 not started.** It waits for the author's decision.~~ *(Stale as of 2026-10-15 — S4.4's
+Gate 4 runs started 2026-10-09, were amended to 30 epochs and restarted 2026-10-12, and are in
+progress; see "S4.4 — Frozen settings for Gate 4 runs" and the two amendments below. Kept, not
+deleted, as the record of this section's own state when S4.3ᵉ was written.)*
 
 ## S4.3ᵇ — Noise augmentation is the default training condition `[Added 2026-09-23]`
 
@@ -736,7 +739,7 @@ independent of how many epochs it took to get there); only training time scales 
 The queue restarts from zero (the 20-epoch R0ⁿ seed 1 and partial R5 seed 1 runs were moved to
 `results/s4_4_pilot_20ep/`, not reused), so there is no "already done" credit this time.
 
-| Component | Per-run (30 ep) | Basis |
+~~| Component | Per-run (30 ep) | Basis |
 |---|---|---|
 | R0ⁿ training | 8.80 h | 17.6 min/epoch × 30 (measured rate) |
 | R0ⁿ scoring | 0.95 h | measured (unchanged by epoch count) |
@@ -744,11 +747,27 @@ The queue restarts from zero (the 20-epoch R0ⁿ seed 1 and partial R5 seed 1 ru
 | R5 scoring | 8.95 h | estimate (unchanged by epoch count; still not yet directly measured) |
 | **R0ⁿ total** | **9.75 h** | — |
 | **R5 total** | **34.95 h** | — |
-| **Gate 4 total (6 fresh runs)** | — | **3 × 9.75 + 3 × 34.95 = 134.10 GPU-h ≈ 5.59 days** |
+| **Gate 4 total (6 fresh runs)** | — | **3 × 9.75 + 3 × 34.95 = 134.10 GPU-h ≈ 5.59 days** |~~
 
-Starting fresh from 2026-10-12 → completion **≈ 2026-10-17/18**, if uninterrupted. The R5
-scoring figure will still be replaced with a real measurement once an R5 seed is scored under
-this queue.
+*(Superseded below, 2026-10-15, once real measurements existed — kept, not deleted. Note: the
+0.95 h R0ⁿ-scoring figure above was itself stale even when superseded — it was carried over from
+the 20-epoch pilot's single scoring run, not a measurement of the 30-epoch queue.)*
+
+**Updated with real measurements, 2026-10-15** (3 of 6 Gate 4 runs complete at this point: R0ⁿ
+seed 1, R5 seed 1, R0ⁿ seed 2 — all trained and scored; R5 seed 2 in progress):
+
+| Component | Per-run (30 ep) | Basis |
+|---|---|---|
+| R0ⁿ training | 8.80 h | **measured**, avg of 2 runs (31650.6 s, 31711.1 s) |
+| R0ⁿ scoring | 1.35 h | **measured**, avg of 2 runs (4843.9 s, 4848.6 s) — not 0.95 h; see note above |
+| R5 training | 26.14 h | **measured**, 1 run (94092.2 s) |
+| R5 scoring | 7.45 h | **measured**, 1 run (26817.9 s) — came in under both the 8.95 h estimate and the 12.68 h overrun-adjusted projection |
+| **R0ⁿ total** | **10.15 h** | — |
+| **R5 total** | **33.59 h** | — |
+| **Gate 4 total (6 runs)** | — | **3 × 10.15 + 3 × 33.59 = 131.2 GPU-h ≈ 5.47 days** |
+
+Starting from 2026-10-12 19:14 UTC (R0ⁿ seed 1's actual start) → completion **≈ 2026-10-18,
+early hours UTC**, consistent with the live per-run tracking kept in chat status updates.
 
 ## GATE 4
 

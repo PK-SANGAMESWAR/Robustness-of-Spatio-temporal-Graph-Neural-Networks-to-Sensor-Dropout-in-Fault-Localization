@@ -1,0 +1,29 @@
+{
+  "tolerance": 1e-07,
+  "old_loss": 3.4546587467193604,
+  "new_loss_gamma0": 3.4546587467193604,
+  "abs_loss_diff": 0.0,
+  "n_param_grads": 17,
+  "max_abs_grad_diff": 0.0,
+  "worst_param": "beta",
+  "per_param_max_abs_grad_diff": {
+    "beta": 0.0,
+    "classifier.bn.bias": 0.0,
+    "classifier.bn.weight": 0.0,
+    "classifier.linear.bias": 0.0,
+    "classifier.linear.weight": 0.0,
+    "encoder.gru.bias_hh_l0": 0.0,
+    "encoder.gru.bias_ih_l0": 0.0,
+    "encoder.gru.weight_hh_l0": 0.0,
+    "encoder.gru.weight_ih_l0": 0.0,
+    "spatial_layers.0.bias": 0.0,
+    "spatial_layers.0.weight": 0.0,
+    "spatial_layers.1.bias": 0.0,
+    "spatial_layers.1.weight": 0.0,
+    "spatial_layers.2.bias": 0.0,
+    "spatial_layers.2.weight": 0.0,
+    "spatial_layers.3.bias": 0.0,
+    "spatial_layers.3.weight": 0.0
+  },
+  "passed": true
+}

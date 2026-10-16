@@ -13,6 +13,26 @@ in Gaussian log-likelihood units, replacing the per-channel average r̃ (§4); f
 the **per-node** broadcast (a product of experts) it actually is (§6); and the LOO score is
 defined as **subtract-then-re-minimise** (§7).
 
+`[Corrected 2026-09-25]` §2's R axis amended: the original 15-point log-spaced grid
+(0.05–30 Ω) kept the corpus's own training resistances {0.1, 1, 10} Ω off-grid, on the theory
+that this is what keeps S1.7's argmin_R interpolation check non-vacuous. S1.5 (`03_STAGE_B_
+operator.md`) found this corrupts the load-axis check instead: a nearby-but-wrong off-grid R
+combines with a compensating L shift to fit better than the true (off-grid) R + true L, so
+profiled L* recovery failed (38.4 % within one grid step, against the >90 % criterion) even
+though R* itself always landed sensibly. Replaced with an 18-point **hybrid** grid —
+`sorted(unique(15pt log grid, {0.1, 1, 10}))` — which puts the corpus's own R values exactly
+on-grid; L* recovery jumped to 97.3 %. Densifying to 25 log-spaced points (S1.7's own
+branch-on-failure remedy) does **not** fix it — only 58.6 % — because it shrinks ordinary
+discretisation error, which was never the diagnosed mechanism. Side effect on σ_ε (§4): the
+corrected table's true-hypothesis error dropped along with the R-L compensation, so `sigma_eps`
+was rescaled from 5.145e-3 to **7.2555e-4** (S1.6's own branch instruction) to keep median
+r̄_{f_true} at 1.0000. Unexpected side effect beyond S1.5: PSM top-1 accuracy at each L step's
+own discretisation σ moved from **~0.555–0.562** (the same R-L compensation degrading location
+attribution, not just load recovery) to **0.865–0.942** on the corrected table. Full derivation,
+the three-way grid comparison, and the re-checked S1.2/S1.6/S1.7 numbers:
+`../results/pcstgnn/operator/S1.5_RGRID_CORRECTION.md`. The operator description in §2 below is
+otherwise unchanged; only the R axis's grid points and `NUM_R` (15 → 18) moved.
+
 ## 1. Inherited constants (Paper 1)
 
 | Item | Value |

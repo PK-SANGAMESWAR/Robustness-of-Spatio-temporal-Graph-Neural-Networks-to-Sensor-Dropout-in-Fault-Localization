@@ -1,0 +1,11 @@
+[run] uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_auxdiag/gamma1.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_auxdiag_gamma1
+results/pcstgnn_auxdiag_gamma1/pcstgnn/seed_00042
+epoch | fused F1 | net F1 | net F1 @1e-2 | net no-fault | beta | aux
+    1 | 0.8553 | 0.1574 | 0.1528 | 0.5577 | 0.0266 | 1.6911
+    2 | 0.8387 | 0.2487 | 0.2489 | 0.5382 | 0.0318 | 1.3500
+    3 | 0.8677 | 0.3863 | 0.3527 | 0.5410 | 0.0311 | 1.1762
+    4 | 0.8560 | 0.5241 | 0.4777 | 0.5335 | 0.0364 | 1.0363
+    5 | 0.8794 | 0.5708 | 0.5124 | 0.5346 | 0.0248 | 0.9391
+verdict: fixed
+wrote /home/ubuntu/Fault-Localization/results/pcstgnn_auxdiag/diagnostic_summary.json
+exit=0

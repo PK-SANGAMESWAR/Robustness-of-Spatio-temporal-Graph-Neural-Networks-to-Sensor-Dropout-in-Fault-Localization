@@ -1,0 +1,60 @@
+{
+  "note": "Full validation split, k=0, checkpoint_best of each S4.3 arm. rho from cache/rtilde_val.npy k=0 slice (verified equal to live rho, rel err 1.6e-5). network_only = soft vote of z with the physics term removed.",
+  "n_windows": 248000,
+  "arms": {
+    "lam1_0p0333_lam2_0p0": {
+      "beta": 0.02220083773136139,
+      "f1_network_only": 0.02564102564102564,
+      "f1_psm": 0.7719449188703239,
+      "f1_fused": 0.8533282942032182,
+      "network_pred_class0": 1.0,
+      "fused_eq_psm_fault": 0.9594032168388367,
+      "fused_acc_nofault": 0.8702983856201172
+    },
+    "lam1_0p0333_lam2_0p1": {
+      "beta": 0.029217040166258812,
+      "f1_network_only": 0.02564102564102564,
+      "f1_psm": 0.7719449188703239,
+      "f1_fused": 0.845163769887818,
+      "network_pred_class0": 1.0,
+      "fused_eq_psm_fault": 0.9627984166145325,
+      "fused_acc_nofault": 0.8209193348884583
+    },
+    "lam1_0p0333_lam2_1p0": {
+      "beta": 0.04821854829788208,
+      "f1_network_only": 0.025912365405935615,
+      "f1_psm": 0.7719449188703239,
+      "f1_fused": 0.8176322659765588,
+      "network_pred_class0": 0.9993628859519958,
+      "fused_eq_psm_fault": 0.9421612620353699,
+      "fused_acc_nofault": 0.7625725865364075
+    },
+    "lam1_0p1_lam2_0p0": {
+      "beta": 0.03780713304877281,
+      "f1_network_only": 0.02564102564102564,
+      "f1_psm": 0.7719449188703239,
+      "f1_fused": 0.8322886770330521,
+      "network_pred_class0": 1.0,
+      "fused_eq_psm_fault": 0.9319999814033508,
+      "fused_acc_nofault": 0.8203387260437012
+    },
+    "lam1_0p3_lam2_0p0": {
+      "beta": 0.050765540450811386,
+      "f1_network_only": 0.02564102564102564,
+      "f1_psm": 0.7719449188703239,
+      "f1_fused": 0.8048869912705705,
+      "network_pred_class0": 1.0,
+      "fused_eq_psm_fault": 0.9799193739891052,
+      "fused_acc_nofault": 0.6358064413070679
+    },
+    "lam1_1p0_lam2_0p0": {
+      "beta": 0.07946254312992096,
+      "f1_network_only": 0.02564102564102564,
+      "f1_psm": 0.7719449188703239,
+      "f1_fused": 0.8293440297288246,
+      "network_pred_class0": 1.0,
+      "fused_eq_psm_fault": 0.8766290545463562,
+      "fused_acc_nofault": 0.9606612920761108
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "arms": {
+    "lam1_0p01_lam2_0p0": {
+      "beta": 0.02859889343380928,
+      "f1_fused": 0.8902478636065445,
+      "f1_network_only": 0.787629699784029,
+      "f1_psm": 0.7719449188703239,
+      "fault": {
+        "acc_fused": 0.8685161471366882,
+        "acc_network_only": 0.7622016072273254,
+        "acc_psm": 0.8576451539993286,
+        "fused_eq_network_only": 0.8239032030105591,
+        "fused_eq_psm": 0.9241371154785156,
+        "n_windows": 124000
+      },
+      "network_pred_class0": 0.5269395112991333,
+      "nofault": {
+        "acc_fused": 0.9938387274742126,
+        "acc_network_only": 1.0,
+        "acc_psm": 0.4977177381515503,
+        "fused_eq_network_only": 0.9938387274742126,
+        "fused_eq_psm": 0.5034919381141663,
+        "n_windows": 124000
+      }
+    },
+    "lam1_0p0333_lam2_0p0": {
+      "beta": 0.03418523445725441,
+      "f1_fused": 0.8580643731187692,
+      "f1_network_only": 0.7174439612418452,
+      "f1_psm": 0.7719449188703239,
+      "fault": {
+        "acc_fused": 0.8649516105651855,
+        "acc_network_only": 0.6933709383010864,
+        "acc_psm": 0.8576451539993286,
+        "fused_eq_network_only": 0.7459999918937683,
+        "fused_eq_psm": 0.9363064765930176,
+        "n_windows": 124000
+      },
+      "network_pred_class0": 0.528911292552948,
+      "nofault": {
+        "acc_fused": 0.8676532506942749,
+        "acc_network_only": 1.0,
+        "acc_psm": 0.4977177381515503,
+        "fused_eq_network_only": 0.8676532506942749,
+        "fused_eq_psm": 0.6108064651489258,
+        "n_windows": 124000
+      }
+    },
+    "lam1_0p0_lam2_0p0": {
+      "beta": 0.022177228704094887,
+      "f1_fused": 0.8931551645036658,
+      "f1_network_only": 0.7375304722390074,
+      "f1_psm": 0.7719449188703239,
+      "fault": {
+        "acc_fused": 0.8676612973213196,
+        "acc_network_only": 0.7105000019073486,
+        "acc_psm": 0.8576451539993286,
+        "fused_eq_network_only": 0.7804999947547913,
+        "fused_eq_psm": 0.9146935343742371,
+        "n_windows": 124000
+      },
+      "network_pred_class0": 0.5280282497406006,
+      "nofault": {
+        "acc_fused": 0.9999677538871765,
+        "acc_network_only": 1.0,
+        "acc_psm": 0.4977177381515503,
+        "fused_eq_network_only": 0.9999677538871765,
+        "fused_eq_psm": 0.49775001406669617,
+        "n_windows": 124000
+      }
+    },
+    "lam1_0p0_lam2_0p1": {
+      "beta": 0.028441695496439934,
+      "f1_fused": 0.8936848594815321,
+      "f1_network_only": 0.7569498653936275,
+      "f1_psm": 0.7719449188703239,
+      "fault": {
+        "acc_fused": 0.8693951368331909,
+        "acc_network_only": 0.7330241799354553,
+        "acc_psm": 0.8576451539993286,
+        "fused_eq_network_only": 0.7966613173484802,
+        "fused_eq_psm": 0.9264596700668335,
+        "n_windows": 124000
+      },
+      "network_pred_class0": 0.5271451473236084,
+      "nofault": {
+        "acc_fused": 0.9987903237342834,
+        "acc_network_only": 1.0,
+        "acc_psm": 0.4977177381515503,
+        "fused_eq_network_only": 0.9987903237342834,
+        "fused_eq_psm": 0.49873387813568115,
+        "n_windows": 124000
+      }
+    },
+    "lam1_0p1_lam2_0p0": {
+      "beta": 0.055413153022527695,
+      "f1_fused": 0.8225497765947556,
+      "f1_network_only": 0.740930575195024,
+      "f1_psm": 0.7719449188703239,
+      "fault": {
+        "acc_fused": 0.8628790378570557,
+        "acc_network_only": 0.7122741937637329,
+        "acc_psm": 0.8576451539993286,
+        "fused_eq_network_only": 0.7575806379318237,
+        "fused_eq_psm": 0.9472822546958923,
+        "n_windows": 124000
+      },
+      "network_pred_class0": 0.5282782316207886,
+      "nofault": {
+        "acc_fused": 0.7422016263008118,
+        "acc_network_only": 1.0,
+        "acc_psm": 0.4977177381515503,
+        "fused_eq_network_only": 0.7422016263008118,
+        "fused_eq_psm": 0.7209274172782898,
+        "n_windows": 124000
+      }
+    }
+  },
+  "n_windows": 248000,
+  "note": "Full validation split, k=0, clean inputs, checkpoint_best of each S4.3e arm. rho(A) from cache/rtilde_val.npy k=0 slice (sigma0=0). network_only = soft vote of the backbone logits (physics term removed); fused = soft vote of z - beta*rho; psm = argmin rho. acc_* is accuracy against the label within each window group."
+}

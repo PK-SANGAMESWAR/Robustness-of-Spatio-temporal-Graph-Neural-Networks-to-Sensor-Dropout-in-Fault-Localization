@@ -1,3 +1,12 @@
+**Superseded as of 2026-10-15 — this is the early draft `01_SPEC.md` and the Stage A–H docs
+under `PC-STGNN/` grew from, not the current spec.** `DONE.md`'s review (also in `docs/archive/`)
+corrected its physics operator in several load-bearing ways that are now the actual
+implementation: the per-bus load ensemble below (`σ_load`, marginalised L) was replaced by a
+**scalar, profiled** L on an 18-point grid; the unshifted residual `r̃ = r/|A|` was replaced by
+the **shifted, halved** ρ; the 15-point R-grid became an 18-point hybrid grid
+(`01_SPEC.md` top-of-file correction notes, `03_STAGE_B_operator.md` S1.5). Kept below, not
+deleted, as the historical first draft.
+
 Execution Plan: Paper 1 → PC-STGNN / PCRG-STGNN
 
 Every step has a Do, a Check with a numeric pass criterion, and a Branch telling you what to do if it fails. Nothing expensive runs before the cheap thing that could kill it. Five gates; the decisive one is Gate 2, at about week 6, before any GPU time is committed.

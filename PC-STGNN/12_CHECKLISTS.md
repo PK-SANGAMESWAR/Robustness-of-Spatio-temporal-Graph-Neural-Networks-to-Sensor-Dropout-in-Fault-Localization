@@ -6,16 +6,22 @@
 the full population — or on a pre-registered random sample with a stated confidence bound.
 Convenience samples are for smoke tests only.**
 
-This is a rule because it has already failed twice in two days, in opposite directions:
+This is a rule because it has already failed three times, in three different shapes — a sample
+that missed the population, a grid that silently corrupted one axis, and two stages using
+different scopes for the "same" number without either one stating its scope:
 
-| Criterion | Sample | What the full population said |
+| Criterion | Failure mode | What the full check said |
 |---|---|---|
-| S0.4 "snapshot ≡ daily, so the fast build path is validated" | **5 events** | The standing-circuit path disagrees with the corpus on **43.3 %** of 1,000 events. It would have silently corrupted the operator |
-| S0.3 "settling ≤ 1.4e-5 p.u." | **400 events** | 1.98e-5 for 41,247 of 41,250 — and **three** control-driven outliers at 6.4–7.1e-3 that the sample never saw |
+| S0.4 "snapshot ≡ daily, so the fast build path is validated" | **5-event sample** | The standing-circuit path disagrees with the corpus on **43.3 %** of 1,000 events. It would have silently corrupted the operator |
+| S0.3 "settling ≤ 1.4e-5 p.u." | **400-event sample** | 1.98e-5 for 41,247 of 41,250 — and **three** control-driven outliers at 6.4–7.1e-3 that the sample never saw |
+| S2.4's "PSM ≥ STGNN, confirmed" (`04_STAGE_C_gonogo.md`, 2026-09-25→29) | **cross-stage scope mismatch** — S1.7's 0.8977 (event-level, single settled step, 25-class, fault-only) was compared directly against a window-level 26-class network number, no shared protocol stated | Measured side by side (`scripts/check_s2_4_metric_consistency.py`): the gap was **entirely the metric** (~0.13, present equally on both splits); the real train→val generalisation gap was **+0.004**, and the corrected in-distribution reading is the opposite sign (network wins by ~0.08) |
 
 Neither sampled statistic was *wrong*; both were **sampled**, and both were then written into the
-spec as though they were population facts. The failure mode is the same each time: a cheap check
-passes, its scope is dropped in the write-up, and a decision is taken on it.
+spec as though they were population facts. S2.4's case is a distinct third shape — both numbers
+were exact, full-population measurements, individually correct, and still not comparable, because
+neither carried its evaluation protocol (population granularity, class count, aggregation level)
+into the sentence that compared them. The failure mode is the same each time in one respect: a
+check passes, its scope is dropped in the write-up, and a decision is taken on it.
 
 So, concretely:
 
@@ -32,6 +38,19 @@ So, concretely:
       T12 and the `run_runtime_benchmark.py` extensions need a quiet box or the numbers are
       worthless. F1 and every other accuracy number is deterministic under contention and is
       unaffected, so only the cost measurements carry this constraint (`11_METRICS.md` §7)
+- [ ] `[Added 2026-09-29]` **Any number that crosses from one stage's write-up into a comparison
+      or a Gate decision in another stage states its evaluation protocol inline** — population
+      granularity (event vs window), class count, and aggregation level (per-window vs
+      soft-voted-per-event) — not just its split and its value. Two numbers with the same name
+      (e.g. "PSM macro-F1", "STGNN F1 at k=0") computed by two different scripts are not assumed
+      comparable until this is checked
+- [ ] `[Added 2026-09-29]` Before a cross-stage or cross-model comparison is written into a Gate
+      table, run (or point to) a **metric-consistency check** — recompute at least one of the two
+      numbers under the other's exact protocol, on a shared split — the same discipline this
+      section already requires for sample scope, applied to metric scope. See
+      `scripts/check_s2_4_metric_consistency.py` for the pattern (a 2x2 over {metric} x {split}
+      that decomposes a suspicious gap into its real components rather than asserting an
+      explanation for it)
 
 ## A. Leakage and fairness — verify before every table
 

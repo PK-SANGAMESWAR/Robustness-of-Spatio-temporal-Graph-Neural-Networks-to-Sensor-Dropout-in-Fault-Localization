@@ -1,0 +1,68 @@
+[
+  {
+    "arm": "r0n",
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-10-09T16:13:21Z"
+  },
+  {
+    "arm": "r0n",
+    "best_validation_graph_f1": 0.8126004083285524,
+    "collapsed": false,
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": 21106.723748016986
+  },
+  {
+    "arm": "r0n",
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "scoring_started",
+    "utc": "2026-10-09T22:05:07Z"
+  },
+  {
+    "arm": "r0n",
+    "error": "Traceback (most recent call last):\n  File \"/home/ubuntu/Fault-Localization/scripts/run_s4_4_gate4.py\", line 106, in main\n    score_run(arm, seed)\n  File \"/home/ubuntu/Fault-Localization/scripts/score_s4_4_gate4_run.py\", line 97, in score_run\n    apply_measurement_noise_batch(x, sigma, norm_std, seed=970000 + bi)\n  File \"/home/ubuntu/Fault-Localization/fault_localization/dropout/noise.py\", line 94, in apply_measurement_noise_batch\n    x_noisy[..., :3] = volts + noise * avail\n                       ~~~~~~^~~~~~~~~~~~~~~\ntorch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 MiB. GPU 0 has a total capacity of 7.60 GiB of which 3.50 MiB is free. Including non-PyTorch memory, this process has 7.59 GiB memory in use. Of the allocated memory 6.76 GiB is allocated by PyTorch, and 720.82 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)\n",
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "scoring_failed"
+  },
+  {
+    "arm": "r0n",
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_skipped_already_done"
+  },
+  {
+    "arm": "r0n",
+    "best_validation_graph_f1": 0.8126004083285524,
+    "collapsed": false,
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": null
+  },
+  {
+    "arm": "r0n",
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "scoring_skipped_already_done"
+  },
+  {
+    "arm": "r5",
+    "position": 2,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-10-12T06:23:59Z"
+  }
+]

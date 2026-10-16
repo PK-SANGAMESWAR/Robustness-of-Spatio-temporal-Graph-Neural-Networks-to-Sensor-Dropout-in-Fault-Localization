@@ -282,8 +282,13 @@ leakage checklist, fallback map).
    with ρ scale-free these λ ranges are O(1)-meaningful.
 4. `run_pcstgnn_ablation.py --arms R2 R4 R5 R6 --seeds 42 43 44`, then
    `--arms R1 R3 R7 B2a --seeds 42` (background, one run at a time on the 8 GB card).
-5. Gate 4: R5 > R0 on validation in the pre-registered conditions, sign-consistent. If
-   R5 ≈ R0 → skip Stage F training, go to G, write the "physics buys generalisation" paper.
+5. ~~Gate 4: R5 > R0 on validation in the pre-registered conditions, sign-consistent. If
+   R5 ≈ R0 → skip Stage F training, go to G, write the "physics buys generalisation" paper.~~
+   *(Stale as of 2026-10-15 — the `[Added 2026-09-23]` noise-augmentation reference model R0ⁿ
+   replaces R0 as the Gate 4 comparator; see `06_STAGE_E_pcstgnn.md` S4.4 and
+   `12_CHECKLISTS.md` §A "two-reference pairing trap". The Gate 4 runs in progress
+   (`config/s4_4/{r0n,r5}.yaml`, `scripts/run_s4_4_gate4.py`) compare R5 vs R0ⁿ, not R0. Kept,
+   not deleted.)*
 
 ### Stage F — trust gate (weeks 12–16) → **Gate 5**
 1. `run_silent_detection.py` (training-free; AUROC ≥ 0.75 at ±2 % bias or PCRG is not trained
@@ -329,7 +334,9 @@ Error attribution (with the ceiling from §2.6), case studies, paper from the Pa
   pre-registration committed.
 - **Gate 3**: `bench_residual_layer.py` reports `max_abs_diff_vs_reference` ≈ 0, the LOO ≫
   in-sample assertion, and ms/batch.
-- **Gate 4**: null-test epoch-by-epoch diff = 0; gradient audit; R5 vs R0 sign table.
+- ~~**Gate 4**: null-test epoch-by-epoch diff = 0; gradient audit; R5 vs R0 sign table.~~
+  *(Stale as of 2026-10-15 — comparator is R5 vs R0ⁿ, not R0; see the note on the Stage E
+  Gate 4 item above. Kept, not deleted.)*
 - **Gate 5**: AUROC table; G2 vs G0 sign table; false-suppression rate.
 - Smoke every training script on the GPU with `--epochs 1 --max-batches 50` before any 7-h run.
 

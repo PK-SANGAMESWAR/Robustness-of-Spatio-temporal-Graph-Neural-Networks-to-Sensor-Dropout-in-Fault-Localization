@@ -1,0 +1,162 @@
+{
+  "current": {
+    "n_events": 28875,
+    "tau_star_correct_frac": 0.9087445887445887,
+    "l_star_within_1_step_frac": 0.3841385281385281,
+    "l_star_exact_frac": 0.17267532467532468,
+    "r_star_within_1_step_frac": 0.9971601731601731,
+    "r_star_exact_frac": 0.6484155844155844,
+    "pass": false,
+    "pass_criterion": "|L*-L_true|<=1 grid step on >90% AND tau*=tau_true on >90%",
+    "by_R": {
+      "0.1": {
+        "n": 9634,
+        "l_star_within_1_step_frac": 0.3615320739049201,
+        "r_star_within_1_step_frac": 1.0,
+        "tau_star_correct_frac": 0.9110442183931908
+      },
+      "1": {
+        "n": 9587,
+        "l_star_within_1_step_frac": 0.14425784917075207,
+        "r_star_within_1_step_frac": 1.0,
+        "tau_star_correct_frac": 0.9072702618128716
+      },
+      "10": {
+        "n": 9654,
+        "l_star_within_1_step_frac": 0.6449140252744976,
+        "r_star_within_1_step_frac": 0.9915061114563911,
+        "tau_star_correct_frac": 0.9079138181064843
+      }
+    },
+    "n_r_grid_points": 15,
+    "r_grid": [
+      0.05,
+      0.07896040720598763,
+      0.12469491812270765,
+      0.1969192302297256,
+      0.3109764521125753,
+      0.4910965458056451,
+      0.7755436646853537,
+      1.2247448713915892,
+      1.9341270753704967,
+      3.054389229187607,
+      4.823516346044722,
+      7.617336296968577,
+      12.02935951667177,
+      18.99686251727252,
+      30.0
+    ],
+    "table_path": "operator"
+  },
+  "hybrid": {
+    "n_events": 28875,
+    "tau_star_correct_frac": 0.9092640692640692,
+    "l_star_within_1_step_frac": 0.9725021645021645,
+    "l_star_exact_frac": 0.8318614718614719,
+    "r_star_within_1_step_frac": 0.9974025974025974,
+    "r_star_exact_frac": 0.9524155844155844,
+    "pass": true,
+    "pass_criterion": "|L*-L_true|<=1 grid step on >90% AND tau*=tau_true on >90%",
+    "by_R": {
+      "0.1": {
+        "n": 9634,
+        "l_star_within_1_step_frac": 0.9916960763960971,
+        "r_star_within_1_step_frac": 1.0,
+        "tau_star_correct_frac": 0.9110442183931908
+      },
+      "1": {
+        "n": 9587,
+        "l_star_within_1_step_frac": 0.9881088974653176,
+        "r_star_within_1_step_frac": 1.0,
+        "tau_star_correct_frac": 0.9072702618128716
+      },
+      "10": {
+        "n": 9654,
+        "l_star_within_1_step_frac": 0.9378495960223742,
+        "r_star_within_1_step_frac": 0.9922311995027968,
+        "tau_star_correct_frac": 0.909467578205925
+      }
+    },
+    "n_r_grid_points": 18,
+    "r_grid": [
+      0.05,
+      0.07896040721,
+      0.1,
+      0.1246949181,
+      0.1969192302,
+      0.3109764521,
+      0.4910965458,
+      0.7755436647,
+      1.0,
+      1.224744871,
+      1.934127075,
+      3.054389229,
+      4.823516346,
+      7.617336297,
+      10.0,
+      12.02935952,
+      18.99686252,
+      30.0
+    ],
+    "table_path": "results/pcstgnn/operator/rgrid_hybrid"
+  },
+  "dense25": {
+    "n_events": 28875,
+    "tau_star_correct_frac": 0.9090216450216451,
+    "l_star_within_1_step_frac": 0.586008658008658,
+    "l_star_exact_frac": 0.3553939393939394,
+    "r_star_within_1_step_frac": 0.9950476190476191,
+    "r_star_exact_frac": 0.9597575757575758,
+    "pass": false,
+    "pass_criterion": "|L*-L_true|<=1 grid step on >90% AND tau*=tau_true on >90%",
+    "by_R": {
+      "0.1": {
+        "n": 9634,
+        "l_star_within_1_step_frac": 0.5244965746315133,
+        "r_star_within_1_step_frac": 1.0,
+        "tau_star_correct_frac": 0.9110442183931908
+      },
+      "1": {
+        "n": 9587,
+        "l_star_within_1_step_frac": 0.3217899238552206,
+        "r_star_within_1_step_frac": 1.0,
+        "tau_star_correct_frac": 0.9072702618128716
+      },
+      "10": {
+        "n": 9654,
+        "l_star_within_1_step_frac": 0.9097783302258131,
+        "r_star_within_1_step_frac": 0.9851874870519992,
+        "tau_star_correct_frac": 0.9087424901595194
+      }
+    },
+    "n_r_grid_points": 25,
+    "r_grid": [
+      0.05,
+      0.06527190777,
+      0.08520843887,
+      0.1112343473,
+      0.1452095611,
+      0.1895621016,
+      0.2474616002,
+      0.3230458149,
+      0.4217163327,
+      0.5505245914,
+      0.718675807,
+      0.9381868198,
+      1.224744871,
+      1.598828686,
+      2.08717197,
+      2.724673927,
+      3.556893304,
+      4.643304234,
+      6.061546514,
+      7.9129741,
+      10.32989831,
+      13.4850434,
+      17.60389018,
+      22.98078992,
+      30.0
+    ],
+    "table_path": "results/pcstgnn/operator/rgrid_dense25"
+  }
+}

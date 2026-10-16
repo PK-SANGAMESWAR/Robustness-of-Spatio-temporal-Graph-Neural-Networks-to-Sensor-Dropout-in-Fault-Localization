@@ -1,0 +1,21 @@
+{
+  "sigma_eps": 0.0007255549105131452,
+  "n_events": 28875,
+  "full_18pt": {
+    "macro_f1_25class": 0.8976651396439476,
+    "top1_acc": 0.8973852813852814,
+    "n_events": 28875,
+    "n_r_grid_points": 18,
+    "table_dir": "/home/ubuntu/Fault-Localization/operator"
+  },
+  "halved_9pt": {
+    "macro_f1_25class": 0.8989290558066356,
+    "top1_acc": 0.8987012987012987,
+    "n_events": 28875,
+    "n_r_grid_points": 9,
+    "table_dir": "/home/ubuntu/Fault-Localization/results/pcstgnn/operator/rgrid_halved_s17"
+  },
+  "delta_f1": -0.0012639161626880613,
+  "pass": true,
+  "pass_criterion": "|F1_full - F1_halved| < 0.01 macro-F1 (03_STAGE_B_operator.md S1.7)"
+}

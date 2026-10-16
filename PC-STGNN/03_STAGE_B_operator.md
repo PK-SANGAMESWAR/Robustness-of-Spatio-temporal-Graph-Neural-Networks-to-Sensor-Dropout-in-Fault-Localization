@@ -252,17 +252,44 @@ section (S2.1) directly.
 construction (see S1.4). Gate 1's real criteria are the three checks that can still fail, plus
 the new ρ-margin band that S1.2 selects on.
 
+`[Corrected 2026-09-25]` **Gate 1 CLOSED — 5/5 criteria measured and passed**, after the R-grid
+correction documented in `../results/pcstgnn/operator/S1.5_RGRID_CORRECTION.md` (`R_GRID`
+15-point log grid → 18-point hybrid grid = `sorted(unique(15pt log grid, {0.1, 1, 10}))`, and
+`sigma_eps` rescaled to `7.2555e-4`). Source: the doc above; raw outputs at
+`results/pcstgnn/audit/s1_4_7/s1_4_7_summary.json` and
+`results/pcstgnn/audit/s1_7_discretization/s1_7_discretization.json`.
+
 Proceed only if:
 
-- [ ] S1.4 bias is at the discretisation scale — **a construction check**: above it ⇒ the build
+- [x] S1.4 bias is at the discretisation scale — **a construction check**: above it ⇒ the build
       path diverged from the corpus, stop and find the divergence
-- [ ] S1.5 L* within one grid step on > 90 % of events, τ* correct on > 90 %
+      **[Corrected 2026-09-25] Passed.** median\|e\| = 1.31e-3 p.u. (post-fix; was 2.78e-2 on the
+      pre-fix table).
+- [x] S1.5 L* within one grid step on > 90 % of events, τ* correct on > 90 %
       — **the decisive test of the load axis**, and an exact one, since the true L is stored
-- [ ] S1.6 residual floor calibrated, median r̄_{f_true} ∈ [0.3, 3]
-- [ ] S1.7 discretisation loss < 0.01 macro-F1
-- [ ] **ρ top-2 margin sits in the band S1.2 selected on**, reported for every candidate L step
+      **[Corrected 2026-09-25] Passed.** τ* = 90.9 %, L* within 1 step = 97.3 % (was 38.4 % on
+      the pre-fix 15-point grid — the original grid kept the corpus's own R values {0.1, 1, 10}
+      off-grid, letting a nearby-but-wrong R combine with a compensating L shift to corrupt L
+      recovery; see the correction doc).
+- [x] S1.6 residual floor calibrated, median r̄_{f_true} ∈ [0.3, 3]
+      **[Corrected 2026-09-25] Passed.** median r̄_{f_true} = 1.0000 after rescaling
+      `sigma_eps` from 5.145e-3 to 7.2555e-4 (S1.6's own branch instruction: "rescale by one
+      global constant, chosen on the training split").
+- [x] S1.7 discretisation loss < 0.01 macro-F1
+      **[Corrected 2026-09-25] Passed.** ΔF1 = −0.0013 (halved 9-point grid marginally *better*
+      than the full 18-point grid, within noise), measured as 25-class localization macro-F1
+      (`f1_score(..., labels=1..25, average="macro")` — excludes the no-fault class; see
+      `scripts/check_s1_7_discretization.py`, full 0.8977 vs halved 0.8989, on the full
+      28,875-event training split). Do not report these two numbers as the primary 26-class
+      macro-F1.
+- [x] **ρ top-2 margin sits in the band S1.2 selected on**, reported for every candidate L step
       (`11_METRICS.md` §2) — the check that the physics prior is informative without being
       saturating
+      **[Corrected 2026-09-25] Passed.** Re-checked on the corrected table
+      (`results/pcstgnn/operator/lgrid_post_rgrid_fix/`): step-invariance at fixed σ=5e-3
+      (median margin 71.8/70.0/70.3 nats for steps 0.1/0.05/0.025, within ~2.5 % of each other)
+      and the same monotone saturation ordering across steps are both preserved; `l_step=0.05`
+      needed no re-decision.
 
 **If Gate 1 fails after all branches.** Magnitude-only physics is too weak for this corpus. Fork to
 the voltage-angle route: re-log the same events (seeds are stored, S0.2) with voltage angles at the

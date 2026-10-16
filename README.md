@@ -161,6 +161,9 @@ uv run pytest
 Active research code (ICMLDE 2026 submission). All experiments are complete and
 the paper is a full draft.
 
+**[Update 2026-10-15]** The paper was submitted (Paper ID 1170) and reviewed; a
+post-review revision is in progress (see `resubmit/`).
+
 - All five baselines trained at seeds **42/43/44**; accuracy reported mean ± std.
 - **Every** degradation curve is 3-seed (3 training seeds × 3 mask seeds) — for all
   five architectures, the dropout-aware variants, and SDR-STGNN.

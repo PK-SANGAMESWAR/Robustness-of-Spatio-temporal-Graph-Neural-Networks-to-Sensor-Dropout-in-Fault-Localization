@@ -1,0 +1,24 @@
+S4.3c collapse diagnostic -- seed 42, 5 epochs, noise grid [0.0, 0.0005, 0.002, 0.01], arms lambda1=[0.0, 0.0333] (serial)
+[run] lambda1=0.0: uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_noisediag/lam1_0p0.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_noisediag_lam1_0p0
+results/pcstgnn_noisediag_lam1_0p0/pcstgnn/seed_00042
+
+  lambda1=0.0:  epoch | fused val F1 | net-only F1 | net no-fault frac | net F1 @1e-2 | beta
+        1 | 0.8244 | 0.0407 | 0.6656 | 0.0405 | 0.0324
+        2 | 0.8573 | 0.0355 | 0.7765 | 0.0350 | 0.0422
+        3 | 0.8666 | 0.0456 | 0.5872 | 0.0429 | 0.0485
+        4 | 0.8688 | 0.0689 | 0.5587 | 0.0612 | 0.0566
+        5 | 0.8788 | 0.0784 | 0.5451 | 0.0637 | 0.0355
+  -> verdict: unresolved
+[run] lambda1=0.0333: uv run python -m fault_localization.experiments.cli train --config /home/ubuntu/Fault-Localization/config/pcstgnn_noisediag/lam1_0p0333.yaml --seed 42 --data-root dataset_fullscale_50 --benchmark-version pcstgnn_noisediag_lam1_0p0333
+results/pcstgnn_noisediag_lam1_0p0333/pcstgnn/seed_00042
+
+  lambda1=0.0333:  epoch | fused val F1 | net-only F1 | net no-fault frac | net F1 @1e-2 | beta
+        1 | 0.8359 | 0.0360 | 0.7524 | 0.0359 | 0.0457
+        2 | 0.7993 | 0.0395 | 0.6579 | 0.0390 | 0.0527
+        3 | 0.8231 | 0.0429 | 0.5878 | 0.0424 | 0.0461
+        4 | 0.8191 | 0.0529 | 0.5731 | 0.0498 | 0.0534
+        5 | 0.8238 | 0.0607 | 0.5590 | 0.0605 | 0.0476
+  -> verdict: unresolved
+
+=== S4.3c diagnostic complete === unresolved -> report; author decides
+wrote /home/ubuntu/Fault-Localization/results/pcstgnn_noisediag/diagnostic_summary.json
