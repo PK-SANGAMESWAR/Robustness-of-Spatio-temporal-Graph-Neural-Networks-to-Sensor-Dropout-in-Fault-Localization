@@ -164,6 +164,11 @@ the paper is a full draft.
 **[Update 2026-10-15]** The paper was submitted (Paper ID 1170) and reviewed; a
 post-review revision is in progress (see `resubmit/`).
 
+**[Update 2026-10-22]** PC-STGNN (Phase 2, `PC-STGNN/`) Gate 4 passed: the physics-fusion
+variant (R5) beats the no-physics reference (R0ⁿ) on validation at every noise operating
+point, sign-consistent and statistically significant (Holm-adjusted) across all 3 seeds.
+Details: `PC-STGNN/06_STAGE_E_pcstgnn.md` § GATE 4.
+
 - All five baselines trained at seeds **42/43/44**; accuracy reported mean ± std.
 - **Every** degradation curve is 3-seed (3 training seeds × 3 mask seeds) — for all
   five architectures, the dropout-aware variants, and SDR-STGNN.

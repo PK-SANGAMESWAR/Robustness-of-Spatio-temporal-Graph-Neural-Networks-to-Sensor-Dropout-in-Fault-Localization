@@ -11,16 +11,17 @@ Three linked deliverables on the IEEE-123 feeder, 25 μPMUs, partial observabili
 2. **PC-STGNN** — Phase 2: the Paper-1 backbone with a fixed physics operator fused in. Plan/spec:
    `PC-STGNN/00_INDEX.md` (read order, gate map, five guiding rules).
 3. **M.Tech thesis** — `thesis-for-college/`; rules in `thesis-for-college/thesis-rules.md`.
+4. **UFIR-GNN physics-informed track** — `PINNS/` (spec), `src/pinns/`, `tests/pinns/`. Rules: @CLAUDE-PINNS.md
 
 ## Current state (2026-10-16)
 - **Revision 1170**: decision email 2026-10-10, deadline **2026-10-17**. Work lives in worktree
   `/home/ubuntu/Fault-Localization-rev1170` (branch `revision-1170`, last commit `49fb80c`, 2026-10-11). Plan/log:
   `resubmit/1170_revision_plan.md`, `resubmit/CHANGELOG-1170.md`. Whether the revision was submitted is not recorded
   on disk — ask. Do not do revision work on `main`.
-- **PC-STGNN Gate 4** (arms R0ⁿ vs R5, 30 epochs, seeds 42/43/44) is **running** (`scripts/run_s4_4_gate4.py`,
-  restarted 2026-10-12 after the 30-epoch amendment). Live: `results/s4_4/gate4_progress.json` (5 of 6 runs scored at
-  last check; R5 seed 44 training). Settings: `PC-STGNN/06_STAGE_E_pcstgnn.md` § "S4.4 — Frozen settings" + amendments.
-  Quote no Gate 4 number before all 6 runs are scored; never use `results/s4_4_pilot_20ep/`.
+- **PC-STGNN Gate 4** (arms R0ⁿ vs R5, 30 epochs, seeds 42/43/44) **PASSED 2026-10-22** — all 6 runs
+  trained and scored (`results/s4_4/gate4_progress.json` stage `queue_complete`); R5 > R0ⁿ sign-consistent
+  and Holm-significant across all 3 seeds at every noise operating point. Details:
+  `PC-STGNN/06_STAGE_E_pcstgnn.md` § GATE 4. Never use `results/s4_4_pilot_20ep/` (superseded 20-epoch pilot).
 - `main` has large uncommitted PC-STGNN work (source, tests, `operator/`, configs). Do not reset, clean, or commit it unless asked.
 
 ## Hard rules

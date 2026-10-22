@@ -774,9 +774,28 @@ early hours UTC**, consistent with the live per-run tracking kept in chat status
 - [x] S4.1 null test exact — PASSED 2026-09-30, byte-identical over 30 epochs (see S4.1)
 - [x] S4.2 gradients non-zero on both λ terms; table receives none — PASSED 2026-09-30, 12/12
       applicable checks (see S4.2)
-- [ ] **R5 > R0ⁿ** (not R0) on validation, in the pre-registered conditions, sign-consistent
-      across 3 seeds — read at the noise operating points, never at clean k = 0 (S2.0ᵃ)
+- [x] **R5 > R0ⁿ** (not R0) on validation, in the pre-registered conditions, sign-consistent
+      across 3 seeds — read at the noise operating points, never at clean k = 0 (S2.0ᵃ) —
+      **PASSED 2026-10-22**, all 6 Gate 4 runs trained and scored (seeds 42/43/44, 30 epochs
+      each, `results/s4_4/{r0n,r5}/pcstgnn/seed_{00042,00043,00044}/`). R5 > R0ⁿ at **every**
+      noise operating point (k ∈ {1,2,5,10} × σ ∈ {0,5e-4,2e-3,1e-2}), **all 3 seeds**, sign
+      never flips:
+
+      | Cell | Δ (R5 − R0ⁿ), seed42/43/44 | mean Δ | Holm-adj. p |
+      |---|---|---|---|
+      | k=1, σ=0 | +0.0575 / +0.0796 / +0.0669 | +0.0680 | 0.0175 |
+      | k=2, σ=0 | +0.0667 / +0.0886 / +0.0779 | +0.0777 | 0.0196 |
+      | k=5, σ=0 | +0.0993 / +0.1200 / +0.1170 | +0.1121 | 0.0166 |
+      | k=10, σ=0 | +0.1874 / +0.2059 / +0.2109 | +0.2014 | 0.0088 |
+      | k=10, σ=5e-4 | +0.1845 / +0.2043 / +0.2074 | +0.1987 | 0.0078 |
+      | k=10, σ=2e-3 | +0.1440 / +0.1726 / +0.1755 | +0.1641 | 0.0149 |
+      | k=10, σ=1e-2 | +0.0781 / +0.1175 / +0.1063 | +0.1006 | 0.0133 |
+
+      Paired t-test over the 3 seeds, Holm-corrected within this 7-cell family (per the n=3
+      discipline in `CLAUDE.md`) — every cell survives at α=0.05. At clean k=0 (not a gate
+      condition, reported for context only): R5 also leads, +0.049/+0.071/+0.057. No run
+      collapsed (`collapse_abort.triggered` false in all 6 `metrics.json`). **Gate 4 passes.**
 
 **If R5 ≈ R0 on validation.** Do not proceed to Stage F expecting a rescue. Go straight to
 Stage G, run the OOD and noise evaluations, and write the "physics buys generalisation, not
-in-distribution accuracy" paper.
+in-distribution accuracy" paper. *(Not applicable — gate passed, see above.)*

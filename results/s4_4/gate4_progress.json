@@ -1,0 +1,338 @@
+[
+  {
+    "arm": "r0n",
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-10-12T09:14:32Z"
+  },
+  {
+    "arm": "r0n",
+    "best_validation_graph_f1": 0.8461420561394457,
+    "collapsed": false,
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": 31650.582367924973
+  },
+  {
+    "arm": "r0n",
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "scoring_started",
+    "utc": "2026-10-12T18:02:02Z"
+  },
+  {
+    "arm": "r0n",
+    "position": 1,
+    "scoring_seconds": 4843.860871025012,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r5",
+    "position": 2,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-10-12T19:22:46Z"
+  },
+  {
+    "arm": "r5",
+    "best_validation_graph_f1": 0.8951334945138161,
+    "collapsed": false,
+    "position": 2,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": 94092.17031586601
+  },
+  {
+    "arm": "r5",
+    "position": 2,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "scoring_started",
+    "utc": "2026-10-13T21:30:58Z"
+  },
+  {
+    "arm": "r5",
+    "position": 2,
+    "scoring_seconds": 26817.909173181048,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r0n",
+    "position": 3,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_started",
+    "utc": "2026-10-14T04:57:56Z"
+  },
+  {
+    "arm": "r0n",
+    "best_validation_graph_f1": 0.8308771724086585,
+    "collapsed": false,
+    "position": 3,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_done",
+    "train_seconds": 31711.061393033015
+  },
+  {
+    "arm": "r0n",
+    "position": 3,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "scoring_started",
+    "utc": "2026-10-14T13:46:27Z"
+  },
+  {
+    "arm": "r0n",
+    "position": 3,
+    "scoring_seconds": 4848.606886402005,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r5",
+    "position": 4,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_started",
+    "utc": "2026-10-14T15:07:16Z"
+  },
+  {
+    "arm": "r5",
+    "best_validation_graph_f1": 0.9019165344383905,
+    "collapsed": false,
+    "position": 4,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_done",
+    "train_seconds": 94238.65051632212
+  },
+  {
+    "arm": "r5",
+    "position": 4,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "scoring_started",
+    "utc": "2026-10-15T17:17:55Z"
+  },
+  {
+    "arm": "r5",
+    "position": 4,
+    "scoring_seconds": 26785.041417458095,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r0n",
+    "position": 5,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_started",
+    "utc": "2026-10-16T00:44:20Z"
+  },
+  {
+    "arm": "r0n",
+    "best_validation_graph_f1": 0.840742267726766,
+    "collapsed": false,
+    "position": 5,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_done",
+    "train_seconds": 31601.94426599494
+  },
+  {
+    "arm": "r0n",
+    "position": 5,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "scoring_started",
+    "utc": "2026-10-16T09:31:02Z"
+  },
+  {
+    "arm": "r0n",
+    "position": 5,
+    "scoring_seconds": 4815.2282995199785,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r5",
+    "position": 6,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_started",
+    "utc": "2026-10-16T10:51:17Z"
+  },
+  {
+    "arm": "r0n",
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_skipped_already_done"
+  },
+  {
+    "arm": "r0n",
+    "best_validation_graph_f1": 0.8461420561394457,
+    "collapsed": false,
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": null
+  },
+  {
+    "arm": "r0n",
+    "position": 1,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "scoring_skipped_already_done"
+  },
+  {
+    "arm": "r5",
+    "position": 2,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_skipped_already_done"
+  },
+  {
+    "arm": "r5",
+    "best_validation_graph_f1": 0.8951334945138161,
+    "collapsed": false,
+    "position": 2,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": null
+  },
+  {
+    "arm": "r5",
+    "position": 2,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "scoring_skipped_already_done"
+  },
+  {
+    "arm": "r0n",
+    "position": 3,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_skipped_already_done"
+  },
+  {
+    "arm": "r0n",
+    "best_validation_graph_f1": 0.8308771724086585,
+    "collapsed": false,
+    "position": 3,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_done",
+    "train_seconds": null
+  },
+  {
+    "arm": "r0n",
+    "position": 3,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "scoring_skipped_already_done"
+  },
+  {
+    "arm": "r5",
+    "position": 4,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_skipped_already_done"
+  },
+  {
+    "arm": "r5",
+    "best_validation_graph_f1": 0.9019165344383905,
+    "collapsed": false,
+    "position": 4,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_done",
+    "train_seconds": null
+  },
+  {
+    "arm": "r5",
+    "position": 4,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "scoring_skipped_already_done"
+  },
+  {
+    "arm": "r0n",
+    "position": 5,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_skipped_already_done"
+  },
+  {
+    "arm": "r0n",
+    "best_validation_graph_f1": 0.840742267726766,
+    "collapsed": false,
+    "position": 5,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_done",
+    "train_seconds": null
+  },
+  {
+    "arm": "r0n",
+    "position": 5,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "scoring_skipped_already_done"
+  },
+  {
+    "arm": "r5",
+    "position": 6,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_started",
+    "utc": "2026-10-21T05:17:07Z"
+  },
+  {
+    "arm": "r5",
+    "best_validation_graph_f1": 0.8974975064513141,
+    "collapsed": false,
+    "position": 6,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_done",
+    "train_seconds": 94224.95767551404
+  },
+  {
+    "arm": "r5",
+    "position": 6,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "scoring_started",
+    "utc": "2026-10-22T07:27:32Z"
+  },
+  {
+    "arm": "r5",
+    "position": 6,
+    "scoring_seconds": 26752.12775740004,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "scoring_done"
+  },
+  {
+    "stage": "queue_complete",
+    "utc": "2026-10-22T14:53:24Z"
+  }
+]

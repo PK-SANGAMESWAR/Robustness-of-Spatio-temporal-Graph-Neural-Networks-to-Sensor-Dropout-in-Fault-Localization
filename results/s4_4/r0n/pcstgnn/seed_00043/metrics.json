@@ -1,0 +1,17 @@
+{
+  "best_validation_graph_f1": 0.8308771724086585,
+  "collapse_abort": {
+    "epoch": 3,
+    "max_class0_frac": 0.95,
+    "min_net_f1": 0.1,
+    "triggered": false
+  },
+  "dropout_aware_training": true,
+  "pc_loss": {
+    "aux_net_loss_weight": 0.0,
+    "lambda1": 0.0,
+    "lambda2": 0.0
+  },
+  "selection_metric": "validation soft-voted graph F1",
+  "test_evaluated": false
+}
