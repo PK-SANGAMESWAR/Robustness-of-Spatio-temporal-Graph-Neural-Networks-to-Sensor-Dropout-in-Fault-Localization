@@ -6,31 +6,18 @@
 \usepackage{times}
 \usepackage{dashrule}
 \usepackage{t1enc}
-\usepackage{tikz}
-\usepackage{subfigure}
-\usepackage{pgfplots}
 \usepackage{setspace}
 \usepackage{geometry}
 \usepackage{graphicx}
-\usepackage{epstopdf}
-\usepackage{lscape}
-\usepackage{fancyhdr}
 \usepackage{natbib}
-\usepackage{hyperref} % hyperlinks for references.
-\hypersetup{hidelinks}
 \usepackage{amsmath} % easier math formulae, align, subequations \ldots
 \usepackage{amssymb}
-\usepackage{wasysym}
-\usepackage{titlesec}
 \usepackage{textcomp}
-\usepackage{pifont}
 \usepackage{array}
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage[toc,page]{appendix}
-\usetikzlibrary{decorations.pathmorphing}
-\usetikzlibrary{shapes,arrows,shadows,patterns}
 \usepackage[printonlyused]{acronym}
 %\usepackage{nomencl}
 %\newcommand{\bigsize}{\fontsize{16pt}{20pt}\selectfont}
@@ -114,7 +101,7 @@ Signature:\\
 \abstract
 \begin{doublespacing}
 \normalfont
-{\noindent Finding where a fault occurred on a distribution feeder, and not only that one occurred, decides how fast supply can be restored. Spatio-temporal graph neural networks locate faults accurately when only a few micro-phasor measurement units are installed, but their evaluations assume that every sensor always reports. This thesis adopts the spatio-temporal framework of Karabulut et al. on the IEEE 123-bus feeder, regenerates its own corpus of 1.65 million windows, and measures what happens when sensors fail or are noisy after deployment. Across five architectures at three training seeds, clean accuracy did not predict robustness: the most accurate model, with a macro-F1 of 0.846, kept only 5.7\% of its score when 10 of 25 sensors were lost. Dropout-aware training, which masks sensors during training, raised this retention to 80.3\% with no added parameters or inference latency. It outperformed neighbor-mean, learned and physics-based imputation, and an availability-gated architecture only matched it. The remedy does not protect against measurement noise or against the loss of the sensors nearest the fault, and accuracy on unseen fault scenarios is much lower than on unseen loads. The thesis then builds a fixed physical operator from simulated fault signatures, shows that the sensors can separate almost all fault locations, and designs a physics-consistent network that adds one learned parameter. [The comparison of this network with a noise-augmented reference is pending completion of the runs.]}
+{\noindent Finding where a fault occurred on a distribution feeder, and not only that one occurred, decides how fast supply can be restored. Spatio-temporal graph neural networks locate faults accurately when only a few micro-phasor measurement units are installed, but their evaluations assume that every sensor always reports. This thesis adopts the spatio-temporal framework of Karabulut et al. on the IEEE 123-bus feeder, regenerates its own corpus of 1.65 million windows, and measures what happens when sensors fail or are noisy after deployment. Across five architectures at three training seeds, clean accuracy did not predict robustness: the most accurate model, with a macro-F1 of 0.846, kept only 5.7\% of its score when 10 of 25 sensors were lost. Dropout-aware training, which masks sensors during training, raised this retention to 80.3\% with no added parameters or inference latency. It outperformed neighbor-mean, learned and physics-based imputation, and an availability-gated architecture only matched it. The remedy does not protect against measurement noise or against the loss of the sensors nearest the fault, and accuracy on unseen fault scenarios is much lower than on unseen loads. The thesis then builds a fixed physical operator from simulated fault signatures, shows that the sensors can separate almost all fault locations, and designs a physics-consistent network that adds one learned parameter. Compared with a noise-augmented reference trained the same way for 30 epochs at the same three seeds, the fused model scores higher on the validation split in every seed at all twenty tested combinations of noise and sensor loss. The gain is largest, 0.20 macro-F1, when ten of twenty-five sensors are lost, and it arises in the fusion step and not in a stronger network branch. The reference was still improving at its last epoch, so the margins can decrease with longer training. Whether the gain requires the correct physical signatures is not yet tested [PENDING: R6].}
 \end{doublespacing}
 
 \pagebreak
@@ -239,14 +226,14 @@ The benchmark is the IEEE 123-bus feeder, a standard radial test network. Twenty
 
 \begin{figure}[!tbp]
 \centering
-\includegraphics[width=0.50\textwidth]{fig1_1_feeder_graph.png}
+\includegraphics[width=0.50\textwidth]{fig1_1_feeder_graph.pdf}
 \caption{The IEEE 123-bus feeder and the measured-only graph used in this thesis.}
 \label{fig:feeder}
 \end{figure}
 
 \begin{figure}[!tbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig1_2_template.png}
+\includegraphics[width=0.95\textwidth]{fig1_2_template.pdf}
 \caption{Processing template shared by all models: temporal encoder, spatial \acs{GNN}, node classifier and soft voting.}
 \label{fig:stgnn}
 \end{figure}
@@ -297,7 +284,7 @@ The measurements reported in Chapter~\ref{chap:results} show that a purely data-
 
 \begin{figure}[!tbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig1_3_stressors.png}
+\includegraphics[width=0.95\textwidth]{fig1_3_stressors.pdf}
 \caption{Conditions that a deployed monitoring system meets but a clean benchmark does not. Panel (a) is a schematic. Panels (b) and (c) use the simulated corpus: a three-phase fault at bus 101, and noise added with the method of Section~\ref{sec:stress}.}
 \label{fig:stressors}
 \end{figure}
@@ -391,7 +378,7 @@ Figure~\ref{fig:workflow} gives an overview of the research workflow. The work s
 
 \begin{figure}[!tbp]
 \centering
-\includegraphics[width=0.90\textwidth]{fig1_4_workflow.png}
+\includegraphics[width=0.90\textwidth]{fig1_4_workflow.pdf}
 \caption{Overview of the research workflow of the thesis.}
 \label{fig:workflow}
 \end{figure}
@@ -416,7 +403,7 @@ The approaches to fault localization in distribution grids fall into four famili
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig2_1_taxonomy.png}
+\includegraphics[width=0.95\textwidth]{fig2_1_taxonomy.pdf}
 \caption{Families of fault localization methods reviewed in this chapter.}
 \label{fig:taxonomy}
 \end{figure}
@@ -478,7 +465,7 @@ A temporal encoder supplies the time axis. \citet{nguyen2022} combine a one-dime
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.88\textwidth]{fig2_2_graphs.png}
+\includegraphics[width=0.88\textwidth]{fig2_2_graphs.pdf}
 \caption{Full-topology graph and measured-only graph.}
 \label{fig:graphs}
 \end{figure}
@@ -721,7 +708,7 @@ The baselines are trained with all 25 sensors available but are evaluated with s
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.9\textwidth]{fig3_0_dropout_aware.png}
+\includegraphics[width=0.9\textwidth]{fig3_0_dropout_aware.pdf}
 \caption{Dropout-aware training. Only the masking of the input differs from standard training. The example graph is a schematic.}
 \label{fig:aware}
 \end{figure}
@@ -746,7 +733,7 @@ where $\mathrm{agg}_j=0$ if no node of the closed neighborhood of $j$ is availab
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{fig3_1_gate.png}
+\includegraphics[width=0.85\textwidth]{fig3_1_gate.pdf}
 \caption{Availability-gated aggregation in \acs{SDR-STGNN}.}
 \label{fig:gate}
 \end{figure}
@@ -890,7 +877,7 @@ where $Z_n$ is the normalizer of node $n$. Every node distribution is thus multi
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig3_2_pcstgnn.png}
+\includegraphics[width=0.95\textwidth]{fig3_2_pcstgnn.pdf}
 \caption{Architecture of \acs{PC-STGNN}.}
 \label{fig:pcstgnn}
 \end{figure}
@@ -1000,7 +987,7 @@ GRU & 0.286 & 0.273 & 0.252 & 0.111 & 0.051 & 17.9\% & 0.522 / 0.149 \\
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig4_1_degradation.png}
+\includegraphics[width=0.95\textwidth]{fig4_1_degradation.pdf}
 \caption{Degradation curves of the baselines and of the two mitigations.}
 \label{fig:degradation}
 \end{figure}
@@ -1113,7 +1100,7 @@ DA & 0.839 & 0.752 & 0.555 & 0.316 & 0.675 & 0.619 & 0.460 & 0.227 \\
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig4_2_noise.png}
+\includegraphics[width=0.95\textwidth]{fig4_2_noise.pdf}
 \caption{Effect of noise and sensor loss together on RGSAGE-Max.}
 \label{fig:noise}
 \end{figure}
@@ -1187,7 +1174,7 @@ The separability of Eq.~\eqref{eq:sep} shows that 25 magnitude-only sensors carr
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig4_3_identifiability.png}
+\includegraphics[width=0.95\textwidth]{fig4_3_identifiability.pdf}
 \caption{Identifiability of the fault location from 25 magnitude-only sensors.}
 \label{fig:ident}
 \end{figure}
@@ -1295,25 +1282,93 @@ $\lambda_1$ & $\lambda_2$ & Best epoch & Fused F1, $k=0$ & Fused F1, mean over $
 
 \subsection{Comparison With the Noise-Augmented Reference}
 
-The comparison that decides whether the learned fusion helps is between \ac{PC-STGNN} and the noise-augmented reference model. Both are trained for 30 epochs at three seeds and evaluated on the validation split under noise and sensor loss, as defined in Section~\ref{sec:pcstgnn}. Table~\ref{tab:gate4} reserves the cells for these values. They are placeholders and will be filled when the runs are complete.
+The comparison that decides whether the learned fusion helps is between \ac{PC-STGNN} and the noise-augmented reference model. Both are trained for 30 epochs at seeds 42, 43 and 44 and evaluated on the validation split at every combination of the noise levels and the sensor-loss levels of Section~\ref{sec:pcstgnn}. The two models of one seed form a pair, and a difference is called sign-consistent when it has the same sign in all three pairs. The decision was fixed before training: the fused model must score higher in all three seeds at the conditions under sensor loss, read apart from clean $k=0$, where the residual of the true class on the simulated corpus is exactly zero. Sign consistency across the three seeds is this primary criterion, and it does not depend on a significance test. A Holm correction is reported in addition, as elsewhere in this thesis, but the family of seven conditions with sensor loss, $k\in\{1,2,5,10\}$ without noise and $k=10$ at each noise level, was chosen after the results were seen and not fixed beforehand; it is reported as a description of where the result is strongest, not as part of the decision. The other conditions are reported for completeness.
+
+Table~\ref{tab:gate4} gives the macro-F1 of every seed. \ac{PC-STGNN} scores higher than the reference in all 60 pairs of seed and condition, and the smallest single difference is 0.008, so the primary criterion is met at every evaluated condition. The mean difference grows with the number of lost sensors, from 0.059 at $k=0$ to 0.201 at $k=10$ without noise, and it decreases as the noise rises, to 0.025 at $k=0$ and 0.101 at $k=10$ at 0.01 p.u. Under the post hoc seven-condition family, all seven differences are significant after the Holm correction ($p_{\mathrm{Holm}}\le0.020$). With three seeds, the significance depends on the size of the family: over all twenty conditions, only the two largest differences, at $k=10$ without noise and at 0.0005 p.u., remain significant ($p_{\mathrm{Holm}}=0.025$). At $k=0$ and 0.01 p.u., the difference is not significant even before the correction ($p=0.14$).
+
+The reference was still improving at the end of training. Its best validation epochs were 30, 29 and 27, and its mean validation score over epochs 26 to 30 was 0.010 to 0.016 higher than over epochs 21 to 25. The best epochs of \ac{PC-STGNN} were 19, 29 and 17, and its score changed by less than 0.005 between the same two periods. The reference is therefore compared before it reached its final level, and the margins can decrease with longer training.
 
 \begin{table}[htbp]
-\caption{Comparison of \acs{PC-STGNN} with the noise-augmented reference, validation macro-F1, mean over three seeds. The values are not yet available.}
+\caption{Comparison of \acs{PC-STGNN} with the noise-augmented reference, validation macro-F1 per training seed. The difference is the mean over the three seed pairs. $p_{\mathrm{Holm}}$ is given for the seven conditions of the decision family; the other conditions are descriptive.}
 \label{tab:gate4}
-\small
+\footnotesize
 \centering
-\begin{tabular}{@{}lccc@{}}
+\begin{tabular}{@{}rlcccccccc@{}}
 \toprule
-Condition & Reference & \acs{PC-STGNN} & Difference \\
+ & & \multicolumn{3}{c}{Reference} & \multicolumn{3}{c}{\acs{PC-STGNN}} & & \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}
+$k$ & Noise (p.u.) & 42 & 43 & 44 & 42 & 43 & 44 & Difference & $p_{\mathrm{Holm}}$ \\
 \midrule
-Clean, $k=0$ & [value pending] & [value pending] & [value pending] \\
-Noise 0.002 p.u., $k=0$ & [value pending] & [value pending] & [value pending] \\
-Noise 0.01 p.u., $k=0$ & [value pending] & [value pending] & [value pending] \\
-Clean, $k=10$ & [value pending] & [value pending] & [value pending] \\
-Noise 0.01 p.u., $k=10$ & [value pending] & [value pending] & [value pending] \\
+0 & 0 & 0.846 & 0.831 & 0.841 & 0.895 & 0.902 & 0.897 & $+0.059$ & -- \\
+ & 0.0005 & 0.846 & 0.830 & 0.838 & 0.897 & 0.899 & 0.896 & $+0.059$ & -- \\
+ & 0.002 & 0.829 & 0.810 & 0.819 & 0.868 & 0.874 & 0.872 & $+0.052$ & -- \\
+ & 0.01 & 0.736 & 0.714 & 0.721 & 0.744 & 0.758 & 0.743 & $+0.025$ & -- \\
+\addlinespace
+1 & 0 & 0.833 & 0.817 & 0.826 & 0.891 & 0.897 & 0.893 & $+0.068$ & 0.020 \\
+ & 0.0005 & 0.833 & 0.817 & 0.824 & 0.892 & 0.894 & 0.891 & $+0.068$ & -- \\
+ & 0.002 & 0.818 & 0.798 & 0.806 & 0.861 & 0.869 & 0.866 & $+0.058$ & -- \\
+ & 0.01 & 0.728 & 0.705 & 0.711 & 0.738 & 0.752 & 0.737 & $+0.028$ & -- \\
+\addlinespace
+2 & 0 & 0.820 & 0.804 & 0.811 & 0.887 & 0.893 & 0.889 & $+0.078$ & 0.020 \\
+ & 0.0005 & 0.820 & 0.803 & 0.809 & 0.888 & 0.890 & 0.887 & $+0.077$ & -- \\
+ & 0.002 & 0.804 & 0.786 & 0.792 & 0.855 & 0.863 & 0.860 & $+0.065$ & -- \\
+ & 0.01 & 0.719 & 0.696 & 0.701 & 0.732 & 0.746 & 0.732 & $+0.031$ & -- \\
+\addlinespace
+5 & 0 & 0.776 & 0.757 & 0.761 & 0.875 & 0.877 & 0.878 & $+0.112$ & 0.017 \\
+ & 0.0005 & 0.776 & 0.757 & 0.759 & 0.876 & 0.877 & 0.876 & $+0.112$ & -- \\
+ & 0.002 & 0.762 & 0.742 & 0.746 & 0.837 & 0.846 & 0.842 & $+0.092$ & -- \\
+ & 0.01 & 0.686 & 0.662 & 0.663 & 0.713 & 0.727 & 0.714 & $+0.048$ & -- \\
+\addlinespace
+10 & 0 & 0.669 & 0.650 & 0.647 & 0.856 & 0.856 & 0.858 & $+0.201$ & 0.009 \\
+ & 0.0005 & 0.669 & 0.650 & 0.647 & 0.853 & 0.854 & 0.854 & $+0.199$ & 0.009 \\
+ & 0.002 & 0.658 & 0.638 & 0.636 & 0.802 & 0.811 & 0.811 & $+0.164$ & 0.017 \\
+ & 0.01 & 0.595 & 0.572 & 0.568 & 0.673 & 0.690 & 0.674 & $+0.101$ & 0.020 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Table~\ref{tab:decomp} separates the fused output of \ac{PC-STGNN} into its two sources: the soft vote of the network branch alone and the \ac{PSM} prediction from the residual alone. The fused score is higher than both sources in every condition, by 0.038 to 0.132. The two sources fail under different perturbations. Sensor loss lowers the network branch from 0.812 at $k=0$ to 0.615 at $k=10$ without noise, but it lowers \ac{PSM} only from 0.772 to 0.750. Noise lowers \ac{PSM} from 0.772 to 0.496 at $k=0$, and the network branch only from 0.812 to 0.710. The fused class follows the source that holds up. At $k=0$, its agreement with \ac{PSM} falls from 71.3\% without noise to 34.4\% at 0.01 p.u. Without noise, its agreement with the network branch falls from 92.1\% at $k=0$ to 82.2\% at $k=10$. In every condition the fused class agrees with the network branch more often than with \ac{PSM}. The agreement is counted over all windows, including the no-fault windows, in which \ac{PSM} is weak, so it does not measure the share of physical evidence in the fault decisions alone.
+
+\begin{table}[htbp]
+\caption{Sources of the fused prediction of \acs{PC-STGNN}, validation split, mean over three seeds. The columns give the macro-F1 of the fused output, of the network branch alone and of \acs{PSM}, and the percentage of all windows in which the fused class equals the class of each source.}
+\label{tab:decomp}
+\footnotesize
+\centering
+\begin{tabular}{@{}rlccccc@{}}
+\toprule
+ & & \multicolumn{3}{c}{Macro-F1} & \multicolumn{2}{c}{Agreement of the fused class (\%)} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-7}
+$k$ & Noise (p.u.) & Fused & Network only & \acs{PSM} & With network & With \acs{PSM} \\
+\midrule
+0 & 0 & 0.898 & 0.812 & 0.772 & 92.1 & 71.3 \\
+ & 0.0005 & 0.897 & 0.811 & 0.770 & 92.6 & 70.5 \\
+ & 0.002 & 0.871 & 0.796 & 0.746 & 94.7 & 65.2 \\
+ & 0.01 & 0.748 & 0.710 & 0.496 & 97.4 & 34.4 \\
+\addlinespace
+1 & 0 & 0.893 & 0.798 & 0.770 & 91.4 & 71.3 \\
+ & 0.0005 & 0.892 & 0.797 & 0.769 & 91.9 & 70.5 \\
+ & 0.002 & 0.865 & 0.783 & 0.743 & 94.2 & 64.9 \\
+ & 0.01 & 0.743 & 0.699 & 0.492 & 97.1 & 34.1 \\
+\addlinespace
+2 & 0 & 0.889 & 0.782 & 0.769 & 90.6 & 71.3 \\
+ & 0.0005 & 0.888 & 0.781 & 0.767 & 91.1 & 70.4 \\
+ & 0.002 & 0.860 & 0.768 & 0.740 & 93.6 & 64.5 \\
+ & 0.01 & 0.736 & 0.688 & 0.489 & 96.8 & 33.7 \\
+\addlinespace
+5 & 0 & 0.877 & 0.732 & 0.763 & 88.0 & 71.1 \\
+ & 0.0005 & 0.876 & 0.731 & 0.761 & 88.7 & 70.0 \\
+ & 0.002 & 0.842 & 0.720 & 0.730 & 91.5 & 63.3 \\
+ & 0.01 & 0.718 & 0.648 & 0.478 & 95.5 & 32.6 \\
+\addlinespace
+10 & 0 & 0.857 & 0.615 & 0.750 & 82.2 & 70.2 \\
+ & 0.0005 & 0.854 & 0.614 & 0.747 & 82.8 & 69.0 \\
+ & 0.002 & 0.808 & 0.606 & 0.704 & 86.2 & 60.0 \\
+ & 0.01 & 0.679 & 0.547 & 0.457 & 91.9 & 30.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The comparison does not identify which element of \ac{PC-STGNN} produces the gain. The model differs from the reference in three elements: the fused residual, the held-out term with $\lambda_2=0.1$ and the auxiliary loss with $\gamma=1$. The expected residual on the available sensors is not among them, because $\lambda_1=0$, so no part of the gain is due to it. The data show where the gain is realized. The network branch of \ac{PC-STGNN} alone scores below the reference in 45 of the 60 pairs, and its mean deficit per condition is between 0.014 and 0.041. Only the fused output is better than the reference. The gain therefore arises in the fusion step and not through a stronger network branch. The contribution of the held-out term is measured by a model that keeps this term without the fusion [PENDING: R4]. The effect of the auxiliary loss on the fused score at 30 epochs is measured by a model with $\gamma=0$ [PENDING: R5-$\gamma$0]. Whether the gain needs the correct assignment of signatures to locations is tested with a shuffled table [PENDING: R6]. Whether a learned decoder of matched size gives the same gain is tested separately [PENDING: R2], and so is a wider backbone [PENDING: R7].
 
 \section{Discussion}
 
@@ -1323,7 +1378,7 @@ Second, the remedy works because it changes what the mask means. In the clean co
 
 Third, the conclusions have limits. Scores on the event-level split fall by about 0.36 on unseen scenarios for the standard model, worst-case loss and noise are stressors that the remedy does not absorb, and the data are quasi-static magnitudes from one simulated feeder.
 
-Fourth, the physical operator is informative but does not replace the learned model. Fusion at inference helps most under noise and heavy sensor loss in the preliminary test, whereas injection through the loss was neutral or harmful, and a stable trained fusion needed noise augmentation and an auxiliary loss. Whether the trained fusion beats the noise-augmented reference is the question that Table~\ref{tab:gate4} will answer.
+Fourth, the physical operator is informative but does not replace the learned model. Fusion at inference helps most under noise and heavy sensor loss in the preliminary test, whereas injection through the loss was neutral or harmful, and in the tuning at one seed a stable trained fusion needed noise augmentation and an auxiliary loss. Trained at three seeds, the fusion scores higher than the noise-augmented reference in every seed and condition, most under sensor loss (Table~\ref{tab:gate4}). The network branch and the physical prediction fail under different perturbations, and the fused output is better than each of them (Table~\ref{tab:decomp}). Which element of the model produces the gain is not yet separated [PENDING: R4] [PENDING: R5-$\gamma$0] [PENDING: R6].
 
 \section{Summary}
 
@@ -1348,7 +1403,7 @@ The conclusions follow the research questions of Section~\ref{sec:rq}.
 
 \textbf{RQ4: information content of the sensors.} Twenty-five magnitude-only sensors carry enough information to separate almost every pair of fault locations: 1.5\% of the pairs are indistinguishable for $k=0$ to 5 and 1.8\% for $k=10$, and the limit lies at high resistance and not in the number of sensors. The physical operator does not beat the learned model on its own ground, since training-free matching reaches 0.772 against 0.855 for the learned model on the validation split. It is nearly insensitive to sensor loss and, applied at inference to a trained checkpoint, improved the score in every condition tested in a preliminary test, most strongly under noise and heavy sensor loss.
 
-\textbf{RQ5: fusion in the network.} The fusion can be added without adding capacity or leaking labels: it adds one parameter, reduces exactly to the backbone when switched off, and sends gradient to the network weights and not to the fixed table. Its design needed two further elements. Without noise augmentation the network learns to defer entirely to the physics, and without an auxiliary loss on the network-only logits it still fails to localize on its own. The loss on the expected residual of the available sensors did not contribute, and the held-out term was neutral to slightly positive. Whether the trained fusion outperforms a model trained with the same noise augmentation and no physics is decided by Table~\ref{tab:gate4}. [Conclusion on this comparison pending completion of the runs.]
+\textbf{RQ5: fusion in the network.} The fusion can be added without adding capacity or leaking labels: it adds one parameter, reduces exactly to the backbone when switched off, and sends gradient to the network weights and not to the fixed table. In the tuning at one seed, its design needed two further elements. Without noise augmentation the network learned to defer entirely to the physics, and without an auxiliary loss on the network-only logits it still failed to localize on its own. Whether both findings hold at 30 epochs is not yet tested [PENDING: R8] [PENDING: R5-$\gamma$0]. The loss on the expected residual of the available sensors did not contribute, so the final model does not use it ($\lambda_1=0$). The held-out term was kept, but its effect has not been tested [PENDING: R4]. Trained for 30 epochs at three seeds, the fused model scores higher than a model with the same noise augmentation and no physics in every seed at all twenty combinations of noise and sensor loss (Table~\ref{tab:gate4}), meeting the primary, pre-registered criterion of sign consistency across the three seeds at every condition under sensor loss. Under a seven-condition family formed after the results were seen, not fixed in advance, the comparisons under sensor loss are also significant after the Holm correction, and the largest gain is $+0.201$ macro-F1 at $k=10$ without noise ($p_{\mathrm{Holm}}=0.009$). The gain decreases as the noise rises and is not significant at $k=0$ and 0.01 p.u. It arises in the fusion step: the network branch alone scores below the reference in 45 of the 60 pairs, and the fused output is better than both the network branch and \ac{PSM} in every condition. The reference was still improving at its last epoch, so the margins can decrease with longer training. Whether the gain requires the correct physical signatures, and not only an added input, is not yet tested [PENDING: R6] [PENDING: R2] [PENDING: R7].
 
 \section{Limitations}
 
