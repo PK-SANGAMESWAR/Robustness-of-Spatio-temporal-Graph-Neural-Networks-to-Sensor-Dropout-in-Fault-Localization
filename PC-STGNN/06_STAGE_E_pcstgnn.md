@@ -774,6 +774,11 @@ early hours UTC**, consistent with the live per-run tracking kept in chat status
 - [x] S4.1 null test exact — PASSED 2026-09-30, byte-identical over 30 epochs (see S4.1)
 - [x] S4.2 gradients non-zero on both λ terms; table receives none — PASSED 2026-09-30, 12/12
       applicable checks (see S4.2)
+> **[Replaced 2026-10-22 23:11 IST / 2026-10-22T17:41:10Z — the item below is superseded by
+> "GATE 4 — corrected record" after it. Kept unchanged, not deleted. Three errors: its Holm values
+> omit the step-down maximum; it says "every noise operating point (k ∈ {1,2,5,10} × σ ∈ {…})"
+> (16 cells) but its table has 7; and its 7-cell Holm family was not listed before the runs.]**
+
 - [x] **R5 > R0ⁿ** (not R0) on validation, in the pre-registered conditions, sign-consistent
       across 3 seeds — read at the noise operating points, never at clean k = 0 (S2.0ᵃ) —
       **PASSED 2026-10-22**, all 6 Gate 4 runs trained and scored (seeds 42/43/44, 30 epochs
@@ -795,6 +800,79 @@ early hours UTC**, consistent with the live per-run tracking kept in chat status
       discipline in `CLAUDE.md`) — every cell survives at α=0.05. At clean k=0 (not a gate
       condition, reported for context only): R5 also leads, +0.049/+0.071/+0.057. No run
       collapsed (`collapse_abort.triggered` false in all 6 `metrics.json`). **Gate 4 passes.**
+
+### GATE 4 — corrected record `[Added 2026-10-22 23:11 IST / 2026-10-22T17:41:10Z]`
+
+**The rule as written before the runs.** The first Gate 4 run started 2026-10-12T09:14:32Z
+(`results/s4_4/gate4_progress.json`, R0ⁿ seed 42). The last commit of this file before that is
+`9d18184` (2026-10-12 14:44:20 IST = 09:14:20Z). In `9d18184` the rule is at lines 657–658 (quoted
+in the frozen settings) and lines 758–759 (this checklist); in the current file at lines 660–661
+and the checklist item above. Verbatim:
+
+> **R5 > R0ⁿ** (not R0) on validation, in the pre-registered conditions, sign-consistent
+> across 3 seeds — read at the noise operating points, never at clean k = 0 (S2.0ᵃ)
+
+The rule asks for sign consistency over the 3 seed pairs. It does not ask for a significance test.
+
+**"Pre-registered conditions", as written before the runs** (`git show 9d18184:<file>`):
+- `14_PREREGISTRATION.md` lines 51–54: H1 10 Ω, k = 0 · H2 k = 10 · H3 R ∈ {3,5,20,30} Ω, k = 0
+  (sealed OOD) · H4 σ₀ ∈ {5e-4, 2e-3, 1e-2}, k = 0.
+- `13_BUDGET_TIMELINE.md` line 64: "10 Ω, k = 10, OOD R, injected noise, silent failures".
+
+**What the Gate 4 data can evaluate.** `results/s4_4/*/scoring_full_grid.json` holds validation F1
+pooled over all resistances on the grid k ∈ {0,1,2,5,10} × σ ∈ {0, 5e-4, 2e-3, 1e-2}.
+- H2 (k = 10) and H4 (σ₀ > 0, k = 0): yes.
+- H1 (10 Ω slice): **no** — the scored files have no per-resistance breakdown. It needs a scoring
+  run, which was not done.
+- H3 (sealed OOD R) and silent failures: Stage G and Stage F conditions, outside Gate 4.
+
+**Rule applied** (Δ = R5 − R0ⁿ, validation macro-F1, pairs by training seed):
+
+| Condition | Cell | Δ seed 42 / 43 / 44 | mean Δ | Sign-consistent |
+|---|---|---|---|---|
+| H2 | k=10, σ=0 | +0.1874 / +0.2059 / +0.2109 | +0.2014 | yes |
+| H2 | k=10, σ=5e-4 | +0.1845 / +0.2043 / +0.2074 | +0.1987 | yes |
+| H2 | k=10, σ=2e-3 | +0.1440 / +0.1726 / +0.1755 | +0.1641 | yes |
+| H2 | k=10, σ=1e-2 | +0.0781 / +0.1175 / +0.1063 | +0.1006 | yes |
+| H4 | k=0, σ=5e-4 | +0.0509 / +0.0687 / +0.0576 | +0.0590 | yes |
+| H4 | k=0, σ=2e-3 | +0.0384 / +0.0642 / +0.0528 | +0.0518 | yes |
+| H4 | k=0, σ=1e-2 | +0.0083 / +0.0437 / +0.0218 | +0.0246 | yes |
+
+21 of 21 seed pairs are positive. If "read at the noise operating points" excludes σ = 0, the H2
+row at σ = 0 drops out; the result does not change.
+
+**Result: passed** on every pre-registered condition that the Gate 4 data can evaluate (H2, H4).
+**H1 (10 Ω) is not evaluated** — open item.
+
+**Holm.** No Holm family for the Gate 4 rule was written before the runs. The only family written
+before the runs is `14_PREREGISTRATION.md` §3 (line 78 in `9d18184`): "families = {H1–H4}, {H5},
+{A1–A3}", for the hypotheses (test split, with an event bootstrap). It cannot be formed from the
+Gate 4 data, because H1 and H3 are not available. So no Holm result is part of the Gate 4 verdict.
+Raw paired-t p (n = 3, df = 2) for the H4 cells, descriptive only: 0.0077, 0.0200, 0.1398.
+
+**Correction of the old table — Holm values.** The old table's 7-cell family (k ∈ {1,2,5} at σ = 0;
+k = 10 at all four σ) was chosen on 2026-10-22, after the results existed. It was **not listed
+before the runs**; treat it as post hoc. Its old values are the Holm step products without the
+step-down maximum. Corrected (step-down maximum applied):
+
+| Cell | raw p | Old value | Corrected Holm p |
+|---|---|---|---|
+| k=1, σ=0 | 0.0087 | 0.0175 | **0.0196** |
+| k=2, σ=0 | 0.0065 | 0.0196 | 0.0196 |
+| k=5, σ=0 | 0.0033 | 0.0166 | 0.0166 |
+| k=10, σ=0 | 0.0013 | 0.0088 | 0.0088 |
+| k=10, σ=5e-4 | 0.0013 | 0.0078 | **0.0088** |
+| k=10, σ=2e-3 | 0.0037 | 0.0149 | **0.0166** |
+| k=10, σ=1e-2 | 0.0133 | 0.0133 | **0.0196** |
+
+All seven stay below 0.05.
+
+**Correction of the old table — cell count.** The old text says "every noise operating point
+(k ∈ {1,2,5,10} × σ ∈ {0,5e-4,2e-3,1e-2})", which is **16** cells, but its table has **7**.
+Correct statements: Δ > 0 in all 16 cells for all 3 seeds (48 of 48 pairs); the table shows the
+post-hoc 7-cell family. In a 16-cell Holm family (also post hoc), 5 of 16 cells are below 0.05:
+k=5 σ=0 (0.0431), k=5 σ=5e-4 (0.0411), k=10 σ=0 (0.0201), k=10 σ=5e-4 (0.0201), k=10 σ=2e-3
+(0.0447).
 
 **If R5 ≈ R0 on validation.** Do not proceed to Stage F expecting a rescue. Go straight to
 Stage G, run the OOD and noise evaluations, and write the "physics buys generalisation, not
