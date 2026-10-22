@@ -769,6 +769,56 @@ seed 1, R5 seed 1, R0ⁿ seed 2 — all trained and scored; R5 seed 2 in progres
 Starting from 2026-10-12 19:14 UTC (R0ⁿ seed 1's actual start) → completion **≈ 2026-10-18,
 early hours UTC**, consistent with the live per-run tracking kept in chat status updates.
 
+### S4.4 — Frozen settings for the remaining arms (R1, R2, R3, R4, R6, R8, R5-γ0) `[Pre-registered 2026-10-22 23:32 IST / 2026-10-22T18:02:16Z, decisions D1–D9, full record and GPU-hour recomputation: PC-STGNN/S4.4_remaining_arms_plan.md § 11]`
+
+No run in this subsection has been launched. These settings are frozen before any of them starts.
+
+- **R6 (D1).** `shuffle_seed=6` — one permutation, shared by all 3 training seeds. Verified a
+  full derangement of the 25 locations (no location keeps its own signature) with class 0 fixed,
+  both by direct computation and against the real `PCSTGNN` class. Record:
+  `config/s4_4/r6_shuffle_permutation.json`. Otherwise identical to `r5.yaml` (λ₁=0, λ₂=0.1, γ=1,
+  fusion on, noise + dropout augmentation on, 30 epochs). 3 seeds.
+- **R5-γ0 (D2).** Exempt from the collapse guard, same mechanism as R8: no
+  `training.collapse_abort` key, so the run always completes all 30 epochs even if the
+  network-only branch is still collapsed at epoch 3. γ=0 is its own defining feature (unaffected
+  by the design rule "γ applies only when fusion is ON" — R5-γ0 has fusion on and γ=0 by choice,
+  not by that rule). 1 seed.
+- **R3, R4 (D3).** The runner fix: `fault_localization/experiments/runner.py::_model` now loads
+  the physics table whenever `use_fusion` is true **or** `pc_loss.enabled` and (λ₁>0 or λ₂>0) —
+  previously gated on `use_fusion` alone, so a fusion-off, λ-on config raised
+  `KeyError("pc_loss needs out['rho_A'] ...")` at the first training step (the table and
+  `forward_pc`'s `rho_A`/`rho_D` outputs were simply never populated). A register_buffer does not
+  draw from the RNG stream, so this does not touch S4.1's "lambda = beta = 0 recovers Paper-1
+  exactly" byte-identity claim — re-verified by a dedicated unit test. R0ⁿ-style configs
+  (`pc_loss.enabled=true`, λ₁=λ₂=0, used purely for the noise-aug loader plumbing) are
+  unaffected: still no table loads for them. R4 (λ₂=0.1): 3 seeds. R3 (λ₁=0.01): 1 seed.
+- **R1 (D4).** Auxiliary type-head loss weight fixed at **1.0**, not tuned. The cross-entropy
+  term on `type_logits` itself is not written yet (`fault_localization/models/common.py::pc_loss`
+  has no term for it) — this freezes the weight for when it is. 1 seed.
+- **R2 (D5).** The default decoder (`decoder_hidden=64`), not a backbone shrunk to match R5's
+  +1-parameter delta. Measured parameter counts: R0ⁿ 95,258; R5 95,259 (+1, `beta`); R0ⁿ +
+  default decoder 99,613 (**+4,355** over R0ⁿ, not parameter-matched to R5). The reconstruction
+  loss term itself is not written yet, same as R1. 3 seeds.
+- **R7: dropped, not run (D6).** R5 has exactly one parameter more than R0ⁿ (`beta`). No width
+  change can match a +1-parameter target, so a wider backbone does not test what A3 ("capacity
+  does not reproduce it", `14_PREREGISTRATION.md` §2) asks. Removed from the ablation queue; the
+  table row in `S4.4_remaining_arms_plan.md` § 3 is kept struck through, not deleted.
+- **B2ᵃ: deferred to Stage G, not run in this round (D7).** Its implementation plan
+  (`S4.4_remaining_arms_plan.md` § 6.2) stands unwritten and unexecuted; tracked under Stage G's
+  own budget, not this ablation's near-term total.
+- **Seed counts: not promoted (D9).** R1 and R3 stay at 1 seed each (R7 is dropped, so moot for it).
+- **Recomputed near-term total: 318.81 GPU-h ≈ 13.28 days** for the 7 decided arms (R6 ×3, R8 ×1,
+  R5-γ0 ×1, R4 ×3, R3 ×1, R2 ×3, R1 ×1 = 13 run-seeds), down from the pre-decision 364.41 GPU-h
+  (9 arms, 15 run-seeds: −12.01 GPU-h from dropping R7, −33.60 GPU-h from deferring B2ᵃ).
+  R8's cost (33.60 GPU-h) is unaffected and is the only arm in this set approved to launch
+  immediately after S5.1 completes and H1 is checked (D8) — see GATE 4 below.
+- **Code this round, no training run:** the runner fix above; the scorer generalized to accept
+  any arm and to report `f1_by_resistance` per cell (needed for the H1 check below);
+  `scripts/make_r6_shuffle_permutation.py` + its output file; `config/s4_4/r8.yaml`; 18 new unit
+  tests in `tests/test_s4_4_remaining_arms.py` (passing), plus the existing 16
+  `tests/test_pc_stgnn.py` tests re-run clean as a regression check. R1/R2/B2ᵃ loss/head code was
+  explicitly not written this round.
+
 ## GATE 4
 
 - [x] S4.1 null test exact — PASSED 2026-09-30, byte-identical over 30 epochs (see S4.1)
