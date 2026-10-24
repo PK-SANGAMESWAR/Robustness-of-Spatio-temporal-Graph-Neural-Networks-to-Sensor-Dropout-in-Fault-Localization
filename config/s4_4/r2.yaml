@@ -31,15 +31,12 @@ model:
 # R0^n -- D5, PC-STGNN/S4.4_remaining_arms_plan.md section 11). gamma=0, fusion off, no
 # beta, lambda1=lambda2=0, same as r0n.yaml. 3 seeds.
 #
-# OPEN ITEM, flagged rather than invented (CLAUDE.md "never invent a number"): D5 decided
-# the decoder architecture only. The reconstruction-loss weight (pc_loss.recon_loss_weight
-# below) was never decided -- S4.4_remaining_arms_plan.md section 4.2 calls it an explicit
-# "author decision", still outstanding. It is therefore left at the code default 0.0
-# (models/common.py::pc_loss), which makes the reconstruction term an inert, zero-gradient
-# no-op: as written, this config trains the decoder with no loss signal at all (the decoder
-# head would stay at its random initialization). Do NOT start this arm until a weight is
-# decided and this value is filled in -- otherwise the run does not test what R2 exists to
-# test.
+# pc_loss.recon_loss_weight = 1.0, decided 2026-10-24 16:48 IST / 2026-10-24T11:18:09Z
+# (06_STAGE_E_pcstgnn.md "Frozen settings for the remaining arms", R2 (D5) addendum).
+# Balance check on one seed-42 batch at initialization: main loss 3.458, reconstruction
+# loss 0.726, ratio 0.21 -- inside [0.1, 10] (scripts/check_r2_recon_weight.py), so the
+# weight is used as given, no rescaling. R2 is still not part of the approved training
+# queue (PC-STGNN/S4.4_remaining_arms_plan.md section 7, Part 5 of the 2026-10-24 task).
 noise_augmentation:
   enabled: true
   sigma_grid: [0.0, 0.0005, 0.002, 0.01]
@@ -50,7 +47,7 @@ pc_loss:
   lambda1: 0.0
   lambda2: 0.0
   log_network_only: true
-  recon_loss_weight: 0.0
+  recon_loss_weight: 1.0
 seed: 42
 training:
   batch_size: 32

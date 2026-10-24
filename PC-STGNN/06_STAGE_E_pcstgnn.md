@@ -799,6 +799,18 @@ No run in this subsection has been launched. These settings are frozen before an
   +1-parameter delta. Measured parameter counts: R0ⁿ 95,258; R5 95,259 (+1, `beta`); R0ⁿ +
   default decoder 99,613 (**+4,355** over R0ⁿ, not parameter-matched to R5). The reconstruction
   loss term itself is not written yet, same as R1. 3 seeds.
+
+  **R2 reconstruction-loss weight, decided `[2026-10-24 16:48 IST / 2026-10-24T11:18:09Z]`:
+  `pc_loss.recon_loss_weight = 1.0`.** The loss code (`models/common.py::pc_loss`,
+  `recon_loss_weight`/`recon_target`/`recon_mask`) was written on 2026-10-24 (no training run).
+  Balance check before freezing the weight: on one batch from the seed-42 training stream (the
+  first batch in that stream with a synthetically dropped channel — the seed-42 stream's own
+  first batch draws k=0, which would give a vacuous 0/0 reconstruction loss), at model
+  initialization (no training steps), main loss (CE) = 3.458318, reconstruction loss
+  (unweighted MSE on the 192 dropped channels of that batch) = 0.726126, ratio
+  recon/main = 0.210 (main/recon = 4.76) — inside the pre-registered [0.1, 10] acceptance
+  band (`scripts/check_r2_recon_weight.py`), so weight 1.0 needs no rescaling. `config/s4_4/r2.yaml`
+  updated accordingly; R2 is not part of the approved training queue yet.
 - **R7: dropped, not run (D6).** R5 has exactly one parameter more than R0ⁿ (`beta`). No width
   change can match a +1-parameter target, so a wider backbone does not test what A3 ("capacity
   does not reproduce it", `14_PREREGISTRATION.md` §2) asks. Removed from the ablation queue; the
