@@ -903,8 +903,24 @@ pooled over all resistances on the grid k ∈ {0,1,2,5,10} × σ ∈ {0, 5e-4, 2
 21 of 21 seed pairs are positive. If "read at the noise operating points" excludes σ = 0, the H2
 row at σ = 0 drops out; the result does not change.
 
-**Result: passed** on every pre-registered condition that the Gate 4 data can evaluate (H2, H4).
-**H1 (10 Ω) is not evaluated** — open item.
+> **[Replaced 2026-10-24 21:28 IST / 2026-10-24T15:58:17Z — kept unchanged, not deleted. H1 has since been scored (below).]**
+> **Result: passed** on every pre-registered condition that the Gate 4 data can evaluate (H2, H4).
+> **H1 (10 Ω) is not evaluated** — open item.
+
+**Result: passed** on all pre-registered conditions that can be evaluated before Stage G (**H1, H2, H4**).
+**H3** (sealed OOD resistance, `data/ood_test/`) is tested in Stage G and is not part of the Gate 4 verdict.
+
+**H1 record `[Added 2026-10-24 21:28 IST / 2026-10-24T15:58:17Z]`.** Scored by `scripts/score_h1_resistance.py` on the validation split at
+k = 0, σ = 0, the 10 Ω slice (windows grouped by their event's resistance), per run in
+`results/s4_4/{r0n,r5}/pcstgnn/seed_{00042,00043,00044}/scoring_h1.json`. This was scored on 2026-10-23, after
+the S5.1 gate (decision D8), and was not recorded here until now.
+
+| Condition | Cell | R0ⁿ seed 42 / 43 / 44 | R5 seed 42 / 43 / 44 | Δ seed 42 / 43 / 44 | mean Δ | Sign-consistent |
+|---|---|---|---|---|---|---|
+| H1 | 10 Ω, k=0, σ=0 | 0.6353 / 0.6320 / 0.6568 | 0.7330 / 0.7530 / 0.7363 | +0.0978 / +0.1210 / +0.0795 | +0.0994 | yes |
+
+3 of 3 seed pairs are positive. Raw paired t (n = 3, df = 2): p = 0.0143, descriptive only; no Holm
+family is attached (the pre-registered family {H1–H4} cannot be formed before H3 is available).
 
 **Holm.** No Holm family for the Gate 4 rule was written before the runs. The only family written
 before the runs is `14_PREREGISTRATION.md` §3 (line 78 in `9d18184`): "families = {H1–H4}, {H5},

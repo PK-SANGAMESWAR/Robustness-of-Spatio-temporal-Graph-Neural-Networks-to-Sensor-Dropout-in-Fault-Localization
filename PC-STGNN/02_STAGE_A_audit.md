@@ -216,10 +216,25 @@ unless Gate 4 passes and budget remains. State this in the paper's experimental 
 
 Proceed only if:
 
-- [ ] S0.1 reproduces the Paper-1 tables exactly
-- [ ] S0.4 matches to 1e-3 p.u. on all 5 events, σ_ε recorded
-- [ ] S0.3 census confirmed, quasi-static check passed, policy fixed
-- [ ] S0.5 solve rates recorded and `13_BUDGET_TIMELINE.md` rescaled
-- [ ] S0.0 load model recorded as a scalar, in writing `[Added 2026-09-23]`
-- [ ] S0.3 unlabelable-window ceiling computed; no model beats chance on w = 20 `[Added 2026-09-23]`
-- [ ] S0.4 freeze assertion (`L × 0.99953`) passes `[Added 2026-09-23]`
+- [ ] S0.1 reproduces the Paper-1 tables exactly — **not complete** `[Checked 2026-10-24 21:29 IST]`. Done: exact at k = 0
+      and on the three free layers; at k > 0 the match is within mask-realisation noise (≤ 6.7e-4),
+      as ruled on 2026-09-23. Not done: the 33-arm re-evaluation inside Paper 2's pipeline (the
+      stated resolution of this item, `audit/reeval/{standard,dropout_aware,sdr}/degradation_curves.csv`).
+      On disk there are only three RGSAGE-Max seed-42 files (`results/pcstgnn/audit/reeval/`).
+- [x] S0.4 matches to 1e-3 p.u. on all 5 events, σ_ε recorded — worst error 5.7e-6 p.u. at 1 fault step, 1.0e-12
+      at 5 steps; σ_ε recorded as 1.0e-12 in `snapshot_equivalence.json`, later replaced by the grid-discretisation
+      value 7.2555e-4 (`01_SPEC.md` §4)
+- [x] S0.3 census confirmed, quasi-static check passed, policy fixed — as restated 2026-09-23 (bulk ≤ 2e-5 p.u.,
+      three documented control-driven exceptions)
+- [x] S0.5 solve rates recorded and `13_BUDGET_TIMELINE.md` rescaled — 402 solves/s, `timing.md`; rescale in
+      `13_BUDGET_TIMELINE.md` line 55
+- [x] S0.0 load model recorded as a scalar, in writing `[Added 2026-09-23]` — `load_model.md`, 41,250 of 41,250 events
+- [x] S0.3 unlabelable-window ceiling computed; no model beats chance on w = 20 `[Added 2026-09-23]` — ceiling 0.9744;
+      accuracy on w = 20 is at most 0.0418 over all 33 runs (`unlabelable_window_f1.csv`)
+- [x] S0.4 freeze assertion (`L × 0.99953`) passes `[Added 2026-09-23]` — error 1.0e-12 p.u. frozen against 4.8e-5 unfrozen
+
+**Closed retroactively on 2026-10-24 21:29 IST. The later stages used these assets.** The six ticked items are complete, with
+evidence in `results/pcstgnn/audit/` (`AUDIT-NOTE.md` is the original verdict). The first item, S0.1, is **not
+complete**, so Gate 0 as written is not fully closed: Stages B to E used the Paper-1 checkpoints and the
+R0ⁿ / R5 pair trained in Paper 2's own pipeline; the 33-arm re-evaluation is not on disk. Separately,
+S0.2 (not a Gate 0 item) scanned 50 events (`metadata_coverage.md`), not the 41,250 its "Do" line asks for.

@@ -20,8 +20,9 @@ Three linked deliverables on the IEEE-123 feeder, 25 μPMUs, partial observabili
   on disk — ask. Do not do revision work on `main`.
 - **PC-STGNN Gate 4** (arms R0ⁿ vs R5, 30 epochs, seeds 42/43/44) **PASSED 2026-10-22** — all 6 runs
   trained and scored (`results/s4_4/gate4_progress.json` stage `queue_complete`). Gate 4 passed the
-  pre-registered rule: R5 > R0ⁿ in all 3 seeds at all evaluated pre-registered conditions (H2: 12/12,
-  H4: 9/9). Holm results use a post hoc family. Details: `PC-STGNN/06_STAGE_E_pcstgnn.md` § GATE 4
+  pre-registered rule: R5 > R0ⁿ in all 3 seeds at all pre-registered conditions that can be evaluated before
+  Stage G (H1, H2, H4; H1: 3/3, H2: 12/12, H4: 9/9). H3 (sealed OOD resistance) is tested in Stage G.
+  Holm results use a post hoc family. Details: `PC-STGNN/06_STAGE_E_pcstgnn.md` § GATE 4
   and § GATE 4 — corrected record. Never use `results/s4_4_pilot_20ep/` (superseded 20-epoch pilot).
 - `main` has large uncommitted PC-STGNN work (source, tests, `operator/`, configs). Do not reset, clean, or commit it unless asked.
 
