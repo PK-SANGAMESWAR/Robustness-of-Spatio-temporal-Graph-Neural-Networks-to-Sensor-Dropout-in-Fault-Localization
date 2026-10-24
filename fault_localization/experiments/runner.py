@@ -80,14 +80,35 @@ def _model(config, edge):
         # actually needs them, mirroring the pignn branch below.
         from fault_localization.models.pc_stgnn import PCSTGNN
         use_fusion = m.get("use_fusion", False)
+        # `[Fixed 2026-10-22, PC-STGNN/S4.4_remaining_arms_plan.md S4.1]` Previously gated only
+        # on use_fusion, so a fusion-off arm with lambda1>0 or lambda2>0 (R3/R4: physics as a
+        # training constraint, no beta fusion) had no table loaded -- forward_pc() then had no
+        # "rho_A"/"rho_D" in its output dict, and pc_loss() raised
+        # KeyError("pc_loss needs out['rho_A'] ...") as soon as training started. The pc_loss
+        # weights only matter if pc_loss itself is enabled (pc_enabled gates whether
+        # pc_train_epoch runs at all, see pc_enabled usage below in run()), so this also checks
+        # pc_cfg.enabled -- an R0^n-style run (pc_loss.enabled=true purely for the noise-aug
+        # loader plumbing, lambda1=lambda2=0) still correctly loads no table. A buffer
+        # (register_buffer, not a Parameter) does not draw from the RNG stream, so this cannot
+        # change byte-identity for any arm that doesn't actually need a table (S4.1).
+        pc_cfg = config.get("pc_loss", {})
+        needs_table = use_fusion or (
+            bool(pc_cfg.get("enabled", False))
+            and (float(pc_cfg.get("lambda1", 0.0)) > 0 or float(pc_cfg.get("lambda2", 0.0)) > 0)
+        )
+        # R2 (use_decoder) needs norm_stats to de-normalise x_clean into the recon
+        # target (train.py::pc_train_epoch, observation.observe) even though it
+        # needs no signature table -- loaded independently of needs_table below.
+        needs_norm_stats = needs_table or m.get("use_decoder", False)
         table = None
         norm_stats = None
-        if use_fusion:
+        if needs_table:
             from fault_localization.physics import residual as _R
             from fault_localization.physics import table as _T
-            from fault_localization.physics.observation import load_norm_stats
             tbl = _T.load_table(m.get("operator_dir", "operator"))
             table = _R.flatten_table(tbl["mu"], tbl["mu0"])
+        if needs_norm_stats:
+            from fault_localization.physics.observation import load_norm_stats
             norm_stats = load_norm_stats(config["data_root"])
         return PCSTGNN(
             edge, table, norm_stats,
@@ -239,6 +260,10 @@ def run(config, resume=False):
     pc_lam2 = float(pc_cfg.get("lambda2", 0.0))
     # S4.3d: gamma * CE on the network-only (pre-fusion) logits. 0 = objective unchanged.
     pc_aux = float(pc_cfg.get("aux_net_loss_weight", 0.0))
+    # R1/R2 (models/common.py::pc_loss): both default to 0, so every arm without
+    # use_type_head/use_decoder is unaffected.
+    pc_type_loss_weight = float(pc_cfg.get("type_loss_weight", 0.0))
+    pc_recon_loss_weight = float(pc_cfg.get("recon_loss_weight", 0.0))
     # k=0 rho(A) cache (2026-09-30): at k=0 rho(A) is a fixed function of the window
     # alone, so it is looked up from the offline grid (physics/cache.py, S3.4) instead
     # of recomputed live -- verified equivalent before use, see
@@ -330,7 +355,9 @@ def run(config, resume=False):
         if pc_enabled:
             tr = pc_train_epoch(model, train_loader, opt, device,
                                 grad_clip_norm=grad_clip_norm, lam1=pc_lam1, lam2=pc_lam2,
-                                rho_k0_cache=pc_rho_k0_cache, aux_net_loss_weight=pc_aux)
+                                rho_k0_cache=pc_rho_k0_cache, aux_net_loss_weight=pc_aux,
+                                type_loss_weight=pc_type_loss_weight,
+                                recon_loss_weight=pc_recon_loss_weight)
         else:
             tr = train_epoch(model, train_loader, opt, device,
                              grad_clip_norm=grad_clip_norm, physics=physics)
@@ -353,6 +380,10 @@ def run(config, resume=False):
             row["train_l2"] = tr["l2"]
         if "aux" in tr:
             row["train_aux"] = tr["aux"]
+        if "type_ce" in tr:
+            row["train_type_ce"] = tr["type_ce"]
+        if "recon_mse" in tr:
+            row["train_recon_mse"] = tr["recon_mse"]
         if pc_enabled and getattr(model, "use_fusion", False):
             row["beta"] = float(model.beta.item())
         if log_network_only and hasattr(model, "network_logits"):
@@ -398,7 +429,9 @@ def run(config, resume=False):
             metrics["collapse_abort"] = dict(collapse_abort, triggered=collapsed)
         if pc_enabled:
             metrics["pc_loss"] = {"lambda1": pc_lam1, "lambda2": pc_lam2,
-                                  "aux_net_loss_weight": pc_aux}
+                                  "aux_net_loss_weight": pc_aux,
+                                  "type_loss_weight": pc_type_loss_weight,
+                                  "recon_loss_weight": pc_recon_loss_weight}
             if getattr(model, "use_fusion", False):
                 metrics["beta_final"] = float(model.beta.item())
         _json(run_dir / "metrics.json", metrics)

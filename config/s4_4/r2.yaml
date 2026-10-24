@@ -1,0 +1,68 @@
+benchmark_version: r2
+data_root: dataset_fullscale_50
+device: cuda
+dropout_study:
+  dropout_aware_training: true
+  enabled: false
+  k_levels: [0, 1, 2, 5, 10]
+  n_mask_seeds: 3
+  policy: zero_messages
+  train_k_range: [0, 1, 2, 5]
+feeder_config: default
+gnn_layers: 4
+metrics:
+  f1_average: macro
+  labels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]
+model:
+  aggregator: max
+  beta_init: 0.0
+  decoder_hidden: 64
+  dropout: 0.35
+  gnn_hidden_dim: 64
+  name: pcstgnn
+  neighbor_sampling: false
+  sigma0: 0.0
+  sigma_eps: 0.0007255549105131452
+  temporal_hidden_dim: 128
+  use_fusion: false
+  use_type_head: false
+  use_decoder: true
+# R2 = R0^n + use_decoder, the default decoder (decoder_hidden=64, +4,355 params over
+# R0^n -- D5, PC-STGNN/S4.4_remaining_arms_plan.md section 11). gamma=0, fusion off, no
+# beta, lambda1=lambda2=0, same as r0n.yaml. 3 seeds.
+#
+# OPEN ITEM, flagged rather than invented (CLAUDE.md "never invent a number"): D5 decided
+# the decoder architecture only. The reconstruction-loss weight (pc_loss.recon_loss_weight
+# below) was never decided -- S4.4_remaining_arms_plan.md section 4.2 calls it an explicit
+# "author decision", still outstanding. It is therefore left at the code default 0.0
+# (models/common.py::pc_loss), which makes the reconstruction term an inert, zero-gradient
+# no-op: as written, this config trains the decoder with no loss signal at all (the decoder
+# head would stay at its random initialization). Do NOT start this arm until a weight is
+# decided and this value is filled in -- otherwise the run does not test what R2 exists to
+# test.
+noise_augmentation:
+  enabled: true
+  sigma_grid: [0.0, 0.0005, 0.002, 0.01]
+output_root: results/s4_4
+pc_loss:
+  aux_net_loss_weight: 0.0
+  enabled: true
+  lambda1: 0.0
+  lambda2: 0.0
+  log_network_only: true
+  recon_loss_weight: 0.0
+seed: 42
+training:
+  batch_size: 32
+  checkpoint_metric: graph_f1
+  collapse_abort:
+    epoch: 3
+    max_class0_frac: 0.95
+    min_net_f1: 0.10
+  deterministic: true
+  epochs: 30
+  grad_clip_norm: 1.0
+  learning_rate: 0.001
+  skip_test_eval: true
+  warmup_epochs: 3
+  weight_decay: 0.0001

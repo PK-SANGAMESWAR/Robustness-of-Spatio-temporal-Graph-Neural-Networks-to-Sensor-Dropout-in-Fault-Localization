@@ -1,8 +1,11 @@
 from __future__ import annotations
 import math,time
 import torch
-from fault_localization.models.common import expanded_cross_entropy, pc_loss, unlabelable_window_mask
+from fault_localization.models.common import (
+    expanded_cross_entropy, pc_loss, type_targets_from_metadata, unlabelable_window_mask,
+)
 from fault_localization.models.physics_loss import physics_consistency_loss
+from fault_localization.physics.observation import observe
 from .evaluate import evaluate_loader
 def train_epoch(model,loader,optimizer,device,grad_clip_norm=None,physics=None):
     """One training epoch.
@@ -34,7 +37,7 @@ def train_epoch(model,loader,optimizer,device,grad_clip_norm=None,physics=None):
     return out
 def validate_epoch(model,loader,device,average): return evaluate_loader(model,loader,device,average)
 def pc_train_epoch(model,loader,optimizer,device,grad_clip_norm=None,lam1=0.0,lam2=0.0,rho_k0_cache=None,
-                   aux_net_loss_weight=0.0):
+                   aux_net_loss_weight=0.0,type_loss_weight=0.0,recon_loss_weight=0.0):
     """PC-STGNN training epoch: ``CE(z',y) + lam1*E_P[rho(A)] + lam2*E_P[rho(D)]``
     (``PC-STGNN/01_SPEC.md`` Sec 6, ``models/common.py::pc_loss``).
 
@@ -54,8 +57,15 @@ def pc_train_epoch(model,loader,optimizer,device,grad_clip_norm=None,lam1=0.0,la
 
     ``aux_net_loss_weight`` (gamma, S4.3d) adds ``gamma * CE(network-only logits, y)``;
     at 0 (default) the objective is unchanged. The unweighted aux CE is reported as ``aux``.
+
+    ``type_loss_weight`` (R1) and ``recon_loss_weight`` (R2) are both 0 by default, so
+    every arm without ``use_type_head``/``use_decoder`` is unaffected -- see
+    ``models/common.py::pc_loss``. ``batch["metadata"]`` supplies the type label
+    (:func:`models.common.type_targets_from_metadata`); ``x_clean``/``drop_mask``
+    (already loaded above for lambda_2) supply the reconstruction target/mask.
     """
-    model.train(); total=0.; l1_total=0.; l2_total=0.; aux_total=0.; count=0; started=time.perf_counter()
+    model.train(); total=0.; l1_total=0.; l2_total=0.; aux_total=0.; type_total=0.; recon_total=0.
+    count=0; started=time.perf_counter()
     for batch in loader:
         x=batch["x"].to(device, non_blocking=True)
         x_clean=batch["x_clean"].to(device, non_blocking=True)
@@ -75,8 +85,17 @@ def pc_train_epoch(model,loader,optimizer,device,grad_clip_norm=None,lam1=0.0,la
             hyp_override=torch.as_tensor(hyp0[rows], device=device, dtype=torch.long)
         out=model.forward_pc(x, x_clean, drop_mask, sigma0=sigma0,
                              rho_a_override=rho_override, hyp_override=hyp_override)
+        type_targets=recon_target=recon_mask=None
+        if type_loss_weight:
+            type_targets=type_targets_from_metadata(batch["y"], batch["metadata"]).to(device)
+        if recon_loss_weight:
+            with torch.no_grad():
+                recon_target, _ = observe(x_clean, model.norm_mean, model.norm_std, model.obs_reduce)
+            recon_mask=drop_mask
         parts=pc_loss(out, y, lam1=lam1, lam2=lam2, loss_mask=loss_mask,
-                      aux_net_weight=aux_net_loss_weight)
+                      aux_net_weight=aux_net_loss_weight,
+                      type_loss_weight=type_loss_weight, type_targets=type_targets,
+                      recon_loss_weight=recon_loss_weight, recon_target=recon_target, recon_mask=recon_mask)
         loss=parts["total"]
         if not math.isfinite(loss.item()): raise FloatingPointError("Non-finite training loss")
         loss.backward()
@@ -86,8 +105,12 @@ def pc_train_epoch(model,loader,optimizer,device,grad_clip_norm=None,lam1=0.0,la
         if "l1" in parts: l1_total+=parts["l1"].item()*len(y)
         if "l2" in parts: l2_total+=parts["l2"].item()*len(y)
         if "aux" in parts: aux_total+=parts["aux"].item()*len(y)
+        if "type_ce" in parts: type_total+=parts["type_ce"].item()*len(y)
+        if "recon_mse" in parts: recon_total+=parts["recon_mse"].item()*len(y)
     out={"loss":total/max(count,1),"seconds":time.perf_counter()-started}
     if lam1: out["l1"]=l1_total/max(count,1)
     if lam2: out["l2"]=l2_total/max(count,1)
     if aux_net_loss_weight: out["aux"]=aux_total/max(count,1)
+    if type_loss_weight: out["type_ce"]=type_total/max(count,1)
+    if recon_loss_weight: out["recon_mse"]=recon_total/max(count,1)
     return out

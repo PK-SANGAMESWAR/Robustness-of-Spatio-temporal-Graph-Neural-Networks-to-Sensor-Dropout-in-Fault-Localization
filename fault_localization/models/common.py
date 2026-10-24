@@ -2,6 +2,8 @@ from __future__ import annotations
 import torch
 from torch import nn
 
+from fault_localization.config.constants import FAULT_TYPES
+
 # ---------------------------------------------------------------------------
 # Temporal encoder (shared GRU over each node)
 # ---------------------------------------------------------------------------
@@ -108,13 +110,39 @@ def pc_loss(
     lam2: float = 0.0,
     loss_mask: torch.Tensor | None = None,
     aux_net_weight: float = 0.0,
+    type_loss_weight: float = 0.0,
+    type_targets: torch.Tensor | None = None,
+    recon_loss_weight: float = 0.0,
+    recon_target: torch.Tensor | None = None,
+    recon_mask: torch.Tensor | None = None,
 ) -> dict:
-    """``CE(z', y) + lam1 * E_P[rho(A)] + lam2 * E_P[rho(D)] + gamma * CE(z, y)``.
+    """``CE(z', y) + lam1 * E_P[rho(A)] + lam2 * E_P[rho(D)] + gamma * CE(z, y)
+    + type_loss_weight * CE(type_logits, type_y) + recon_loss_weight * MSE(recon, s_clean)``.
 
     The last term (``aux_net_weight`` = gamma, ``06_STAGE_E`` S4.3d) is the same
     cross-entropy on the network-only logits ``z`` = ``out["net_logits"]`` (before the
     beta fusion), so the backbone must localize without the physics term. Skipped
     entirely at gamma = 0.
+
+    ``type_loss_weight`` (R1, ``06_STAGE_E`` S4.4 "Frozen settings for the remaining
+    arms", D4: fixed at 1.0, not tuned) is a cross-entropy term on
+    ``out["type_logits"]`` (``PCSTGNN(use_type_head=True)``) against
+    ``type_targets`` -- a ``[B]`` long tensor of ``FAULT_TYPES`` indices, -1 where
+    the window has no active fault (:func:`type_targets_from_metadata`). Windows
+    with target -1 are excluded, the same way ``loss_mask`` excludes the w = 20
+    window below -- a no-fault window has no fault type to predict. Skipped
+    entirely at weight 0 (the default, so every arm without ``use_type_head`` is
+    unaffected) or when every window in the batch is excluded.
+
+    ``recon_loss_weight`` (R2, D5: default decoder, weight not yet decided) is a
+    masked MSE term on ``out["recon"]`` (``PCSTGNN(use_decoder=True)``) against
+    ``recon_target`` (the clean per-unit observation, same convention as
+    :func:`physics.observation.observe`), counting only the channels
+    ``recon_mask`` marks as synthetically dropped (``drop_mask`` from
+    ``DropoutAugmentedLoader``/``PhysicsDropoutLoader``) -- reconstructing an
+    already-visible channel is trivial and not the ablation's claim. Skipped
+    entirely at weight 0 (the default) or when no channel in the batch was
+    dropped.
 
     ``out`` is what :meth:`models.pc_stgnn.PCSTGNN.forward_pc` returns.  The two
     physics terms are the expected residual under the model's own soft-vote
@@ -133,6 +161,8 @@ def pc_loss(
     ``||mu[f_hat] - s_true||^2``: ``f_hat`` is an arg-min index and constant in
     the weights, so that term has exactly zero gradient and the lambda_2 arm
     would be silently identical to lambda_1 (``01_SPEC.md`` §6, audited by S4.2).
+    This does not apply to ``recon_loss_weight``: ``recon`` is a learned decoder
+    output, not an arg-min index, so it carries a real gradient.
     """
     logits = out["logits"]
     total = expanded_cross_entropy(logits, targets)
@@ -157,8 +187,47 @@ def pc_loss(
         parts["aux"] = aux.detach().clone()
         total = total + aux_net_weight * aux
 
+    if type_loss_weight:
+        if "type_logits" not in out:
+            raise KeyError("pc_loss needs out['type_logits'] for type_loss_weight (R1, use_type_head)")
+        if type_targets is None:
+            raise ValueError("pc_loss needs type_targets when type_loss_weight is set")
+        valid = type_targets >= 0
+        if valid.any():
+            type_ce = expanded_cross_entropy(out["type_logits"][valid], type_targets[valid])
+        else:
+            type_ce = torch.zeros((), device=logits.device, dtype=total.dtype)
+        parts["type_ce"] = type_ce.detach().clone()
+        total = total + type_loss_weight * type_ce
+
+    if recon_loss_weight:
+        if "recon" not in out:
+            raise KeyError("pc_loss needs out['recon'] for recon_loss_weight (R2, use_decoder)")
+        if recon_target is None or recon_mask is None:
+            raise ValueError("pc_loss needs recon_target and recon_mask when recon_loss_weight is set")
+        denom = recon_mask.sum().clamp(min=1.0)
+        recon_mse = ((out["recon"] - recon_target) ** 2 * recon_mask).sum() / denom
+        parts["recon_mse"] = recon_mse.detach().clone()
+        total = total + recon_loss_weight * recon_mse
+
     parts["total"] = total
     return parts
+
+
+def type_targets_from_metadata(window_labels: torch.Tensor, metadata) -> torch.Tensor:
+    """``[B]`` long tensor of fault-type index (``FAULT_TYPES``), -1 where the
+    window has no active fault (``window_labels == 0``, R1, ``use_type_head``).
+
+    ``metadata[i]["fault_type"]`` is the *run's* fault type, present even on a
+    run's pre-fault windows -- it is not itself a statement about whether this
+    particular window is in the fault state, so the mask comes from
+    ``window_labels``, not from whether the metadata field is populated.
+    """
+    out = torch.full((len(metadata),), -1, dtype=torch.long)
+    for i, (label, md) in enumerate(zip(window_labels.tolist(), metadata)):
+        if label != 0:
+            out[i] = FAULT_TYPES.index(md["fault_type"])
+    return out
 
 
 def unlabelable_window_mask(window_ids, fault_start_step: int = 40,
