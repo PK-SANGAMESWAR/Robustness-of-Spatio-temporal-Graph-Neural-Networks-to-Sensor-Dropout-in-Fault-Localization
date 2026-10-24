@@ -214,21 +214,35 @@ to do better than that pilot.
 
 ## 7. PCRG-STGNN
 
+> **Amended 2026-10-25 03:44 IST / 2026-10-24T22:14:20Z after S5.1 and S5.2, before any G0 to G3 training. Reason: the LOO residual was not better than
+> the in-sample residual.** (Measured: in-sample AUROC higher in all 15 conditions at sigma0 = 0, 5e-4 and 2e-3; at
+> sigma0 = 1e-2 LOO higher by +0.0036 to +0.0046 at bias ±2 %, below the 0.01 margin of the detector rule. Record:
+> `07_STAGE_F_gate.md` § "S5.2 result, measurement-noise rerun".) The two bullets below that used the LOO score are
+> replaced by the in-sample score and kept further down, marked replaced. Other mentions of ρᵢ^LOO in this file
+> (lines 13, 131 and the table in §8) are not changed here and now refer to the replaced score.
+
 - Pass 1 gives f̂ = argmax z'.
-- For each available sensor i: **subtract, then re-minimise**. Build the per-channel error tensor
-  E[hypothesis, channel] at f̂ once; zero sensor i's channels; take the min over the hypothesis
-  axis *again* → the refit (τ*, R*, L*) on A \ {i}; read sensor i's normalised error **at that
-  refit** → ρᵢ^LOO. `[Corrected 2026-09-23]` Reading sensor i's term at the *global* argmin
-  (τ*, R*, L*) fitted on all of A is the in-sample score, not a LOO score: it lets a corrupted
-  sensor pull the fit toward itself and hide its own error, and it would make the S5.2 comparison
-  a variant against itself. `residual.py` implements both — `rho_loo` and `rho_insample` — and the
-  difference between them is the S5.2 result.
-- Gate: gᵢ = mᵢ · σ(−α (ρᵢ^LOO − c)), with α, c learned.
+- For each available sensor i: read sensor i's normalised error at the argmin (τ*, R*, L*) fitted on **all** of A
+  → ρᵢ^ins, the in-sample score (`residual.py::rho_insample`). No refit on A \ {i}.
+- Gate: gᵢ = mᵢ · σ(−α (ρᵢ^ins − c)), with α, c learned.
 - Pass 2: scale sensor i's input embedding and soft-vote weight by gᵢ, then re-run the 4-layer
   RGSAGE-Max and head. **Not** hop-level silencing — Paper 1 showed that cuts the multi-hop paths
   that route around a lost node (SDR-STGNN AUDC 0.892 vs 0.913).
 
 Total new learnable parameters: three scalars (β, α, c).
+
+> **[Replaced 2026-10-25 03:44 IST / 2026-10-24T22:14:20Z — kept unchanged, not deleted.]**
+>
+> - For each available sensor i: **subtract, then re-minimise**. Build the per-channel error tensor
+>   E[hypothesis, channel] at f̂ once; zero sensor i's channels; take the min over the hypothesis
+>   axis *again* → the refit (τ*, R*, L*) on A \ {i}; read sensor i's normalised error **at that
+>   refit** → ρᵢ^LOO. `[Corrected 2026-09-23]` Reading sensor i's term at the *global* argmin
+>   (τ*, R*, L*) fitted on all of A is the in-sample score, not a LOO score: it lets a corrupted
+>   sensor pull the fit toward itself and hide its own error, and it would make the S5.2 comparison
+>   a variant against itself. `residual.py` implements both — `rho_loo` and `rho_insample` — and the
+>   difference between them is the S5.2 result.
+> - Gate: gᵢ = mᵢ · σ(−α (ρᵢ^LOO − c)), with α, c learned.
+
 
 ## 8. Gradient audit table
 
