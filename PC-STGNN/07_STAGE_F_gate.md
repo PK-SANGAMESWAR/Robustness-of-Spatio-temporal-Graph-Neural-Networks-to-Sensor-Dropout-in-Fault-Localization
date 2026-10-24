@@ -47,6 +47,7 @@ one-figure, zero-cost justification of the LOO design — and a reviewer will as
 | G1 | PC-STGNN + the same augmentation | isolates the gate from the augmentation | 1 |
 | G2 | PCRG-STGNN — gate on evidence + vote weight | the headline result | 3 |
 | G3 | gate at every hop | re-tests the Paper-1 SDR-STGNN lesson | 1 |
+| G-TF | R5 + training-free gate from the S5.1 detector (no training) | a floor for G2; how much a threshold alone recovers | 3 (existing R5 checkpoints) |
 
 G0 is the one that matters. If G2 does not beat G0, the gate is not earning its complexity and the
 honest move is to report that.
@@ -58,6 +59,37 @@ internal consistency result.
 false-suppression rate (clean sensors with gᵢ < 0.5).
 
 **Figure produced.** F-F4 — gᵢ distribution, clean vs corrupted.
+
+### G-TF — training-free gate arm `[Added after S5.1, before any G-TF result — 2026-10-25 03:43 IST / 2026-10-24T22:13:54Z]`
+
+Full working record: `stage_f_training_free_gate_draft.md` (same directory). Frozen here before any G-TF result.
+**No G-TF scoring has been run.**
+
+**What.** R5, unchanged (the 3 Gate 4 checkpoints, seeds 42/43/44; no training). The S5.1 detector flags sensors;
+each flagged sensor is dropped (all six channels zeroed, the `zero_messages` operation). k = 0. Arms on the same
+corrupted windows: **no gate**, **G-TF**, **oracle** (drops exactly the corrupted sensors). Clean-window arm: no
+gate vs G-TF on clean windows (false-suppression cost). G-TF does not replace G0–G3; it sets a floor for G2.
+
+| Item | Setting |
+|---|---|
+| Split | Validation windows split into halves A and B **by fault event**, `numpy.random.RandomState(7)`; no event in both halves (3,100 / 3,100 events; 124,000 / 124,000 windows) |
+| Threshold | Per sensor, the 99th percentile of that sensor's available **clean** half-A scores at the same sigma0 (per-sensor false-positive rate 1 %). No corrupted window is used |
+| Scoring | Half B only. Validation soft-voted 26-class macro-F1 |
+| Detector | **In-sample** residual (rule: LOO only if LOO − in-sample ≥ 0.01 at bias ±2 %, sigma0 = 1e-2, for each of s = 1, 2, 3; measured +0.0046 / +0.0041 / +0.0036; applied 2026-10-25 03:43 IST) |
+| Reported | Realized false-positive rate on clean half-B windows and on the clean sensors of corrupted half-B windows; TPR; every result per corruption type and per s |
+| Core scope (first) | bias ±2 %, sigma0 = 1e-2, s = 1, 2, 3, seeds 42/43/44; arms no gate / G-TF / oracle; plus the clean-window arm |
+| Full scope | 5 types × s = 1, 2, 3 × sigma0 ∈ {0, 5e-4, 2e-3, 1e-2}; **only after the author approves** |
+
+**Decision rule.** G-TF is useful if its macro-F1 is higher than R5 with no gate in **all 3 seeds** at bias ±2 %,
+sigma0 = 1e-2 (read at each s = 1, 2, 3). Report the recovered fraction
+`(G-TF − no gate) / (oracle − no gate)` with its denominator. Paired t over seeds with Holm over the three s-levels
+is secondary; n = 3, no trend upgraded.
+
+**Cost (upper bound, from the measured R5 scoring rate 446.8 s per 248,000-window pass; half B is half).** Core 33
+passes ≈ **2.05 GPU-h**; full 564 passes ≈ **35.0 GPU-h**. CPU: threshold pass ≈ 17 min per sigma0 (extrapolated).
+
+**Code.** `scripts/run_gtf.py` (stages split / thresholds / score / summarize / decide / check-ready),
+`scripts/run_s4_4_queue_part2.py` (G-TF core, then R1, then R2 ×3, after the first queue completes).
 
 ## GATE 5
 
