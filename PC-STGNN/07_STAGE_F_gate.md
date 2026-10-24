@@ -65,3 +65,31 @@ false-suppression rate (clean sensors with gᵢ < 0.5).
 - [ ] S5.2 LOO beats in-sample
 - [ ] G2 > G0 under silent failures, sign-consistent across seeds
 - [ ] False-suppression rate on clean sensors acceptable (report it either way)
+
+### S5.2 result, first run `[Recorded 2026-10-24]`
+
+**The check does not hold.** The first run (sigma0 = 0.0, `results/pcstgnn/audit/s5_1_silent_detection/`,
+`s5_2_psm_auroc`) finds the **in-sample** AUROC slightly **higher** than the LOO AUROC at bias
+±2 % (the S5.1 gate corruption), for every s:
+
+| s | LOO AUROC | in-sample AUROC | in-sample − LOO |
+|---|---|---|---|
+| 1 | 0.999134 | 0.999311 | +0.000178 |
+| 2 | 0.998092 | 0.998519 | +0.000427 |
+| 3 | 0.997061 | 0.997690 | +0.000629 |
+
+The same direction holds for every other corruption type and severity in the first run (stuck,
+bias ±5 %, Gaussian, swap), not only bias ±2 %. **"LOO should be clearly better" (S5.2's check,
+above) does not hold at sigma0 = 0** — the sign is the wrong way, though the gap is tiny (third
+decimal) and both forms are near the AUROC ceiling (> 0.997), so this is not read as evidence
+against the LOO design, only as a miss on this specific check's stated expectation.
+
+**Measurement-noise rerun (`scripts/run_silent_detection_noise.py`,
+`results/stage_f/silent_detection_noise/`), sigma0 ∈ {5e-4, 2e-3, 1e-2}:**
+
+- sigma0 = 5e-4: same direction, same order of magnitude. Bias ±2 %: LOO = 0.999044 / 0.997984 /
+  0.996939 (s = 1/2/3), in-sample = 0.999228 / 0.998414 / 0.997573 — in-sample higher by
+  +0.000184 / +0.000430 / +0.000634.
+- sigma0 = 2e-3, 1e-2: run in progress at the time of this edit (background, CPU-only, low
+  priority) — not yet appended. Add when `results/stage_f/silent_detection_noise/sigma_0.002/`
+  and `sigma_0.01/` exist.
