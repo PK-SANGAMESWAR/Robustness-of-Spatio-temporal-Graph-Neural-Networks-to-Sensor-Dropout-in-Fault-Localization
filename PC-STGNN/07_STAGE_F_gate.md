@@ -77,16 +77,18 @@ gate vs G-TF on clean windows (false-suppression cost). G-TF does not replace G0
 | Scoring | Half B only. Validation soft-voted 26-class macro-F1 |
 | Detector | **In-sample** residual (rule: LOO only if LOO − in-sample ≥ 0.01 at bias ±2 %, sigma0 = 1e-2, for each of s = 1, 2, 3; measured +0.0046 / +0.0041 / +0.0036; applied 2026-10-25 03:43 IST) |
 | Reported | Realized false-positive rate on clean half-B windows and on the clean sensors of corrupted half-B windows; TPR; every result per corruption type and per s |
-| Core scope (first) | bias ±2 %, sigma0 = 1e-2, s = 1, 2, 3, seeds 42/43/44; arms no gate / G-TF / oracle; plus the clean-window arm |
+| Core scope (first) | **all five corruption types** (stuck, bias ±2 %, bias ±5 %, Gaussian, swap), sigma0 = 1e-2, s = 1, 2, 3, seeds 42/43/44; arms no gate / G-TF / oracle; plus the clean-window arm. Amended 2026-10-25 15:42 IST, before any G-TF result. (Before: bias ±2 % only.) |
 | Full scope | 5 types × s = 1, 2, 3 × sigma0 ∈ {0, 5e-4, 2e-3, 1e-2}; **only after the author approves** |
 
 **Decision rule.** G-TF is useful if its macro-F1 is higher than R5 with no gate in **all 3 seeds** at bias ±2 %,
 sigma0 = 1e-2 (read at each s = 1, 2, 3). Report the recovered fraction
-`(G-TF − no gate) / (oracle − no gate)` with its denominator. Paired t over seeds with Holm over the three s-levels
+`(G-TF − no gate) / (oracle − no gate)` with its denominator; **defined only if the denominator is ≥ 0.01**, otherwise reported as undefined and not averaged (Amended 2026-10-25 15:42 IST, before any G-TF result.). The corruption loss, F1(clean, no gate) − F1(corrupted, no gate), is reported per condition (Amended 2026-10-25 15:42 IST, before any G-TF result.). The rule uses bias ±2 % only; the other four types are reported separately. Paired t over seeds with Holm over the three s-levels
 is secondary; n = 3, no trend upgraded.
 
-**Cost (upper bound, from the measured R5 scoring rate 446.8 s per 248,000-window pass; half B is half).** Core 33
-passes ≈ **2.05 GPU-h**; full 564 passes ≈ **35.0 GPU-h**. CPU: threshold pass ≈ 17 min per sigma0 (extrapolated).
+**Cost (upper bound, from the measured R5 scoring rate 446.8 s per 248,000-window pass; half B is half).** Core 141
+passes (all five types) ≈ **8.75 GPU-h** (Amended 2026-10-25 15:42 IST, before any G-TF result.; was 2.05 GPU-h for bias ±2 % only); full 564 passes ≈ **35.0 GPU-h**. CPU: threshold pass ≈ 17 min per sigma0 (extrapolated).
+
+**Consistency checks (passed 2026-10-25 15:42 IST, before any G-TF result; Amended 2026-10-25 15:42 IST, before any G-TF result.).** (1) The gate drop equals the training dropout: `gate_zero` reproduces `apply_sensor_dropout_batch` bit for bit for k = 1, 2, 3, 5, 10, with identical R5 predictions. (2) The stored S5.1 detector scores equal the recomputed scores (largest absolute difference 0.0 over 6 batches, 1,920 windows, 15 conditions, sigma0 = 1e-2), with equal corrupted-sensor labels. The scorer repeats both checks and stops on a failure.
 
 **Code.** `scripts/run_gtf.py` (stages split / thresholds / score / summarize / decide / check-ready),
 `scripts/run_s4_4_queue_part2.py` (G-TF core, then R1, then R2 ×3, after the first queue completes).

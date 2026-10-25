@@ -3,7 +3,7 @@
 **Status.** Decisions a–g were given by the author on 2026-10-24 and are fixed. The detector rule (§ 2 item c)
 was applied on 2026-10-25 03:43 IST / 2026-10-24T22:13:54Z, after the sigma0 = 1e-2 S5.2 result was complete: **in-sample** (§ 7). The final design
 was copied to `07_STAGE_F_gate.md` as arm "G-TF" on the same date, marked "added after S5.1, before any G-TF result".
-No G-TF result exists. No G-TF scoring has been run (a 2-batch CPU smoke test of the scorer on sigma0 = 5e-4 was run for
+**Amendments after the first commit (Amended 2026-10-25 15:42 IST, before any G-TF result.)**: (1) the core scope now contains all five corruption types at sigma0 = 1e-2; (2) two consistency checks added and passed (§ 2b); (3) `rec` is defined only if its denominator is ≥ 0.01; (4) the corruption loss is reported. No G-TF result exists. No G-TF scoring has been run (a 2-batch CPU smoke test of the scorer on sigma0 = 5e-4 was run for
 correctness only; its numbers are not results and are not used).
 
 ## 1. Question
@@ -22,7 +22,7 @@ the S5.1 score recovers, and sets a floor that G2 must beat.
 | **c. Detector rule** | Use the **LOO** residual only if its AUROC is at least **0.01** higher than the in-sample AUROC for bias ±2 % at sigma0 = 1e-2. **Reading, fixed here:** the condition must hold at each of s = 1, 2, 3. Otherwise use the **in-sample** residual. Applied once, by `run_gtf.py decide`, which refuses to run before the sigma0 = 1e-2 result is complete. The result goes to `results/stage_f/gtf/detector_decision.json` and to § 7. |
 | **d. Threshold rate** | A **per-sensor** false-positive rate of **1 %**: for each of the 25 sensors, the 99th percentile of its available clean half-A scores (`numpy.quantile`, linear). 25 thresholds per sigma0. The **realized** false-positive rate is reported on (i) clean half-B windows and (ii) the clean sensors of corrupted half-B windows, per condition. |
 | **e. Per-type reporting** | Every result is reported per corruption type and per s. No pooling over types. |
-| **f. Core scope** | bias ±2 %, sigma0 = 1e-2, s = 1, 2, 3, seeds 42/43/44; arms **no gate**, **G-TF**, **oracle**; plus the **clean-window arm** (no gate vs G-TF on clean half-B windows at sigma0 = 1e-2). |
+| **f. Core scope** | **All five corruption types** (stuck, bias ±2 %, bias ±5 %, Gaussian 0.02 p.u., swap), sigma0 = 1e-2, s = 1, 2, 3, seeds 42/43/44; arms **no gate**, **G-TF**, **oracle**; plus the **clean-window arm** (no gate vs G-TF on clean half-B windows at sigma0 = 1e-2). The decision rule (§ 4) uses bias ±2 % only; the other four types are reported separately. *Amended 2026-10-25 15:42 IST, before any G-TF result.* (Before: bias ±2 % only.) |
 | **g. Full scope** | 5 corruption types × s = 1, 2, 3 × sigma0 ∈ {0, 5e-4, 2e-3, 1e-2}. **Only after the author approves** (`results/stage_f/gtf/FULL_SCOPE_APPROVED`, created by the author). The scorer and the queue refuse it otherwise. |
 | Model | R5, `results/s4_4/r5/pcstgnn/seed_{00042,00043,00044}/checkpoint_best.pt`. No training. k = 0. |
 | Gate action | A sensor with score > its threshold is dropped: all six channels set to 0 (voltage and mask), the `zero_messages` operation. R5's fusion then uses the new availability mask. |
@@ -30,6 +30,20 @@ the S5.1 score recovers, and sets a floor that G2 must beat.
 | Metric | Validation soft-voted 26-class macro-F1 on half B, one pass per arm (k = 0: no random masks). |
 | Corruption and noise | Regenerated with the S5.1 seeds (`CORRUPTION_SEED` 0; noise seed `(1 + idx) × 10000 + batch`). The scorer asserts the regenerated corrupted-sensor labels equal the stored `*__label.npy`, and the batch labels equal the stored `y.npy`. |
 | Detector scores | Read from the S5.1 raw scores (`psm_loo` or `psm_ins`) for corrupted windows; computed on the fly for clean windows. |
+
+## 2b. Consistency checks (`run_gtf.py check-consistency`; run again inside the scorer)
+
+*Amended 2026-10-25 15:42 IST, before any G-TF result.* Both **passed** on 2026-10-25 15:42 IST, before any G-TF scoring.
+
+1. **Gate drop equals training dropout.** For k = 1, 2, 3, 5, 10 the training function
+   (`apply_sensor_dropout_batch`, policy `zero_messages`, the function `DropoutAugmentedLoader` calls) drops nodes;
+   `gate_zero` applied to the same nodes reproduces its tensor **bit for bit** (5 of 5 k), the mask channels of the
+   dropped nodes are 0 after `observe` (5 of 5), and R5 (seed 42, CPU) gives identical predictions on the gated and the
+   dropout-produced inputs. The scorer repeats this check at the start of every seed and stops if it fails.
+2. **Stored scores equal recomputed scores.** For 6 loader batches spread over the split (0, 150, 300, 450, 600, 774; 1,920
+   windows) at sigma0 = 1e-2, all 15 conditions: the regenerated noisy corrupted input gives `psm_loo` and `psm_ins`
+   equal to the stored S5.1 arrays (**largest absolute difference 0.0**) and corrupted-sensor labels equal to the stored
+   labels. This is a sample of batches, not the whole split. The scorer repeats it on 3 batches per sigma0 and stops if it fails.
 
 ## 3. Procedure
 
@@ -47,8 +61,8 @@ Resumable: a stage skips when its output exists.
    sigma0 = 1e-2. Reading: at each s = 1, 2, 3 (9 of 9 seed-by-s pairs positive). If it holds at only some s, report which.
 2. **Recovered fraction**, per seed and per s, then the mean over seeds:
    `rec = (F1[G-TF] − F1[no gate]) / (F1[oracle] − F1[no gate])`.
-   Undefined where the denominator is ≤ 0 (reported as "no loss to recover"). The denominator is printed with every `rec`.
-   `rec` may exceed 1; the oracle is a reference, not a bound.
+   **`rec` is defined only if the denominator (oracle − no gate) is ≥ 0.01**; otherwise it is reported as undefined ("no loss large enough to measure") and not averaged. The denominator is printed with every `rec`. `rec` may exceed 1; the oracle is a reference, not a bound. *Amended 2026-10-25 15:42 IST, before any G-TF result.* (Before: undefined only if ≤ 0.)
+   **Corruption loss** is also reported per condition: F1(clean half B, no gate) − F1(corrupted, no gate), and the same for the oracle. *Amended 2026-10-25 15:42 IST, before any G-TF result.*
 3. n = 3 discipline (`CLAUDE.md`): the sign rule is primary; paired t over seeds with Holm over the three
    s-levels is secondary; a trend is not upgraded.
 4. **Clean-window arm:** report F1(G-TF) − F1(no gate) on clean half-B windows and the realized false-positive
@@ -64,7 +78,7 @@ loops per window, so its true rate is probably faster; that is not measured.
 
 | Scope | Passes (3 seeds) | GPU time (upper bound) |
 |---|---|---|
-| **Core**: per seed 3 s × 3 arms + 2 clean = 11 | 33 | 7,372 s = **2.05 GPU-h** |
+| **Core** (all five types): per seed 5 types × 3 s × 3 arms + 2 clean = 47 | 141 | 31,499 s = **8.75 GPU-h** (was 2.05 GPU-h for bias ±2 % only; Amended 2026-10-25 15:42 IST, before any G-TF result.) |
 | Full: per seed (60 conditions × 3 arms) + (4 sigma0 × 2 clean) = 188 | 564 | 125,998 s = **35.0 GPU-h** |
 
 CPU, no GPU: the threshold stage is one pass over the 248,000 windows per sigma0, about 17 minutes
