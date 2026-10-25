@@ -10,7 +10,7 @@ rejected alternative.
 `[Corrected 2026-09-23]` §2, §4, §6 and §7 amended per `../PC-STGNN-PLAN.md` §2: the L-grid step
 is decided by S1.2 rather than defaulted (§2); the residual is the **shifted, halved** quantity ρ
 in Gaussian log-likelihood units, replacing the per-channel average r̃ (§4); fusion is stated as
-the **per-node** broadcast (a product of experts) it actually is (§6); and the LOO score is
+the **per-node** broadcast (a product of experts) it actually is (§6); and the LOO score (see the §7 amendment: in-sample) is
 defined as **subtract-then-re-minimise** (§7).
 
 `[Corrected 2026-09-25]` §2's R axis amended: the original 15-point log-spaced grid
@@ -128,7 +128,7 @@ P_phys  = softmax(−ρ)
 ```
 
 `residual.py` returns ρ together with the argmin hypothesis (τ*, R*, L*) per f. PSM = argmin_f ρ_f
-= argmax_f P_phys. Fusion, L₁, L₂, the LOO score, the identifiability score of §5 in
+= argmax_f P_phys. Fusion, L₁, L₂, the LOO score (see the §7 amendment: in-sample), the identifiability score of §5 in
 `11_METRICS.md` and every reported diagnostic (ρ_true, margin ρ_(2) − ρ_(1)) use ρ. β = 0 still
 recovers the baseline exactly, so the S4.1 null test is unaffected.
 
@@ -248,7 +248,7 @@ Total new learnable parameters: three scalars (β, α, c).
 
 | Quantity | Depends on network? | Gradient flows to |
 |---|---|---|
-| ρ_f(A), ρ_f(D), ρᵢ^LOO | No — inputs only | nothing |
+| ρ_f(A), ρ_f(D), ρᵢ^LOO (see the §7 amendment: in-sample) | No — inputs only | nothing |
 | z'_{n,f} = z_{n,f} − β·ρ_f | Yes | network via z, and β |
 | Σ_f P(f\|X)·ρ_f | Yes, through P | network via P |
 | gᵢ | only through α, c | α, c |
