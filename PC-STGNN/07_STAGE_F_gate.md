@@ -93,6 +93,101 @@ passes (all five types) ≈ **8.75 GPU-h** (Amended 2026-10-25 15:42 IST, before
 **Code.** `scripts/run_gtf.py` (stages split / thresholds / score / summarize / decide / check-ready),
 `scripts/run_s4_4_queue_part2.py` (G-TF core, then R1, then R2 ×3, after the first queue completes).
 
+#### G-TF core result `[Recorded 2026-10-26 00:16 IST / 2026-10-25T18:46:22Z]`
+
+Core scope, as pre-registered above: R5 seeds 42/43/44, detector **in-sample**, sigma0 = 1e-2, k = 0, half B only (124,000 windows
+per seed; 3,100 events), per-sensor threshold at 1 % on clean half A. Run by the merged queue from 2026-10-25T10:15Z to 18:45Z
+(`results/stage_f/gtf/core/`; scoring 9,954–10,006 s per seed). Both consistency checks were repeated inside the scorer and passed.
+F1 = validation soft-voted 26-class macro-F1. The detector flags do not depend on the model seed, so TPR and FPR are the same for the three seeds.
+
+**Decision rule (bias ±2 %, all 3 seeds, each s): G-TF is USEFUL.** G-TF is higher than no gate in 9 of 9 seed-by-s pairs.
+The gains are small (+0.0016 to +0.0166 macro-F1) and, with n = 3, **not significant after Holm correction** (p_Holm 0.130 / 0.130 / 0.075);
+the sign rule is the primary criterion. This is not upgraded.
+
+| s | G-TF − no gate (seeds 42/43/44) | all 3 positive | raw paired t p | Holm p (3 s-levels) |
+|---|---|---|---|---|
+| 1 | +0.0048 / +0.0018 / +0.0016 | yes | 0.116 | 0.130 |
+| 2 | +0.0119 / +0.0052 / +0.0062 | yes | 0.065 | 0.130 |
+| 3 | +0.0166 / +0.0099 / +0.0113 | yes | 0.025 | 0.075 |
+
+**Corruption loss and F1** (loss = F1(clean half B, no gate) − F1(corrupted, no gate); clean no-gate F1 = 0.7460 / 0.7596 / 0.7458). Seed values 42 / 43 / 44:
+
+| Corruption | s | Corruption loss (seeds 42/43/44) | mean | F1 no gate | F1 G-TF | F1 oracle |
+|---|---|---|---|---|---|---|
+| stuck | 1 | 0.0800 / 0.0719 / 0.0822 | 0.0780 | 0.6660 / 0.6877 / 0.6637 | 0.6660 / 0.6809 / 0.6624 | 0.7392 / 0.7538 / 0.7402 |
+| stuck | 2 | 0.1701 / 0.1590 / 0.1743 | 0.1678 | 0.5759 / 0.6006 / 0.5715 | 0.5726 / 0.5893 / 0.5676 | 0.7331 / 0.7477 / 0.7339 |
+| stuck | 3 | 0.2516 / 0.2444 / 0.2530 | 0.2497 | 0.4944 / 0.5152 / 0.4929 | 0.4859 / 0.5032 / 0.4844 | 0.7279 / 0.7424 / 0.7278 |
+| bias ±2 % | 1 | 0.0195 / 0.0132 / 0.0121 | 0.0150 | 0.7265 / 0.7464 / 0.7337 | 0.7313 / 0.7482 / 0.7353 | 0.7392 / 0.7538 / 0.7402 |
+| bias ±2 % | 2 | 0.0388 / 0.0261 / 0.0254 | 0.0301 | 0.7072 / 0.7335 / 0.7204 | 0.7191 / 0.7387 / 0.7266 | 0.7331 / 0.7477 / 0.7339 |
+| bias ±2 % | 3 | 0.0567 / 0.0414 / 0.0410 | 0.0464 | 0.6893 / 0.7183 / 0.7048 | 0.7059 / 0.7282 / 0.7161 | 0.7279 / 0.7424 / 0.7278 |
+| bias ±5 % | 1 | 0.0269 / 0.0489 / 0.0419 | 0.0392 | 0.7191 / 0.7107 / 0.7040 | 0.7358 / 0.7491 / 0.7370 | 0.7392 / 0.7538 / 0.7402 |
+| bias ±5 % | 2 | 0.0594 / 0.0910 / 0.0767 | 0.0757 | 0.6867 / 0.6686 / 0.6691 | 0.7287 / 0.7399 / 0.7284 | 0.7331 / 0.7477 / 0.7339 |
+| bias ±5 % | 3 | 0.0923 / 0.1302 / 0.1064 | 0.1096 | 0.6538 / 0.6294 / 0.6394 | 0.7207 / 0.7306 / 0.7199 | 0.7279 / 0.7424 / 0.7278 |
+| Gaussian 0.02 p.u. | 1 | 0.0075 / 0.0074 / 0.0051 | 0.0067 | 0.7385 / 0.7522 / 0.7407 | 0.7380 / 0.7512 / 0.7389 | 0.7392 / 0.7538 / 0.7402 |
+| Gaussian 0.02 p.u. | 2 | 0.0156 / 0.0131 / 0.0103 | 0.0130 | 0.7305 / 0.7465 / 0.7355 | 0.7322 / 0.7458 / 0.7335 | 0.7331 / 0.7477 / 0.7339 |
+| Gaussian 0.02 p.u. | 3 | 0.0232 / 0.0215 / 0.0155 | 0.0201 | 0.7228 / 0.7381 / 0.7303 | 0.7247 / 0.7397 / 0.7288 | 0.7279 / 0.7424 / 0.7278 |
+| swap | 1 | 0.1790 / 0.1848 / 0.1963 | 0.1867 | 0.5670 / 0.5748 / 0.5495 | 0.6387 / 0.6534 / 0.6384 | 0.7372 / 0.7513 / 0.7366 |
+| swap | 2 | 0.3255 / 0.3409 / 0.3342 | 0.3335 | 0.4205 / 0.4188 / 0.4116 | 0.5254 / 0.5477 / 0.5277 | 0.7268 / 0.7409 / 0.7287 |
+| swap | 3 | 0.4275 / 0.4501 / 0.4248 | 0.4341 | 0.3185 / 0.3095 / 0.3210 | 0.4333 / 0.4546 / 0.4321 | 0.7189 / 0.7342 / 0.7196 |
+
+**Recovered fraction** `rec = (G-TF − no gate) / (oracle − no gate)`, defined only if the denominator is ≥ 0.01:
+
+| Corruption | s | rec (seeds 42/43/44) | denominator = oracle − no gate (seeds) | mean rec |
+|---|---|---|---|---|
+| stuck | 1 | 0.000 / -0.102 / -0.016 | 0.0732 / 0.0661 / 0.0765 | -0.039 |
+| stuck | 2 | -0.021 / -0.077 / -0.024 | 0.1571 / 0.1471 / 0.1624 | -0.041 |
+| stuck | 3 | -0.036 / -0.053 / -0.036 | 0.2334 / 0.2272 / 0.2349 | -0.042 |
+| bias ±2 % | 1 | 0.374 / undefined / undefined | 0.0127 / 0.0074 / 0.0064 | undefined (a seed is undefined) |
+| bias ±2 % | 2 | 0.459 / 0.369 / 0.457 | 0.0259 / 0.0142 / 0.0135 | 0.428 |
+| bias ±2 % | 3 | 0.430 / 0.410 / 0.492 | 0.0386 / 0.0241 / 0.0230 | 0.444 |
+| bias ±5 % | 1 | 0.831 / 0.890 / 0.914 | 0.0201 / 0.0431 / 0.0362 | 0.878 |
+| bias ±5 % | 2 | 0.906 / 0.902 / 0.914 | 0.0464 / 0.0790 / 0.0648 | 0.907 |
+| bias ±5 % | 3 | 0.904 / 0.896 / 0.910 | 0.0741 / 0.1130 / 0.0884 | 0.903 |
+| Gaussian 0.02 p.u. | 1 | undefined / undefined / undefined | 0.0007 / 0.0016 / -0.0005 | undefined (a seed is undefined) |
+| Gaussian 0.02 p.u. | 2 | undefined / undefined / undefined | 0.0026 / 0.0011 / -0.0016 | undefined (a seed is undefined) |
+| Gaussian 0.02 p.u. | 3 | undefined / undefined / undefined | 0.0050 / 0.0043 / -0.0025 | undefined (a seed is undefined) |
+| swap | 1 | 0.422 / 0.445 / 0.475 | 0.1701 / 0.1765 / 0.1871 | 0.447 |
+| swap | 2 | 0.343 / 0.400 / 0.366 | 0.3063 / 0.3222 / 0.3171 | 0.370 |
+| swap | 3 | 0.287 / 0.342 / 0.279 | 0.4004 / 0.4246 / 0.3986 | 0.302 |
+
+**Detector behaviour** (threshold set for 1 % per sensor on clean half A):
+
+| Corruption | s | TPR of corrupted sensors | realized FPR, clean sensors of corrupted windows | sensors flagged per window |
+|---|---|---|---|---|
+| stuck | 1 | 0.296 | 0.0565 | 1.65 |
+| stuck | 2 | 0.294 | 0.1051 | 3.00 |
+| stuck | 3 | 0.291 | 0.1422 | 4.00 |
+| bias ±2 % | 1 | 0.404 | 0.0108 | 0.66 |
+| bias ±2 % | 2 | 0.408 | 0.0115 | 1.08 |
+| bias ±2 % | 3 | 0.411 | 0.0122 | 1.50 |
+| bias ±5 % | 1 | 0.972 | 0.0156 | 1.35 |
+| bias ±5 % | 2 | 0.970 | 0.0215 | 2.43 |
+| bias ±5 % | 3 | 0.968 | 0.0275 | 3.51 |
+| Gaussian 0.02 p.u. | 1 | 0.378 | 0.0106 | 0.63 |
+| Gaussian 0.02 p.u. | 2 | 0.380 | 0.0112 | 1.02 |
+| Gaussian 0.02 p.u. | 3 | 0.382 | 0.0118 | 1.41 |
+| swap | 1 | 0.997 | 0.1214 | 3.91 |
+| swap | 2 | 0.997 | 0.2357 | 7.42 |
+| swap | 3 | 0.998 | 0.3375 | 10.42 |
+
+**Clean-window arm** (cost of false suppression):
+
+| Seed | F1 no gate | F1 G-TF | G-TF − no gate | realized FPR, clean windows | sensors flagged per window |
+|---|---|---|---|---|---|
+| 42 | 0.7460 | 0.7450 | -0.0010 | 0.0101 | 0.252 |
+| 43 | 0.7596 | 0.7576 | -0.0020 | 0.0101 | 0.252 |
+| 44 | 0.7458 | 0.7443 | -0.0015 | 0.0101 | 0.252 |
+
+**Reading (descriptive; only the bias ±2 % rows enter the decision rule).**
+
+- Bias ±2 %: the loss is small (0.015 / 0.030 / 0.046 at s = 1 / 2 / 3). G-TF recovers about 0.43 and 0.44 of it at s = 2 and 3 (all seeds defined); at s = 1 `rec` is undefined in 2 of 3 seeds because the loss is below 0.01 in the denominator. The detector finds 40 % of the corrupted sensors (TPR 0.40–0.41) at a realized FPR of 1.1–1.2 %, close to the 1 % target.
+- Bias ±5 %: TPR 0.97, mean `rec` 0.88–0.91 (per seed 0.83–0.91).
+- Swap: TPR 0.997, mean `rec` 0.30–0.45 (per seed 0.28–0.48), but the realized FPR on the clean sensors of corrupted windows is **12 % (s = 1) to 34 % (s = 3)**, 3.9 to 10.4 sensors flagged per window: a swapped sensor contaminates the scores of its neighbours (open issue 2). The gain is still positive.
+- Stuck: TPR 0.29, **`rec` is zero or negative in every seed and s** (0.000 to −0.10; negative in 8 of 9), i.e. G-TF is no better than no gate and usually a little worse; the realized FPR is 5.7–14 %.
+- Gaussian 0.02 p.u.: the loss is 0.007–0.020, so `rec` is undefined in most seeds; G-TF is within ±0.002 of no gate.
+- Clean windows: G-TF is lower than no gate by 0.0010 / 0.0020 / 0.0015, and the realized FPR is 1.01 %, as designed.
+- Limits: one fixed corruption and noise draw (n = 3 is over model seeds), sigma0 = 1e-2 only (the weakest detector setting), half B only, k = 0 only. Full scope has not been run and needs the author's approval.
+
 ## GATE 5
 
 - [ ] S5.1 AUROC ≥ 0.75 at the mildest corruption
