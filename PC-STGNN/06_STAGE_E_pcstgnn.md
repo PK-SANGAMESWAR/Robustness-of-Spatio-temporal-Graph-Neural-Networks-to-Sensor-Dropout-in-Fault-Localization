@@ -831,6 +831,50 @@ No run in this subsection has been launched. These settings are frozen before an
   `tests/test_pc_stgnn.py` tests re-run clean as a regression check. R1/R2/B2ᵃ loss/head code was
   explicitly not written this round.
 
+### S4.4 — R6 seed 42 collapse, and the λ₂ = 0 amendment `[Recorded 2026-10-25 15:43 IST / 2026-10-25T10:13:41Z]`
+
+**What happened.** The remaining-arms queue (`scripts/run_s4_4_remaining_queue.py`) started R6 seed 42 on
+2026-10-24 14:15Z (config `config/s4_4/r6.yaml`: R5 plus `shuffle_seed = 6`, λ₁ = 0, λ₂ = 0.1, γ = 1, fusion on,
+collapse guard on). At the end of epoch 3 the guard fired (network-only macro-F1 ≤ 0.10) and the queue stopped itself
+at 2026-10-24T16:58:22Z, by design (`results/s4_4/remaining_queue_STOPPED.json`, reason `collapsed`). Nothing was
+restarted without the author. The GPU was idle from then until the author's instruction.
+
+**Record** (validation split, seed 42; R6 `metrics_by_epoch.csv` vs R5 seed 42):
+
+| Epoch | R6 network-only F1 | R6 fused F1 | R6 β | R6 held-out loss (`train_l2`) | R5 network-only F1 | R5 fused F1 | R5 β | R5 held-out loss |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 0.0319 | 0.0326 | 0.0001 | 11,741 | 0.1445 | 0.8380 | 0.0354 | 2.91 |
+| 2 | 0.0373 | 0.0322 | 0.0000 | 14,387 | 0.2730 | 0.8406 | 0.0427 | 2.86 |
+| 3 | **0.0357** | **0.0280** | −0.00005 | 16,464 | 0.3314 | 0.8327 | 0.0422 | 2.84 |
+
+- **a.** At epoch 3: network-only F1 **0.036** and fused F1 **0.028** (the always-"no fault" score is 0.0256).
+- **b.** The held-out loss was **about 11,700 at epoch 1 and about 16,500 at epoch 3**, against **about 2.9** for R5.
+- **c.** β stayed at 0 (0.0001, 0.0000, −0.00005). The fusion weight was never used.
+- **d.** *The collapse is from the held-out loss scale with a shuffled table. It is not a test of the fusion.*
+  (Author's reading. The logged values support it: λ₂ times the held-out term was about 1,170 at epoch 1 against a
+  whole R5 training loss of 0.84. The direct test is the λ₂ = 0 run below; until then it is a reading, not a
+  measurement.)
+
+**Output moved, nothing deleted:** `results/s4_4/r6/` → `results/s4_4_r6_collapsed/` (checkpoints, config,
+metrics, heartbeat). This run is not valid for selection and is not an R6 result.
+
+#### Amendment: R6 with λ₂ = 0 `[Amended 2026-10-25 15:43 IST / 2026-10-25T10:13:41Z, after the R6 seed 42 collapse, before any R6 result with λ₂ = 0]`
+
+- **R6 uses λ₂ = 0.** All other settings equal the frozen R6 settings (`shuffle_seed = 6`, the same permutation file,
+  λ₁ = 0, γ = 1, fusion on, β learned from 0, noise and dropout augmentation on, 30 epochs, same optimiser and
+  checkpoint rule). **3 seeds (42, 43, 44). The collapse guard is kept** (epoch 3, network-only F1 ≤ 0.10 or class-0
+  share > 0.95). A run that collapses again stops the queue and is reported.
+- **Config:** `config/s4_4/r6_lam2_0.yaml`. Compared field by field with `r6.yaml`: only `benchmark_version`
+  (`r6_lam2_0`) and `pc_loss.lambda2` (0.1 → 0.0) differ. Compared with `r5.yaml`: `benchmark_version`,
+  `model.shuffle_seed` (6) and `pc_loss.lambda2` (0.0) differ.
+- **Reason.** With λ₂ = 0.1, the held-out loss with a shuffled table is larger than the cross-entropy by about 4,000
+  times. λ₂ = 0 isolates the effect of the table on the fusion. The λ₂ effect measured in S4.3ᵉ is about 0.002.
+  (Basis of "about 4,000": the logged held-out value 11,741 at epoch 1 is 4,034 times R5's 2.91 at the same epoch; the
+  cross-entropy component is not logged separately in `metrics_by_epoch.csv`.)
+- **Caveat for the comparison.** R6 (λ₂ = 0) differs from R5 (λ₂ = 0.1) in the table and in λ₂. The difference
+  attributable to λ₂ alone is bounded by the S4.3ᵉ figure (about 0.002, one seed, 15 epochs). R5 at λ₂ = 0 is not planned.
+- Cost unchanged: R6 is a fusion-on arm at the R5 rate (26.16 h train + 7.44 h score per seed, 100.8 GPU-h for 3 seeds).
+
 ## GATE 4
 
 - [x] S4.1 null test exact — PASSED 2026-09-30, byte-identical over 30 epochs (see S4.1)
