@@ -1,0 +1,279 @@
+{
+  "seed": 44,
+  "sigma0": 0.01,
+  "scope": "core",
+  "detector": "ins",
+  "half": "B",
+  "split_seed": 7,
+  "n_windows": 124000,
+  "fpr_target": 0.01,
+  "partial_run": false,
+  "conditions": {
+    "stuck_s1": {
+      "f1": {
+        "nogate": 0.6636663885871411,
+        "gtf": 0.6624290134797803,
+        "oracle": 0.7401701075027716
+      },
+      "recovered": {
+        "denominator": 0.07650371891563046,
+        "recovered": -0.016174051731071653
+      },
+      "corruption_loss": 0.0821637180209448,
+      "oracle_loss": 0.0056599991053143395,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.2964838709677419,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.056544690860215054,
+      "flagged_per_window": 1.6535564516129033
+    },
+    "stuck_s2": {
+      "f1": {
+        "nogate": 0.5715106789494794,
+        "gtf": 0.5676087185774472,
+        "oracle": 0.7339382594131413
+      },
+      "recovered": {
+        "denominator": 0.1624275804636619,
+        "recovered": -0.024022769783885973
+      },
+      "corruption_loss": 0.17431942765860653,
+      "oracle_loss": 0.011891847194944627,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.2937298387096774,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.10506697054698458,
+      "flagged_per_window": 3.004
+    },
+    "stuck_s3": {
+      "f1": {
+        "nogate": 0.49287360025858223,
+        "gtf": 0.4843662590655986,
+        "oracle": 0.7277815820257685
+      },
+      "recovered": {
+        "denominator": 0.23490798176718625,
+        "recovered": -0.036215632729819834
+      },
+      "corruption_loss": 0.2529565063495037,
+      "oracle_loss": 0.018048524582317427,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.290505376344086,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.14223020527859237,
+      "flagged_per_window": 4.00058064516129
+    },
+    "bias_2pct_s1": {
+      "f1": {
+        "nogate": 0.7337307894283153,
+        "gtf": 0.7353406578722504,
+        "oracle": 0.7401701075027716
+      },
+      "recovered": {
+        "denominator": 0.006439318074456302,
+        "recovered": null
+      },
+      "corruption_loss": 0.012099317179770641,
+      "oracle_loss": 0.0056599991053143395,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.4039274193548387,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.010779233870967742,
+      "flagged_per_window": 0.6626290322580645
+    },
+    "bias_2pct_s2": {
+      "f1": {
+        "nogate": 0.7204107781837469,
+        "gtf": 0.7265904444291759,
+        "oracle": 0.7339382594131413
+      },
+      "recovered": {
+        "denominator": 0.0135274812293944,
+        "recovered": 0.45682312476626774
+      },
+      "corruption_loss": 0.025419328424339027,
+      "oracle_loss": 0.011891847194944627,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.4078588709677419,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.01148562412342216,
+      "flagged_per_window": 1.0798870967741936
+    },
+    "bias_2pct_s3": {
+      "f1": {
+        "nogate": 0.7048135523359998,
+        "gtf": 0.716116988370617,
+        "oracle": 0.7277815820257685
+      },
+      "recovered": {
+        "denominator": 0.022968029689768632,
+        "recovered": 0.4921378188418306
+      },
+      "corruption_loss": 0.04101655427208606,
+      "oracle_loss": 0.018048524582317427,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.41069086021505374,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.012195014662756598,
+      "flagged_per_window": 1.5003629032258063
+    },
+    "bias_5pct_s1": {
+      "f1": {
+        "nogate": 0.7039683137187478,
+        "gtf": 0.7370447225730972,
+        "oracle": 0.7401701075027716
+      },
+      "recovered": {
+        "denominator": 0.03620179378402377,
+        "recovered": 0.9136676776758597
+      },
+      "corruption_loss": 0.04186179288933811,
+      "oracle_loss": 0.0056599991053143395,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.9722016129032258,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.015609206989247311,
+      "flagged_per_window": 1.3468225806451612
+    },
+    "bias_5pct_s2": {
+      "f1": {
+        "nogate": 0.6691351926796696,
+        "gtf": 0.7283920248652825,
+        "oracle": 0.7339382594131413
+      },
+      "recovered": {
+        "denominator": 0.06480306673347169,
+        "recovered": 0.9144140111351546
+      },
+      "corruption_loss": 0.07669491392841632,
+      "oracle_loss": 0.011891847194944627,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.9700846774193549,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.02146107994389902,
+      "flagged_per_window": 2.433774193548387
+    },
+    "bias_5pct_s3": {
+      "f1": {
+        "nogate": 0.6394304728610692,
+        "gtf": 0.7198591228232439,
+        "oracle": 0.7277815820257685
+      },
+      "recovered": {
+        "denominator": 0.08835110916469924,
+        "recovered": 0.9103298274642377
+      },
+      "corruption_loss": 0.10639963374701666,
+      "oracle_loss": 0.018048524582317427,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.9680860215053764,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.02752016129032258,
+      "flagged_per_window": 3.5097016129032257
+    },
+    "gauss_0.02_s1": {
+      "f1": {
+        "nogate": 0.7407078640363122,
+        "gtf": 0.738943719368105,
+        "oracle": 0.7401701075027716
+      },
+      "recovered": {
+        "denominator": -0.0005377565335406009,
+        "recovered": null
+      },
+      "corruption_loss": 0.0051222425717737385,
+      "oracle_loss": 0.0056599991053143395,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.3779596774193548,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.010632056451612902,
+      "flagged_per_window": 0.6331290322580645
+    },
+    "gauss_0.02_s2": {
+      "f1": {
+        "nogate": 0.7355466333220428,
+        "gtf": 0.733530725871562,
+        "oracle": 0.7339382594131413
+      },
+      "recovered": {
+        "denominator": -0.0016083739089015614,
+        "recovered": null
+      },
+      "corruption_loss": 0.010283473286043066,
+      "oracle_loss": 0.011891847194944627,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.3800241935483871,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.011226858345021037,
+      "flagged_per_window": 1.018266129032258
+    },
+    "gauss_0.02_s3": {
+      "f1": {
+        "nogate": 0.7303009065111309,
+        "gtf": 0.728782726855014,
+        "oracle": 0.7277815820257685
+      },
+      "recovered": {
+        "denominator": -0.0025193244853624064,
+        "recovered": null
+      },
+      "corruption_loss": 0.01552920009695502,
+      "oracle_loss": 0.018048524582317427,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.3820268817204301,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.011783724340175952,
+      "flagged_per_window": 1.4053225806451612
+    },
+    "swap_s1": {
+      "f1": {
+        "nogate": 0.5495233677361813,
+        "gtf": 0.638443630132355,
+        "oracle": 0.7365987639374436
+      },
+      "recovered": {
+        "denominator": 0.18707539620126235,
+        "recovered": 0.4753177820375166
+      },
+      "corruption_loss": 0.19630673887190464,
+      "oracle_loss": 0.009231342670642295,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.9972822580645161,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.12140860215053763,
+      "flagged_per_window": 3.9110887096774194
+    },
+    "swap_s2": {
+      "f1": {
+        "nogate": 0.4116137595175285,
+        "gtf": 0.5277427369190435,
+        "oracle": 0.7287345038471034
+      },
+      "recovered": {
+        "denominator": 0.3171207443295749,
+        "recovered": 0.3661979844523364
+      },
+      "corruption_loss": 0.3342163470905574,
+      "oracle_loss": 0.017095602760982542,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.9974798387096774,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.23573176718092567,
+      "flagged_per_window": 7.4167903225806455
+    },
+    "swap_s3": {
+      "f1": {
+        "nogate": 0.32098046484896653,
+        "gtf": 0.4321059597715834,
+        "oracle": 0.7195814761906244
+      },
+      "recovered": {
+        "denominator": 0.3986010113416579,
+        "recovered": 0.2787887932059622
+      },
+      "corruption_loss": 0.4248496417591194,
+      "oracle_loss": 0.026248630417461505,
+      "f1_clean_nogate": 0.7458301066080859,
+      "tpr": 0.9976182795698925,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.33746297653958945,
+      "flagged_per_window": 10.417040322580645
+    },
+    "clean": {
+      "f1": {
+        "nogate": 0.7458301066080859,
+        "gtf": 0.7443433718477501
+      },
+      "realized_fpr_clean_windows": 0.010062903225806451,
+      "flagged_per_window": 0.2515725806451613,
+      "delta_gtf_minus_nogate": -0.0014867347603357839
+    }
+  },
+  "device": "cuda",
+  "scoring_seconds": 9954.393406152725
+}

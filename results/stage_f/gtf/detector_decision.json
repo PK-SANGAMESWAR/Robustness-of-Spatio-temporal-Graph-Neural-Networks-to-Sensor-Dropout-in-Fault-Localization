@@ -1,0 +1,12 @@
+{
+  "detector": "ins",
+  "loo_minus_ins": {
+    "s1": 0.004646552578897345,
+    "s2": 0.004090882245728844,
+    "s3": 0.003648950033676157
+  },
+  "margin": 0.01,
+  "rule": "LOO only if LOO AUROC - in-sample AUROC >= margin at bias_2pct for each of s=1,2,3",
+  "sigma0": 0.01,
+  "recorded_utc": "2026-10-24T22:13:01Z"
+}

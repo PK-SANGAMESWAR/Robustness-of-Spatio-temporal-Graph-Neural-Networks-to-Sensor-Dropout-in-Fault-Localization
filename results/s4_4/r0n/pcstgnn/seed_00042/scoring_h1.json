@@ -1,0 +1,17 @@
+{
+  "arm": "r0n",
+  "beta": null,
+  "f1_fused_by_resistance": {
+    "0.1": 0.9541547717383607,
+    "1.0": 0.9059887700326039,
+    "10.0": 0.6352533806677187
+  },
+  "f1_fused_pooled": 0.8461420561394457,
+  "has_table": false,
+  "k": 0,
+  "n_windows": 248000,
+  "scoring_wallclock_seconds": 55.14107804792002,
+  "seed": 42,
+  "sigma": 0.0,
+  "use_fusion": false
+}

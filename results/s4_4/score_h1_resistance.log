@@ -1,0 +1,8 @@
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+r0n seed 42: f1_fused=0.8461 f1_by_R={0.1: 0.9542, 1.0: 0.9060, 10.0: 0.6353} (59.5s wall)
+r0n seed 43: f1_fused=0.8309 f1_by_R={0.1: 0.9459, 1.0: 0.8758, 10.0: 0.6320} (58.9s wall)
+r0n seed 44: f1_fused=0.8407 f1_by_R={0.1: 0.9362, 1.0: 0.8922, 10.0: 0.6568} (60.0s wall)
+r5 seed 42: f1_fused=0.8951 f1_by_R={0.1: 0.9699, 1.0: 0.9703, 10.0: 0.7330} (427.1s wall)
+r5 seed 43: f1_fused=0.9019 f1_by_R={0.1: 0.9716, 1.0: 0.9720, 10.0: 0.7530} (427.3s wall)
+r5 seed 44: f1_fused=0.8975 f1_by_R={0.1: 0.9727, 1.0: 0.9725, 10.0: 0.7363} (426.6s wall)

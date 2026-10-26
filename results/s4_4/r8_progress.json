@@ -1,0 +1,25 @@
+[
+  {
+    "stage": "training_started",
+    "utc": "2026-10-23T04:48:05Z"
+  },
+  {
+    "best_validation_graph_f1": 0.8869575267278113,
+    "beta_final": 0.02413943037390709,
+    "collapsed": false,
+    "stage": "training_done",
+    "train_seconds": 93400.70147008402
+  },
+  {
+    "stage": "scoring_started",
+    "utc": "2026-10-24T06:44:46Z"
+  },
+  {
+    "scoring_seconds": 27002.51338517596,
+    "stage": "scoring_done"
+  },
+  {
+    "stage": "complete",
+    "utc": "2026-10-24T14:14:48Z"
+  }
+]

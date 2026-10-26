@@ -1,0 +1,6 @@
+{
+  "reason": "collapsed",
+  "detail": "{\"epoch\": 3, \"max_class0_frac\": 0.95, \"min_net_f1\": 0.1, \"triggered\": true}",
+  "stopped_at_queue_position": 1,
+  "stopped_at_utc": "2026-10-24T16:58:22Z"
+}
