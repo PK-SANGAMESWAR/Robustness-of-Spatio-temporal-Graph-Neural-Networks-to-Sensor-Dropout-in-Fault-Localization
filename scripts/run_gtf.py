@@ -31,8 +31,9 @@ Stages (each resumable; a stage skips when its output exists):
 G-TF2 (``PC-STGNN/stage_f_gtf2_preregistration.md``, ``--gate gtf2``) adds a second detector, the temporal
 flatline score (``flatline_score``: minus the standard deviation of a sensor's readings over the window), and
 flags a sensor if EITHER detector fires (``detector_flags``). Each detector has its own per-sensor threshold at
-``FPR_GTF2`` = 0.5 % on the clean half-A windows. With ``--gate gtf`` (the default) nothing changes: one
-detector, 1 % threshold, the same files, the same numbers.
+``FPR_GTF2`` = 0.5 % on the clean half-A windows. ``--gate gtf2r`` scores the extra arm "residual only at 0.5 %"
+(detector 1 alone, the G-TF2 thresholds, the gated arm only; no-gate and oracle come from the G-TF2 result). With
+``--gate gtf`` (the default) nothing changes: one detector, 1 % threshold, the same files, the same numbers.
 
 This script never touches the test split or the sealed OOD set.
 """
@@ -71,6 +72,7 @@ DRAFT_DOC = REPO / "PC-STGNN/stage_f_training_free_gate_draft.md"
 READY_MARKER = "added after s5.1, before any g-tf result"
 FPR_GTF2 = 0.005                  # G-TF2: per-sensor false-positive rate of EACH detector (the union is at most ~1 %)
 OUT_ROOT_GTF2 = REPO / "results/stage_f/gtf2"
+OUT_ROOT_GTF2R = REPO / "results/stage_f/gtf2r"      # residual-only arm at 0.5 % (descriptive; not in a decision rule)
 GTF2_DOC = REPO / "PC-STGNN/stage_f_gtf2_preregistration.md"
 READY_MARKER_GTF2 = "before any g-tf2 result"
 GTF2_TYPES = ("stuck", "bias_2pct", "bias_5pct", "gauss_0.02", "swap")   # same core scope as G-TF
@@ -489,9 +491,12 @@ def _predict(model, x, sigma, device):
 
 def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads: int,
                 max_batches: int | None = None, device_name: str | None = None,
-                sigmas: tuple | None = None, detector: str | None = None, gate: str = "gtf") -> list[Path]:
+                sigmas: tuple | None = None, detector: str | None = None, gate: str = "gtf",
+                thr_root: Path | None = None) -> list[Path]:
     """``gate="gtf"``: G-TF, unchanged. ``gate="gtf2"``: G-TF2 (in-sample residual OR flatline score, each at 0.5 %);
-    the arm is stored under the key ``gtf2`` and the per-detector rates are added under ``detectors``."""
+    the arm is stored under the key ``gtf2`` and the per-detector rates are added under ``detectors``.
+    ``gate="gtf2r"``: residual only at 0.5 % -- the gated arm only (key ``resid05``), with the G-TF2 thresholds read
+    from ``thr_root``; the no-gate and oracle arms are not recomputed (the summary takes them from the G-TF2 result)."""
     import torch
     import run_silent_detection as S1
     from fault_localization.dropout.silent import apply_silent_failure_batch
@@ -499,8 +504,9 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
     from score_s4_4_gate4_run import macro_f1
 
     gtf2 = gate == "gtf2"
-    arm = "gtf2" if gtf2 else "gtf"
-    if gtf2 and max_batches is None:                   # an official G-TF2 scoring needs the committed pre-registration
+    resid = gate == "gtf2r"
+    arm = {"gtf": "gtf", "gtf2": "gtf2", "gtf2r": "resid05"}[gate]
+    if (gtf2 or resid) and max_batches is None:        # an official G-TF2 scoring needs the committed pre-registration
         ok, problems = check_ready_gtf2()
         if not ok:
             raise RuntimeError(f"G-TF2 pre-registration is not complete: {problems}")
@@ -508,7 +514,7 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
     chk = check_gate_equals_training_dropout(data_root)
     if not chk["passed"]:
         raise RuntimeError(f"consistency check 1 failed (gate drop != training dropout): {chk}")
-    if gtf2:
+    if gtf2 or resid:
         det = "ins"                                    # pre-registered: the in-sample residual, never LOO
     elif detector is not None:        # smoke tests only (main() allows it with --smoke)
         det = detector
@@ -525,11 +531,11 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
         out = out_root / f"sigma_{sigma:g}" / f"seed_{seed:05d}.json"
         if out.exists():
             written.append(out); continue
-        thr_file = out_root / (f"thresholds_gtf2_sigma_{sigma:g}.npz" if gtf2 else f"thresholds_sigma_{sigma:g}.npz")
+        thr_file = (thr_root or out_root) / (f"thresholds_gtf2_sigma_{sigma:g}.npz" if (gtf2 or resid) else f"thresholds_sigma_{sigma:g}.npz")
         if not thr_file.exists():
             raise RuntimeError(f"thresholds missing for sigma0={sigma}: run the thresholds stage first")
         T_ = np.load(thr_file)
-        thr = T_[f"thr_{det}"]; clean_flags = T_["flags_clean_B_union"] if gtf2 else T_[f"flags_clean_B_{det}"]
+        thr = T_[f"thr_{det}"]; clean_flags = T_["flags_clean_B_union"] if gtf2 else T_[f"flags_clean_B_{det}"]   # gtf2r: ins only
         thr_flat = T_["thr_flat"] if gtf2 else None
         raw = S1.open_raw(raw_dir(sigma), 0, "r")
         n_total = int(T_["n_total"])
@@ -537,8 +543,8 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
             chk2 = check_stored_scores(sigma, batch_ids=(0, 300, 600), data_root=data_root, threads=threads)
             if not chk2["passed"]:
                 raise RuntimeError(f"consistency check 2 failed (stored scores != recomputed): {chk2}")
-        P = {c[0]: {"nogate": [], arm: [], "oracle": []} for c in conds}
-        P["clean"] = {"nogate": [], arm: []}
+        P = {c[0]: ({arm: []} if resid else {"nogate": [], arm: [], "oracle": []}) for c in conds}
+        P["clean"] = {arm: []} if resid else {"nogate": [], arm: []}
         ytrue = []
         st = {c[0]: dict(tp=0, pos=0, fp=0, neg=0, flagged=0, win=0) for c in conds}
         st["clean"] = dict(fp=0, neg=0, flagged=0, win=0)
@@ -562,7 +568,8 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
             ytrue.extend(y[rb].tolist())
             # clean-window arm
             fl = clean_flags[sl][rows_b]
-            P["clean"]["nogate"] += _predict(model, xn[rb], sigma, device)
+            if not resid:
+                P["clean"]["nogate"] += _predict(model, xn[rb], sigma, device)
             P["clean"][arm] += _predict(model, gate_zero(xn[rb], torch.as_tensor(fl)), sigma, device)
             neg = avail_b
             if gtf2:
@@ -584,9 +591,11 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
                 xb = x_c[rb]
                 fdict = detector_flags(sc, flatline_score(xb, mean, std) if gtf2 else None, avail_b, thr, thr_flat)
                 fl = fdict["union"]
-                P[cname]["nogate"] += _predict(model, xb, sigma, device)
+                if not resid:
+                    P[cname]["nogate"] += _predict(model, xb, sigma, device)
                 P[cname][arm] += _predict(model, gate_zero(xb, torch.as_tensor(fl)), sigma, device)
-                P[cname]["oracle"] += _predict(model, gate_zero(xb, torch.as_tensor(lab_b)), sigma, device)
+                if not resid:
+                    P[cname]["oracle"] += _predict(model, gate_zero(xb, torch.as_tensor(lab_b)), sigma, device)
                 d = st[cname]
                 d["tp"] += int((fl & lab_b).sum()); d["pos"] += int((lab_b & avail_b).sum())
                 d["fp"] += int((fl & ~lab_b & avail_b).sum()); d["neg"] += int((~lab_b & avail_b).sum())
@@ -600,11 +609,11 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
                 print(f"  [score seed={seed} sigma={sigma:g}] batch {bi} {(time.time()-t0)/60:.1f} min", flush=True)
         yt = np.asarray(ytrue)
         res = {"seed": seed, "sigma0": sigma, "scope": scope, "detector": ("ins+flatline" if gtf2 else det), "half": "B",
-               "split_seed": SPLIT_SEED, "n_windows": int(yt.size), "fpr_target": (FPR_GTF2 if gtf2 else FPR_TARGET),
+               "split_seed": SPLIT_SEED, "n_windows": int(yt.size), "fpr_target": (FPR_GTF2 if (gtf2 or resid) else FPR_TARGET),
                "gate": gate,
                "partial_run": max_batches is not None, "conditions": {}, "device": str(device),
                "scoring_seconds": time.time() - t0}
-        f1_clean = macro_f1(yt, np.asarray(P["clean"]["nogate"]))
+        f1_clean = None if resid else macro_f1(yt, np.asarray(P["clean"]["nogate"]))
         for c, arms in P.items():
             f1 = {k: macro_f1(yt, np.asarray(v)) for k, v in arms.items()}
             d = st[c]
@@ -612,15 +621,17 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
             if c == "clean":
                 entry["realized_fpr_clean_windows"] = d["fp"] / max(d["neg"], 1)
                 entry["flagged_per_window"] = d["flagged"] / max(d["win"], 1)
-                entry[f"delta_{arm}_minus_nogate"] = f1[arm] - f1["nogate"]
+                if not resid:
+                    entry[f"delta_{arm}_minus_nogate"] = f1[arm] - f1["nogate"]
                 if gtf2:
                     entry["detectors"] = {n: {"realized_fpr_clean_windows": dst[c][n]["fp"] / max(d["neg"], 1),
                                               "flagged_per_window": dst[c][n]["flagged"] / max(d["win"], 1)} for n in dnames}
             else:
-                entry["recovered"] = recovered_fraction(f1[arm], f1["nogate"], f1["oracle"])
-                entry["corruption_loss"] = f1_clean - f1["nogate"]       # F1(clean, no gate) - F1(corrupted, no gate)
-                entry["oracle_loss"] = f1_clean - f1["oracle"]
-                entry["f1_clean_nogate"] = f1_clean
+                if not resid:
+                    entry["recovered"] = recovered_fraction(f1[arm], f1["nogate"], f1["oracle"])
+                    entry["corruption_loss"] = f1_clean - f1["nogate"]       # F1(clean, no gate) - F1(corrupted, no gate)
+                    entry["oracle_loss"] = f1_clean - f1["oracle"]
+                    entry["f1_clean_nogate"] = f1_clean
                 entry["tpr"] = d["tp"] / max(d["pos"], 1)
                 entry["realized_fpr_clean_sensors_of_corrupted_windows"] = d["fp"] / max(d["neg"], 1)
                 entry["flagged_per_window"] = d["flagged"] / max(d["win"], 1)
@@ -696,28 +707,64 @@ def stage_summarize(scope: str, out_root: Path, arm: str = "gtf") -> dict:
     return summ
 
 
+def stage_summarize_gtf2r(scope: str, out_root: Path, gtf2_root: Path) -> dict:
+    """Residual only at 0.5 % (descriptive; no decision rule). The no-gate and oracle F1 and the corruption loss come
+    from the G-TF2 result of the same seed (same model, windows and corruption draw)."""
+    summ = {"scope": scope, "arm": "resid05", "note": "descriptive; not in a decision rule", "sigma": {}}
+    for sigma in scope_sigmas(scope):
+        r2 = [json.loads((out_root / f"sigma_{sigma:g}" / f"seed_{s:05d}.json").read_text()) for s in SEEDS]
+        r1 = [json.loads((gtf2_root / f"sigma_{sigma:g}" / f"seed_{s:05d}.json").read_text()) for s in SEEDS]
+        by_cond = {}
+        for c in r2[0]["conditions"]:
+            if c == "clean":
+                continue
+            ng = [r["conditions"][c]["f1"]["nogate"] for r in r1]
+            orc = [r["conditions"][c]["f1"]["oracle"] for r in r1]
+            g2 = [r["conditions"][c]["f1"]["gtf2"] for r in r1]
+            rs = [r["conditions"][c]["f1"]["resid05"] for r in r2]
+            by_cond[c] = {"nogate": ng, "oracle": orc, "gtf2": g2, "resid05": rs,
+                          "resid05_minus_nogate": [a - b for a, b in zip(rs, ng)],
+                          "gtf2_minus_resid05": [a - b for a, b in zip(g2, rs)],
+                          "recovered_per_seed": [recovered_fraction(a, b, o) for a, b, o in zip(rs, ng, orc)],
+                          "corruption_loss": [r["conditions"][c]["corruption_loss"] for r in r1],
+                          "tpr": [r["conditions"][c]["tpr"] for r in r2],
+                          "realized_fpr_clean_sensors_of_corrupted_windows":
+                              [r["conditions"][c]["realized_fpr_clean_sensors_of_corrupted_windows"] for r in r2]}
+        summ["sigma"][str(sigma)] = {"conditions": by_cond, "clean": {
+            "nogate": [r["conditions"]["clean"]["f1"]["nogate"] for r in r1],
+            "resid05": [r["conditions"]["clean"]["f1"]["resid05"] for r in r2],
+            "realized_fpr_clean_windows": [r["conditions"]["clean"]["realized_fpr_clean_windows"] for r in r2]}}
+    (out_root / "summary.json").write_text(json.dumps(summ, indent=2))
+    return summ
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("stage", nargs="?", choices=["split", "thresholds", "score", "summarize", "decide", "check-ready", "check-consistency"])
     ap.add_argument("--scope", choices=["core", "full"], default="core")
-    ap.add_argument("--gate", choices=["gtf", "gtf2"], default="gtf",
-                    help="gtf2 = in-sample residual OR flatline score (PC-STGNN/stage_f_gtf2_preregistration.md); core scope only")
+    ap.add_argument("--gate", choices=["gtf", "gtf2", "gtf2r"], default="gtf",
+                    help="gtf2 = in-sample residual OR flatline score (PC-STGNN/stage_f_gtf2_preregistration.md); "
+                         "gtf2r = residual only at 0.5 % (extra arm; reads the gtf2 thresholds); core scope only")
+    ap.add_argument("--thr-root", default=None, help="gtf2r: directory with thresholds_gtf2_*.npz (default results/stage_f/gtf2/core)")
     ap.add_argument("--seed", type=int)
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--data-root", default=str(REPO / "dataset_fullscale_50"))
     ap.add_argument("--out-root", default=None)
     ap.add_argument("--smoke", action="store_true",
-                    help="test only: CPU, 2 batches, sigma0 from --sigma, outputs under --out-root (never the official dir)")
+                    help="test only: CPU, 3 batches, sigma0 from --sigma, outputs under --out-root (never the official dir)")
     ap.add_argument("--sigma", type=float, default=None)
     ap.add_argument("--detector", choices=["loo", "ins"], default=None, help="smoke tests only")
     args = ap.parse_args()
-    if args.gate == "gtf2" and args.scope != "core":
+    if args.gate != "gtf" and args.scope != "core":
         sys.exit("G-TF2 is pre-registered for the core scope only")
-    out_root = Path(args.out_root) if args.out_root else (OUT_ROOT_GTF2 if args.gate == "gtf2" else OUT_ROOT) / args.scope
-    if args.smoke and (args.out_root is None or Path(args.out_root).resolve() == OUT_ROOT.resolve()):
-        sys.exit("--smoke needs an --out-root outside results/stage_f/gtf")
+    base = {"gtf": OUT_ROOT, "gtf2": OUT_ROOT_GTF2, "gtf2r": OUT_ROOT_GTF2R}[args.gate]
+    out_root = Path(args.out_root) if args.out_root else base / args.scope
+    thr_root = Path(args.thr_root) if args.thr_root else (OUT_ROOT_GTF2 / args.scope if (args.gate == "gtf2r" and not args.out_root) else None)
+    if args.smoke and (args.out_root is None or (REPO / "results").resolve() in Path(args.out_root).resolve().parents
+                       or Path(args.out_root).resolve() == (REPO / "results").resolve()):
+        sys.exit("--smoke needs an --out-root outside results/")
     if args.stage == "check-ready":
-        ok, problems = check_ready_gtf2() if args.gate == "gtf2" else check_ready(args.scope)
+        ok, problems = check_ready_gtf2() if args.gate != "gtf" else check_ready(args.scope)
         print(json.dumps({"ready": ok, "problems": problems}, indent=2))
         return 0 if ok else 1
     if args.stage == "check-consistency":
@@ -736,9 +783,11 @@ def main() -> int:
         dec.update({"sigma0": 0.01, "recorded_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
         OUT_ROOT.mkdir(parents=True, exist_ok=True)
         DECISION_PATH.write_text(json.dumps(dec, indent=2)); print(json.dumps(dec, indent=2)); return 0
-    mb = 2 if args.smoke else None
+    mb = 3 if args.smoke else None
     sigmas = (args.sigma,) if args.sigma is not None else scope_sigmas(args.scope)
     if args.stage == "thresholds":
+        if args.gate == "gtf2r":
+            sys.exit("gtf2r has no thresholds stage: it reads the G-TF2 thresholds (--gate gtf2 thresholds)")
         for sg in sigmas:
             tname = f"thresholds_gtf2_sigma_{sg:g}.npz" if args.gate == "gtf2" else f"thresholds_sigma_{sg:g}.npz"
             if (out_root / tname).exists():
@@ -749,9 +798,11 @@ def main() -> int:
         seeds = (args.seed,) if args.seed else SEEDS
         for s in seeds:
             stage_score(s, args.scope, out_root, Path(args.data_root), args.threads, mb,
-                        "cpu" if args.smoke else None, sigmas, args.detector if args.smoke else None, args.gate)
+                        "cpu" if args.smoke else None, sigmas, args.detector if args.smoke else None, args.gate, thr_root)
         return 0
     if args.stage == "summarize":
+        if args.gate == "gtf2r":
+            print(json.dumps(stage_summarize_gtf2r(args.scope, out_root, Path(args.thr_root) if args.thr_root else OUT_ROOT_GTF2 / args.scope), indent=2)); return 0
         print(json.dumps(stage_summarize(args.scope, out_root, args.gate), indent=2)); return 0
     ap.print_help(); return 2
 

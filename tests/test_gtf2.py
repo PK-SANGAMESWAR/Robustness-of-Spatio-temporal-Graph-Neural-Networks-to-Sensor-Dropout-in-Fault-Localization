@@ -153,3 +153,32 @@ def test_gtf2_summarize_applies_the_primary_and_secondary_rules(tmp_path):
     assert not rules["swap"]["useful (better than no gate in all 3 seeds at every s)"]
     assert rules["gauss_0.02"]["role"] == "reported only"
     assert "gtf2_minus_nogate" in summ["sigma"]["0.01"]["conditions"]["stuck_s1"]
+
+
+def test_gtf2r_summary_takes_nogate_and_oracle_from_gtf2_and_is_descriptive(tmp_path):
+    import json
+    conds = [f"{t}_s{s}" for t in G.GTF2_TYPES for s in (1, 2, 3)]
+    d2, dr = tmp_path / "gtf2", tmp_path / "gtf2r"
+    for seed in G.SEEDS:
+        c2, cr = {}, {}
+        for name in conds:
+            c2[name] = {"f1": {"nogate": 0.5, "gtf2": 0.6, "oracle": 0.7}, "corruption_loss": 0.2, "tpr": 0.9,
+                        "realized_fpr_clean_sensors_of_corrupted_windows": 0.01}
+            cr[name] = {"f1": {"resid05": 0.55}, "tpr": 0.8, "realized_fpr_clean_sensors_of_corrupted_windows": 0.005,
+                        "flagged_per_window": 0.5}
+        c2["clean"] = {"f1": {"nogate": 0.7, "gtf2": 0.69}, "realized_fpr_clean_windows": 0.01}
+        cr["clean"] = {"f1": {"resid05": 0.695}, "realized_fpr_clean_windows": 0.005, "flagged_per_window": 0.1}
+        for root, c in ((d2, c2), (dr, cr)):
+            (root / "sigma_0.01").mkdir(parents=True, exist_ok=True)
+            (root / "sigma_0.01" / f"seed_{seed:05d}.json").write_text(json.dumps({"seed": seed, "conditions": c}))
+    summ = G.stage_summarize_gtf2r("core", dr, d2)
+    cond = summ["sigma"]["0.01"]["conditions"]["stuck_s1"]
+    assert summ["note"].startswith("descriptive") and "decision_rule" not in " ".join(summ)
+    assert cond["nogate"] == [0.5] * 3 and cond["oracle"] == [0.7] * 3                    # taken from the G-TF2 result
+    assert cond["resid05_minus_nogate"] == pytest.approx([0.05] * 3)
+    assert cond["gtf2_minus_resid05"] == pytest.approx([0.05] * 3)
+    assert cond["recovered_per_seed"][0]["recovered"] == pytest.approx(0.25)
+
+
+def test_gtf2r_has_no_thresholds_stage_and_uses_its_own_output_dir():
+    assert G.OUT_ROOT_GTF2R not in (G.OUT_ROOT, G.OUT_ROOT_GTF2) and "gtf2r" in str(G.OUT_ROOT_GTF2R)

@@ -27,7 +27,7 @@ What follows from the decision (stated, not decided here):
 - The G0 to G3 rows in the table of § S5.3 are kept and marked "not run, replaced by G-TF2". Their text, the G0-versus-G2 question
   ("why not just augment with corruption?") and the cost estimate (198.4 GPU-h floor,
   `stage_f_training_free_gate_draft.md` § 9) stay on record. That question is now **unanswered**, not answered.
-- The Gate 5 box "G2 > G0 under silent failures" cannot be evaluated. It stays unticked. How Gate 5 is read now is the author's decision.
+- The Gate 5 box "G2 > G0 under silent failures" cannot be evaluated. It stays unticked. Gate 5 was redefined (see GATE 5 below).
 - The S5.2 text below ("LOO should be clearly better") is unchanged; its result and the in-sample amendment are in the S5.2 sections below.
 - PCRG code is not written. `01_SPEC.md` §7 carries a note.
 
@@ -232,15 +232,31 @@ false-positive rate of **0.5 %**; scoring is on half B only. The flatline detect
 | **Primary rule** | G-TF2 is higher than no gate in **all 3 seeds at each s**, for **stuck** |
 | Secondary | the same rule for bias ±2 %, bias ±5 %, swap (Gaussian reported only); paired t with Holm over the three s-levels per type is secondary; n = 3, no trend upgraded |
 | Reported | corruption loss; `rec` (interpreted only if the denominator is ≥ 0.01); TPR; realized false-positive rate for detector 1, detector 2 and the union; the G-TF result beside it |
-| Cost | 141 passes ≈ **8.3 GPU-h** (G-TF core, same passes, measured); upper bound 8.75 GPU-h; no training |
-| Code | `scripts/run_gtf.py --gate gtf2`; `tests/test_gtf2.py`. Not in the running queue |
+| **Extra arm** `[Added 2026-10-26 09:20 IST / 2026-10-26T03:50:17Z, before any G-TF2 result.]` | **residual only at 0.5 %**: the in-sample residual alone, per-sensor false-positive rate 0.5 % on clean half A; same scope. Purpose: separates the effect of the flatline detector from the effect of the 0.5 % threshold. Descriptive, not in a decision rule (`stage_f_gtf2_preregistration.md` § 3b) |
+| Cost | G-TF2 141 passes ≈ 8.3 GPU-h; residual-only arm 48 passes ≈ 2.8 GPU-h; **total 189 passes ≈ 11.1 GPU-h** (measured rate 212.2 s per pass); upper bound 11.7 GPU-h; no training |
+| Code | `scripts/run_gtf.py --gate gtf2` and `--gate gtf2r`; `tests/test_gtf2.py`. Not in the S4.4 queue; started after it by `scripts/run_gtf2_after_queue.py` |
 
 ## GATE 5
 
-- [ ] S5.1 AUROC ≥ 0.75 at the mildest corruption
-- [ ] S5.2 LOO beats in-sample
-- [ ] G2 > G0 under silent failures, sign-consistent across seeds
-- [ ] False-suppression rate on clean sensors acceptable (report it either way)
+*Amended 2026-10-26 09:20 IST / 2026-10-26T03:50:17Z, before any G-TF2 result.* The criteria were changed because PCRG (G0 to G3) is replaced by G-TF2
+(see "Stage F amendment: PCRG replaced by G-TF2"). The old criteria are kept below and marked replaced.
+
+**Current criteria**
+
+- [x] **S5.1 passed** (hard gate: AUROC ≥ 0.75 for bias ±2 %). Measured: LOO AUROC 0.8482 to 0.8537 at sigma0 = 1e-2, and 0.9946 to
+  0.9991 at lower noise (S5.2 measurement-noise rerun below); in-sample 0.8446 to 0.8491 at sigma0 = 1e-2. Passed at every sigma0.
+- [ ] **G-TF2 primary rule passed:** G-TF2 is better than no gate in all 3 seeds at each s = 1, 2, 3, for stuck
+  (`stage_f_gtf2_preregistration.md` § 4). Not run.
+
+The question G2 > G0 is not tested. The trained gate input was the physics residual only, which does not detect stuck sensors. A
+training-free gate addresses this failure.
+
+**Old criteria — replaced 2026-10-26, kept unchanged:**
+
+- [x] S5.1 AUROC ≥ 0.75 at the mildest corruption — *met; carried into the current criteria*
+- [ ] S5.2 LOO beats in-sample — *replaced; the check was not met (S5.2 results below)*
+- [ ] G2 > G0 under silent failures, sign-consistent across seeds — *replaced; not tested (PCRG not trained)*
+- [ ] False-suppression rate on clean sensors acceptable (report it either way) — *replaced as a criterion; the false-suppression rate is still reported for G-TF and G-TF2*
 
 ### S5.2 result, first run `[Recorded 2026-10-24]`
 
