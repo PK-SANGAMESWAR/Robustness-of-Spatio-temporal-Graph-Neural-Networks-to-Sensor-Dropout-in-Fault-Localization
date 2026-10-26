@@ -1,0 +1,342 @@
+{
+  "label": "EXPLORATORY, NOT PRE-REGISTERED. Not used in any decision rule.",
+  "sigma0": 0.01,
+  "half": "B",
+  "split_seed": 7,
+  "partial_run": false,
+  "temporal_score": "-mean over instrumented phases of std over the 20 window steps, p.u.",
+  "combined": "max(rank-normalized residual (in-sample PSM), rank-normalized temporal)",
+  "rank_normalization": "percentile within all available sensors of all half-B windows of the condition",
+  "conditions": {
+    "stuck_s1": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 124000,
+      "auroc": {
+        "temporal": 1.0,
+        "residual_insample": 0.6240070070808403,
+        "residual_loo": 0.624951771711325,
+        "combined_max_insample_temporal": 0.9915332751772243
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 1.0,
+        "residual_insample": 0.23881451612903226,
+        "combined": 0.23881451612903226
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": -0.0,
+        "clean": 0.010351285338401794
+      },
+      "fraction_corrupted_with_zero_std": 1.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "stuck_s2": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 248000,
+      "auroc": {
+        "temporal": 1.0,
+        "residual_insample": 0.6004034107389269,
+        "residual_loo": 0.6008763307610958,
+        "combined_max_insample_temporal": 0.9813432649371692
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 1.0,
+        "residual_insample": 0.2085483870967742,
+        "combined": 0.2085483870967742
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": -0.0,
+        "clean": 0.010351136326789856
+      },
+      "fraction_corrupted_with_zero_std": 1.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "stuck_s3": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 372000,
+      "auroc": {
+        "temporal": 1.0,
+        "residual_insample": 0.5825326148218002,
+        "residual_loo": 0.5828046293825679,
+        "combined_max_insample_temporal": 0.969549068190194
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 1.0,
+        "residual_insample": 0.17635752688172043,
+        "combined": 0.17635752688172043
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": -0.0,
+        "clean": 0.010351309552788734
+      },
+      "fraction_corrupted_with_zero_std": 1.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "bias_2pct_s1": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 124000,
+      "auroc": {
+        "temporal": 0.5000886487098399,
+        "residual_insample": 0.8493481257926314,
+        "residual_loo": 0.8540369259031932,
+        "combined_max_insample_temporal": 0.8077380598104731
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.01,
+        "residual_insample": 0.370991935483871,
+        "combined": 0.20328225806451614
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.01035439781844616,
+        "clean": 0.010351285338401794
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "bias_2pct_s2": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 248000,
+      "auroc": {
+        "temporal": 0.5003086801303839,
+        "residual_insample": 0.8466501270804586,
+        "residual_loo": 0.8507911184299077,
+        "combined_max_insample_temporal": 0.7977971292881623
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.010459677419354838,
+        "residual_insample": 0.36881451612903227,
+        "combined": 0.12904838709677421
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.010356998071074486,
+        "clean": 0.010351136326789856
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "bias_2pct_s3": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 372000,
+      "auroc": {
+        "temporal": 0.5003601793221628,
+        "residual_insample": 0.8442691862992897,
+        "residual_loo": 0.8478835273694937,
+        "combined_max_insample_temporal": 0.7880439536916053
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.010233870967741936,
+        "residual_insample": 0.3637231182795699,
+        "combined": 0.09194354838709677
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.010358378291130066,
+        "clean": 0.010351309552788734
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "bias_5pct_s1": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 124000,
+      "auroc": {
+        "temporal": 0.5011761917422715,
+        "residual_insample": 0.991013532283808,
+        "residual_loo": 0.9907244546763896,
+        "combined_max_insample_temporal": 0.967425297637823
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.01154032258064516,
+        "residual_insample": 0.9436774193548387,
+        "combined": 0.2628951612903226
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.010402385145425797,
+        "clean": 0.010351285338401794
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "bias_5pct_s2": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 248000,
+      "auroc": {
+        "temporal": 0.5014243953047945,
+        "residual_insample": 0.9893864614616794,
+        "residual_loo": 0.9889944599213059,
+        "combined_max_insample_temporal": 0.947559555524137
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.012217741935483872,
+        "residual_insample": 0.9312822580645161,
+        "combined": 0.13935483870967744
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.010399284772574902,
+        "clean": 0.010351136326789856
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "bias_5pct_s3": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 372000,
+      "auroc": {
+        "temporal": 0.5014945345767114,
+        "residual_insample": 0.9881237575905384,
+        "residual_loo": 0.9876703033535144,
+        "combined_max_insample_temporal": 0.9292308845638027
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.011838709677419354,
+        "residual_insample": 0.918016129032258,
+        "combined": 0.09695430107526883
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.010403051972389221,
+        "clean": 0.010351309552788734
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "gauss_0.02_s1": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 124000,
+      "auroc": {
+        "temporal": 0.20727522647578475,
+        "residual_insample": 0.7828379111426357,
+        "residual_loo": 0.78344297783342,
+        "combined_max_insample_temporal": 0.6846694360150017
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.0,
+        "residual_insample": 0.3607258064516129,
+        "combined": 0.20764516129032257
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.022770389914512634,
+        "clean": 0.010351285338401794
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "gauss_0.02_s2": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 248000,
+      "auroc": {
+        "temporal": 0.20734195627431798,
+        "residual_insample": 0.7813900872845315,
+        "residual_loo": 0.7818086968086913,
+        "combined_max_insample_temporal": 0.6696695169130039
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.0,
+        "residual_insample": 0.35801612903225805,
+        "combined": 0.11408870967741937
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.02277236059308052,
+        "clean": 0.010351136326789856
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "gauss_0.02_s3": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 372000,
+      "auroc": {
+        "temporal": 0.20744523196914516,
+        "residual_insample": 0.7800331970440947,
+        "residual_loo": 0.7801485982784071,
+        "combined_max_insample_temporal": 0.6542228194401745
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.0,
+        "residual_insample": 0.35516129032258065,
+        "combined": 0.07327956989247311
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.022763801738619804,
+        "clean": 0.010351309552788734
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "swap_s1": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 124000,
+      "auroc": {
+        "temporal": 0.45511234537726547,
+        "residual_insample": 0.9962918626092071,
+        "residual_loo": 0.9958661562256114,
+        "combined_max_insample_temporal": 0.972938520093544
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.0005645161290322581,
+        "residual_insample": 0.9431935483870968,
+        "combined": 0.22996774193548386
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.010616444051265717,
+        "clean": 0.010349854826927185
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "swap_s2": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 248000,
+      "auroc": {
+        "temporal": 0.4550531232348267,
+        "residual_insample": 0.9900126219864103,
+        "residual_loo": 0.9894228821087636,
+        "combined_max_insample_temporal": 0.9409277092179229
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.0005362903225806452,
+        "residual_insample": 0.8944395161290323,
+        "combined": 0.1132258064516129
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.010614560917019844,
+        "clean": 0.010348640382289886
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    },
+    "swap_s3": {
+      "n_sensor_scores": 3100000,
+      "n_positive": 372000,
+      "auroc": {
+        "temporal": 0.4540991768488081,
+        "residual_insample": 0.9776061434944858,
+        "residual_loo": 0.9769954055917526,
+        "combined_max_insample_temporal": 0.899161968721916
+      },
+      "tpr_at_fpr_1pct_pooled": {
+        "temporal": 0.00040860215053763443,
+        "residual_insample": 0.2606290322580645,
+        "combined": 0.06866129032258064
+      },
+      "note": "pooled FPR over the clean sensors of the corrupted windows (not the clean-window threshold of G-TF)",
+      "median_temporal_std_pu": {
+        "corrupted": 0.010620402172207832,
+        "clean": 0.01034699659794569
+      },
+      "fraction_corrupted_with_zero_std": 0.0,
+      "fraction_clean_with_zero_std": 0.0
+    }
+  }
+}

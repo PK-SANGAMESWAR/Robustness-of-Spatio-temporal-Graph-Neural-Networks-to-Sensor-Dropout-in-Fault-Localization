@@ -5,9 +5,35 @@ method, including Paper 1's, can see even in principle.
 **Compute.** `[Corrected 2026-09-22]` 8 runs × ≈ 7–9 h (G2 has a second forward pass) ≈ 60–70
 GPU-h.
 
+## Stage F amendment: PCRG replaced by G-TF2
+
+No G0, G1, G2 or G3 run has started, so no result of those arms exists.
+
+1. **The PCRG gate input is the physics residual only** (`01_SPEC.md` §7). It does not detect stuck sensors: the residual AUROC is
+   0.58 to 0.62 at sigma0 = 1e-2 (S5.2 tables below, stuck rows; 0.5825 to 0.6240 on half B in the exploratory test).
+2. **A temporal flatline check detects stuck sensors with AUROC 1.000** at s = 1, 2, 3 (exploratory test, half B,
+   sigma0 = 1e-2; `results/stage_f/temporal_detector/temporal_detector.json`, labelled "EXPLORATORY, NOT PRE-REGISTERED").
+   The simulated stuck sensor is exactly flat; see `stage_f_gtf2_preregistration.md` § 2 for what this does and does not show.
+3. **G-TF showed that a training-free gate on R5 recovers about 0.9 of the bias ±5 % loss** (mean `rec` 0.88 / 0.91 / 0.90 at
+   s = 1 / 2 / 3) **and 0.30 to 0.45 of the swap loss** (0.45 / 0.37 / 0.30). For stuck sensors it recovers nothing (`rec` −0.04
+   at every s). Record: § "G-TF core result" below.
+4. **Decision: G0 to G3 are not trained. G-TF2 replaces them.** G-TF2 is G-TF plus the flatline check as a second detector, with
+   the rule "flag if the residual is above its threshold OR the standard deviation is below its threshold". Pre-registration:
+   `stage_f_gtf2_preregistration.md` (same directory).
+5. Amended 2026-10-26 09:13 IST / 2026-10-26T03:43:56Z, before any G0 to G3 result.
+
+What follows from the decision (stated, not decided here):
+
+- The G0 to G3 rows in the table of § S5.3 are kept and marked "not run, replaced by G-TF2". Their text, the G0-versus-G2 question
+  ("why not just augment with corruption?") and the cost estimate (198.4 GPU-h floor,
+  `stage_f_training_free_gate_draft.md` § 9) stay on record. That question is now **unanswered**, not answered.
+- The Gate 5 box "G2 > G0 under silent failures" cannot be evaluated. It stays unticked. How Gate 5 is read now is the author's decision.
+- The S5.2 text below ("LOO should be clearly better") is unchanged; its result and the in-sample amendment are in the S5.2 sections below.
+- PCRG code is not written. `01_SPEC.md` §7 carries a note.
+
 ## Context you need
 
-`01_SPEC.md` §7. gᵢ = mᵢ · σ(−α(r̃ᵢ^LOO − c)). Gate the evidence (input embedding + soft-vote
+`01_SPEC.md` §7. gᵢ = mᵢ · σ(−α(r̃ᵢ^ins − c)) `[Corrected 2026-10-26: was r̃ᵢ^LOO. The in-sample residual replaces LOO; see the 01_SPEC.md §7 amendment of 2026-10-25 and the S5.2 results below. PCRG is not built; see "Stage F amendment" above.]` Gate the evidence (input embedding + soft-vote
 weight), never the messages at every hop — Paper 1's SDR-STGNN reached AUDC 0.892 against 0.913
 for plain dropout-aware training, because hop-level silencing cuts the multi-hop paths that route
 around a lost node.
@@ -41,13 +67,14 @@ one-figure, zero-cost justification of the LOO design — and a reviewer will as
 
 ## S5.3 — Gate training
 
-| # | Variant | Purpose | Seeds |
-|---|---|---|---|
-| G0 | dropout-aware + corruption augmentation, no physics | the critical control: "why not just augment with corruption?" | 3 |
-| G1 | PC-STGNN + the same augmentation | isolates the gate from the augmentation | 1 |
-| G2 | PCRG-STGNN — gate on evidence + vote weight | the headline result | 3 |
-| G3 | gate at every hop | re-tests the Paper-1 SDR-STGNN lesson | 1 |
-| G-TF | R5 + training-free gate from the S5.1 detector (no training) | a floor for G2; how much a threshold alone recovers | 3 (existing R5 checkpoints) |
+| # | Variant | Purpose | Seeds | Status |
+|---|---|---|---|---|
+| G0 | dropout-aware + corruption augmentation, no physics | the critical control: "why not just augment with corruption?" | 3 | **not run, replaced by G-TF2** (amended 2026-10-26) |
+| G1 | PC-STGNN + the same augmentation | isolates the gate from the augmentation | 1 | **not run, replaced by G-TF2** |
+| G2 | PCRG-STGNN — gate on evidence + vote weight | the headline result | 3 | **not run, replaced by G-TF2** |
+| G3 | gate at every hop | re-tests the Paper-1 SDR-STGNN lesson | 1 | **not run, replaced by G-TF2** |
+| G-TF | R5 + training-free gate from the S5.1 detector (no training) | a floor for G2; how much a threshold alone recovers | 3 (existing R5 checkpoints) | run (core scope), result recorded 2026-10-26 00:16 IST |
+| G-TF2 | R5 + training-free gate with two detectors (in-sample residual OR temporal flatline score); no training | does a second detector make the floor useful for stuck sensors? | 3 (existing R5 checkpoints) | pre-registered 2026-10-26, not run |
 
 G0 is the one that matters. If G2 does not beat G0, the gate is not earning its complexity and the
 honest move is to report that.
@@ -187,6 +214,26 @@ the sign rule is the primary criterion. This is not upgraded.
 - Gaussian 0.02 p.u.: the loss is 0.007–0.020, so `rec` is undefined in most seeds; G-TF is within ±0.002 of no gate.
 - Clean windows: G-TF is lower than no gate by 0.0010 / 0.0020 / 0.0015, and the realized FPR is 1.01 %, as designed.
 - Limits: one fixed corruption and noise draw (n = 3 is over model seeds), sigma0 = 1e-2 only (the weakest detector setting), half B only, k = 0 only. Full scope has not been run and needs the author's approval.
+
+### G-TF2 — training-free gate arm, two detectors `[Added 2026-10-26 09:13 IST / 2026-10-26T03:43:56Z, before any G-TF2 result]`
+
+Full pre-registration: `stage_f_gtf2_preregistration.md` (same directory), frozen here before any G-TF2 result.
+**No G-TF2 scoring has been run and no G-TF2 threshold has been computed.** G-TF2 replaces G0 to G3 (see "Stage F amendment" above).
+
+**What.** R5, unchanged (the 3 Gate 4 checkpoints, seeds 42/43/44; no training; k = 0). A sensor is flagged, and dropped (all six
+channels zeroed), if its **in-sample residual is above its threshold OR the standard deviation of its readings over the window is
+below its threshold** (the temporal flatline score). Each threshold is chosen per sensor on the clean windows of half A at a
+false-positive rate of **0.5 %**; scoring is on half B only. The flatline detector was **chosen after an exploratory test**
+(`results/stage_f/temporal_detector/`), on the same half B; the pre-registration states this.
+
+| Item | Setting |
+|---|---|
+| Scope | all 5 corruption types, sigma0 = 1e-2, s = 1, 2, 3, seeds 42/43/44; arms no gate / G-TF2 / oracle; plus the clean-window arm |
+| **Primary rule** | G-TF2 is higher than no gate in **all 3 seeds at each s**, for **stuck** |
+| Secondary | the same rule for bias ±2 %, bias ±5 %, swap (Gaussian reported only); paired t with Holm over the three s-levels per type is secondary; n = 3, no trend upgraded |
+| Reported | corruption loss; `rec` (interpreted only if the denominator is ≥ 0.01); TPR; realized false-positive rate for detector 1, detector 2 and the union; the G-TF result beside it |
+| Cost | 141 passes ≈ **8.3 GPU-h** (G-TF core, same passes, measured); upper bound 8.75 GPU-h; no training |
+| Code | `scripts/run_gtf.py --gate gtf2`; `tests/test_gtf2.py`. Not in the running queue |
 
 ## GATE 5
 

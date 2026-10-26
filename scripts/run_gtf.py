@@ -28,6 +28,12 @@ Stages (each resumable; a stage skips when its output exists):
   summarize   CPU. Decision rule, recovered fraction, paired t over seeds, Holm.
   --check-ready  prints whether the pre-registration is complete (used by the queue).
 
+G-TF2 (``PC-STGNN/stage_f_gtf2_preregistration.md``, ``--gate gtf2``) adds a second detector, the temporal
+flatline score (``flatline_score``: minus the standard deviation of a sensor's readings over the window), and
+flags a sensor if EITHER detector fires (``detector_flags``). Each detector has its own per-sensor threshold at
+``FPR_GTF2`` = 0.5 % on the clean half-A windows. With ``--gate gtf`` (the default) nothing changes: one
+detector, 1 % threshold, the same files, the same numbers.
+
 This script never touches the test split or the sealed OOD set.
 """
 from __future__ import annotations
@@ -63,6 +69,13 @@ FULL_APPROVAL_PATH = OUT_ROOT / "FULL_SCOPE_APPROVED"
 GATE_DOC = REPO / "PC-STGNN/07_STAGE_F_gate.md"
 DRAFT_DOC = REPO / "PC-STGNN/stage_f_training_free_gate_draft.md"
 READY_MARKER = "added after s5.1, before any g-tf result"
+FPR_GTF2 = 0.005                  # G-TF2: per-sensor false-positive rate of EACH detector (the union is at most ~1 %)
+OUT_ROOT_GTF2 = REPO / "results/stage_f/gtf2"
+GTF2_DOC = REPO / "PC-STGNN/stage_f_gtf2_preregistration.md"
+READY_MARKER_GTF2 = "before any g-tf2 result"
+GTF2_TYPES = ("stuck", "bias_2pct", "bias_5pct", "gauss_0.02", "swap")   # same core scope as G-TF
+GTF2_PRIMARY = "stuck"
+GTF2_SECONDARY = ("bias_2pct", "bias_5pct", "swap")                       # Gaussian is reported only
 SUB_BATCH = 32                    # R5 forward chunk, as score_s4_4_gate4_run.BATCH_SIZE
 S1_BATCH = 512                    # loader batch of the S5.1 scripts; raw arrays are indexed by it
 
@@ -136,6 +149,35 @@ def gate_zero(x, flags):
     return out
 
 
+def flatline_score(x, mean, std) -> np.ndarray:
+    """Temporal flatline score, [B, N]: minus the mean over a sensor's instrumented phases of the standard deviation
+    of its voltage readings over the window (p.u., population std over the S steps). A flat sensor has score 0,
+    a live one is negative; HIGH score = flat, so ``score > threshold`` flags a sensor whose std is BELOW its
+    threshold. ``x`` [B,N,S,6] is the loader tensor (z-scored voltages in channels 0-2, static instrumentation
+    mask in 3-5); ``mean``/``std`` are the voltage normalisation statistics. Same definition as the exploratory
+    ``scripts/run_temporal_detector_exploratory.py``."""
+    import torch
+    mean_t = torch.as_tensor(np.asarray(mean, dtype=np.float32))
+    std_t = torch.as_tensor(np.asarray(std, dtype=np.float32))
+    volts = x[..., :3] * std_t + mean_t                         # [B,N,S,3] p.u.
+    sd = volts.std(dim=2, unbiased=False)                       # [B,N,3]
+    ok = (x[:, :, 0, 3:] > 0.5).float()                         # [B,N,3] instrumented phases
+    n_ok = ok.sum(-1).clamp(min=1)
+    return (-(sd * ok).sum(-1) / n_ok).numpy()
+
+
+def detector_flags(ins_scores, flat_scores, avail, thr_ins, thr_flat=None) -> dict:
+    """Flags of each detector and of their union. ``flat_scores``/``thr_flat`` None = flatline detector OFF:
+    the only entry is ``union`` and it equals ``flags_from_scores`` exactly (G-TF). With the flatline detector
+    on (G-TF2) a sensor is flagged if its residual is above its threshold OR its std is below its threshold;
+    an unavailable sensor is never flagged."""
+    ins = flags_from_scores(ins_scores, avail, thr_ins)
+    if thr_flat is None:
+        return {"union": ins}
+    flat = flags_from_scores(flat_scores, avail, thr_flat)
+    return {"ins": ins, "flat": flat, "union": ins | flat}
+
+
 def _rel(path: Path) -> str:
     try:
         return str(path.relative_to(REPO))
@@ -190,6 +232,23 @@ def check_ready(scope: str = "core") -> tuple[bool, list[str]]:
             problems.append(f"R5 checkpoint missing for seed {s}")
     if scope == "full" and not FULL_APPROVAL_PATH.exists():
         problems.append("full scope needs results/stage_f/gtf/FULL_SCOPE_APPROVED (author approval)")
+    return (not problems), problems
+
+
+def check_ready_gtf2() -> tuple[bool, list[str]]:
+    """G-TF2 may be scored only when its pre-registration is committed and unmodified and the arm is marked
+    'before any G-TF2 result' in 07_STAGE_F_gate.md. This function is not called by any queue."""
+    problems: list[str] = []
+    if not GATE_DOC.exists() or READY_MARKER_GTF2 not in GATE_DOC.read_text(encoding="utf-8").lower():
+        problems.append("07_STAGE_F_gate.md has no G-TF2 arm marked 'before any G-TF2 result'")
+    for doc in (GATE_DOC, GTF2_DOC):
+        if not doc.exists() or not git_clean_and_tracked(doc):
+            problems.append(f"{_rel(doc)} is not committed or has uncommitted changes")
+    if not (raw_dir(0.01) / "COMPLETE.json").exists():
+        problems.append("S5.1 raw scores incomplete for sigma0=0.01")
+    for s in SEEDS:
+        if not (REPO / f"results/s4_4/r5/pcstgnn/seed_{s:05d}/checkpoint_best.pt").exists():
+            problems.append(f"R5 checkpoint missing for seed {s}")
     return (not problems), problems
 
 
@@ -349,14 +408,18 @@ def _clean_scores(x_rows, sigma, mean, std, table, loo_chunk):
 
 
 def stage_thresholds(sigma: float, out_root: Path, data_root: Path, threads: int,
-                     max_batches: int | None, loo_chunk: int = 128) -> Path:
-    """Per-sensor thresholds from clean half-A windows; clean half-B flags for the clean arm."""
-    out = out_root / f"thresholds_sigma_{sigma:g}.npz"
+                     max_batches: int | None, loo_chunk: int = 128, flatline: bool = False) -> Path:
+    """Per-sensor thresholds from clean half-A windows; clean half-B flags for the clean arm.
+    ``flatline=False`` is G-TF (1 % per sensor, in-sample and LOO residual). ``flatline=True`` is G-TF2: the
+    in-sample residual and the flatline score, each at ``FPR_GTF2``, written to ``thresholds_gtf2_*.npz``."""
+    fpr = FPR_GTF2 if flatline else FPR_TARGET
+    out = out_root / (f"thresholds_gtf2_sigma_{sigma:g}.npz" if flatline else f"thresholds_sigma_{sigma:g}.npz")
     ds, loader, mean, std, table, a_events = _setup(data_root, threads)
     n_total = len(ds) if max_batches is None else sum(
         len(idx) for _, idx in zip(range(max_batches), loader.batch_sampler))
     loo_a, ins_a, av_a = [], [], []
     loo_b = np.zeros((n_total, 25), np.float32); ins_b = np.zeros((n_total, 25), np.float32)
+    flat_b = np.zeros((n_total, 25), np.float32)
     av_all = np.zeros((n_total, 25), bool); is_a = np.zeros(n_total, bool)
     pos, t0 = 0, time.time()
     for bi, batch in enumerate(loader):
@@ -368,14 +431,24 @@ def stage_thresholds(sigma: float, out_root: Path, data_root: Path, threads: int
         lo, ins, av = _clean_scores(xn, sigma, mean, std, table, loo_chunk)
         sl = slice(pos, pos + b)
         loo_b[sl], ins_b[sl], av_all[sl], is_a[sl] = lo, ins, av, rows_a
+        if flatline:
+            flat_b[sl] = flatline_score(xn, mean, std)
         pos += b
         if bi % 20 == 0:
             print(f"  [thr sigma={sigma:g}] batch {bi} windows {pos}/{n_total} {(time.time()-t0)/60:.1f} min", flush=True)
-    thr_loo = per_sensor_thresholds(loo_b[is_a], av_all[is_a])
-    thr_ins = per_sensor_thresholds(ins_b[is_a], av_all[is_a])
+    thr_ins = per_sensor_thresholds(ins_b[is_a], av_all[is_a], fpr)
+    out_root.mkdir(parents=True, exist_ok=True)
+    if flatline:
+        thr_flat = per_sensor_thresholds(flat_b[is_a], av_all[is_a], fpr)
+        fb = detector_flags(ins_b, flat_b, av_all, thr_ins, thr_flat)
+        np.savez_compressed(out, thr_ins=thr_ins, thr_flat=thr_flat,
+                            flags_clean_B_ins=fb["ins"] & ~is_a[:, None], flags_clean_B_flat=fb["flat"] & ~is_a[:, None],
+                            flags_clean_B_union=fb["union"] & ~is_a[:, None], is_A=is_a, avail=av_all, n_total=n_total,
+                            sigma=sigma, fpr_target=fpr, split_seed=SPLIT_SEED)
+        return out
+    thr_loo = per_sensor_thresholds(loo_b[is_a], av_all[is_a], fpr)
     flags_b = {"loo": flags_from_scores(loo_b, av_all, thr_loo) & ~is_a[:, None],
                "ins": flags_from_scores(ins_b, av_all, thr_ins) & ~is_a[:, None]}
-    out_root.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(out, thr_loo=thr_loo, thr_ins=thr_ins, flags_clean_B_loo=flags_b["loo"],
                         flags_clean_B_ins=flags_b["ins"], is_A=is_a, avail=av_all, n_total=n_total,
                         sigma=sigma, fpr_target=FPR_TARGET, split_seed=SPLIT_SEED)
@@ -416,18 +489,28 @@ def _predict(model, x, sigma, device):
 
 def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads: int,
                 max_batches: int | None = None, device_name: str | None = None,
-                sigmas: tuple | None = None, detector: str | None = None) -> list[Path]:
+                sigmas: tuple | None = None, detector: str | None = None, gate: str = "gtf") -> list[Path]:
+    """``gate="gtf"``: G-TF, unchanged. ``gate="gtf2"``: G-TF2 (in-sample residual OR flatline score, each at 0.5 %);
+    the arm is stored under the key ``gtf2`` and the per-detector rates are added under ``detectors``."""
     import torch
     import run_silent_detection as S1
     from fault_localization.dropout.silent import apply_silent_failure_batch
     from fault_localization.physics import observation as OBS
     from score_s4_4_gate4_run import macro_f1
 
+    gtf2 = gate == "gtf2"
+    arm = "gtf2" if gtf2 else "gtf"
+    if gtf2 and max_batches is None:                   # an official G-TF2 scoring needs the committed pre-registration
+        ok, problems = check_ready_gtf2()
+        if not ok:
+            raise RuntimeError(f"G-TF2 pre-registration is not complete: {problems}")
     device = torch.device(device_name or ("cuda" if torch.cuda.is_available() else "cpu"))
     chk = check_gate_equals_training_dropout(data_root)
     if not chk["passed"]:
         raise RuntimeError(f"consistency check 1 failed (gate drop != training dropout): {chk}")
-    if detector is not None:          # smoke tests only (main() allows it with --smoke)
+    if gtf2:
+        det = "ins"                                    # pre-registered: the in-sample residual, never LOO
+    elif detector is not None:        # smoke tests only (main() allows it with --smoke)
         det = detector
     else:
         decision = json.loads(DECISION_PATH.read_text()) if DECISION_PATH.exists() else None
@@ -442,22 +525,25 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
         out = out_root / f"sigma_{sigma:g}" / f"seed_{seed:05d}.json"
         if out.exists():
             written.append(out); continue
-        thr_file = out_root / f"thresholds_sigma_{sigma:g}.npz"
+        thr_file = out_root / (f"thresholds_gtf2_sigma_{sigma:g}.npz" if gtf2 else f"thresholds_sigma_{sigma:g}.npz")
         if not thr_file.exists():
             raise RuntimeError(f"thresholds missing for sigma0={sigma}: run the thresholds stage first")
         T_ = np.load(thr_file)
-        thr = T_[f"thr_{det}"]; clean_flags = T_[f"flags_clean_B_{det}"]
+        thr = T_[f"thr_{det}"]; clean_flags = T_["flags_clean_B_union"] if gtf2 else T_[f"flags_clean_B_{det}"]
+        thr_flat = T_["thr_flat"] if gtf2 else None
         raw = S1.open_raw(raw_dir(sigma), 0, "r")
         n_total = int(T_["n_total"])
         if max_batches is None:
             chk2 = check_stored_scores(sigma, batch_ids=(0, 300, 600), data_root=data_root, threads=threads)
             if not chk2["passed"]:
                 raise RuntimeError(f"consistency check 2 failed (stored scores != recomputed): {chk2}")
-        P = {c[0]: {"nogate": [], "gtf": [], "oracle": []} for c in conds}
-        P["clean"] = {"nogate": [], "gtf": []}
+        P = {c[0]: {"nogate": [], arm: [], "oracle": []} for c in conds}
+        P["clean"] = {"nogate": [], arm: []}
         ytrue = []
         st = {c[0]: dict(tp=0, pos=0, fp=0, neg=0, flagged=0, win=0) for c in conds}
         st["clean"] = dict(fp=0, neg=0, flagged=0, win=0)
+        dnames = ("ins", "flat", "union") if gtf2 else ()
+        dst = {c: {n: dict(tp=0, fp=0, flagged=0) for n in dnames} for c in st}      # per-detector counts (G-TF2 only)
         pos, t0 = 0, time.time()
         for bi, batch in enumerate(loader):
             if max_batches is not None and bi >= max_batches:
@@ -477,8 +563,12 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
             # clean-window arm
             fl = clean_flags[sl][rows_b]
             P["clean"]["nogate"] += _predict(model, xn[rb], sigma, device)
-            P["clean"]["gtf"] += _predict(model, gate_zero(xn[rb], torch.as_tensor(fl)), sigma, device)
+            P["clean"][arm] += _predict(model, gate_zero(xn[rb], torch.as_tensor(fl)), sigma, device)
             neg = avail_b
+            if gtf2:
+                for n in dnames:
+                    fn = T_[f"flags_clean_B_{n}"][sl][rows_b]
+                    dst["clean"][n]["fp"] += int((fn & neg).sum()); dst["clean"][n]["flagged"] += int(fn.sum())
             st["clean"]["fp"] += int((fl & neg).sum()); st["clean"]["neg"] += int(neg.sum())
             st["clean"]["flagged"] += int(fl.sum()); st["clean"]["win"] += int(rows_b.sum())
             for cname, kind, sev, n_s in conds:
@@ -491,21 +581,27 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
                     raise RuntimeError(f"{cname}: regenerated corruption labels differ from the S5.1 raw labels")
                 lab_b = label[rows_b]
                 sc = np.asarray(raw[f"{cname}__psm_{det}"][sl])[rows_b]
-                fl = flags_from_scores(sc, avail_b, thr)
                 xb = x_c[rb]
+                fdict = detector_flags(sc, flatline_score(xb, mean, std) if gtf2 else None, avail_b, thr, thr_flat)
+                fl = fdict["union"]
                 P[cname]["nogate"] += _predict(model, xb, sigma, device)
-                P[cname]["gtf"] += _predict(model, gate_zero(xb, torch.as_tensor(fl)), sigma, device)
+                P[cname][arm] += _predict(model, gate_zero(xb, torch.as_tensor(fl)), sigma, device)
                 P[cname]["oracle"] += _predict(model, gate_zero(xb, torch.as_tensor(lab_b)), sigma, device)
                 d = st[cname]
                 d["tp"] += int((fl & lab_b).sum()); d["pos"] += int((lab_b & avail_b).sum())
                 d["fp"] += int((fl & ~lab_b & avail_b).sum()); d["neg"] += int((~lab_b & avail_b).sum())
                 d["flagged"] += int(fl.sum()); d["win"] += int(rows_b.sum())
+                for n in dnames:
+                    dst[cname][n]["tp"] += int((fdict[n] & lab_b).sum())
+                    dst[cname][n]["fp"] += int((fdict[n] & ~lab_b & avail_b).sum())
+                    dst[cname][n]["flagged"] += int(fdict[n].sum())
             pos += b
             if bi % 20 == 0:
                 print(f"  [score seed={seed} sigma={sigma:g}] batch {bi} {(time.time()-t0)/60:.1f} min", flush=True)
         yt = np.asarray(ytrue)
-        res = {"seed": seed, "sigma0": sigma, "scope": scope, "detector": det, "half": "B",
-               "split_seed": SPLIT_SEED, "n_windows": int(yt.size), "fpr_target": FPR_TARGET,
+        res = {"seed": seed, "sigma0": sigma, "scope": scope, "detector": ("ins+flatline" if gtf2 else det), "half": "B",
+               "split_seed": SPLIT_SEED, "n_windows": int(yt.size), "fpr_target": (FPR_GTF2 if gtf2 else FPR_TARGET),
+               "gate": gate,
                "partial_run": max_batches is not None, "conditions": {}, "device": str(device),
                "scoring_seconds": time.time() - t0}
         f1_clean = macro_f1(yt, np.asarray(P["clean"]["nogate"]))
@@ -516,15 +612,22 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
             if c == "clean":
                 entry["realized_fpr_clean_windows"] = d["fp"] / max(d["neg"], 1)
                 entry["flagged_per_window"] = d["flagged"] / max(d["win"], 1)
-                entry["delta_gtf_minus_nogate"] = f1["gtf"] - f1["nogate"]
+                entry[f"delta_{arm}_minus_nogate"] = f1[arm] - f1["nogate"]
+                if gtf2:
+                    entry["detectors"] = {n: {"realized_fpr_clean_windows": dst[c][n]["fp"] / max(d["neg"], 1),
+                                              "flagged_per_window": dst[c][n]["flagged"] / max(d["win"], 1)} for n in dnames}
             else:
-                entry["recovered"] = recovered_fraction(f1["gtf"], f1["nogate"], f1["oracle"])
+                entry["recovered"] = recovered_fraction(f1[arm], f1["nogate"], f1["oracle"])
                 entry["corruption_loss"] = f1_clean - f1["nogate"]       # F1(clean, no gate) - F1(corrupted, no gate)
                 entry["oracle_loss"] = f1_clean - f1["oracle"]
                 entry["f1_clean_nogate"] = f1_clean
                 entry["tpr"] = d["tp"] / max(d["pos"], 1)
                 entry["realized_fpr_clean_sensors_of_corrupted_windows"] = d["fp"] / max(d["neg"], 1)
                 entry["flagged_per_window"] = d["flagged"] / max(d["win"], 1)
+                if gtf2:
+                    entry["detectors"] = {n: {"tpr": dst[c][n]["tp"] / max(d["pos"], 1),
+                                              "realized_fpr_clean_sensors_of_corrupted_windows": dst[c][n]["fp"] / max(d["neg"], 1),
+                                              "flagged_per_window": dst[c][n]["flagged"] / max(d["win"], 1)} for n in dnames}
             res["conditions"][c] = entry
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(res, indent=2))
@@ -535,9 +638,12 @@ def stage_score(seed: int, scope: str, out_root: Path, data_root: Path, threads:
     return written
 
 
-def stage_summarize(scope: str, out_root: Path) -> dict:
+def stage_summarize(scope: str, out_root: Path, arm: str = "gtf") -> dict:
+    """``arm="gtf"``: G-TF, unchanged. ``arm="gtf2"``: the G-TF2 rules (sign rule in all 3 seeds at each s, primary
+    = stuck, secondary = bias +-2 %, bias +-5 %, swap; Gaussian is reported only; paired t over seeds with Holm
+    over the three s-levels within each type)."""
     from scipy import stats
-    summ = {"scope": scope, "sigma": {}}
+    summ = {"scope": scope, "arm": arm, "sigma": {}}
     for sigma in scope_sigmas(scope):
         runs = [json.loads((out_root / f"sigma_{sigma:g}" / f"seed_{s:05d}.json").read_text()) for s in SEEDS]
         by_cond = {}
@@ -545,11 +651,11 @@ def stage_summarize(scope: str, out_root: Path) -> dict:
             if c == "clean":
                 continue
             ng = [r["conditions"][c]["f1"]["nogate"] for r in runs]
-            gt = [r["conditions"][c]["f1"]["gtf"] for r in runs]
+            gt = [r["conditions"][c]["f1"][arm] for r in runs]
             orc = [r["conditions"][c]["f1"]["oracle"] for r in runs]
             diff = [g - n for g, n in zip(gt, ng)]
             t = stats.ttest_rel(gt, ng) if len(set(diff)) > 1 else None
-            by_cond[c] = {"nogate": ng, "gtf": gt, "oracle": orc, "gtf_minus_nogate": diff,
+            by_cond[c] = {"nogate": ng, arm: gt, "oracle": orc, f"{arm}_minus_nogate": diff,
                           "sign_consistent_positive": all(d > 0 for d in diff),
                           "paired_t_p": (None if t is None else float(t.pvalue)),
                           "recovered_per_seed": [r["conditions"][c]["recovered"] for r in runs],
@@ -566,10 +672,22 @@ def stage_summarize(scope: str, out_root: Path) -> dict:
         summ["sigma"][str(sigma)] = {
             "conditions": by_cond,
             "clean": {"nogate": [r["conditions"]["clean"]["f1"]["nogate"] for r in runs],
-                      "gtf": [r["conditions"]["clean"]["f1"]["gtf"] for r in runs],
+                      arm: [r["conditions"]["clean"]["f1"][arm] for r in runs],
                       "realized_fpr_clean_windows": [r["conditions"]["clean"]["realized_fpr_clean_windows"] for r in runs]}}
     key = str(0.01)
-    if key in summ["sigma"]:
+    if arm == "gtf2" and key in summ["sigma"]:
+        conds = summ["sigma"][key]["conditions"]
+        rules = {}
+        for typ in GTF2_TYPES:
+            cs = [c for c in conds if c.rsplit("_s", 1)[0] == typ]
+            pv = [conds[c]["paired_t_p"] if conds[c]["paired_t_p"] is not None else 1.0 for c in cs]
+            for c, p in zip(cs, holm(pv)):
+                conds[c]["paired_t_p_holm_over_s"] = p
+            rules[typ] = {"role": ("primary" if typ == GTF2_PRIMARY else "secondary" if typ in GTF2_SECONDARY else "reported only"),
+                          "useful (better than no gate in all 3 seeds at every s)": bool(cs) and all(conds[c]["sign_consistent_positive"] for c in cs),
+                          "per_s": {c: conds[c]["sign_consistent_positive"] for c in cs}}
+        summ["decision_rule_gtf2_sigma1e-2"] = rules
+    elif key in summ["sigma"]:
         gc = {c: v for c, v in summ["sigma"][key]["conditions"].items() if c.startswith("bias_2pct_s")}
         summ["decision_rule_bias2pct_sigma1e-2"] = {
             "G-TF useful (better than no gate in all 3 seeds at every s)": bool(gc) and all(v["sign_consistent_positive"] for v in gc.values()),
@@ -582,6 +700,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("stage", nargs="?", choices=["split", "thresholds", "score", "summarize", "decide", "check-ready", "check-consistency"])
     ap.add_argument("--scope", choices=["core", "full"], default="core")
+    ap.add_argument("--gate", choices=["gtf", "gtf2"], default="gtf",
+                    help="gtf2 = in-sample residual OR flatline score (PC-STGNN/stage_f_gtf2_preregistration.md); core scope only")
     ap.add_argument("--seed", type=int)
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--data-root", default=str(REPO / "dataset_fullscale_50"))
@@ -591,11 +711,13 @@ def main() -> int:
     ap.add_argument("--sigma", type=float, default=None)
     ap.add_argument("--detector", choices=["loo", "ins"], default=None, help="smoke tests only")
     args = ap.parse_args()
-    out_root = Path(args.out_root) if args.out_root else OUT_ROOT / args.scope
+    if args.gate == "gtf2" and args.scope != "core":
+        sys.exit("G-TF2 is pre-registered for the core scope only")
+    out_root = Path(args.out_root) if args.out_root else (OUT_ROOT_GTF2 if args.gate == "gtf2" else OUT_ROOT) / args.scope
     if args.smoke and (args.out_root is None or Path(args.out_root).resolve() == OUT_ROOT.resolve()):
         sys.exit("--smoke needs an --out-root outside results/stage_f/gtf")
     if args.stage == "check-ready":
-        ok, problems = check_ready(args.scope)
+        ok, problems = check_ready_gtf2() if args.gate == "gtf2" else check_ready(args.scope)
         print(json.dumps({"ready": ok, "problems": problems}, indent=2))
         return 0 if ok else 1
     if args.stage == "check-consistency":
@@ -618,18 +740,19 @@ def main() -> int:
     sigmas = (args.sigma,) if args.sigma is not None else scope_sigmas(args.scope)
     if args.stage == "thresholds":
         for sg in sigmas:
-            if (out_root / f"thresholds_sigma_{sg:g}.npz").exists():
+            tname = f"thresholds_gtf2_sigma_{sg:g}.npz" if args.gate == "gtf2" else f"thresholds_sigma_{sg:g}.npz"
+            if (out_root / tname).exists():
                 continue
-            print(stage_thresholds(sg, out_root, Path(args.data_root), args.threads, mb))
+            print(stage_thresholds(sg, out_root, Path(args.data_root), args.threads, mb, flatline=(args.gate == "gtf2")))
         return 0
     if args.stage == "score":
         seeds = (args.seed,) if args.seed else SEEDS
         for s in seeds:
             stage_score(s, args.scope, out_root, Path(args.data_root), args.threads, mb,
-                        "cpu" if args.smoke else None, sigmas, args.detector if args.smoke else None)
+                        "cpu" if args.smoke else None, sigmas, args.detector if args.smoke else None, args.gate)
         return 0
     if args.stage == "summarize":
-        print(json.dumps(stage_summarize(args.scope, out_root), indent=2)); return 0
+        print(json.dumps(stage_summarize(args.scope, out_root, args.gate), indent=2)); return 0
     ap.print_help(); return 2
 
 

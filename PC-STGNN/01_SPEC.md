@@ -214,6 +214,11 @@ to do better than that pilot.
 
 ## 7. PCRG-STGNN
 
+> **Note 2026-10-26 09:13 IST / 2026-10-26T03:43:56Z: PCRG-STGNN is not built.** The decision is recorded in `07_STAGE_F_gate.md`, section "Stage F amendment: PCRG
+> replaced by G-TF2". The gate input described here is the physics residual only; it does not detect stuck sensors. The text of this
+> section is kept unchanged below as the design that was not built. The training-free arm that replaces it is pre-registered in
+> `stage_f_gtf2_preregistration.md`. No PCRG code exists.
+
 > **Amended 2026-10-25 03:44 IST / 2026-10-24T22:14:20Z after S5.1 and S5.2, before any G0 to G3 training. Reason: the LOO residual was not better than
 > the in-sample residual.** (Measured: in-sample AUROC higher in all 15 conditions at sigma0 = 0, 5e-4 and 2e-3; at
 > sigma0 = 1e-2 LOO higher by +0.0036 to +0.0046 at bias ±2 %, below the 0.01 margin of the detector rule. Record:
