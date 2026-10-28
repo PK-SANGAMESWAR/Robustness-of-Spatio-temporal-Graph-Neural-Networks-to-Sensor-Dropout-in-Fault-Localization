@@ -875,6 +875,49 @@ metrics, heartbeat). This run is not valid for selection and is not an R6 result
   attributable to λ₂ alone is bounded by the S4.3ᵉ figure (about 0.002, one seed, 15 epochs). R5 at λ₂ = 0 is not planned.
 - Cost unchanged: R6 is a fusion-on arm at the R5 rate (26.16 h train + 7.44 h score per seed, 100.8 GPU-h for 3 seeds).
 
+### S4.4 — R5-γ0 result (seed 42) `[Recorded 2026-10-28 21:23 IST / 2026-10-28T15:53:52Z]`
+
+R5-γ0 = R5 with γ = 0 (no auxiliary network-only loss); λ₁ = 0, λ₂ = 0.1, fusion on, noise and dropout augmentation on, 30 epochs,
+exempt from the collapse guard (`config/s4_4/r5_gamma0.yaml`). **One seed (42); no significance is claimed.** Trained 2026-10-25T18:45Z to
+2026-10-26T20:37Z (93,153 s), scored on the validation split (26,639 s). Not collapsed. Output: `results/s4_4/r5_gamma0/pcstgnn/seed_00042/`.
+
+- **Best epoch 8, best validation F1 0.8819** (R5 seed 42: epoch 19, 0.8951). Validation F1 at epoch 30: 0.8657. β at the best checkpoint 0.048 (R5: 0.031).
+- **Network-only F1 (the claim this run supports):** at the selected checkpoint the network branch alone scores 0.055–0.080 in all 20 conditions
+  (0.079 at k = 0, σ = 0), against 0.547–0.807 for R5: a deficit of 0.49 to 0.73, lower in 20 of 20 cells. At epoch 30 the network-only F1 (k = 0, σ = 0, from `metrics_by_epoch.csv`)
+  had risen to 0.206; R5's is 0.33 at epoch 3 and 0.81 at the selected epoch. The always-"no fault" score is 0.0256.
+- **Fused F1 (descriptive only):** lower than R5 in 19 of 20 cells; mean difference −0.0085, range −0.0182 to +0.0013 (+0.0013 at k = 10, σ = 0). Fused F1 at 10 Ω, k = 0, σ = 0: 0.688 (R5: 0.733).
+- **The only claim R5-γ0 supports** is about network-only localization: without the auxiliary loss the network branch alone does not localize, even with noise augmentation.
+  It says nothing about whether the auxiliary loss is needed for the fused score: one seed, the selected epoch is early (8 of 30), and the fused differences are small.
+
+**Fused macro-F1** (R5-γ0 / R5, difference):
+
+| σ (p.u.) | k=0 | k=1 | k=2 | k=5 | k=10 |
+|---|---|---|---|---|---|
+| 0 | 0.882 / 0.895 (-0.013) | 0.880 / 0.891 (-0.011) | 0.878 / 0.887 (-0.009) | 0.872 / 0.875 (-0.003) | 0.858 / 0.856 (+0.001) |
+| 0.0005 | 0.880 / 0.897 (-0.016) | 0.878 / 0.892 (-0.014) | 0.876 / 0.888 (-0.012) | 0.869 / 0.876 (-0.006) | 0.853 / 0.853 (-0.001) |
+| 0.002 | 0.850 / 0.868 (-0.018) | 0.846 / 0.861 (-0.016) | 0.843 / 0.855 (-0.013) | 0.829 / 0.837 (-0.007) | 0.802 / 0.802 (-0.000) |
+| 0.01 | 0.732 / 0.744 (-0.012) | 0.729 / 0.738 (-0.009) | 0.725 / 0.732 (-0.007) | 0.711 / 0.713 (-0.002) | 0.670 / 0.673 (-0.003) |
+
+**Network-only macro-F1** (R5-γ0 / R5, difference):
+
+| σ (p.u.) | k=0 | k=1 | k=2 | k=5 | k=10 |
+|---|---|---|---|---|---|
+| 0 | 0.079 / 0.807 (-0.728) | 0.076 / 0.793 (-0.716) | 0.074 / 0.778 (-0.704) | 0.069 / 0.728 (-0.660) | 0.061 / 0.612 (-0.550) |
+| 0.0005 | 0.079 / 0.806 (-0.727) | 0.077 / 0.792 (-0.715) | 0.074 / 0.776 (-0.702) | 0.069 / 0.727 (-0.659) | 0.061 / 0.611 (-0.550) |
+| 0.002 | 0.080 / 0.791 (-0.711) | 0.076 / 0.777 (-0.701) | 0.073 / 0.763 (-0.690) | 0.067 / 0.716 (-0.649) | 0.060 / 0.604 (-0.544) |
+| 0.01 | 0.071 / 0.706 (-0.634) | 0.069 / 0.696 (-0.627) | 0.066 / 0.685 (-0.619) | 0.061 / 0.647 (-0.586) | 0.055 / 0.547 (-0.492) |
+
+**Fusion decomposition of R5-γ0** (PSM-only F1 | fused = network % | fused = PSM %; R5 values in brackets):
+
+| σ (p.u.) | k=0 | k=1 | k=2 | k=5 | k=10 |
+|---|---|---|---|---|---|
+| 0 | 0.772 \| 56.4 \| 72.7 (92.0, 71.4) | 0.770 \| 56.3 \| 72.6 (91.3, 71.3) | 0.769 \| 56.2 \| 72.5 (90.6, 71.2) | 0.763 \| 55.6 \| 72.0 (88.1, 71.0) | 0.750 \| 55.0 \| 70.9 (82.2, 70.0) |
+| 0.0005 | 0.770 \| 56.4 \| 72.2 (92.6, 70.5) | 0.769 \| 56.3 \| 72.1 (92.0, 70.4) | 0.767 \| 56.2 \| 71.9 (91.3, 70.3) | 0.761 \| 55.7 \| 71.4 (88.9, 69.8) | 0.747 \| 55.1 \| 70.1 (83.0, 68.8) |
+| 0.002 | 0.746 \| 58.0 \| 66.4 (94.8, 65.0) | 0.743 \| 57.9 \| 66.1 (94.3, 64.7) | 0.740 \| 57.8 \| 65.7 (93.8, 64.3) | 0.730 \| 57.5 \| 64.3 (91.9, 63.0) | 0.704 \| 57.7 \| 60.7 (86.7, 59.6) |
+| 0.01 | 0.496 \| 66.8 \| 35.0 (97.4, 34.2) | 0.492 \| 66.8 \| 34.7 (97.2, 33.8) | 0.489 \| 66.7 \| 34.4 (96.9, 33.4) | 0.478 \| 66.7 \| 33.4 (95.8, 32.3) | 0.457 \| 66.9 \| 30.9 (92.3, 29.9) |
+
+The PSM-only F1 is identical to R5's in every cell (the physics table is fixed).
+
 ## GATE 4
 
 - [x] S4.1 null test exact — PASSED 2026-09-30, byte-identical over 30 epochs (see S4.1)

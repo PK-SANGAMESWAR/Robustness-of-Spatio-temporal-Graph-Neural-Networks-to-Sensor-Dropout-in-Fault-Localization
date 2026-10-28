@@ -101,7 +101,7 @@ Signature:\\
 \abstract
 \begin{doublespacing}
 \normalfont
-{\noindent Finding where a fault occurred on a distribution feeder, and not only that one occurred, decides how fast supply can be restored. Spatio-temporal graph neural networks locate faults accurately when only a few micro-phasor measurement units are installed, but their evaluations assume that every sensor always reports. This thesis adopts the spatio-temporal framework of Karabulut et al. on the IEEE 123-bus feeder, regenerates its own corpus of 1.65 million windows, and measures what happens when sensors fail or are noisy after deployment. Across five architectures at three training seeds, clean accuracy did not predict robustness: the most accurate model, with a macro-F1 of 0.846, kept only 5.7\% of its score when 10 of 25 sensors were lost. Dropout-aware training, which masks sensors during training, raised this retention to 80.3\% with no added parameters or inference latency. It outperformed neighbor-mean, learned and physics-based imputation, and an availability-gated architecture only matched it. The remedy does not protect against measurement noise or against the loss of the sensors nearest the fault, and accuracy on unseen fault scenarios is much lower than on unseen loads. The thesis then builds a fixed physical operator from simulated fault signatures, shows that the sensors can separate almost all fault locations, and designs a physics-consistent network that adds one learned parameter. Compared with a noise-augmented reference trained the same way for 30 epochs at the same three seeds, the fused model scores higher on the validation split in every seed at all twenty tested combinations of noise and sensor loss. The gain is largest, 0.20 macro-F1, when ten of twenty-five sensors are lost, and it arises in the fusion step and not in a stronger network branch. The reference was still improving at its last epoch, so the margins can decrease with longer training. Whether the gain requires the correct physical signatures is not yet tested [PENDING: R6].}
+{\noindent Finding where a fault occurred on a distribution feeder, and not only that one occurred, decides how fast supply can be restored. Spatio-temporal graph neural networks locate faults accurately when only a few micro-phasor measurement units are installed, but their evaluations assume that every sensor always reports. This thesis adopts the spatio-temporal framework of Karabulut et al. on the IEEE 123-bus feeder, regenerates its own corpus of 1.65 million windows, and measures what happens when sensors fail or are noisy after deployment. Across five architectures at three training seeds, clean accuracy did not predict robustness: the most accurate model, with a macro-F1 of 0.846, kept only 5.7\% of its score when 10 of 25 sensors were lost. Dropout-aware training, which masks sensors during training, raised this retention to 80.3\% with no added parameters or inference latency. It outperformed neighbor-mean, learned and physics-based imputation, and an availability-gated architecture only matched it. The remedy does not protect against measurement noise or against the loss of the sensors nearest the fault, and accuracy on unseen fault scenarios is much lower than on unseen loads. The thesis then builds a fixed physical operator from simulated fault signatures, shows that the sensors can separate almost all fault locations, and designs a physics-consistent network that adds one learned parameter. Compared with a noise-augmented reference trained the same way for 30 epochs at the same three seeds, the fused model scores higher on the validation split in every seed at all twenty tested combinations of noise and sensor loss. The gain is largest, 0.20 macro-F1, when ten of twenty-five sensors are lost, and it arises in the fusion step and not in a stronger network branch. The reference was still improving at its last epoch, so the margins can decrease with longer training. The comparison does not show which element of the model produces the gain, and the ablations that would show it are left for future work.}
 \end{doublespacing}
 
 \pagebreak
@@ -206,7 +206,7 @@ xxxxxxxxxxx \= xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \kill
 \chapter{Introduction}
 \label{chap:intro}
 
-This chapter introduces the problem that the thesis addresses. It explains why locating faults on a distribution feeder matters, why the task is hard when only a few sensors are installed, and which gap in the existing work the thesis fills. It then states the objectives, the contributions, the scope of the study and the structure of the remaining chapters.
+This chapter explains why locating faults on a distribution feeder matters, why the task is hard when only a few sensors are installed, and which gap in the existing work the thesis fills. It then states the research questions, the contributions, the scope and the structure of the thesis.
 
 \section{Background and Motivation}
 
@@ -220,22 +220,15 @@ Classical localization methods estimate the position of the fault from circuit p
 
 Learning-based methods remove the need for an exact circuit model. \citet{livani2013}, for example, identify the faulted line of the IEEE 123-bus feeder with support-vector machines applied to post-fault \ac{RMS} voltages. Models that take a flat feature vector as input, however, discard the information about which buses are electrically adjacent. This information is restored by \acp{GNN}. They encode the feeder topology as a graph, and message passing shares information between connected buses, so that the model can infer a fault even at a bus that carries no sensor. \citet{chen2020} apply a spectral graph convolutional network to the IEEE 123- and 37-bus feeders. Other work combines graph encoders with one-dimensional convolution or attention \citep{nguyen2022,ngo2025}, or pairs a variational graph autoencoder with GraphSAGE to recover latent node information under noise \citep{fan2024}.
 
-\citet{karabulut2026} added the time axis. Their \ac{STGNN} couples a \ac{GRU} that encodes the voltage history of each sensor with a spatial \ac{GNN} that exchanges information between sensors. The graph is a measured-only graph: its nodes are only the instrumented buses, and its edges follow the feeder topology. The model assigns each short window of measurements to one of 26 classes, namely 25 candidate fault locations and a no-fault class. The authors compare three spatial encoders, a graph convolutional network, GraphSAGE \citep{hamilton2017} and GATv2 attention \citep{brody2022}. This thesis refers to them as RGCN, RGSAGE and RGATv2 and adopts the framework of Karabulut et al. as its starting point.
+\citet{karabulut2026} added the time axis. Their \ac{STGNN} couples a \ac{GRU} that encodes the voltage history of each sensor with a spatial \ac{GNN} that exchanges information between sensors. The graph is a measured-only graph: its nodes are only the instrumented buses, and its edges follow the feeder topology. The model assigns each short window of measurements to one of 26 classes, namely 25 candidate fault locations and a no-fault class. The authors compare three spatial encoders, a graph convolutional network, GraphSAGE \citep{hamilton2017} and GATv2 attention \citep{brody2022}. This thesis refers to them as RGCN, RGSAGE and RGATv2 and adopts this framework as its starting point.
 
-The benchmark is the IEEE 123-bus feeder, a standard radial test network. Twenty-five of its buses carry a \ac{UPMU}. Only six of the 25 candidate fault locations coincide with an instrumented bus, so the remaining 19 locations are never observed directly. The model must infer them from the measurements of neighboring sensors. Figure~\ref{fig:feeder} shows the feeder and the measured-only graph, and Figure~\ref{fig:stgnn} shows the processing template that all models in this thesis share.
+The benchmark is the IEEE 123-bus feeder, a standard radial test network. Twenty-five of its buses carry a \ac{UPMU}. Only six of the 25 candidate fault locations coincide with an instrumented bus, so the remaining 19 locations are never observed directly, and the model must infer them from the measurements of neighboring sensors. Figure~\ref{fig:feeder} shows the feeder and the measured-only graph.
 
 \begin{figure}[!tbp]
 \centering
-\includegraphics[width=0.50\textwidth]{fig1_1_feeder_graph.pdf}
+\includegraphics[width=0.42\textwidth]{fig1_1_feeder_graph.pdf}
 \caption{The IEEE 123-bus feeder and the measured-only graph used in this thesis.}
 \label{fig:feeder}
-\end{figure}
-
-\begin{figure}[!tbp]
-\centering
-\includegraphics[width=0.95\textwidth]{fig1_2_template.pdf}
-\caption{Processing template shared by all models: temporal encoder, spatial \acs{GNN}, node classifier and soft voting.}
-\label{fig:stgnn}
 \end{figure}
 
 \section{Problem Definition}
@@ -272,53 +265,21 @@ The training data cover only three fault resistances. A model that has learned f
 
 \section{Conditions Beyond the Training Distribution}
 
-A monitoring system leaves the controlled conditions of a laboratory benchmark as soon as it is deployed. Three conditions are of particular interest in this thesis.
+A monitoring system leaves the controlled conditions of a laboratory benchmark as soon as it is deployed. A \ac{UPMU} depends on a communication link and on periodic maintenance, so on a feeder with 25 units the loss of a few of them is an ordinary operating event. Field measurements are never exact, and the synchrophasor standard IEEE C37.118 limits the total vector error to one percent. A fault resistance in the field can take any value, whereas a training corpus contains a finite set of values.
 
-\begin{itemize}
-\item \textbf{Sensor loss.} A \ac{UPMU} depends on a communication link and on periodic maintenance. On a feeder that carries 25 units, losing a few of them is an ordinary operating event, not a rare one.
-\item \textbf{Measurement noise.} Field measurements are never exact. The accuracy class of a synchrophasor measurement device limits the total vector error, and the synchrophasor standard IEEE C37.118 sets this limit at one percent.
-\item \textbf{Unseen fault conditions.} A fault resistance in the field can take any value, whereas a training corpus contains a finite set of values.
-\end{itemize}
-
-The measurements reported in Chapter~\ref{chap:results} show that a purely data-driven \ac{STGNN} is sensitive to the first two conditions. The best baseline, RGSAGE-Max, reaches a macro-F1 of 0.846 when all sensors report. When 10 of the 25 sensors are removed, its macro-F1 falls to 0.048, so it keeps only 5.7\% of its clean score. When the single sensor nearest to the fault is removed, the score falls to 0.448, compared with 0.736 when one randomly chosen sensor is removed. Noise with a standard deviation of 0.01 p.u., which equals the one percent limit of the standard, lowers the score from 0.846 to 0.345. Figure~\ref{fig:stressors} summarizes the three conditions.
-
-\begin{figure}[!tbp]
-\centering
-\includegraphics[width=0.95\textwidth]{fig1_3_stressors.pdf}
-\caption{Conditions that a deployed monitoring system meets but a clean benchmark does not. Panel (a) is a schematic. Panels (b) and (c) use the simulated corpus: a three-phase fault at bus 101, and noise added with the method of Section~\ref{sec:stress}.}
-\label{fig:stressors}
-\end{figure}
+The measurements reported in Chapter~\ref{chap:results} show that a purely data-driven \ac{STGNN} is sensitive to the first two conditions. The best baseline, RGSAGE-Max, reaches a macro-F1 of 0.846 when all sensors report. When 10 of the 25 sensors are removed, its macro-F1 falls to 0.048, so it keeps only 5.7\% of its clean score. When the single sensor nearest to the fault is removed, the score falls to 0.448, compared with 0.736 when one randomly chosen sensor is removed. Noise with a standard deviation of 0.01 p.u., which equals the one percent limit of the standard, lowers the score from 0.846 to 0.345.
 
 \section{Research Gap}
 
-Table~\ref{tab:gap} positions the closest prior work along the axes that matter here: comparison of several architectures, sparse observability, evaluation with sensors that fail after deployment, and a remedy that reduces the resulting loss.
-
-\begin{table}[!tbp]
-\caption{Positioning of the closest prior work. A check mark means that the item is covered, a dash means that it is not studied, and a tilde means that it is covered in part.}
-\label{tab:gap}
-\small
-\centering
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.9cm}>{\raggedright\arraybackslash}p{3.4cm}>{\centering\arraybackslash}p{1.45cm}>{\centering\arraybackslash}p{1.45cm}>{\centering\arraybackslash}p{1.45cm}>{\centering\arraybackslash}p{1.45cm}@{}}
-\toprule
-Work & Approach & Several models & Sparse sensors & Node loss at test & Remedy \\
-\midrule
-\citet{chen2020} & Spectral graph convolution, static & -- & $\sim$ & $\sim$ & \checkmark \\
-\citet{zhang2025} & Graph imputation with contrastive learning & -- & \checkmark & $\sim$ & \checkmark \\
-\citet{karabulut2026} & \ac{STGNN} with RGCN, RGSAGE and RGATv2 & \checkmark & \checkmark & -- & -- \\
-This thesis & \ac{STGNN} with node-loss study and physics operator & \checkmark & \checkmark & \checkmark & \checkmark \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The table shows three gaps.
+Three gaps follow from the closest prior work, which Chapter~\ref{chap:survey} reviews.
 
 \begin{enumerate}
-\item \textbf{No study of sensor loss at inference for \ac{STGNN} localization.} \citet{karabulut2026} evaluate their models with a complete and fixed sensor set. \citet{chen2020} harden a static, single-snapshot classifier against measurement noise and data loss, and \citet{zhang2025} reconstruct missing measurements with graph imputation, but neither studies a spatio-temporal model whose sensors fail after deployment. To the best of our knowledge, no earlier study measures how \ac{STGNN}-based localization degrades when whole sensors fail after deployment.
-\item \textbf{No comparison of mitigation strategies under inference-time failure.} The imputation method of \citet{zhang2025} assumes that the set of unmeasured buses is a fixed property of the network and is known when the imputer and the classifier are built. An inference-time failure does not provide this knowledge. It is therefore open whether a training-time method, an architectural change or an imputation step recovers the lost accuracy best.
-\item \textbf{No test of fixed physical knowledge in a learned localizer under noise and loss.} Physics-based methods need dense measurements, and learned methods ignore the electrical laws. Whether a fixed physical model of the feeder complements a learned model under noise, sensor loss and unseen conditions has not been measured on this task. The thesis includes its own screening of three ways to add first-order physical knowledge through the graph, a prior and the loss. None of them improved on the learned model, which shows that the form in which physics enters matters.
+\item \textbf{No study of sensor loss at inference for \ac{STGNN} localization.} \citet{karabulut2026} evaluate their models with a complete and fixed sensor set. \citet{chen2020} harden a static, single-snapshot classifier against measurement noise and data loss, and \citet{zhang2025} reconstruct missing measurements with graph imputation, but neither studies a spatio-temporal model whose sensors fail after deployment.
+\item \textbf{No comparison of mitigation strategies under inference-time failure.} The imputation method of \citet{zhang2025} assumes that the set of unmeasured buses is fixed and known when the imputer and the classifier are built, which an inference-time failure does not provide. It is open whether a training-time method, an architectural change or an imputation step recovers the lost accuracy best.
+\item \textbf{No test of fixed physical knowledge in a learned localizer under noise and loss.} Physics-based methods need dense measurements, and learned methods ignore the electrical laws. Whether a fixed physical model of the feeder complements a learned model under noise, sensor loss and unseen conditions has not been measured on this task. The thesis screens three ways to add first-order physical knowledge through the graph, a prior and the loss. None of them improved on the learned model, which shows that the form in which physics enters matters.
 \end{enumerate}
 
-\section{Research Questions and Objectives}
+\section{Research Questions}
 \label{sec:rq}
 
 The thesis addresses five research questions.
@@ -331,29 +292,16 @@ The thesis addresses five research questions.
 \item[RQ5.] Can the physical model be fused with the learned model without adding capacity or leaking labels, and under which perturbations does the fusion help?
 \end{enumerate}
 
-The objectives that follow from these questions are:
-
-\begin{enumerate}
-\item[O1.] Generate a corpus of the IEEE 123-bus feeder and benchmark five \ac{STGNN}-family models under the methodology of Karabulut et al., with several training seeds.
-\item[O2.] Quantify the degradation of each model under inference-time sensor loss and relate it to the clean accuracy.
-\item[O3.] Develop dropout-aware training and compare it with neighbor-mean imputation, a learned imputer and an availability-gated architecture.
-\item[O4.] Stress-test the conclusions with worst-case, persistent and clustered sensor loss, with measurement noise, with a wider training grid, with a classical non-graph baseline and with a split that holds out whole fault scenarios.
-\item[O5.] Build a fixed physical operator for the feeder, measure the identifiability of the fault location, and evaluate physics-only localization, physics-based imputation and inference-time fusion.
-\item[O6.] Design a physics-consistent model that adds a single learned scalar to the dropout-aware backbone, verify its design, and compare it with a noise-augmented reference.
-\end{enumerate}
-
 \section{Contributions}
 
 The thesis makes the following contributions. The results on dropout-aware training have been accepted for publication \citep{sangameswar2026}.
 
 \begin{enumerate}
-\item \textbf{A multi-seed benchmark.} Five models of the \ac{STGNN} family are trained on a regenerated corpus of 1.65 million windows at three seeds each. The thesis reports its own numbers and does not claim to reproduce those of the base paper.
-\item \textbf{A measurement of node-loss degradation.} Degradation curves for all five architectures show that clean accuracy is an unreliable indicator of robustness: the most accurate model degrades fastest. Retention and the area under the degradation curve make the comparison quantitative.
-\item \textbf{Dropout-aware training.} Randomly masking sensors during training raises the retention of RGSAGE-Max at 40\% sensor loss from 5.7\% to 80.3\%. The method leaves the number of parameters and the inference latency unchanged, improves the robustness of all five architectures, and outperforms neighbor-mean imputation and a learned imputer. The availability-gated \ac{SDR-STGNN} matches the method but does not exceed it. The thesis reports this negative result as it is.
-\item \textbf{A broader robustness analysis.} The conclusions are tested under worst-case, persistent and clustered sensor loss, under measurement noise, with a wider training grid and on a scenario-held-out split. Dropout-aware training does not help against measurement noise, which identifies the limit of a mask-based remedy.
-\item \textbf{A physical operator and its use.} A table of fault signatures solved with a circuit simulator defines a fixed, parameter-free residual that depends only on the measurements. The thesis uses it to measure identifiability, as a training-free localizer called \ac{PSM}, for imputation of lost sensors and for inference-time fusion with the learned model.
-\item \textbf{A physics-consistent model.} The \ac{PC-STGNN} adds one learned scalar to the dropout-aware backbone. Tests show that it reduces exactly to the backbone when the physical terms are switched off and that the gradient reaches the network weights and not the fixed table.
-\item \textbf{A careful evaluation protocol.} The thesis uses identical splits and mask seeds for all models, paired tests over training seeds with multiple-comparison correction, a bootstrap over events instead of windows, and reference bounds that include a trivial classifier and an upper limit set by windows that contain no fault signal.
+\item \textbf{A multi-seed benchmark.} Five models of the \ac{STGNN} family are trained on a regenerated corpus of 1.65 million windows at three seeds each. The thesis reports its own numbers and does not claim to reproduce those of the base paper. All models share splits and mask seeds, and the comparisons use paired tests over training seeds with multiple-comparison correction.
+\item \textbf{Dropout-aware training.} Randomly masking sensors during training raises the retention of RGSAGE-Max at 40\% sensor loss from 5.7\% to 80.3\%, with no added parameters or inference latency, and it outperforms neighbor-mean and learned imputation. The availability-gated \ac{SDR-STGNN} matches the method but does not exceed it, and the thesis reports this negative result as it is.
+\item \textbf{A broader robustness analysis.} The conclusions are tested under worst-case, persistent and clustered sensor loss, under measurement noise, with a wider training grid and on a scenario-held-out split. The remedy does not help against measurement noise, which identifies the limit of a mask-based remedy.
+\item \textbf{A physical operator and its use.} A table of fault signatures solved with a circuit simulator defines a fixed, parameter-free residual. The thesis uses it to measure identifiability, as a training-free localizer called \ac{PSM}, for imputation of lost sensors and for inference-time fusion.
+\item \textbf{A physics-consistent model.} The \ac{PC-STGNN} adds one learned scalar to the dropout-aware backbone and reduces exactly to it when the physical terms are switched off. On the validation split, it scores higher than a noise-augmented reference in every seed at every combination of noise and sensor loss that was tested.
 \end{enumerate}
 
 \section{Scope and Assumptions}
@@ -363,82 +311,40 @@ The conclusions of the thesis hold within the following limits.
 
 \begin{itemize}
 \item All data come from simulation of one feeder, the IEEE 123-bus feeder in its default topology. The thesis does not claim that the results transfer to other feeders or to field data.
-\item The measurements are \ac{RMS} voltage magnitudes obtained from a quasi-static solver, so they contain no electromagnetic transients, no traveling waves, no direct-current offset and no sub-cycle content. Real-time localization on field streams is not demonstrated.
-\item The placement of the 25 sensors is taken unchanged from the base paper. The thesis does not optimize the placement.
-\item The corpus is noise-free. Noise appears only as a controlled perturbation that is added to the measurements.
-\item The corpus uses a single global load multiplier for each simulated event and three fault resistances. The 70/15/15 partition of the corpus is made over events, so each fault scenario appears in all three splits with different load levels. A separate split that holds out whole scenarios tests the generalization to unseen scenarios.
-\item The signature table is built with the same simulator that generated the corpus. A comparison on clean data therefore favors the physical operator, and the thesis draws its conclusions from the perturbed conditions.
-\item The physical operator is called physics-consistent and not physics-informed in the sense of a differential-equation residual. The thesis makes no claim about Kirchhoff residuals or power-flow constraints.
+\item The measurements are \ac{RMS} voltage magnitudes from a quasi-static solver, so they contain no electromagnetic transients, no traveling waves and no sub-cycle content. Real-time localization on field streams is not demonstrated.
+\item The placement of the 25 sensors is taken unchanged from the base paper. The corpus is noise-free, and noise appears only as a controlled perturbation.
+\item Each simulated event uses a single global load multiplier and one of three fault resistances. The 70/15/15 partition is made over events, so each fault scenario appears in all three splits with different load levels.
+\item The signature table is built with the same simulator that generated the corpus, so a comparison on clean data favors the physical operator, and the thesis draws its conclusions from the perturbed conditions. The operator is called physics-consistent and not physics-informed, and the thesis makes no claim about Kirchhoff residuals or power-flow constraints.
 \item Every result with several seeds uses three training seeds. This number limits the statistical power, and the thesis states which orderings are consistent observations and which are significant.
 \end{itemize}
 
-\section{Methodology Overview}
+\section{Methodology and Organization}
 
-Figure~\ref{fig:workflow} gives an overview of the research workflow. The work starts with the simulation of the feeder and the construction of windows, labels, splits and the measured-only graph. Five baseline models are then trained and evaluated under increasing sensor loss. The mitigation methods and the additional stress tests build on the same corpus and the same splits. In the second part, a signature table of the feeder defines the physical operator, which is analyzed on its own before it is combined with the learned model.
-
-\begin{figure}[!tbp]
-\centering
-\includegraphics[width=0.90\textwidth]{fig1_4_workflow.pdf}
-\caption{Overview of the research workflow of the thesis.}
-\label{fig:workflow}
-\end{figure}
-
-Four rules govern all experiments. First, only one factor changes between two compared models. Second, all models use the same frozen data, the same splits and the same sensor-loss masks. Third, hyperparameters and checkpoints are selected on the validation split only, and the test split serves only for reporting. Fourth, inexpensive checks that need no training are run before an expensive training run, and every new component is checked against the model without it before it is trusted.
-
-\section{Organization of the Thesis}
-
-The remaining chapters are organized as follows. Chapter~\ref{chap:survey} reviews the literature on impedance-based, traveling-wave and learning-based fault localization, on graph neural networks for power systems, on missing and noisy measurements, and on physics-aware learning, and it derives the research gap in more detail. Chapter~\ref{chap:proposed} describes the proposed work: the simulated corpus, the five baseline architectures, the sensor-loss evaluation protocol, dropout-aware training, the availability-gated model, the physical operator and the physics-consistent model, together with the evaluation metrics and the statistical procedure. Chapter~\ref{chap:results} presents the results and their interpretation: the baseline benchmark, the degradation curves, the comparison of mitigation methods, the stress tests, the analysis of the physical operator and the evaluation of the physics-consistent model. Chapter~\ref{chap:conclusion} summarizes the findings, states the limitations and outlines future work.
+All experiments follow four rules. First, only one factor changes between two compared models. Second, all models use the same frozen data, the same splits and the same sensor-loss masks. Third, hyperparameters and checkpoints are selected on the validation split only, and the test split serves only for reporting. Fourth, inexpensive checks that need no training are run before an expensive training run. Chapter~\ref{chap:survey} reviews the literature, Chapter~\ref{chap:proposed} describes the methods, Chapter~\ref{chap:results} presents the results, and Chapter~\ref{chap:conclusion} summarizes the findings, states the limitations and outlines future work.
 
 %------------------------------------------------------------------------------------------------%
 % The chapters below are written one at a time. Only the headings exist so far.
 \chapter{Literature Survey}
 \label{chap:survey}
 
-This chapter reviews the work on which the thesis builds. It follows the development of fault localization from methods that rely on circuit physics, through learning methods that ignore the network structure, to graph-based and spatio-temporal models. It then examines how the literature treats missing and noisy measurements and how physical knowledge has been combined with graph learning. The chapter ends with a summary of what the literature leaves open.
+This chapter reviews the work on which the thesis builds, from methods that rely on circuit physics, through learning methods that ignore the network structure, to graph-based and spatio-temporal models. It then examines how the literature treats missing and noisy measurements and how physical knowledge has been combined with graph learning, and it ends with what the literature leaves open.
 
 \section{Overview of Approaches}
 \label{sec:overview}
 
-The approaches to fault localization in distribution grids fall into four families. Circuit-based methods compute the position of the fault from impedances or from wave propagation. Learning methods with hand-crafted features map signatures of the measurements to a fault location. Graph-based learning methods represent the feeder as a graph, and spatio-temporal variants add a temporal encoder. Physics-aware learning methods combine a learned model with knowledge of the electrical laws. Each family relaxes an assumption of the one before it. Learning methods remove the need for an exact circuit model, graph models restore the topology that feature vectors discard, and spatio-temporal models add the evolution of the signal over time. Figure~\ref{fig:taxonomy} summarizes the families, and Table~\ref{tab:families} lists a representative work and the main limitation of each family for the task of this thesis.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.95\textwidth]{fig2_1_taxonomy.pdf}
-\caption{Families of fault localization methods reviewed in this chapter.}
-\label{fig:taxonomy}
-\end{figure}
-
-\begin{table}[htbp]
-\caption{Families of fault localization methods, a representative work, and the main limitation for fault localization under partial observability.}
-\label{tab:families}
-\small
-\centering
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.7cm}>{\raggedright\arraybackslash}p{3.0cm}>{\raggedright\arraybackslash}p{7.1cm}@{}}
-\toprule
-Family & Representative work & Main limitation for this task \\
-\midrule
-Impedance-based & \citet{krishnathevar2012} & Ambiguity on branching feeders; needs accurate line parameters; affected by fault resistance \\
-Traveling-wave & \citet{liu2023} & Needs fast sampling and dense measurement coverage \\
-Feature-based learning & \citet{livani2013} & Flat feature vector; the adjacency of buses is not used \\
-Static graph learning & \citet{chen2020}, \citet{fan2024} & Single snapshot; no time axis \\
-Spatio-temporal graph learning & \citet{karabulut2026} & Evaluated with a complete, fixed set of sensors \\
-Imputation-based learning & \citet{zhang2025} & Assumes a known, fixed set of unmeasured buses \\
-Physics-aware graph learning & \citet{li2021ppgn} & Observability is sparse but fixed; noise and sensor loss after deployment are not studied \\
-\bottomrule
-\end{tabular}
-\end{table}
+The approaches to fault localization in distribution grids fall into four families. Circuit-based methods compute the position of the fault from impedances or from wave propagation. Learning methods with hand-crafted features map signatures of the measurements to a fault location. Graph-based learning methods represent the feeder as a graph, and spatio-temporal variants add a temporal encoder. Physics-aware learning methods combine a learned model with knowledge of the electrical laws.
 
 \section{Circuit-Based Fault Location}
 
-Impedance-based methods are the longest established family. They measure voltage and current at one point of the feeder, usually the substation, compute the apparent impedance and convert it into a distance. A well-known difficulty is the multiple-estimation problem: on a branching feeder, a single measured impedance corresponds to several candidate positions. \citet{krishnathevar2012} give a generalized one-end formulation that resolves this ambiguity. The accuracy of such methods depends on accurate line parameters, and the fault resistance disturbs the estimate.
+Impedance-based methods are the longest established family. They measure voltage and current at one point of the feeder, usually the substation, compute the apparent impedance and convert it into a distance. On a branching feeder, a single measured impedance corresponds to several candidate positions. A generalized one-end formulation resolves this ambiguity \citep{krishnathevar2012}. The accuracy depends on accurate line parameters, and the fault resistance disturbs the estimate.
 
-Traveling-wave methods follow a different principle. A fault launches a wavefront that travels along the line, and the arrival times at the measurement points identify the fault position. \citet{liu2023} locate faults on multi-branch distribution networks by sharpening the arrival instants of the wavefront with an improved ensemble empirical mode decomposition and the Teager energy operator. These methods are largely independent of the fault resistance, but they need devices that sample at a very high rate and measure at many points.
+Traveling-wave methods follow a different principle. A fault launches a wavefront that travels along the line, and the arrival times at the measurement points identify the fault position. \citet{liu2023} locate faults on multi-branch distribution networks by sharpening the arrival instants of the wavefront with an improved ensemble empirical mode decomposition and the Teager energy operator. They are largely independent of the fault resistance, but they need devices that sample at a very high rate at many points.
 
-Both families have two properties in common. They assume a measurement coverage that is dense enough to observe the impedances or the wavefronts of interest, and neither represents which buses are electrically adjacent. Neither assumption holds on a feeder that carries a few \acp{UPMU}, which is the setting of this thesis.
+Both families assume a measurement coverage that is dense enough to observe the impedances or the wavefronts of interest, and neither represents which buses are electrically adjacent. Neither assumption holds on a feeder that carries a few \acp{UPMU}.
 
 \section{Feature-Based Learning Methods}
 
-Learning methods avoid the need for an exact circuit model. They learn the mapping from the measured signature of a fault to its location from simulated or recorded events. \citet{livani2013} identify the faulted line of the IEEE 123-bus feeder with a \ac{SVM} that uses post-fault \ac{RMS} voltages and fault-current-indicator signals. The model handles the nonlinear relation between signature and location without a circuit model, but it takes a flat feature vector. It cannot use the knowledge that a fault between two buses depresses the voltage at their neighbors in a structured way. This limitation motivates the graph-based methods of the next section.
+Learning methods avoid the need for an exact circuit model. They learn the mapping from the measured signature of a fault to its location from simulated or recorded events. \citet{livani2013} identify the faulted line of the IEEE 123-bus feeder with a \ac{SVM} that uses post-fault \ac{RMS} voltages and fault-current-indicator signals. The flat feature vector of this model cannot use the adjacency of buses, which motivates the graph-based methods of the next section.
 
 \section{Graph Neural Networks for Fault Location}
 
@@ -449,30 +355,23 @@ A \ac{GNN} computes a representation for each node of a graph by repeated exchan
 h_v^{(l+1)}=\phi^{(l)}\Big(h_v^{(l)},\ \mathrm{AGG}\big(\{h_u^{(l)}:u\in\mathcal{N}(v)\}\big)\Big),
 \label{eq:mp}
 \end{equation}
-where $h_v^{(l)}$ is the representation of node $v$ after $l$ layers, $\mathcal{N}(v)$ is the set of neighbors of $v$, $\mathrm{AGG}$ is a permutation-invariant aggregation, and $\phi^{(l)}$ is a learnable update. The choice of $\mathrm{AGG}$ defines the architecture. A \ac{GCN} \citep{kipf2016} aggregates with a normalized sum, GraphSAGE \citep{hamilton2017} concatenates the node with a mean or max of its neighbors, and GATv2 \citep{brody2022} weights the neighbors with learned attention coefficients. After $L$ layers, a node holds information from nodes at most $L$ hops away. This property is what lets a \ac{GNN} infer a fault at a bus that carries no sensor, because the evidence from the nearest sensors reaches the node through the graph. \citet{liao2021} survey the use of \acp{GNN} in power systems and list fault diagnosis, time-series prediction and power flow calculation among the main applications.
+where $h_v^{(l)}$ is the representation of node $v$ after $l$ layers, $\mathcal{N}(v)$ is the set of neighbors of $v$, $\mathrm{AGG}$ is a permutation-invariant aggregation, and $\phi^{(l)}$ is a learnable update. The choice of $\mathrm{AGG}$ defines the architecture. A \ac{GCN} \citep{kipf2016} aggregates with a normalized sum, GraphSAGE \citep{hamilton2017} concatenates the node with a mean or max of its neighbors, and GATv2 \citep{brody2022} weights the neighbors with learned attention coefficients. After $L$ layers, a node holds information from nodes at most $L$ hops away. This property is what lets a \ac{GNN} infer a fault at a bus that carries no sensor, because the evidence from the nearest sensors reaches the node through the graph. \citet{liao2021} survey the use of \acp{GNN} in power systems.
 
 \subsection{Graph-Based Fault Location Models}
 
 \citet{chen2020} apply a spectral graph convolutional network with Chebyshev filters to the IEEE 123- and 37-bus feeders. They add a data augmentation against measurement noise and data loss, which is the closest precedent for the training-time mitigation studied in this thesis. Their model, however, classifies a single snapshot over the graph of the full grid. \citet{fan2024} pair a variational graph autoencoder with GraphSAGE to recover latent node information under noise, and they also classify a single snapshot.
 
-A temporal encoder supplies the time axis. \citet{nguyen2022} combine a one-dimensional convolutional network with a graph convolutional network, and \citet{ngo2025} combine one with graph attention, both for fault detection and identification in distribution systems. In both models the convolution acts on the time axis of the measurements and the graph network on the spatial axis.
+A temporal encoder supplies the time axis. \citet{nguyen2022} combine a one-dimensional convolutional network with a graph convolutional network, and \citet{ngo2025} combine one with graph attention, both for fault detection and identification in distribution systems.
 
-\citet{li2021ppgn} propose a physics-preserved graph network for fault location with limited observation and limited labels. A first stage learns an embedding of the whole network from a few measured nodes. A second stage relates labeled and unlabeled samples to improve the location accuracy. They evaluate it on the IEEE 123- and 37-node feeders with varying loads and topology. In this model the observability is sparse but fixed, and the study does not vary the set of available sensors after training.
+\citet{li2021ppgn} propose a physics-preserved graph network for fault location with limited observation and limited labels, evaluated on the IEEE 123- and 37-node feeders with varying loads and topology. In this model the observability is sparse but fixed, and the set of available sensors is not varied after training.
 
 \section{Spatio-Temporal Graph Models and the Measured-Only Graph}
 
-\citet{karabulut2026} give the most complete treatment of spatio-temporal learning for fault location under partial observability, and their framework is the starting point of this thesis. Their pipeline combines a recurrent network that encodes the voltage history of each sensor with a spatial \ac{GNN}. They benchmark GraphSAGE and GATv2 encoders, called RGSAGE and RGATv2, against a graph convolutional encoder, called RGCN, and against a recurrent baseline, on the IEEE 123-bus feeder. The letter R in these names refers to the recurrent front end. A second contribution concerns the graph itself. Earlier work built the graph from the full topology of the grid. Karabulut et al. propose a measured-only graph, whose nodes are only the instrumented buses. They report that all spatio-temporal variants outperform the purely recurrent baseline by up to 11 percentage points of F1, that the variants are more stable across runs, and that the measured-only graph reduces the training time six-fold and improves the F1 score by up to 11 points compared with the full topology. Figure~\ref{fig:graphs} contrasts the two graph definitions.
+\citet{karabulut2026} give the most complete treatment of spatio-temporal learning for fault location under partial observability, and their framework is the starting point of this thesis. Their pipeline combines a recurrent network that encodes the voltage history of each sensor with a spatial \ac{GNN}. They benchmark GraphSAGE and GATv2 encoders, called RGSAGE and RGATv2, against a graph convolutional encoder, called RGCN, and against a recurrent baseline, on the IEEE 123-bus feeder. The letter R in these names refers to the recurrent front end. They also propose a measured-only graph, whose nodes are only the instrumented buses, in place of the full topology of the grid. They report that all spatio-temporal variants outperform the purely recurrent baseline by up to 11 percentage points of F1, that the variants are more stable across runs, and that the measured-only graph reduces the training time six-fold and improves the F1 score by up to 11 points compared with the full topology.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.88\textwidth]{fig2_2_graphs.pdf}
-\caption{Full-topology graph and measured-only graph.}
-\label{fig:graphs}
-\end{figure}
+A companion study by the same authors \citep{karabulut2025} benchmarks the same family of encoders for fault detection and examines how well they generalize to grid configurations that differ from those used in training. They report that RGATv2 loses about 12\% of its F1 score across topology settings, other variants of the family lose up to about 25\%, and purely recurrent models lose up to about 60\%. It varies the topology but not the availability of the sensors.
 
-A companion study by the same authors \citep{karabulut2025} benchmarks the same family of encoders for fault detection and examines how well they generalize to grid configurations that differ from those used in training. They report that RGATv2 loses about 12\% of its F1 score across topology settings, other variants of the family lose up to about 25\%, and purely recurrent models lose up to about 60\%. This study varies the topology. It does not vary the availability of the sensors.
-
-The same template of a temporal encoder followed by a graph network appears in other domains. \citet{sachin2025} cast spatio-temporal forecasting as an adaptive encoder-decoder graph network. \citet{jayapal2025} build a graph over segmented lymph-node regions to classify cancer metastasis, and \citet{asiri2025} identify illicit Bitcoin transactions with a graph convolutional network on the transaction graph. Both report gains over models that do not use the graph. These examples show that the design questions raised in this thesis are not specific to power systems.
+The same template of a temporal encoder followed by a graph network appears in other domains. \citet{sachin2025} cast spatio-temporal forecasting as an adaptive encoder-decoder graph network, \citet{jayapal2025} classify cancer metastasis on a graph of segmented lymph-node regions, and \citet{asiri2025} identify illicit Bitcoin transactions with a graph convolutional network, all with gains over models that do not use the graph.
 
 \section{Missing and Noisy Measurements}
 
@@ -480,11 +379,11 @@ The same template of a temporal encoder followed by a graph network appears in o
 
 The most developed treatment of missing data in fault location is the work of \citet{zhang2025}. A training-free graph Dirichlet imputation reconstructs the missing bus measurements by minimizing the Dirichlet energy of the graph, and a graph convolutional network trained with contrastive learning keeps the fault signatures separable under the resulting scarcity. The method assumes that the set of unmeasured buses is a fixed property of the network that is known when the imputer and the classifier are built. A sensor that fails after deployment does not satisfy this assumption.
 
-The idea behind this imputation is not specific to fault location. \citet{rossi2021} propose Feature Propagation, which minimizes the Dirichlet energy to fill missing node features, and they report that the accuracy of node classification falls by only about 4\% relative when 99\% of the features are missing. The setting is node classification on benchmark graphs, where the missing features are fixed before training. The relation to the loss of a whole sensor at inference time is therefore indirect.
+The idea is not specific to fault location. \citet{rossi2021} propose Feature Propagation, which minimizes the Dirichlet energy to fill missing node features and loses only about 4\% relative accuracy in node classification when 99\% of the features are missing. The features there are missing before training, so the relation to the loss of a whole sensor at inference time is indirect.
 
 \subsection{Robustness to Sensor Failure}
 
-Work on sensors that fail at inference time is rare outside power systems. \citet{kirthan2026} combine diffusion graph convolutions and dilated temporal convolutions with Monte Carlo dropout to separate aleatoric from epistemic uncertainty in traffic flow prediction, and they report that the model holds up better than three spatio-temporal baselines when sensors drop out. The task is a regression with dense sensing, and a lost detector mainly degrades the prediction at its own location. In fault localization, the predicted quantity is a discrete location that is usually not instrumented, so a lost \ac{UPMU} withdraws evidence about buses other than its own.
+Work on sensors that fail at inference time is rare outside power systems. \citet{kirthan2026} combine diffusion graph convolutions and dilated temporal convolutions with Monte Carlo dropout to separate aleatoric from epistemic uncertainty in traffic flow prediction, and they report that the model holds up better than three spatio-temporal baselines when sensors drop out. In fault localization, the predicted quantity is a discrete location that is usually not instrumented, so a lost \ac{UPMU} withdraws evidence about buses other than its own.
 
 \subsection{Masking During Training}
 
@@ -492,107 +391,60 @@ Randomly removing parts of a graph during training is a known regularizer. DropE
 
 \section{Physics-Aware Learning for Power Systems}
 
-Physics-informed graph learning incorporates physical rules into graph learning, and \citet{peng2022} review the methods in a unified framework. \citet{nyangon2026} review hybrid physics-informed architectures for electricity systems, including \acp{PINN} and their graph-based variants, and they name training instability, computational cost and the absence of standard benchmarks as persistent challenges. The mechanisms in this literature differ widely. A physical term can enter the loss, the architecture, the graph construction or the features. \citet{okoyomon2025} compare three such strategies for voltage prediction in distribution grids, namely power-flow-constrained losses, complex-valued networks and residual-based task reformulation, and they assess both standard and out-of-distribution performance. \citet{dogoulis2025} impose Kirchhoff's current law (\ac{KCL}) as a hard constraint on the output of a graph network by projection onto hyperplanes, which yields power flow predictions without violations of the law.
+Physics-informed graph learning incorporates physical rules into graph learning, and \citet{peng2022} review the methods in a unified framework. \citet{nyangon2026} review hybrid physics-informed architectures for electricity systems, including \acp{PINN} and their graph-based variants, and they name training instability, computational cost and the absence of standard benchmarks as persistent challenges. \citet{okoyomon2025} compare three strategies for voltage prediction in distribution grids, in which a physical term enters the loss, the architecture or the task formulation, and they assess both standard and out-of-distribution performance. \citet{dogoulis2025} impose Kirchhoff's current law (\ac{KCL}) as a hard constraint on the output of a graph network by projection onto hyperplanes, which yields power flow predictions without violations of the law.
 
-Two observations apply to the present task. First, most of these methods need quantities that the data of this thesis do not contain. A Kirchhoff residual needs complex voltages or currents, whereas the \acp{UPMU} of the benchmark report \ac{RMS} voltage magnitudes only. Residuals of this kind cannot be formed from magnitudes alone. Second, the approach of \citet{li2021ppgn} shows that physics can serve as a guide for the graph construction under sparse observation, but it does not examine sensors that fail after deployment or noise in the measurements.
+Most of these methods need quantities that the data of this thesis do not contain. A Kirchhoff residual needs complex voltages or currents, whereas the \acp{UPMU} of the benchmark report \ac{RMS} voltage magnitudes only, and residuals of this kind cannot be formed from magnitudes alone.
 
 The thesis therefore uses a different form of physical knowledge. A circuit simulator solves the feeder for every candidate fault, and the resulting signatures define a fixed residual between a measurement and each hypothesis. This residual needs no complex quantities, and it contains no learned parameter. The thesis calls this knowledge physics-consistent and does not call it physics-informed in the sense of a differential-equation residual.
 
 \section{Summary and Research Gap}
-
-Table~\ref{tab:families} in Section~\ref{sec:overview} lists the families and their limitations.
-
 
 The survey leads to four observations that define the research gap of this thesis.
 
 \begin{enumerate}
 \item Spatio-temporal graph models are the most capable family for fault localization under partial observability, but the existing evaluations assume that every sensor reports at all times. No study measures how these models degrade when whole sensors fail after deployment.
 \item The remedies in the literature for missing data assume a fixed pattern of missingness that is known in advance, or they address noise and data loss in static classifiers. It is not known whether a training-time method, an architectural change or an imputation step recovers the accuracy lost to an inference-time sensor failure, and at what cost.
-\item The evaluations use a single missingness model or none. Whether a remedy transfers to worst-case, persistent, spatially clustered or noisy conditions is not measured.
+\item The evaluations use a single missingness model or none, so it is not known whether a remedy transfers to worst-case, persistent, clustered or noisy conditions.
 \item Physics-aware methods rely on complex quantities or on fixed observability. How much a fixed physical model of the feeder adds to a learned localizer that sees only magnitudes, and under which perturbations it adds it, has not been measured on this task.
 \end{enumerate}
-
-The next chapter describes the methods that the thesis uses to close these gaps.
 
 \chapter{Proposed Work}
 \label{chap:proposed}
 
-This chapter describes the methods of the thesis in the order in which they build on one another. Section~\ref{sec:data} describes the simulated corpus. Section~\ref{sec:baselines} defines the five baseline models, and Section~\ref{sec:protocol} defines the protocol that measures their behavior under sensor loss. Sections~\ref{sec:dropaware} to~\ref{sec:stress} describe dropout-aware training, the availability-gated model and the comparison and stress-test methods. Sections~\ref{sec:physics} and~\ref{sec:pcstgnn} describe the physical operator and the physics-consistent model. Section~\ref{sec:verify} describes the checks of the evaluation pipeline.
+This chapter describes the methods in the order in which they build on one another: the simulated corpus (Section~\ref{sec:data}), the five baseline models (Section~\ref{sec:baselines}), the sensor-loss protocol (Section~\ref{sec:protocol}), dropout-aware training, the availability-gated model and the stress-test methods (Sections~\ref{sec:dropaware} to~\ref{sec:stress}), and the physical operator and the physics-consistent model (Sections~\ref{sec:physics} and~\ref{sec:pcstgnn}).
 
 \section{Simulation and Dataset}
 \label{sec:data}
 
 \subsection{Feeder and Scenario Design}
 
-The corpus is generated by simulation of the IEEE 123-bus distribution feeder, a standard radial benchmark with a nominal line-to-line voltage of 4.16 kV at 60 Hz. The simulator is OpenDSS, driven through its Python interface. The simulation runs in daily (quasi-static time-series) mode with a step of 1 ms. Each recorded sample is therefore a converged power-flow solution and not a single operating-point snapshot. The corpus describes the post-inception \ac{RMS} depression of the voltage and its spatial pattern over the feeder. It does not contain the electromagnetic transient of the fault, so the accuracies reported in this thesis apply to this class of signal.
+The corpus is generated by simulation of the IEEE 123-bus distribution feeder, a standard radial benchmark with a nominal line-to-line voltage of 4.16 kV at 60 Hz. The simulator is OpenDSS, driven through its Python interface. The simulation runs in daily (quasi-static time-series) mode with a step of 1 ms. Each recorded sample is therefore a converged power-flow solution and not a single operating-point snapshot. The corpus describes the post-inception \ac{RMS} depression of the voltage and its spatial pattern over the feeder.
 
-The scenarios follow the factorial design of \citet{karabulut2026}. Faults are injected at 25 candidate buses, with 11 fault types and 3 fault resistances, which gives 825 scenarios. The fault types are the three line-to-ground faults, the three line-to-line faults, the three double-line-to-ground faults and two three-phase faults, one with and one without ground. The fault resistances are 0.1, 1 and 10~$\Omega$. Each scenario is simulated 50 times. A run draws one global load multiplier $\eta$ from the uniform distribution on $[0.5,1.3]$ and applies it to every load of the feeder, so the 50 runs of a scenario differ only in the load level. The seed of each run is a deterministic function of the bus, the fault type, the resistance and the run index, so every event can be regenerated exactly. Table~\ref{tab:dataset} summarizes the configuration.
-
-\begin{table}[htbp]
-\caption{Configuration of the simulated corpus.}
-\label{tab:dataset}
-\small
-\centering
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.4cm}>{\raggedright\arraybackslash}p{8.4cm}@{}}
-\toprule
-Item & Value \\
-\midrule
-Feeder and simulator & IEEE 123-bus, 4.16 kV, 60 Hz; OpenDSS in daily mode with a 1 ms step \\
-Candidate fault buses & 25 \\
-Fault types & 11 (3 line-to-ground, 3 line-to-line, 3 double-line-to-ground, 2 three-phase) \\
-Fault resistances & 0.1, 1 and 10~$\Omega$ \\
-Load multiplier & One global factor per run, uniform on $[0.5,1.3]$ \\
-Scenarios and runs & $25\times11\times3=825$ scenarios, 50 runs each, 41,250 events \\
-Record of one event & 60 ms: 40 ms before the fault and 20 ms with the fault \\
-Windows & 20 samples (20 ms), stride 1 ms, 40 windows per event \\
-Node features & Three \acs{RMS} phase voltages and three availability-mask channels \\
-Classes & 26: 25 fault locations and no fault \\
-\bottomrule
-\end{tabular}
-\end{table}
+The scenarios follow the factorial design of \citet{karabulut2026}. Faults are injected at 25 candidate buses, with 11 fault types and 3 fault resistances, which gives 825 scenarios. The fault types are the three line-to-ground faults, the three line-to-line faults, the three double-line-to-ground faults and two three-phase faults, one with and one without ground. The fault resistances are 0.1, 1 and 10~$\Omega$. Each scenario is simulated 50 times, which gives 41,250 events. A run draws one global load multiplier $\eta$ from the uniform distribution on $[0.5,1.3]$ and applies it to every load of the feeder, so the 50 runs of a scenario differ only in the load level.
 
 \subsection{Sensors and the Measured-Only Graph}
 
-The sensors follow the placement of \citet{karabulut2026}. Twenty-five buses carry a \ac{UPMU}: buses 1, 6, 13, 18, 25, 26, 33, 35, 36, 45, 47, 54, 60, 69, 75, 76, 81, 84, 91, 97, 103, 105, 109, 113 and 300. Fourteen of them measure all three phases. The other eleven measure one or two phases, so 55 of the 75 phase channels are instrumented. A channel that is not instrumented carries a voltage of zero and an availability mask of zero. Only six of the 25 candidate fault buses (13, 18, 25, 35, 47 and 97) coincide with an instrumented bus. The placement is taken as given and is not optimized.
+The sensors follow the placement of \citet{karabulut2026}. Twenty-five buses carry a \ac{UPMU}: buses 1, 6, 13, 18, 25, 26, 33, 35, 36, 45, 47, 54, 60, 69, 75, 76, 81, 84, 91, 97, 103, 105, 109, 113 and 300. Fourteen of them measure all three phases. The other eleven measure one or two phases, so 55 of the 75 phase channels are instrumented. A channel that is not instrumented carries a voltage of zero and an availability mask of zero. Only six of the 25 candidate fault buses (13, 18, 25, 35, 47 and 97) coincide with an instrumented bus.
 
 The measured-only graph has the 25 instrumented buses as nodes. Its edges follow a breadth-first spanning tree of the feeder that is rooted at the substation, bus 150. Each unit is connected to the nearest instrumented unit upstream of it on this tree. One exception keeps the graph connected: a single- or two-phase unit whose nearest upstream unit is also single- or two-phase is not connected to that unit. Two units, at buses 33 and 113, are in this case, and a fallback connects each of them along the shortest feeder path to the unit at bus 1. The result is a connected tree with 24 edges. Figure~\ref{fig:feeder} in Chapter~\ref{chap:intro} shows the graph.
 
 \subsection{Windows, Labels, Splits and Normalization}
 
-An event is recorded for 60 ms. The fault is injected at step 40, so the record has 40 steps before the fault and 20 steps with the fault. Windows of 20 samples are cut with a stride of 1 ms, and the first 40 windows are kept, with start steps from 0 to 39. A window starting at step $w$ covers the steps from $w$ to $w+19$. Windows 0 to 19 end before the fault and have the label no fault. Windows 20 to 39 end after the fault starts and carry the label of the faulted bus. Window $w$ therefore contains $w-20$ samples after fault inception. Every event contributes 20 windows of each kind, so exactly half of the 1.65 million windows belong to the no-fault class and the 25 fault classes are equally frequent.
+An event is recorded for 60 ms. The fault is injected at step 40, so the record has 40 steps before the fault and 20 steps with the fault. Windows of 20 samples are cut with a stride of 1 ms, and the first 40 windows are kept, with start steps from 0 to 39. Windows 0 to 19 end before the fault and have the label no fault. Windows 20 to 39 end after the fault starts and carry the label of the faulted bus. Window $w$ therefore contains $w-20$ samples after fault inception. Every event contributes 20 windows of each kind, so exactly half of the 1.65 million windows belong to the no-fault class and the 25 fault classes are equally frequent.
 
-The partition into training, validation and test data is made at the event level, stratified by fault bus, with the proportions 70, 15 and 15 percent. All 40 windows of an event stay in one split, and the measured overlap of events between any two splits is zero. Table~\ref{tab:splits} gives the counts. Each fault scenario appears in all three splits with different load levels, so the split measures generalization to unseen load conditions of a known fault configuration. Section~\ref{sec:scenario} describes the complementary split that holds out scenarios.
+The partition into training, validation and test data is made at the event level, stratified by fault bus, with the proportions 70, 15 and 15 percent. All 40 windows of an event stay in one split, and the measured overlap of events between any two splits is zero. The training split holds 28,875 events (1,155,000 windows), the validation split 6,200 events (248,000 windows) and the test split 6,175 events (247,000 windows), and exactly half of the windows of each split are no-fault windows. Each fault scenario appears in all three splits with different load levels, so the split measures generalization to unseen load conditions of a known fault configuration. Section~\ref{sec:scenario} describes the complementary split that holds out scenarios.
 
-\begin{table}[htbp]
-\caption{Event-level partition of the corpus.}
-\label{tab:splits}
-\small
-\centering
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Split & Events & Fault windows & No-fault windows & Total windows \\
-\midrule
-Training & 28,875 & 577,500 & 577,500 & 1,155,000 \\
-Validation & 6,200 & 124,000 & 124,000 & 248,000 \\
-Test & 6,175 & 123,500 & 123,500 & 247,000 \\
-\midrule
-Total & 41,250 & 825,000 & 825,000 & 1,650,000 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 The voltage channels are normalized to zero mean and unit variance per phase with statistics of the training split. The mask channels stay binary. The mask channels are static in the clean corpus: they encode which phases each unit measures and are identical in every window. This property matters for the interpretation of dropout-aware training in Chapter~\ref{chap:results}.
 
 \subsection{Data Quality and Reference Bounds}
 
-Several checks were run on the whole corpus and not on samples. All metadata fields are present for all 41,250 events. After the second post-fault step the voltage level is constant to within $1.1\times10^{-7}$ p.u., so the fault period is quasi-static. The first two post-fault steps show a solver settling of at most $2\times10^{-5}$ p.u. in all events except three ungrounded faults, in which a control device operates and the settling reaches about $7\times10^{-3}$ p.u. These three events affect six of the 1.65 million windows.
-
-Two reference bounds follow from the window design. A classifier that always answers no fault reaches a macro-F1 of 0.0256, which serves as the trivial reference. Window 20 of every fault event carries a fault label but contains no post-fault sample, so it is physically identical to a healthy window. No model can beat chance on these windows, and they lower the best achievable macro-F1 to 0.9744. The windows make up 2.5\% of the test split. The accuracy of every trained baseline and mitigation model on this subset lies between 0.0003 and 0.0418 against a chance rate of 0.0385, which shows that no label information leaks into the inputs.
+Several checks were run on the whole corpus and not on samples. After the second post-fault step the voltage level is constant to within $1.1\times10^{-7}$ p.u. in all 41,250 events, so the fault period is quasi-static. Two reference bounds follow from the window design. A classifier that always answers no fault reaches a macro-F1 of 0.0256, which serves as the trivial reference. Window 20 of every fault event carries a fault label but contains no post-fault sample, so it is physically identical to a healthy window. No model can beat chance on these windows, and they lower the best achievable macro-F1 to 0.9744. They make up 2.5\% of the test split, and the accuracy of every trained model on this subset lies between 0.0003 and 0.0418 against a chance rate of 0.0385, which shows that no label information leaks into the inputs.
 
 \subsection{Scenario-Held-Out Split}
 \label{sec:scenario}
 
-The event-level split leaves every scenario in all three splits. To test generalization to unseen fault configurations, a second split assigns whole scenarios to one split. The assignment is made within each fault bus, so all 25 fault classes remain present in every split, and what is withheld is the combination of fault type and resistance at that bus. The split has 575 training scenarios, 125 validation scenarios and 125 test scenarios, with no overlap, and it covers 28,750, 6,250 and 6,250 events. The windows and the normalization statistics are those of the original corpus, so the split is the only variable that changes.
+The event-level split leaves every scenario in all three splits. To test generalization to unseen fault configurations, a second split assigns whole scenarios to one split. The assignment is made within each fault bus, so all 25 fault classes remain present in every split, and what is withheld is the combination of fault type and resistance at that bus. The split has 575 training scenarios, 125 validation scenarios and 125 test scenarios, with no overlap, and it covers 28,750, 6,250 and 6,250 events.
 
 \section{Baseline Architectures}
 \label{sec:baselines}
@@ -614,7 +466,7 @@ h_j^{(l+1)}&=\mathrm{ReLU}\Big(\textstyle\sum_{i\in\tilde{\mathcal{N}}(j)}\tfrac
 h_j^{(l+1)}&=\mathrm{ReLU}\Big(W^{(l)}\big[h_j^{(l)}\,\Vert\,\rho\big(\{h_i^{(l)}:i\in\tilde{\mathcal{N}}(j)\}\big)\big]\Big), \label{eq:sage}\\
 h_j^{(l+1)}&=\mathrm{ReLU}\Big(W_{\mathrm{o}}^{(l)}\,\Big\Vert_{c=1}^{H}\sum_{i\in\tilde{\mathcal{N}}(j)}\alpha_{ji}^{(l,c)}\,W^{(l,c)}h_i^{(l)}\Big), \label{eq:gat}
 \end{align}
-where $\tilde d_i$ is the degree of node $i$ including the self-loop, $\Vert$ denotes concatenation, $\rho$ is the mean or the maximum, and $\alpha_{ji}^{(l,c)}$ is the attention coefficient of head $c$. The rectifier is omitted after the last layer, whose output passes directly to the classifier. The depth of four layers is a choice of this thesis. A single layer limits the receptive field of a node to its immediate neighbors, and most fault locations lie more than one hop from any instrumented bus. A diagnostic sweep of the depth of RGSAGE-Max confirmed that a deeper network is needed, as Chapter~\ref{chap:results} shows. The depth was selected on RGSAGE-Max alone and then applied to every architecture.
+where $\tilde d_i$ is the degree of node $i$ including the self-loop, $\Vert$ denotes concatenation, $\rho$ is the mean or the maximum, and $\alpha_{ji}^{(l,c)}$ is the attention coefficient of head $c$. The rectifier is omitted after the last layer, whose output passes directly to the classifier. The depth of four layers is a choice of this thesis: a single layer limits the receptive field of a node to its immediate neighbors, and most fault locations lie more than one hop from any instrumented bus. The depth was selected on RGSAGE-Max alone, by the diagnostic of Chapter~\ref{chap:results}, and then applied to every architecture.
 
 A shared classifier maps the final embedding of each node to 26 logits. It consists of batch normalization, a rectifier, dropout with a rate of 0.35 and a linear layer. At inference the class probabilities of the $N$ nodes are summed, and the class with the largest sum is the prediction for the window:
 \begin{equation}
@@ -630,39 +482,16 @@ Class imbalance is handled by the design of the corpus, which is balanced, and n
 
 \subsection{Training Configuration}
 
-All models share one training configuration, listed in Table~\ref{tab:training}. Batches are formed by an event-chunk sampler that draws windows from a small set of events at a time, so that each compressed event file is read once per epoch, and that mixes healthy and faulted windows in every batch. The checkpoint with the best validation graph-level macro-F1 is kept, and no other early stopping is used. Every model is trained at three seeds, 42, 43 and 44, which control the parameter initialization, the batch order and the masking of dropout-aware training.
-
-\begin{table}[htbp]
-\caption{Training and software configuration shared by all models.}
-\label{tab:training}
-\small
-\centering
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.0cm}>{\raggedright\arraybackslash}p{8.8cm}@{}}
-\toprule
-Item & Setting \\
-\midrule
-Temporal encoder & One \acs{GRU} layer, 128 hidden units, shared across nodes \\
-Spatial layers & Four message-passing layers, hidden dimension 64 \\
-Classifier & Batch normalization, rectifier, dropout 0.35, linear layer with 26 outputs \\
-Optimizer & AdamW, learning rate $10^{-3}$, weight decay $10^{-4}$ \\
-Schedule and clipping & Linear warm-up over the first 3 epochs, constant afterwards; gradient norm clipped at 1.0 \\
-Batch size and epochs & 32 windows, 30 epochs \\
-Loss and model selection & Unweighted node-level cross-entropy; best validation macro-F1 \\
-Seeds & 42, 43 and 44 \\
-Hardware & One NVIDIA T1000 with 8 GB of memory \\
-Software & Python 3.12, PyTorch 2.5.1 with CUDA 12.1, PyTorch Geometric 2.8, OpenDSSDirect.py 0.9.4, scikit-learn 1.9 \\
-\bottomrule
-\end{tabular}
-\end{table}
+All models share one training configuration. The optimizer is AdamW with a learning rate of $10^{-3}$ and a weight decay of $10^{-4}$, with a linear warm-up over the first 3 epochs, constant afterwards, and the gradient norm is clipped at 1.0. Training runs for 30 epochs with batches of 32 windows,. The checkpoint with the best validation graph-level macro-F1 is kept, and no other early stopping is used. Every model is trained at three seeds, 42, 43 and 44, which control the parameter initialization, the batch order and the masking of dropout-aware training. The experiments ran on one NVIDIA T1000 with 8 GB of memory, with Python 3.12, PyTorch 2.5.1 with CUDA 12.1, PyTorch Geometric 2.8, OpenDSSDirect.py 0.9.4 and scikit-learn 1.9.
 
 \section{Sensor-Loss Evaluation Protocol}
 \label{sec:protocol}
 
 \subsection{Missingness Model}
 
-Robustness to sensor loss is measured entirely at inference time, with all model parameters fixed. This isolates the behavior of a deployed model from any training-time remedy. The thesis draws a set $\mathcal{D}$ of $k$ of the 25 sensors for each test window and sets all six input channels of every selected node to zero, as in Eq.~\eqref{eq:dropout}. The mask channels are zeroed together with the voltages because a zero voltage can be a valid reading after normalization, so the mask is the only definitive indicator that a node is unobserved. A unit that fails is thus encoded like a phase that was never installed. A dropped node keeps its edges and takes part in message passing. Its temporal encoder receives an all-zero sequence, and the resulting embedding propagates to its neighbors. This propagation is the phenomenon under study. A policy that removes the edges of dropped nodes exists in the code but is not used, because it would change the topology and the measurement at the same time.
+Robustness to sensor loss is measured entirely at inference time, with all model parameters fixed. This isolates the behavior of a deployed model from any training-time remedy. The thesis draws a set $\mathcal{D}$ of $k$ of the 25 sensors for each test window and sets all six input channels of every selected node to zero, as in Eq.~\eqref{eq:dropout}. The mask channels are zeroed together with the voltages because a zero voltage can be a valid reading after normalization, so the mask is the only definitive indicator that a node is unobserved. A unit that fails is thus encoded like a phase that was never installed. A dropped node keeps its edges and takes part in message passing. Its temporal encoder receives an all-zero sequence, and the resulting embedding propagates to its neighbors.
 
-The study uses $k\in\{0,1,2,5,10\}$, which removes 0, 4, 8, 20 and 40\% of the sensors. For $k>0$ the selected nodes are drawn uniformly at random, independently for every window. The pseudo-random seed of a batch is derived from the level $k$, the index of the mask realization and the index of the batch, so that every architecture sees an identical sequence of dropped sensors on the same frozen test split. Each point of a degradation curve is averaged over three mask realizations. The three realizations are averaged within each training seed before any statistical test, so that mask realizations are not treated as independent samples.
+The study uses $k\in\{0,1,2,5,10\}$, which removes 0, 4, 8, 20 and 40\% of the sensors. For $k>0$ the selected nodes are drawn uniformly at random, independently for every window. The pseudo-random seed of a batch is derived from the level $k$, the index of the mask realization and the index of the batch, so that every architecture sees an identical sequence of dropped sensors on the same frozen test split. Each point of a degradation curve is averaged over three mask realizations. The three realizations are averaged within each training seed before any statistical test, so that mask realizations are not treated as independent samples. The score at $k=0$ of every degradation curve equals the clean score recorded for the checkpoint. An early version of the evaluator used the same mask seed in every batch, so the same subsets repeated; the seed is now derived from the batch index, and all dropout results were recomputed and not patched.
 
 \subsection{Metrics}
 
@@ -678,42 +507,26 @@ Two quantities describe the shape of a degradation curve. The retention at level
 \mathrm{Ret}(k)&=\frac{\mathrm{F1}(k)}{\mathrm{F1}(0)}, \label{eq:ret}\\
 \mathrm{AUDC}&=\frac{1}{k_{\max}-k_{\min}}\int_{k_{\min}}^{k_{\max}}\mathrm{Ret}(k)\,\mathrm{d}k\in[0,1], \label{eq:audc}
 \end{align}
-with $k_{\min}=0$ and $k_{\max}=10$ and trapezoidal integration over the five levels. A larger value means slower degradation. Both measures are relative to the clean score of the model itself. They compare how gracefully a model degrades and not how accurate it is, and a weak model can obtain a flattering value. The thesis therefore also reports the absolute area, which is the same integral applied to the raw macro-F1, and it reads every score against the trivial reference of 0.0256 and the ceiling of 0.9744.
+with $k_{\min}=0$ and $k_{\max}=10$ and trapezoidal integration over the five levels. A larger value means slower degradation. Both measures are relative to the clean score of the model itself, so a weak model can obtain a flattering value, and the thesis therefore also reports the absolute area, which is the same integral applied to the raw macro-F1, and it reads every score against the trivial reference of 0.0256 and the ceiling of 0.9744.
 
 \subsection{Statistical Procedure}
 
-Every comparison between variants is a mean over three training seeds, which is a small sample, so the thesis states which differences survive a test. The training seed is the paired unit, because all variants are trained from the same three seeds on the same data. The test is a paired two-sided $t$-test on the seed-wise differences with two degrees of freedom, reported with a 95\% confidence interval. Tests that answer one question form a family, and the Holm-Bonferroni correction is applied within each family. Every reported $p$-value is the adjusted value $p_{\mathrm{Holm}}$. A Wilcoxon signed-rank test is not used, because its smallest attainable two-sided $p$-value at three seeds is 0.25. A complementary cluster bootstrap resamples the 6,175 test events and not the windows, because the 40 windows of an event are correlated. The bootstrap shows whether the limit of an ordering is the number of training seeds or the size of the test set.
+Every comparison between variants is a mean over three training seeds, which is a small sample, so the thesis states which differences survive a test. The training seed is the paired unit, because all variants are trained from the same three seeds on the same data. The test is a paired two-sided $t$-test on the seed-wise differences with two degrees of freedom, reported with a 95\% confidence interval. Tests that answer one question form a family, and the Holm-Bonferroni correction is applied within each family. Every reported $p$-value is the adjusted value $p_{\mathrm{Holm}}$. A complementary cluster bootstrap resamples the 6,175 test events and not the windows, because the 40 windows of an event are correlated.
 
 \section{Dropout-Aware Training}
 \label{sec:dropaware}
 
-The baselines are trained with all 25 sensors available but are evaluated with some sensors missing, so they are tested on inputs that differ from the inputs of training. Dropout-aware training removes this mismatch by applying the evaluation missingness model during training. For every mini-batch, a dropout level $k$ is drawn uniformly from $\mathcal{K}=\{0,1,2,5\}$. Then, independently for every window of the batch, $k$ nodes are drawn uniformly without replacement and all six channels of the selected nodes are set to zero. The masking generator is reseeded at the start of every epoch. Because $k$ varies from batch to batch, every epoch mixes complete and incomplete observations, so the network cannot depend on the availability of any individual sensor. Figure~\ref{fig:aware} shows the setup and Algorithm~\ref{alg:aware} states the procedure.
+The baselines are trained with all 25 sensors available but are evaluated with some sensors missing, so they are tested on inputs that differ from the inputs of training. Dropout-aware training removes this mismatch by applying the evaluation missingness model during training. For every mini-batch, a dropout level $k$ is drawn uniformly from $\mathcal{K}=\{0,1,2,5\}$. Then, independently for every window of the batch, $k$ nodes are drawn uniformly without replacement and all six channels of the selected nodes are set to zero. The masking generator is reseeded at the start of every epoch. Figure~\ref{fig:aware} shows the setup.
 
-\begin{algorithm}[htbp]
-\caption{Dropout-aware training. Only the masking in steps 4 and 5 differs from standard training.}
-\label{alg:aware}
-\begin{algorithmic}[1]
-\Require training batches $\mathcal{B}$, dropout levels $\mathcal{K}$, number of epochs $E$, model $f_\theta$
-\For{$e=1$ \textbf{to} $E$}
-\State reseed the masking generator
-\For{each mini-batch $(X,y)\in\mathcal{B}$}
-\State draw $k$ uniformly from $\mathcal{K}$
-\State for every window of the batch, draw $k$ nodes uniformly and zero all six channels of these nodes, which gives $\tilde{X}$
-\State compute the node logits $Z=f_\theta(\tilde{X})$ and the loss of Eq.~\eqref{eq:loss}
-\State clip the gradient norm at 1.0 and take an AdamW step
-\EndFor
-\EndFor
-\end{algorithmic}
-\end{algorithm}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.9\textwidth]{fig3_0_dropout_aware.pdf}
+\includegraphics[width=0.55\textwidth]{fig3_0_dropout_aware.pdf}
 \caption{Dropout-aware training. Only the masking of the input differs from standard training. The example graph is a schematic.}
 \label{fig:aware}
 \end{figure}
 
-The augmentation touches only the input features. It changes neither the graph, the architecture, the loss nor the optimizer, so it applies without modification to every baseline and to the availability-gated model of the next section. The masking operation is related to DropEdge \citep{rong2020} and is not claimed as new; the contribution is to frame sensor loss as a train-test mismatch and to measure the remedy against alternatives. The main configuration trains with $\mathcal{K}=\{0,1,2,5\}$ and therefore never shows the level $k=10$ of the evaluation. A variant with $\mathcal{K}=\{0,1,2,5,10\}$, called DA-wide, tests whether including the largest level helps.
+The augmentation touches only the input features. It changes neither the graph, the architecture, the loss nor the optimizer, so it applies without modification to every baseline and to the availability-gated model of the next section. The main configuration trains with $\mathcal{K}=\{0,1,2,5\}$ and therefore never shows the level $k=10$ of the evaluation. A variant with $\mathcal{K}=\{0,1,2,5,10\}$, called DA-wide, tests whether including the largest level helps.
 
 \section{SDR-STGNN: Availability-Gated Aggregation}
 \label{sec:sdr}
@@ -729,54 +542,27 @@ h_j'=\mathrm{ReLU}\Big(W\big[a_j h_j\,\Vert\,\mathrm{agg}_j\big]\Big),\qquad
 \mathrm{agg}_j=\max_{\substack{i\in\tilde{\mathcal{N}}(j)\\a_i=1}}h_i,
 \label{eq:gated}
 \end{equation}
-where $\mathrm{agg}_j=0$ if no node of the closed neighborhood of $j$ is available. Dropped nodes send no messages. The availability indicators are computed once from the input and reused in all four layers. The gate adds no parameters. When every sensor is available ($a_i=1$ for all $i$), Eq.~\eqref{eq:gated} reduces exactly to the RGSAGE-Max update, so the two models are identical at $k=0$. \ac{SDR-STGNN} is trained with the dropout-aware augmentation, so that the gates are exercised throughout training. The comparison with the ungated dropout-aware model separates the training-time augmentation from the structural gate. Figure~\ref{fig:gate} illustrates the gating.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.85\textwidth]{fig3_1_gate.pdf}
-\caption{Availability-gated aggregation in \acs{SDR-STGNN}.}
-\label{fig:gate}
-\end{figure}
+where $\mathrm{agg}_j=0$ if no node of the closed neighborhood of $j$ is available. Dropped nodes send no messages. The availability indicators are computed once from the input and reused in all four layers. The gate adds no parameters. When every sensor is available ($a_i=1$ for all $i$), Eq.~\eqref{eq:gated} reduces exactly to the RGSAGE-Max update, so the two models are identical at $k=0$. \ac{SDR-STGNN} is trained with the dropout-aware augmentation, so that the gates are exercised throughout training.
 
 \section{Comparison and Stress-Test Methods}
 \label{sec:stress}
 
-The thesis tests dropout-aware training against alternative remedies and against harder conditions on the same corpus, the same splits and the same frozen checkpoints. Table~\ref{tab:stress} lists the methods, and the following subsections describe them. Methods that need a physical model are described in Section~\ref{sec:physics}.
+The thesis tests dropout-aware training against alternative remedies and against harder conditions on the same corpus, the same splits and the same frozen checkpoints. The methods that need a physical model are described in Section~\ref{sec:physics}.
 
-\begin{table}[htbp]
-\caption{Comparison methods and stress tests of the sensor-loss study.}
-\label{tab:stress}
-\small
-\centering
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{3.6cm}>{\raggedright\arraybackslash}p{9.2cm}@{}}
-\toprule
-Method & What it varies relative to the random sweep \\
-\midrule
-Neighbor-mean imputation & Fill of the dropped nodes before inference \\
-Learned graph imputation & Fill produced by a trained graph autoencoder \\
-Wider training grid (DA-wide) & Dropout levels seen in training \\
-Targeted loss & Which sensors drop: those nearest the fault \\
-Persistent loss & When the mask is redrawn: once per event \\
-Clustered loss & How the dropped sensors are arranged: a connected block \\
-Measurement noise & Accuracy of the sensors that still report \\
-Classical baselines & Model family: no graph and no deep network \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \subsection{Imputation Before Inference}
 
 A natural alternative to training with missing data is to reconstruct the dropped sensors before inference and to present the result to a standard-trained model. The neighbor-mean imputer fills the three voltage channels of each dropped node with the per-time-step mean of its available one-hop neighbors in the undirected measured-only graph. If the whole neighborhood is dropped, the fill is zero. The mask of the imputed node is set to one, which is the most favorable setting for imputation because the model is told that the value is observed. The dropped nodes are selected exactly as in the zeroing sweep, so only the fill differs. The imputer is the training-free analogue of the graph imputation of \citet{zhang2025}.
 
-The learned imputer is a masked autoencoder on the measured-only graph. A per-node encoder maps the flattened window and an availability flag to a vector of dimension 128 and concatenates a learned embedding of the node identity. Four residual layers with mean aggregation over the closed neighborhood follow, and a decoder returns the normalized voltages of the 20 time steps. It is trained on the training split to reconstruct the voltages of $k$ randomly dropped nodes, with $k$ drawn uniformly from 1 to 10 and with masks seeded independently of the evaluation. The optimizer is AdamW with a constant learning rate of $10^{-3}$, the batch size is 64, and training runs for 60,000 steps. The checkpoint with the lowest validation reconstruction error is kept. One imputer is trained per seed and is paired with the standard-trained RGSAGE-Max of the same seed. The number of steps was decided by a rule fixed before the evaluation. An initial run of 20,000 steps had a validation error that was still falling by more than 2\% between steps 15,000 and 20,000, so the run was repeated with 60,000 steps. The imputer is used only with a standard-trained classifier, and joint training of imputer and classifier is not examined.
+The learned imputer is a masked autoencoder on the measured-only graph. A per-node encoder maps the flattened window and an availability flag to a vector of dimension 128 and concatenates a learned embedding of the node identity. Four residual layers with mean aggregation over the closed neighborhood follow, and a decoder returns the normalized voltages of the 20 time steps. It is trained on the training split to reconstruct the voltages of $k$ randomly dropped nodes, with $k$ drawn uniformly from 1 to 10, using AdamW at a constant learning rate of $10^{-3}$, a batch size of 64 and 60,000 steps. The checkpoint with the lowest validation reconstruction error is kept. One imputer is trained per seed and is paired with the standard-trained RGSAGE-Max of the same seed. The number of steps was decided by a rule fixed before the evaluation: an initial run of 20,000 steps was still improving by more than 2\% between steps 15,000 and 20,000, so it was repeated with 60,000 steps. Joint training of imputer and classifier is not examined.
 
 \subsection{Harder Loss Patterns}
 
-\textbf{Targeted loss} drops the $k$ sensors nearest to the fault. Proximity is the hop distance on the full 123-bus topology and not on the measured-only graph, because most fault buses are not nodes of the measured-only graph. The selection is a deterministic function of the label, so all models see the same mask. The no-fault windows have no fault bus and fall back to random selection. The reported score is therefore a conservative bound on the true worst case.
+\textbf{Targeted loss} drops the $k$ sensors nearest to the fault. Proximity is the hop distance on the full 123-bus topology and not on the measured-only graph, because most fault buses are not nodes of the measured-only graph. The no-fault windows have no fault bus and fall back to random selection. The reported score is therefore a conservative bound on the true worst case.
 
-\textbf{Persistent loss} draws the dropped set once per event and holds it for all 40 windows of the event, as a real failure would behave. The set is a pure function of the event, the level $k$ and the mask realization, derived through a cryptographic hash and not through a process-dependent hash, so it is the same for every model and batch size. Everything else is unchanged, so the difference to the random sweep isolates the persistence of the mask.
+\textbf{Persistent loss} draws the dropped set once per event and holds it for all 40 windows of the event, as a real failure would behave. The set is a pure function of the event, the level $k$ and the mask realization, so it is the same for every model and batch size.
 
-\textbf{Clustered loss} drops a connected block of the measured-only graph. The block is grown from a uniformly drawn root by repeatedly adding a uniformly drawn neighbor of the current block. It models sensors that share a communication path or a feeder segment. The policy changes how often each node is dropped as well as how the dropped nodes are arranged, so it does not isolate spatial correlation. The same limit applies to its comparison with the random sweep.
+\textbf{Clustered loss} drops a connected block of the measured-only graph. The block is grown from a uniformly drawn root by repeatedly adding a uniformly drawn neighbor of the current block. It models sensors that share a communication path or a feeder segment.
 
 \subsection{Measurement Noise}
 
@@ -784,37 +570,19 @@ Zero-mean Gaussian noise is added to the voltage channels at inference. The stan
 
 \subsection{Classical Baselines}
 
-To measure how much of the accuracy needs a graph model at all, a logistic regression and a random forest with 100 trees are trained on summary features. Each window is reduced, for every sensor and phase, to the minimum, mean, maximum and standard deviation over the 20 samples, and these are concatenated with the three mask values of the node. This gives 25 nodes with 15 values each, or 375 features per window. The minimum and the depth of the sag are the quantities that an impedance-style method uses, so the encoding is a fair one and not a straw man. The features are standardized, and the models are trained on a subsample of 93,696 training windows. The classifiers use the same splits and the same dropout masks as the neural models and emit the class of the window directly, so they need no soft vote.
+To measure how much of the accuracy needs a graph model at all, a logistic regression and a random forest with 100 trees are trained on summary features. Each window is reduced, for every sensor and phase, to the minimum, mean, maximum and standard deviation over the 20 samples, and these are concatenated with the three mask values of the node. This gives 25 nodes with 15 values each, or 375 features per window. The features are standardized, and the models are trained on a subsample of 93,696 training windows with the same splits and dropout masks as the neural models.
 
 \section{The Physical Operator}
 \label{sec:physics}
 
 \subsection{Signature Table}
 
-The physical operator is a table of fault signatures computed with the same circuit simulator that generated the corpus. For every candidate location $f$, fault type $\tau$, fault resistance $R_{\mathrm{F}}$ and load multiplier $\eta$, one power-flow solution gives the settled post-fault voltage magnitude of each phase at each of the 25 sensors. The table is written $\mathcal{S}[f,\tau,R_{\mathrm{F}},\eta,i,p]$ in per-unit voltage. A second table $\mathcal{S}_0[\eta,i,p]$ holds the voltages of the healthy feeder at each load level, which gives the no-fault class a signature. Table~\ref{tab:operator} lists the axes.
+The physical operator is a table of fault signatures computed with the same circuit simulator that generated the corpus. For every candidate location $f$, fault type $\tau$, fault resistance $R_{\mathrm{F}}$ and load multiplier $\eta$, one power-flow solution gives the settled post-fault voltage magnitude of each phase at each of the 25 sensors. The table is written $\mathcal{S}[f,\tau,R_{\mathrm{F}},\eta,i,p]$ in per-unit voltage. A second table $\mathcal{S}_0[\eta,i,p]$ holds the voltages of the healthy feeder at each load level, which gives the no-fault class a signature. The axes are the 25 candidate fault buses, the 11 fault types of the corpus, 18 resistances on a logarithmic grid from 0.05 to 30~$\Omega$ that contains the training values 0.1, 1 and 10~$\Omega$, and 17 load multipliers from 0.5 to 1.3 in steps of 0.05, at 75 sensor channels of which 55 are instrumented. The table holds 84,150 fault solutions and 17 healthy solutions, or 3,366 hypotheses per class.
 
-\begin{table}[htbp]
-\caption{Axes of the signature table.}
-\label{tab:operator}
-\small
-\centering
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.0cm}>{\raggedright\arraybackslash}p{8.8cm}@{}}
-\toprule
-Axis & Values \\
-\midrule
-Location $f$ & 25 candidate fault buses, plus the no-fault hypothesis \\
-Fault type $\tau$ & 11 types, as in the corpus \\
-Resistance $R_{\mathrm{F}}$ & 18 values on a logarithmic grid from 0.05 to 30~$\Omega$, with the training values 0.1, 1 and 10~$\Omega$ on the grid \\
-Load multiplier $\eta$ & 17 values from 0.5 to 1.3 in steps of 0.05 \\
-Sensor and phase $(i,p)$ & $25\times3=75$ channels, of which 55 are instrumented \\
-Size & 84,150 fault solutions and 17 healthy solutions; 3,366 hypotheses per class \\
-\bottomrule
-\end{tabular}
-\end{table}
 
-The table is built along the path of the corpus. The feeder is compiled again for every solution, because the circuit simulator carries regulator tap positions from one solution to the next on a standing circuit, which was found to shift the signatures. The loads are set to $\eta$ times the frozen pre-fault level of the corpus, which is 0.99953, since the corpus applies a small sinusoidal load modulation before the fault and never rescales the loads during the fault. Three solver steps are taken after fault injection so that the signature is the settled level. All 84,167 solutions converged. The resistance grid contains the three corpus resistances exactly, because a grid that left them off-grid let a nearby wrong resistance trade against a compensating load shift and corrupted the recovery of the load.
+The table is built along the path of the corpus. The feeder is compiled again for every solution, because the circuit simulator carries regulator tap positions from one solution to the next on a standing circuit, which was found to shift the signatures. The loads are set to $\eta$ times the frozen pre-fault level of the corpus, which is 0.99953, and three solver steps are taken after fault injection so that the signature is the settled level. All 84,167 solutions converged. The resistance grid contains the three corpus resistances exactly, because a grid that left them off-grid let a nearby wrong resistance trade against a compensating load shift and corrupted the recovery of the load.
 
-The table is the generator of the corpus run again, and not an approximation of it. A comparison on clean data therefore tests the fidelity of the operator and cannot show that the physical model beats the learned model, as noted in Section~\ref{sec:scope}. The thesis therefore uses the operator under perturbations that the generator does not produce, namely sensor loss and measurement noise.
+A comparison on clean data tests the fidelity of the operator and cannot show that the physical model beats the learned model, as noted in Section~\ref{sec:scope}. The thesis therefore uses the operator under perturbations that the generator does not produce, namely sensor loss and measurement noise.
 
 \subsection{Observation and Residual}
 
@@ -823,14 +591,14 @@ The residual compares a window with the signature of every hypothesis. The obser
 s_{ip}=x_{i,S,p}\,\mathrm{std}_p+\mathrm{mean}_p,\qquad \mathcal{A}=\{(i,p):m_{ip}=1\}.
 \label{eq:obs}
 \end{equation}
-The last step is the post-fault level whenever the window contains at least one post-fault sample, because the fault period is quasi-static. For window 20 it is the pre-fault level, and the residual correctly prefers the no-fault class. The observation uses no window index, no label and no event metadata. The set $\mathcal{A}$ contains the channels that are instrumented and not dropped, so dropped sensors are handled by construction: they simply do not enter the sum.
+The last step is the post-fault level whenever the window contains at least one post-fault sample, because the fault period is quasi-static. The observation uses no window index, no label and no event metadata. The set $\mathcal{A}$ contains the channels that are instrumented and not dropped, so dropped sensors are handled by construction: they simply do not enter the sum.
 
 For each class the nuisance parameters are profiled out. The type, the resistance and the load are not known, so the operator keeps the best-fitting hypothesis,
 \begin{align}
 r_f(\mathcal{A})&=\min_{\tau,R_{\mathrm{F}},\eta}\sum_{(i,p)\in\mathcal{A}}\frac{\big(s_{ip}-\mathcal{S}[f,\tau,R_{\mathrm{F}},\eta,i,p]\big)^2}{\sigma_\varepsilon^2+\sigma_0^2},\qquad f=1,\dots,25, \label{eq:rf}\\
 r_0(\mathcal{A})&=\min_{\eta}\sum_{(i,p)\in\mathcal{A}}\frac{\big(s_{ip}-\mathcal{S}_0[\eta,i,p]\big)^2}{\sigma_\varepsilon^2+\sigma_0^2}. \label{eq:r0}
 \end{align}
-Here $\sigma_\varepsilon$ is a fixed floor and $\sigma_0$ is the level of the noise injected into the measurement, which is zero on the clean corpus and is set to the injected level under noise. The floor $\sigma_\varepsilon$ is a single constant, chosen on the training split only so that the median squared residual per channel at the true class equals one. Its value is $7.2555\times10^{-4}$ p.u. It is a numerical floor that comes from the discretization of the load axis and does not describe the accuracy of a physical instrument.
+Here $\sigma_\varepsilon$ is a fixed floor and $\sigma_0$ is the level of the noise injected into the measurement, which is zero on the clean corpus and is set to the injected level under noise. The floor $\sigma_\varepsilon$ is a single constant, chosen on the training split only so that the median squared residual per channel at the true class equals one. Its value is $7.2555\times10^{-4}$ p.u.
 
 The raw residuals of wrong locations are very large, of order $10^5$ to $10^6$ with this floor, whereas the residual of the true location is of the order of the number of channels. The operator therefore shifts and halves them:
 \begin{equation}
@@ -839,9 +607,7 @@ The raw residuals of wrong locations are very large, of order $10^5$ to $10^6$ w
 \end{equation}
 The quantity $\rho_f$ is in units of a Gaussian log-likelihood, so a difference of one is one nat of evidence. It is zero for exactly one class, and it does not depend on the number of available channels, which makes it comparable across dropout levels. The physics prior over the 26 classes is $P_{\mathrm{phys}}=\mathrm{softmax}(-\rho)$. Physics signature matching (\ac{PSM}) is the training-free localizer that returns the class with the smallest residual, $\hat{y}=\arg\min_f\rho_f$. The margin $\rho_{(2)}-\rho_{(1)}$ between the best and the second-best class measures how decisive the evidence is.
 
-The residual is computed in single precision by forming the difference before squaring. The expansion of the square into matrix products loses the true hypothesis to cancellation in single precision, so it is used only in double precision for the offline computation of the residual of the whole corpus. The residual is a function of the inputs and the fixed table, so it carries no gradient with respect to any learnable weight.
-
-The table is checked against the corpus by four procedures. The bias of the table at the true hypothesis shows whether the build path diverged from the generator. The recovery of the load multiplier and the fault type at the true location, by profiling, tests whether the load axis describes the corpus. The calibration of the floor checks that the median residual per channel at the true class is of order one. A reduction of the resistance grid to every second point checks that the grid is dense enough.
+The residual is a function of the inputs and the fixed table, so it carries no gradient with respect to any learnable weight.
 
 \subsection{Identifiability}
 
@@ -850,34 +616,29 @@ The table also measures how much the sensors can reveal in principle. For two lo
 D(f_1,f_2;\mathcal{A})=\min_{(\tau_1,R_1,\eta_1),(\tau_2,R_2,\eta_2)}\sum_{(i,p)\in\mathcal{A}}\frac{\big(\mathcal{S}_{f_1}-\mathcal{S}_{f_2}\big)^2}{2(\sigma_\varepsilon^2+\sigma_0^2)} ,
 \label{eq:sep}
 \end{equation}
-which is in the same units as $\rho$. It is the residual that a perfect observation of $f_1$ would assign to $f_2$, and a value below one means that the two locations are indistinguishable at the floor of the operator. The thesis averages $D$ over random sensor subsets for each $k$ and reports the fraction of location pairs with $D<1$ per resistance. The result describes the information content of the sensing infrastructure and does not depend on any trained model. It is compared with an empirical measure that uses no table: the nearest-neighbor confusion between training events at different locations, computed on the raw observations.
+which is in the same units as $\rho$. It is the residual that a perfect observation of $f_1$ would assign to $f_2$, and a value below one means that the two locations are indistinguishable at the floor of the operator. The thesis averages $D$ over random sensor subsets for each $k$ and reports the fraction of location pairs with $D<1$ per resistance. It is compared with an empirical measure that uses no table: the nearest-neighbor confusion between training events at different locations, computed on the raw observations.
 
 \subsection{Physics-Based Imputation and Inference-Time Fusion}
 
-Two further uses of the operator need no training. In physics-based imputation, each dropped node is filled with the signature of the best hypothesis of \ac{PSM}, profiled on the available channels only. The fill is normalized with the training statistics, repeated over the 20 time steps, and presented with a mask of one to the standard-trained RGSAGE-Max. The dropped nodes are those of the zeroing sweep, so the comparison with the neighbor-mean fill isolates the fill.
+Two further uses of the operator need no training. In physics-based imputation, each dropped node is filled with the signature of the best hypothesis of \ac{PSM}, profiled on the available channels only. The fill is normalized with the training statistics, repeated over the 20 time steps, and presented with a mask of one to the standard-trained RGSAGE-Max, so the comparison with the neighbor-mean fill isolates the fill.
 
 In inference-time fusion, the residual is combined with the logits of an existing trained model without retraining. The logits of every node are reduced by a multiple of the residual,
 \begin{equation}
 z'_{n,f}=z_{n,f}-\beta\,\rho_f(\mathcal{A}),
 \label{eq:fusion}
 \end{equation}
-where the same $\rho_f$ is used for every node $n$ and $\beta\ge0$ is chosen on validation data from the grid $\{0,0.1,0.25,0.5,1,2,4,8,16\}$. The result is then soft-voted as before. This is the cheapest test of whether the operator knows something that the network does not.
+where the same $\rho_f$ is used for every node $n$ and $\beta\ge0$ is chosen on validation data from the grid $\{0,0.1,0.25,0.5,1,2,4,8,16\}$. The result is then soft-voted as before.
 
 \section{PC-STGNN: Physics-Consistent Fusion in the Network}
 \label{sec:pcstgnn}
 
 \subsection{Architecture}
 
-The physics-consistent spatio-temporal graph neural network, \ac{PC-STGNN}, keeps the dropout-aware RGSAGE-Max backbone unchanged and fuses the residual into the logits of every node before the soft vote, as in Eq.~\eqref{eq:fusion}, with $\beta$ now a learned scalar initialized to zero. The fusion acts on the logits of each node, not on a graph-level score. Summing the softmax of the fused node logits gives
-\begin{equation}
-\sum_{n}\mathrm{softmax}(z'_n)_f\ \propto\ \sum_{n}\frac{\exp(z_{n,f})}{Z_n}\,\exp(-\beta\rho_f),
-\label{eq:poe}
-\end{equation}
-where $Z_n$ is the normalizer of node $n$. Every node distribution is thus multiplied by the same physics prior before the votes are summed, which is a product of experts per node. The implementation acts on the node logits so that the node-level loss, the soft vote and the evaluation code stay unchanged. The physical path adds exactly one learned parameter, so the model has 95,259 parameters against 95,258 for the backbone, and the signature tables and the floor are fixed buffers that receive no gradient. Figure~\ref{fig:pcstgnn} shows the architecture.
+The physics-consistent spatio-temporal graph neural network, \ac{PC-STGNN}, keeps the dropout-aware RGSAGE-Max backbone unchanged and fuses the residual into the logits of every node before the soft vote, as in Eq.~\eqref{eq:fusion}, with $\beta$ now a learned scalar initialized to zero. Every node distribution is thus multiplied by the same physics prior, $\exp(-\beta\rho_f)$, before the votes are summed, which is a product of experts per node. The physical path adds exactly one learned parameter, so the model has 95,259 parameters against 95,258 for the backbone, and the signature tables and the floor are fixed buffers that receive no gradient. Figure~\ref{fig:pcstgnn} shows the architecture.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig3_2_pcstgnn.pdf}
+\includegraphics[width=0.72\textwidth]{fig3_2_pcstgnn.pdf}
 \caption{Architecture of \acs{PC-STGNN}.}
 \label{fig:pcstgnn}
 \end{figure}
@@ -889,30 +650,23 @@ Let $z$ be the node logits of the backbone and $z'$ the fused logits. The object
 \mathcal{L}_{\mathrm{PC}}=\mathrm{CE}(z',y)+\lambda_1\sum_{f}P(f|X)\,\rho_f(\mathcal{A})+\lambda_2\sum_{f}P(f|X)\,\rho_f(\mathcal{D})+\gamma\,\mathrm{CE}(z,y).
 \label{eq:pcloss}
 \end{equation}
-Here $P(f|X)$ is the normalized soft-vote distribution of the model. The second term is the expected residual on the available sensors. The third is a leave-$k$-out consistency term: the hypothesis that was profiled on the available sensors is scored on the sensors $\mathcal{D}$ that were dropped in training, whose true values are known at training time only. The profiling never sees $\mathcal{D}$, so the term is a consistency check and not a reconstruction loss. A reconstruction loss at the best hypothesis would have zero gradient, because the index of the best hypothesis is constant with respect to the weights. The two physical terms act on the network through $P(f|X)$ and not through the residual. The last term is a cross-entropy on the logits of the network alone, before fusion. Its weight is fixed at $\gamma=1$ and is not tuned. Windows with no post-fault sample, window 20 of every fault event, are excluded from the two physical terms, because the physics correctly prefers the no-fault class there. This is the only use of the window index, and it applies in training only.
+Here $P(f|X)$ is the normalized soft-vote distribution of the model. The second term is the expected residual on the available sensors. The third is a leave-$k$-out consistency term: the hypothesis that was profiled on the available sensors is scored on the sensors $\mathcal{D}$ that were dropped in training, whose true values are known at training time only. The profiling never sees $\mathcal{D}$, so the term is a consistency check and not a reconstruction loss. The two physical terms act on the network through $P(f|X)$ and not through the residual. The last term is a cross-entropy on the logits of the network alone, before fusion. Its weight is fixed at $\gamma=1$ and is not tuned. Windows with no post-fault sample, window 20 of every fault event, are excluded from the two physical terms, because the physics correctly prefers the no-fault class there. This is the only use of the window index, and it applies in training only.
 
 \subsection{Noise Augmentation and Collapse Guard}
 
-On the noise-free corpus the residual at the true class is exactly zero, so the easiest solution for the fusion is to trust the physics completely and to let the network contribute nothing. Training under noise gives the physical term a finite and informative dynamic range. PC-STGNN is therefore trained with measurement noise on top of dropout-aware training. For every window, a noise level is drawn from $\{0,0.0005,0.002,0.01\}$ p.u., with zero among the choices so that clean inputs remain in the data. Noise is added before the dropout is applied, the dropout levels are $\mathcal{K}=\{0,1,2,5\}$ as before, and $\sigma_0$ in the residual is set to the level injected into each window. Noise changes neither the dropout masks nor the mask channels.
+On the noise-free corpus the residual at the true class is exactly zero, so the easiest solution for the fusion is to trust the physics completely and to let the network contribute nothing. Training under noise gives the physical term a finite and informative dynamic range. PC-STGNN is therefore trained with measurement noise on top of dropout-aware training. For every window, a noise level is drawn from $\{0,0.0005,0.002,0.01\}$ p.u., with zero among the choices so that clean inputs remain in the data. Noise is added before the dropout is applied, the dropout levels are $\mathcal{K}=\{0,1,2,5\}$ as before, and $\sigma_0$ in the residual is set to the level injected into each window.
 
 The noise is included so that the model is robust to measurement noise, and the auxiliary term of Eq.~\eqref{eq:pcloss} is included to keep the network branch from collapsing. A collapse guard monitors the network branch alone on the validation split at $k=0$ without noise. An arm collapsed if the network-only macro-F1 is at most 0.10 or if more than 95\% of its predictions are no fault. A collapsed arm is not eligible for selection, and a run that is collapsed at the end of epoch 3 is stopped.
 
 \subsection{Selection Rules, Reference Model and Verification}
 
-The weights $\lambda_1$ and $\lambda_2$ are chosen on the validation split by the macro-F1 averaged over $k\in\{0,1,2,5,10\}$ among the arms that pass the collapse guard, with one seed and 15 epochs per arm. The grid is $\lambda_1\in\{0,0.01,0.0333,0.1\}$ with $\lambda_2=0$, followed by one arm with $\lambda_2=0.1$ at the best $\lambda_1$. Within a run, the checkpoint is the epoch with the best validation macro-F1 at $k=0$, as for all other models. Tuning runs never evaluate the test split.
+The weights $\lambda_1$ and $\lambda_2$ are chosen on the validation split by the macro-F1 averaged over $k\in\{0,1,2,5,10\}$ among the arms that pass the collapse guard, with one seed and 15 epochs per arm. The grid is $\lambda_1\in\{0,0.01,0.0333,0.1\}$ with $\lambda_2=0$, followed by one arm with $\lambda_2=0.1$ at the best $\lambda_1$. Tuning runs never evaluate the test split.
 
 The reference for every comparison is a model with the same recipe and no physics: the dropout-aware RGSAGE-Max with the same noise augmentation, called the noise-augmented reference model. Comparing PC-STGNN with a model trained without noise would confound noise augmentation with physics, so both models are trained with the same augmentation, for 30 epochs and at three seeds. Both are evaluated on the validation split on the grid of the noise levels $\{0,0.0005,0.002,0.01\}$ p.u. and the sensor-loss levels $k\in\{0,1,2,5,10\}$, with three mask realizations.
 
-Two checks guard the implementation before any training result is trusted. In the null test, a PC-STGNN with $\lambda_1=\lambda_2=\beta=0$ is trained from seed 42 and must reproduce the per-epoch loss and validation score of the dropout-aware backbone exactly. A second null test shows that $\gamma=0$ reproduces the old objective and its gradients exactly on a fixed batch. In the gradient audit, finite differences on three deliberately chosen batches confirm that both physical terms send a gradient to the network weights and that the signature table receives none. The batches contain a window 20, a high dropout level and a batch with no dropped sensors. The last case is the most common in training and the one in which the leave-$k$-out term must vanish without producing undefined values.
+Two checks guard the implementation before any training result is trusted. In the null test, a PC-STGNN with $\lambda_1=\lambda_2=\beta=0$ is trained from seed 42 and must reproduce the per-epoch loss and validation score of the dropout-aware backbone exactly. A second null test shows that $\gamma=0$ reproduces the old objective and its gradients exactly on a fixed batch. In the gradient audit, finite differences on three deliberately chosen batches confirm that both physical terms send a gradient to the network weights and that the signature table receives none. The batches contain a window 20, a high dropout level and a batch with no dropped sensors.
 
-\section{Verification of the Evaluation Pipeline}
-\label{sec:verify}
 
-The score at $k=0$ of every degradation curve must equal the clean score recorded for the checkpoint, and the same command run twice gives identical results. For the imputation baselines, the sets of dropped nodes were compared with those of the zeroing sweep for every level and mask realization, and they are identical. An early version of the evaluator used the same mask seed in every batch, so the same subsets repeated. The seed is now derived from the batch index, and all dropout results were recomputed and not patched.
-
-\section{Summary}
-
-This chapter defined the corpus, the models, the protocol, the remedies and the physical operator. The next chapter reports the results.
 
 \chapter{Results and Inferences}
 \label{chap:results}
@@ -943,25 +697,7 @@ GRU & 0.286$\pm$0.009 & 0.150$\pm$0.003 & 0.410 & 0.292 & 0.105 \\
 \end{tabular}
 \end{table}
 
-The choice of four message-passing layers is supported by a single-seed diagnostic on RGSAGE-Max, shown in Table~\ref{tab:depth}. The score rises with every added layer, which confirms that a larger receptive field is the main driver of accuracy. The budgets of the diagnostic runs differ, as the table states, so the rows show the trend and are not a controlled comparison. The four-layer model with the full schedule of 30 epochs reaches 0.853 for this seed and shows no sign of over-smoothing. The three stable spatial models were still improving at the end of the epoch budget, since their best validation epoch was between 27.7 and 28.7 of 30, so their accuracies are a floor.
-
-\begin{table}[htbp]
-\caption{Depth diagnostic for RGSAGE-Max, one seed (42), test macro-F1.}
-\label{tab:depth}
-\small
-\centering
-\begin{tabular}{@{}cccc@{}}
-\toprule
-Message-passing layers & 1 & 2 & 3 \\
-Epochs & 30 & 15 & 15 \\
-Macro-F1 & 0.509 & 0.571 & 0.751 \\
-\midrule
-Message-passing layers & 4 & 4 & \\
-Epochs & 15 & 30 & \\
-Macro-F1 & 0.806 & 0.853 & \\
-\bottomrule
-\end{tabular}
-\end{table}
+The choice of four message-passing layers is supported by a single-seed diagnostic on RGSAGE-Max. The macro-F1 rises with every added layer, from 0.509 with one layer (30 epochs) to 0.571, 0.751 and 0.806 with two, three and four layers (15 epochs each), which confirms that a larger receptive field is the main driver of accuracy. The budgets differ, so these values show the trend and are not a controlled comparison. With the full schedule of 30 epochs, the four-layer model reaches 0.853 for this seed. The three stable spatial models were still improving at the end of the epoch budget, since their best validation epoch was between 27.7 and 28.7 of 30, so their accuracies are a floor.
 
 \section{Degradation Under Sensor Loss}
 
@@ -987,7 +723,7 @@ GRU & 0.286 & 0.273 & 0.252 & 0.111 & 0.051 & 17.9\% & 0.522 / 0.149 \\
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig4_1_degradation.pdf}
+\includegraphics[width=0.78\textwidth]{fig4_1_degradation.pdf}
 \caption{Degradation curves of the baselines and of the two mitigations.}
 \label{fig:degradation}
 \end{figure}
@@ -998,7 +734,7 @@ The split of the score into detection and localization sharpens this picture. Fo
 
 \section{Dropout-Aware Training}
 
-Dropout-aware training changes the picture, as Table~\ref{tab:aware} shows. For RGSAGE-Max the macro-F1 at $k=10$ rises from 0.048 to $0.674\pm0.017$, a gain of 0.626, and the retention rises from 5.7\% to 80.3\%. The relative \ac{AUDC} rises from 0.402 to 0.913. The clean score changes from $0.846\pm0.007$ to $0.839\pm0.011$, which is within one standard deviation. The gain holds for all five architectures, but the cost in clean accuracy is not the same for all of them. RGSAGE-Max loses less than 0.01 macro-F1 at $k=0$, whereas RGCN drops by 0.099 and RGSAGE-Mean by 0.113. The statement that robustness comes without a cost in clean accuracy therefore holds for the RGSAGE-Max backbone and not for the whole family. The recurrent baseline also improves, but its retention remains limited to 25\%, because it has no message passing with which to use the surviving sensors. Because retention is relative to the clean score, the relative leaders are again not the strongest in absolute terms: the dropout-aware RGSAGE-Max reaches 0.674 at $k=10$, well above the 0.505 of RGATv2, whose retention is higher.
+Dropout-aware training changes the picture, as Table~\ref{tab:aware} shows. For RGSAGE-Max the macro-F1 at $k=10$ rises from 0.048 to $0.674\pm0.017$, a gain of 0.626, and the retention rises from 5.7\% to 80.3\%. The relative \ac{AUDC} rises from 0.402 to 0.913. The clean score changes from $0.846\pm0.007$ to $0.839\pm0.011$, which is within one standard deviation. The gain holds for all five architectures, but the cost in clean accuracy is not the same for all of them. RGSAGE-Max loses less than 0.01 macro-F1 at $k=0$, whereas RGCN drops by 0.099 and RGSAGE-Mean by 0.113. The statement that robustness comes without a cost in clean accuracy therefore holds for the RGSAGE-Max backbone and not for the whole family. The recurrent baseline also improves, but its retention remains limited to 25\%, because it has no message passing with which to use the surviving sensors.
 
 \begin{table}[htbp]
 \caption{Effect of dropout-aware training (DA) on all architectures: macro-F1 at $k=0$ and $k=10$, relative \acs{AUDC} and retention at $k=10$ for standard (Std) and dropout-aware training.}
@@ -1079,7 +815,7 @@ Clustered loss is milder than scattered loss for the standard RGSAGE-Max, with a
 
 \subsection{Measurement Noise}
 
-Noise costs real accuracy, and dropout-aware training does not protect against it (Table~\ref{tab:noise}, Figure~\ref{fig:noise}). For the standard RGSAGE-Max at $k=0$ the macro-F1 falls from 0.846 to 0.786, 0.579 and 0.345 at noise levels of 0.0005, 0.002 and 0.01 p.u. The largest level is the one percent limit of the synchrophasor standard. Dropout-aware training is not better at any noise level at $k=0$, and the differences from the standard model range from $-0.008$ to $-0.034$, with confidence intervals that include zero. The explanation follows from the mechanism of the remedy. Noise leaves the availability mask at one, so the learned response to a node that is dark has nothing to react to. The advantage of the remedy against sensor loss survives noise in attenuated form: at $k=10$ the gain over the standard model is $+0.627$ without noise and $+0.579$, $+0.428$ and $+0.209$ with increasing noise. Noise and sensor loss compound below the trivial reference. The standard model at $k=10$ and the largest noise level scores 0.018, below the 0.0256 of a classifier that always answers no fault.
+Noise costs real accuracy, and dropout-aware training does not protect against it (Table~\ref{tab:noise}). For the standard RGSAGE-Max at $k=0$ the macro-F1 falls from 0.846 to 0.786, 0.579 and 0.345 at noise levels of 0.0005, 0.002 and 0.01 p.u. The largest level is the one percent limit of the synchrophasor standard. Dropout-aware training is not better at any noise level at $k=0$, and the differences from the standard model range from $-0.008$ to $-0.034$, with confidence intervals that include zero. The explanation follows from the mechanism of the remedy. Noise leaves the availability mask at one, so the learned response to a node that is dark has nothing to react to. The advantage of the remedy against sensor loss survives noise in attenuated form: at $k=10$ the gain over the standard model is $+0.627$ without noise and $+0.579$, $+0.428$ and $+0.209$ with increasing noise. Noise and sensor loss compound below the trivial reference. The standard model at $k=10$ and the largest noise level scores 0.018, below the 0.0256 of a classifier that always answers no fault.
 
 \begin{table}[htbp]
 \caption{RGSAGE-Max under measurement noise and sensor loss, macro-F1 for standard (Std) and dropout-aware (DA) training.}
@@ -1098,13 +834,6 @@ DA & 0.839 & 0.752 & 0.555 & 0.316 & 0.675 & 0.619 & 0.460 & 0.227 \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.95\textwidth]{fig4_2_noise.pdf}
-\caption{Effect of noise and sensor loss together on RGSAGE-Max.}
-\label{fig:noise}
-\end{figure}
-
 \subsection{Unseen Fault Scenarios}
 
 The event-level split leaves every scenario in all three splits. On the split that holds out whole scenarios, accuracy is much lower, which is the largest limit on the generalization of the reported scores. The standard RGSAGE-Max reaches $0.490\pm0.057$ at $k=0$, against 0.846 on the event-level split, and the dropout-aware model reaches $0.384\pm0.030$. Under sensor loss the standard model falls to 0.066 at $k=10$, and the dropout-aware model keeps 0.265. The models therefore generalize to unseen load conditions of known fault configurations far better than to unseen configurations. This split was evaluated only for RGSAGE-Max, without statistical tests, so these numbers describe the size of the effect and not a tested ranking.
@@ -1115,176 +844,73 @@ A logistic regression on 375 summary features reaches a macro-F1 of 0.713 at $k=
 
 \section{Statistical Significance}
 
-Table~\ref{tab:tests} reports the paired tests on the mitigation claims, over the three training seeds, with Holm correction across the seven tests of the family. Dropout-aware training improves the macro-F1 at $k=10$ by 0.626, the retention by 74.6 percentage points and the area by 0.511, and all three survive correction ($p_{\mathrm{Holm}}=0.004$). It also exceeds neighbor-mean imputation by 0.574 ($p_{\mathrm{Holm}}=0.010$) and the learned imputer by 0.486 ($p_{\mathrm{Holm}}=0.037$). The area gain is significant for each of the five architectures ($p_{\mathrm{Holm}}\le0.027$), and the gain is significant at every level $k\ge1$ ($p_{\mathrm{Holm}}\le0.042$). The two null claims of this thesis also test as null. The clean-accuracy cost of $-0.008$ has an interval that includes zero ($p_{\mathrm{Holm}}=0.196$), and the advantage of dropout-aware training over \ac{SDR-STGNN} in the area is also not significant ($p_{\mathrm{Holm}}=0.196$), which is the statistical form of the statement that the gate matches but does not exceed it.
-
-\begin{table}[htbp]
-\caption{Paired two-sided $t$-tests over three seeds on the RGSAGE-Max backbone ($\mathrm{df}=2$). $\Delta$ is the mean seed-wise difference, and $p_{\mathrm{Holm}}$ is adjusted over the seven tests. Std is standard training and DA is dropout-aware training.}
-\label{tab:tests}
-\small
-\centering
-\begin{tabular}{@{}lccc@{}}
-\toprule
-Comparison & $\Delta$ & 95\% CI & $p_{\mathrm{Holm}}$ \\
-\midrule
-DA against Std, clean F1 & $-0.008$ & $[-0.024,+0.009]$ & 0.196 \\
-DA against Std, F1 at $k=10$ & $+0.626$ & $[+0.557,+0.695]$ & 0.004 \\
-DA against Std, Ret@10 & $+74.6$ & $[+67.2,+82.0]$ & 0.004 \\
-DA against Std, AUDC & $+0.511$ & $[+0.450,+0.571]$ & 0.004 \\
-DA against neighbor-mean imputation, F1 at $k=10$ & $+0.574$ & $[+0.449,+0.699]$ & 0.010 \\
-DA against learned imputation, F1 at $k=10$ & $+0.486$ & $[+0.253,+0.720]$ & 0.037 \\
-DA against \acs{SDR-STGNN}, AUDC & $+0.021$ & $[-0.010,+0.052]$ & 0.196 \\
-\bottomrule
-\end{tabular}
-\end{table}
+Paired two-sided $t$-tests on the mitigation claims, over the three training seeds and with Holm correction across the seven tests of the family, support the mitigation claims ($\mathrm{df}=2$). Dropout-aware training improves the macro-F1 at $k=10$ by 0.626, the retention by 74.6 percentage points and the area by 0.511, and all three survive correction ($p_{\mathrm{Holm}}=0.004$). It also exceeds neighbor-mean imputation by 0.574 ($p_{\mathrm{Holm}}=0.010$) and the learned imputer by 0.486 ($p_{\mathrm{Holm}}=0.037$). The area gain is significant for each of the five architectures ($p_{\mathrm{Holm}}\le0.027$), and the gain is significant at every level $k\ge1$ ($p_{\mathrm{Holm}}\le0.042$). The two null claims of this thesis also test as null. The clean-accuracy cost of $-0.008$ has an interval that includes zero ($p_{\mathrm{Holm}}=0.196$), and the advantage of dropout-aware training over \ac{SDR-STGNN} in the area is also not significant ($p_{\mathrm{Holm}}=0.196$), which is the statistical form of the statement that the gate matches but does not exceed it.
 
 Two orderings of the baselines are not significant at three seeds. The clean ranking of the top pair, RGSAGE-Max over RGSAGE-Mean, has $p_{\mathrm{Holm}}=0.085$ and no adjacent pair survives. The accuracy--robustness inversion, in which RGCN exceeds RGSAGE-Max at $k=10$ in every seed by a factor of 2.4 to 6.7 ($+0.116$), has $p_{\mathrm{Holm}}=0.429$ because the size of the gap varies from seed to seed. A bootstrap over the 6,175 test events gives an interval for the top pair about five times narrower than the seed-level interval, so the number of training seeds limits these orderings, and they are reported as consistent observations. The spread between mask realizations within a seed (0.0002 to 0.0046 macro-F1) is small against the spread between seeds (0.008 to 0.061).
 
 \section{Computational Cost}
 
-Dropout-aware training changes only the data. The standard and the dropout-aware RGSAGE-Max have the same 95,258 parameters and the same single-event latency (0.639 against 0.640 ms), and both process 6,038 windows per second. The only extra cost is 2.7\% in training time per epoch. \ac{SDR-STGNN} adds no parameters but raises the latency by 18\% (0.755 against 0.639 ms) for no robustness gain. The activation memory is 145 MiB for all models, because the shared encoder dominates it. A training run of RGSAGE-Max takes about 6.7 hours on the NVIDIA T1000 for standard training and 6.9 hours for dropout-aware training, and the runs of the five architectures take between 4.7 and 12.3 hours.
+Dropout-aware training changes only the data. The standard and the dropout-aware RGSAGE-Max have the same 95,258 parameters and the same single-event latency (0.639 against 0.640 ms), and both process 6,038 windows per second. The only extra cost is 2.7\% in training time per epoch. \ac{SDR-STGNN} adds no parameters but raises the latency by 18\% (0.755 against 0.639 ms) for no robustness gain. A training run takes between 4.7 and 12.3 hours on the NVIDIA T1000 for the five architectures, 6.7 hours for standard and 6.9 hours for dropout-aware RGSAGE-Max.
 
 \section{The Physical Operator}
 \label{sec:opresults}
 
 \subsection{Fidelity of the Signature Table}
 
-Table~\ref{tab:fidelity} lists the checks of Section~\ref{sec:physics}. The median bias of the table against the corpus at the true hypothesis is $1.3\times10^{-3}$ p.u. Profiling the load and the type at the true location recovers the load multiplier within one grid step for 97.3\% of the 28,875 training events and the fault type for 90.9\%. The residual floor, rescaled by one global constant chosen on the training split, gives a median squared residual per channel of 1.00 at the true class. Halving the resistance grid changes the localization macro-F1 on the 25 fault classes by $-0.0013$, within noise. The first of these checks is a construction check, because the table is the generator of the corpus run again, so the bias can only measure whether the build path diverged. A build with a standing circuit that kept regulator taps from one solution to the next disagreed with the corpus by more than $10^{-3}$ p.u. on 43.3\% of 1,000 tested events, against 1.8\% when the circuit was compiled again for every solution. The table was therefore built the second way. The remaining disagreements are 6.4 to $7.3\times10^{-3}$ p.u., one regulator tap step, and 16 of the 18 cases lie at 10~$\Omega$.
+The checks of Section~\ref{sec:physics} support the table. The median bias of the table against the corpus at the true hypothesis is $1.3\times10^{-3}$ p.u. Profiling the load and the type at the true location recovers the load multiplier within one grid step for 97.3\% of the 28,875 training events and the fault type for 90.9\%. The residual floor, rescaled by one global constant chosen on the training split, gives a median squared residual per channel of 1.00 at the true class, and halving the resistance grid changes the localization macro-F1 on the 25 fault classes by $-0.0013$, within noise. The bias check is a construction check, because the table is the generator of the corpus run again. A build with a standing circuit disagreed with the corpus by more than $10^{-3}$ p.u. on 43.3\% of 1,000 tested events, against 1.8\% when the circuit was compiled again for every solution.
 
-\begin{table}[htbp]
-\caption{Checks of the signature table on the training split.}
-\label{tab:fidelity}
-\small
-\centering
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{6.6cm}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{3.4cm}@{}}
-\toprule
-Check & Criterion & Measured \\
-\midrule
-Median bias at the true hypothesis & Discretization scale & $1.31\times10^{-3}$ p.u. \\
-Fault type recovered by profiling & $>90\%$ & 90.9\% \\
-Load recovered within one step & $>90\%$ & 97.3\% \\
-Median residual per channel at true class & Between 0.3 and 3 & 1.00 \\
-Effect of halving the resistance grid & Below 0.01 macro-F1 & $-0.0013$ \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \subsection{Identifiability}
 
-The separability of Eq.~\eqref{eq:sep} shows that 25 magnitude-only sensors carry enough information to separate almost every pair of fault locations. Of the 325 pairs among the 26 classes, 1.5\% are indistinguishable at the floor of the operator for $k=0$, 2 and 5, and 1.8\% for $k=10$. The most confusable pair is the same at every level, and its separability falls from 0.0074 to 0.0047. The limit is a property of high resistance and not of the number of sensors: at 0.1 and 1~$\Omega$ no pair is indistinguishable at any level, and at 10~$\Omega$ the fraction is 0.6\% at $k=0$ and 2 and 0.9\% at $k=5$ and 10. Figure~\ref{fig:ident} shows the separability maps. The table agrees with the empirical confusability of the raw observations: a nearest-neighbor classifier on the 55 instrumented channels reaches an accuracy of 88.9\%, and the rank correlation between the separability of a pair and its empirical confusion is $-0.655$ with $p=4\times10^{-38}$ over 300 location pairs. No pair that the table calls confusable is separable in the corpus. The 51 pairs that the table calls separable but the raw observations confuse are expected, because the nearest-neighbor measure pools all types, resistances and loads and does not profile them.
+The separability of Eq.~\eqref{eq:sep} shows that 25 magnitude-only sensors carry enough information to separate almost every pair of fault locations. Of the 325 pairs among the 26 classes, 1.5\% are indistinguishable at the floor of the operator for $k=0$, 2 and 5, and 1.8\% for $k=10$. The most confusable pair is the same at every level, and its separability falls from 0.0074 to 0.0047. The limit is a property of high resistance and not of the number of sensors: at 0.1 and 1~$\Omega$ no pair is indistinguishable at any level, and at 10~$\Omega$ the fraction is 0.6\% at $k=0$ and 2 and 0.9\% at $k=5$ and 10. Figure~\ref{fig:ident} shows the separability maps. The table agrees with the empirical confusability of the raw observations: a nearest-neighbor classifier on the 55 instrumented channels reaches an accuracy of 88.9\%, and the rank correlation between the separability of a pair and its empirical confusion is $-0.655$ with $p=4\times10^{-38}$ over 300 location pairs. No pair that the table calls confusable is separable in the corpus.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{fig4_3_identifiability.pdf}
+\includegraphics[width=0.9\textwidth]{fig4_3_identifiability.pdf}
 \caption{Identifiability of the fault location from 25 magnitude-only sensors.}
 \label{fig:ident}
 \end{figure}
 
 \subsection{Physics-Only Baselines}
 
-Table~\ref{tab:ladder} orders the training-free methods on the validation split, with the same 26-class window-level macro-F1 as the networks. A rank-one sag template without profiling scores 0.162 at every level and is almost uninformative on its own. Matching the nearest signature at the nominal load, without profiling, scores 0.649 at $k=0$. Profiling the type, the resistance and the load (\ac{PSM}) adds 0.123 and scores 0.772. The score of \ac{PSM} is nearly flat under sensor loss, since the residual simply drops the lost channels from its sum, and it falls only from 0.772 to 0.749 at $k=10$. In distribution, the learned model is better: the dropout-aware RGSAGE-Max reaches 0.855 on the validation split at $k=0$ for the same seed. The physical operator therefore does not win on its own ground. Its value lies in the perturbed conditions, as the next subsection shows. The score of \ac{PSM} on clean data is a check of the fidelity of the operator and not a competitor of the learned model, since the table and the corpus come from the same simulator.
+The training-free methods are ordered on the validation split with the same 26-class window-level macro-F1 as the networks. A rank-one sag template without profiling scores 0.162 at every level and is almost uninformative on its own. Matching the nearest signature at the nominal load, without profiling, scores 0.649 at $k=0$ and 0.601 at $k=10$. Profiling the type, the resistance and the load (\ac{PSM}) adds 0.123 and scores 0.772 at $k=0$. The score of \ac{PSM} is nearly flat under sensor loss, since the residual simply drops the lost channels from its sum, and it falls only to 0.749 at $k=10$ (absolute area 0.762). In distribution, the learned model is better: the dropout-aware RGSAGE-Max reaches 0.855 on the validation split at $k=0$ for the same seed. The physical operator therefore does not win on its own ground, and its score on clean data is a check of fidelity and not a competitor of the learned model, since the table and the corpus come from the same simulator. Its value lies in the perturbed conditions, as the next subsection shows.
 
-\begin{table}[htbp]
-\caption{Training-free methods on the validation split, macro-F1 at each level $k$ and the absolute area.}
-\label{tab:ladder}
-\small
-\centering
-\begin{tabular}{@{}lcccccc@{}}
-\toprule
-Method & $k=0$ & $k=1$ & $k=2$ & $k=5$ & $k=10$ & AUDC (abs) \\
-\midrule
-Rank-one template & 0.162 & 0.162 & 0.162 & 0.162 & 0.162 & -- \\
-Nearest signature, no profiling & 0.649 & 0.644 & 0.640 & 0.628 & 0.601 & 0.626 \\
-\acs{PSM} & 0.772 & 0.771 & 0.769 & 0.763 & 0.749 & 0.762 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \subsection{Inference-Time Fusion}
 
-Combining the residual with an existing dropout-aware checkpoint at inference, as in Eq.~\eqref{eq:fusion}, raises the score in every condition tested (Table~\ref{tab:fusion}). The gain is small on clean data ($+0.039$) and large where the network has the least to work with: $+0.166$ at $k=10$, $+0.086$ for faults of 10~$\Omega$, and up to $+0.213$ at the noise level of 0.01 p.u. This is the condition against which dropout-aware training has no effect. The weight $\beta$ that the validation selects rises with the noise level, which means that the physics does more correction work where the mask-based mechanism has nothing to react to. These are preliminary results: they use one seed, a subsample of 30,000 validation windows, and a weight chosen on the same data on which it is scored, and the fusion was applied to a checkpoint that was never trained to expect it.
+Combining the residual with an existing dropout-aware checkpoint at inference, as in Eq.~\eqref{eq:fusion}, raises the score in every condition tested. The gain is small on clean data (0.858 to 0.897, $+0.039$) and large where the network has the least to work with: $+0.166$ at $k=10$ (0.695 to 0.860), $+0.086$ for faults of 10~$\Omega$ (0.667 to 0.753), and up to $+0.213$ at the noise level of 0.01 p.u. (0.325 to 0.538). Noise levels of 0.0005 and 0.002 p.u. give $+0.037$ and $+0.153$. The level of 0.01 p.u. is the condition against which dropout-aware training has no effect. The weight $\beta$ that the validation selects is 0.1 except at the two highest noise levels, where it is 16 and 2. These are preliminary results: they use one seed, a subsample of 30,000 validation windows, and a weight chosen on the same data on which it is scored, and the fusion was applied to a checkpoint that was never trained to expect it.
 
-\begin{table}[htbp]
-\caption{Inference-time fusion on the dropout-aware RGSAGE-Max, seed 42, validation subsample of 30,000 windows.}
-\label{tab:fusion}
-\small
-\centering
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-Condition & Selected $\beta$ & F1 at $\beta=0$ & F1 with fusion & Change \\
-\midrule
-Clean, $k=0$ & 0.1 & 0.858 & 0.897 & $+0.039$ \\
-Clean, $k=0$, faults of 10~$\Omega$ & 0.1 & 0.667 & 0.753 & $+0.086$ \\
-Sensor loss, $k=10$ & 0.1 & 0.695 & 0.860 & $+0.166$ \\
-Noise 0.0005 p.u. & 0.1 & 0.762 & 0.799 & $+0.037$ \\
-Noise 0.002 p.u. & 16 & 0.592 & 0.745 & $+0.153$ \\
-Noise 0.01 p.u. & 2 & 0.325 & 0.538 & $+0.213$ \\
-\bottomrule
-\end{tabular}
-\end{table}
 
-The cost of computing the residual is not negligible. Online, it takes 44.7 ms for a batch of 32 on the T1000, nine times more than the budget set for it, and it is limited by computation and not by memory. For the offline evaluation the residual of the whole corpus was therefore computed once and stored for all dropout levels and mask realizations. The stored values agree with the online computation to a relative error of $1.6\times10^{-5}$ and select the same hypothesis in all cases.
+Computing the residual online takes 44.7 ms for a batch of 32 on the T1000, nine times more than the budget set for it. For the offline evaluation the residual of the whole corpus was therefore computed once and stored for all dropout levels and mask realizations. The stored values agree with the online computation to a relative error of $1.6\times10^{-5}$ and select the same hypothesis in all cases.
 
 \subsection{Screening of Three First-Order Physics Grafts}
 
-Before the operator was built, three ways of adding first-order physical knowledge to the RGSAGE-Max backbone were screened, each with at most one extra parameter. The first scaled the messages by the impedance of the edge between two sensors, the second added a bias from a shared-path sensitivity to the logits, and the third added a loss that penalized the mismatch of the sag pattern. At seed 42 and with 15 epochs, none improved on the backbone (Table~\ref{tab:graft}). The two learned scalars show how the model treated the priors. The weight of the first prior was driven to zero ($-17.4$ before the softplus) and removed it, and the sign of the second was reversed ($-1.90$). The baseline in Table~\ref{tab:graft} is the validation score of the same backbone at epoch 15. The third, run at the full recipe and three seeds, matches the baseline in clean accuracy ($0.847\pm0.018$ against $0.846\pm0.007$) and with dropout-aware training ($0.837$ against $0.839$), and it makes training less stable, with a seed variance 2.6 times larger. Its apparent advantage against noise in the single-seed screen reversed at three seeds ($-0.032$ at the largest noise level). The physics available in voltage magnitudes alone is weak when it is injected in these ways, which motivated the stronger operator of the preceding sections.
+Before the operator was built, three ways of adding first-order physical knowledge to the RGSAGE-Max backbone were screened, each with at most one extra parameter: messages scaled by the impedance of the edge between two sensors, a bias from a shared-path sensitivity on the logits, and a loss that penalized the mismatch of the sag pattern. At seed 42 and with 15 epochs, none improved on the backbone, whose validation score at epoch 15 was 0.816, against 0.807, 0.811 and 0.811 for the three variants. The weight of the first prior was driven to zero, and the sign of the second was reversed. The third, run at the full recipe and three seeds, matches the baseline in clean accuracy ($0.847\pm0.018$ against $0.846\pm0.007$) and with dropout-aware training ($0.837$ against $0.839$), makes training less stable, and lost its apparent advantage against noise ($-0.032$ at the largest noise level). The physics available in voltage magnitudes alone is weak when it is injected in these ways, which motivated the stronger operator of the preceding sections.
 
-\begin{table}[htbp]
-\caption{Screening of three physics grafts, RGSAGE-Max, seed 42, 15 epochs.}
-\label{tab:graft}
-\small
-\centering
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.6cm}cc>{\raggedright\arraybackslash}p{3.8cm}@{}}
-\toprule
-Variant & Validation F1 & Test F1 & Learned scalar \\
-\midrule
-Backbone (epoch 15) & 0.816 & -- & -- \\
-Impedance-weighted messages & 0.807 & 0.801 & Weight driven to zero \\
-Sensitivity bias on the logits & 0.811 & 0.809 & Sign reversed ($-1.90$) \\
-Sag-pattern loss & 0.811 & 0.806 & None \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \section{PC-STGNN}
 \label{sec:pcresults}
 
 \subsection{Verification}
 
-The checks of Section~\ref{sec:pcstgnn} passed. With $\lambda_1=\lambda_2=\beta=0$ the model reproduced all 30 epochs of the dropout-aware backbone exactly, and the training loss, the validation scores and the best validation score (0.8555) were identical to the last digit. With $\gamma=0$ the new objective gave the same loss and identical gradients for all 17 parameter tensors on a fixed batch. The finite-difference audit passed on all three batches: both physical terms sent a non-zero gradient to the network weights, the weight $\beta$ received a gradient, the signature table received none, and the leave-$k$-out term vanished without undefined values when no sensor was dropped.
+The checks of Section~\ref{sec:pcstgnn} passed. With $\lambda_1=\lambda_2=\beta=0$ the model reproduced all 30 epochs of the dropout-aware backbone exactly, with identical training loss, validation scores and best validation score (0.8555). With $\gamma=0$ the new objective gave the same loss and identical gradients for all 17 parameter tensors on a fixed batch. The finite-difference audit passed on all three batches: both physical terms sent a non-zero gradient to the network weights, $\beta$ received a gradient, the signature table received none, and the leave-$k$-out term vanished without undefined values when no sensor was dropped.
 
 \subsection{Noise Augmentation for Noise Robustness and the Auxiliary Loss Against Collapse}
 
-Trained without noise, all six tuning arms reached a degenerate solution. Measured on the 248,000 validation windows at $k=0$, the network branch alone predicted no fault for 99.9 to 100\% of the windows and scored 0.0256, the trivial reference. On fault windows the fused prediction agreed with \ac{PSM} for between 87.7\% and 98.0\% of the windows, and for 95.9\% in the best arm, whose fused accuracy matched that of \ac{PSM} (85.6\% against 85.8\%). The whole gain over \ac{PSM} came from the no-fault windows, where the fused accuracy was 87.0\% against 49.8\%. The model had become physics matching with a learned no-fault bias, as the design analysis had predicted: when the residual at the true class is exactly zero, trusting it completely is the easiest solution.
+Trained without noise, all six tuning arms converged to a degenerate solution. On the 248,000 validation windows at $k=0$, the network branch alone predicted no fault for 99.9 to 100\% of the windows and scored 0.0256, the trivial reference, while the fused prediction agreed with \ac{PSM} on between 87.7\% and 98.0\% of the fault windows. The model had become physics matching with a learned no-fault bias, as the design analysis had predicted: when the residual at the true class is exactly zero, trusting it completely is the easiest solution.
 
-Noise augmentation reduced the problem but did not remove it. The share of no-fault predictions of the network branch fell to about 55\%, close to the true 50\%, but its macro-F1 stayed at 0.078 without the physical loss and 0.061 with it, below the criterion of 0.10. The auxiliary loss on the network-only logits resolved it. After five epochs, with $\gamma=1$, the network branch alone reached a macro-F1 of 0.571, 7.3 times the value without the auxiliary term, and the fused score stayed at 0.879. The auxiliary term is therefore fixed at $\gamma=1$ and is part of the model. In a model trained for 30 epochs at seed 42 with $\gamma=1$ and without noise augmentation, the network branch did not collapse, but at noise levels of 0.002 p.u. and above its fused macro-F1 was below that of \ac{PSM} alone in all 10 conditions, so the fusion helps only when the network branch is robust to noise.
+Noise augmentation reduced the problem but did not remove it. The network branch predicted no fault for about 55\% of the windows, close to the true 50\%, but its macro-F1 stayed at 0.078 without the physical loss and 0.061 with it, below the criterion of 0.10. The auxiliary loss on the network-only logits resolved it. After five epochs with $\gamma=1$, the network branch alone reached a macro-F1 of 0.571, 7.3 times the value without the auxiliary term, and the fused score stayed at 0.879. The auxiliary term is therefore fixed at $\gamma=1$ and is part of the model. A model trained for 30 epochs at seed 42 with $\gamma=1$ and without noise augmentation did not collapse. Without noise at test time, its network branch alone scored 0.828 at $k=0$, against 0.807 for the noise-trained model at the same seed, and its fused score was lower than that of the noise-trained model by 0.008 to 0.014 at the five sensor-loss levels. With noise added at test time, it scored lower in all 15 conditions, by 0.075 to 0.259, and at noise levels of 0.002 p.u. and above its fused macro-F1 was below that of \ac{PSM} alone in all 10 conditions. This is a single seed and no significance is claimed. It gives no evidence that noise augmentation is needed to prevent the collapse when $\gamma=1$, but it shows that noise augmentation is needed for robustness to noise.
 
 \subsection{Selection of the Loss Weights}
 
-Table~\ref{tab:lambda} shows the five arms of the final tuning, all with noise and the auxiliary loss, at one seed and 15 epochs. All arms pass the collapse guard. The loss $\lambda_1$ hurts monotonically: the averaged validation score falls from 0.878 at $\lambda_1=0$ to 0.818 at $\lambda_1=0.1$, and the loss shows up in the no-fault windows, where the fused accuracy falls from 100.0\% to 74.2\% because a larger $\beta$ lets the physics override correct no-fault decisions. The expected residual on the available sensors therefore does not contribute. The held-out term with $\lambda_2=0.1$ is neutral to slightly positive. The best validation score averaged over $k$ is 0.8797, which selects $\lambda_1=0$ and $\lambda_2=0.1$. The margin over $\lambda_1=\lambda_2=0$ is 0.0019 and is not a tested difference. Even at the end of this tuning, the fused prediction on fault windows agrees with \ac{PSM} for 91.5 to 94.7\% of the windows, so at clean $k=0$ the localization is still largely physical. The question that matters is the behavior under noise and sensor loss, which is the comparison of the next subsection.
+The final tuning compared five arms, all with noise and the auxiliary loss, at one seed and 15 epochs, and all passed the collapse guard. The loss $\lambda_1$ hurts monotonically: the validation score averaged over the sensor-loss levels falls from 0.878 at $\lambda_1=0$ to 0.852 at 0.0333 and 0.818 at 0.1, and the loss shows up in the no-fault windows, where the fused accuracy falls from 100.0\% to 74.2\% because a larger $\beta$ lets the physics override correct no-fault decisions. The expected residual on the available sensors therefore does not contribute. The held-out term with $\lambda_2=0.1$ is neutral to slightly positive. The best averaged score is 0.880, which selects $\lambda_1=0$ and $\lambda_2=0.1$, but the margin of 0.002 over $\lambda_1=\lambda_2=0$ is not a tested difference. Even at the end of this tuning, the fused prediction on fault windows agrees with \ac{PSM} for 91.5 to 94.7\% of the windows, so at clean $k=0$ the localization is still largely physical. The behavior under noise and sensor loss is the subject of the next subsection.
 
-\begin{table}[htbp]
-\caption{Final tuning of the loss weights, seed 42, 15 epochs, validation split. The columns give the best epoch, the fused macro-F1 at $k=0$ and averaged over $k$, and the macro-F1 of the network branch alone.}
-\label{tab:lambda}
-\small
-\centering
-\begin{tabular}{@{}cccccc@{}}
-\toprule
-$\lambda_1$ & $\lambda_2$ & Best epoch & Fused F1, $k=0$ & Fused F1, mean over $k$ & Network-only F1 \\
-\midrule
-0 & 0 & 10 & 0.893 & 0.878 & 0.738 \\
-0.01 & 0 & 12 & 0.890 & 0.878 & 0.788 \\
-0.0333 & 0 & 12 & 0.858 & 0.852 & 0.717 \\
-0.1 & 0 & 14 & 0.823 & 0.818 & 0.741 \\
-0 & 0.1 & 12 & 0.894 & 0.880 & 0.757 \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \subsection{Comparison With the Noise-Augmented Reference}
 
-The comparison that decides whether the learned fusion helps is between \ac{PC-STGNN} and the noise-augmented reference model. Both are trained for 30 epochs at seeds 42, 43 and 44 and evaluated on the validation split at every combination of the noise levels and the sensor-loss levels of Section~\ref{sec:pcstgnn}. The two models of one seed form a pair, and a difference is called sign-consistent when it has the same sign in all three pairs. The decision was fixed before training: the fused model must score higher in all three seeds at all pre-registered conditions that can be evaluated before the test on unseen fault resistances: faults of 10~$\Omega$, sensor loss and measurement noise, read apart from the pooled score at clean $k=0$, where the residual of the true class on the simulated corpus is exactly zero. The test on unseen resistances is made later, on a separate set, and is not part of this comparison. Sign consistency across the three seeds is this primary criterion, and it does not depend on a significance test. A Holm correction is reported in addition, as elsewhere in this thesis, but the family of seven conditions with sensor loss, $k\in\{1,2,5,10\}$ without noise and $k=10$ at each noise level, was chosen after the results were seen and not fixed beforehand; it is reported as a description of where the result is strongest, not as part of the decision. The other conditions are reported for completeness.
+The comparison that decides whether the learned fusion helps is between \ac{PC-STGNN} and the noise-augmented reference model. Both are trained for 30 epochs at seeds 42, 43 and 44 and evaluated on the validation split at every combination of the noise levels and the sensor-loss levels of Section~\ref{sec:pcstgnn}. The two models of one seed form a pair, and a difference is sign-consistent when it has the same sign in all three pairs. The decision rule was fixed before training: the fused model must score higher in all three seeds at every condition that can be evaluated before the test on unseen fault resistances, namely faults of 10~$\Omega$, sensor loss and measurement noise. Sign consistency is the primary criterion and does not depend on a significance test. A Holm correction is reported in addition for the seven conditions with sensor loss ($k\in\{1,2,5,10\}$ without noise and $k=10$ at each noise level). This family was chosen after the results were seen, so it describes where the result is strongest and is not part of the decision. The test on unseen resistances is made later, on a separate set, and is not part of this comparison.
 
-Table~\ref{tab:gate4} gives the macro-F1 of every seed. \ac{PC-STGNN} scores higher than the reference in all 60 pairs of seed and condition, and the smallest single difference is 0.008, so the primary criterion is met at every evaluated condition. For faults of 10~$\Omega$ without noise or sensor loss, \ac{PC-STGNN} also scores higher in all three seeds (0.733, 0.753 and 0.736, against 0.635, 0.632 and 0.657 for the reference). The mean difference grows with the number of lost sensors, from 0.059 at $k=0$ to 0.201 at $k=10$ without noise, and it decreases as the noise rises, to 0.025 at $k=0$ and 0.101 at $k=10$ at 0.01 p.u. Under the post hoc seven-condition family, all seven differences are significant after the Holm correction ($p_{\mathrm{Holm}}\le0.020$). With three seeds, the significance depends on the size of the family: over all twenty conditions, only the two largest differences, at $k=10$ without noise and at 0.0005 p.u., remain significant ($p_{\mathrm{Holm}}=0.025$). At $k=0$ and 0.01 p.u., the difference is not significant even before the correction ($p=0.14$).
+Table~\ref{tab:gate4} gives the macro-F1 of every seed. \ac{PC-STGNN} scores higher than the reference in all 60 pairs of seed and condition, and the smallest single difference is 0.008, so the primary criterion is met at every evaluated condition. For faults of 10~$\Omega$ without noise or sensor loss, \ac{PC-STGNN} also scores higher in all three seeds (0.733, 0.753 and 0.736, against 0.635, 0.632 and 0.657). The mean difference grows with the number of lost sensors, from 0.059 at $k=0$ to 0.201 at $k=10$ without noise, and it decreases as the noise rises, to 0.025 at $k=0$ and 0.101 at $k=10$ at 0.01 p.u. In the seven-condition family, all differences are significant after the Holm correction ($p_{\mathrm{Holm}}\le0.020$). With three seeds, the significance depends on the size of the family: over all twenty conditions, only the two largest differences, at $k=10$ without noise and at 0.0005 p.u., remain significant ($p_{\mathrm{Holm}}=0.025$), and at $k=0$ and 0.01 p.u. the difference is not significant even before the correction ($p=0.14$).
 
 The reference was still improving at the end of training. Its best validation epochs were 30, 29 and 27, and its mean validation score over epochs 26 to 30 was 0.010 to 0.016 higher than over epochs 21 to 25. The best epochs of \ac{PC-STGNN} were 19, 29 and 17, and its score changed by less than 0.005 between the same two periods. The reference is therefore compared before it reached its final level, and the margins can decrease with longer training.
 
@@ -1327,10 +953,10 @@ $k$ & Noise (p.u.) & 42 & 43 & 44 & 42 & 43 & 44 & Difference & $p_{\mathrm{Holm
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:decomp} separates the fused output of \ac{PC-STGNN} into its two sources: the soft vote of the network branch alone and the \ac{PSM} prediction from the residual alone. The fused score is higher than both sources in every condition, by 0.038 to 0.132. The two sources fail under different perturbations. Sensor loss lowers the network branch from 0.812 at $k=0$ to 0.615 at $k=10$ without noise, but it lowers \ac{PSM} only from 0.772 to 0.750. Noise lowers \ac{PSM} from 0.772 to 0.496 at $k=0$, and the network branch only from 0.812 to 0.710. The fused class follows the source that holds up. At $k=0$, its agreement with \ac{PSM} falls from 71.3\% without noise to 34.4\% at 0.01 p.u. Without noise, its agreement with the network branch falls from 92.1\% at $k=0$ to 82.2\% at $k=10$. In every condition the fused class agrees with the network branch more often than with \ac{PSM}. The agreement is counted over all windows, including the no-fault windows, in which \ac{PSM} is weak, so it does not measure the share of physical evidence in the fault decisions alone.
+Table~\ref{tab:decomp} separates the fused output of \ac{PC-STGNN} into the soft vote of the network branch alone and the \ac{PSM} prediction from the residual alone. The fused score is higher than both sources in every condition, by 0.038 to 0.132. The two sources fail under different perturbations. Sensor loss lowers the network branch from 0.812 at $k=0$ to 0.615 at $k=10$ without noise, but it lowers \ac{PSM} only from 0.772 to 0.750. Noise lowers \ac{PSM} from 0.772 to 0.496 at $k=0$, and the network branch only from 0.812 to 0.710. The fused class follows the source that holds up: at $k=0$, its agreement with \ac{PSM} falls from 71.3\% without noise to 34.4\% at 0.01 p.u., and without noise its agreement with the network branch falls from 92.1\% at $k=0$ to 82.2\% at $k=10$. In every condition the fused class agrees with the network branch more often than with \ac{PSM}. The agreement is counted over all windows, including the no-fault windows, in which \ac{PSM} is weak, so it does not measure the share of physical evidence in the fault decisions alone.
 
 \begin{table}[htbp]
-\caption{Sources of the fused prediction of \acs{PC-STGNN}, validation split, mean over three seeds. The columns give the macro-F1 of the fused output, of the network branch alone and of \acs{PSM}, and the percentage of all windows in which the fused class equals the class of each source.}
+\caption{Sources of the fused prediction of \acs{PC-STGNN} at $k=0$ and $k=10$, validation split, mean over three seeds. The columns give the macro-F1 of the fused output, of the network branch alone and of \acs{PSM}, and the percentage of all windows in which the fused class equals the class of each source.}
 \label{tab:decomp}
 \footnotesize
 \centering
@@ -1345,21 +971,7 @@ $k$ & Noise (p.u.) & Fused & Network only & \acs{PSM} & With network & With \acs
  & 0.002 & 0.871 & 0.796 & 0.746 & 94.7 & 65.2 \\
  & 0.01 & 0.748 & 0.710 & 0.496 & 97.4 & 34.4 \\
 \addlinespace
-1 & 0 & 0.893 & 0.798 & 0.770 & 91.4 & 71.3 \\
- & 0.0005 & 0.892 & 0.797 & 0.769 & 91.9 & 70.5 \\
- & 0.002 & 0.865 & 0.783 & 0.743 & 94.2 & 64.9 \\
- & 0.01 & 0.743 & 0.699 & 0.492 & 97.1 & 34.1 \\
-\addlinespace
-2 & 0 & 0.889 & 0.782 & 0.769 & 90.6 & 71.3 \\
- & 0.0005 & 0.888 & 0.781 & 0.767 & 91.1 & 70.4 \\
- & 0.002 & 0.860 & 0.768 & 0.740 & 93.6 & 64.5 \\
- & 0.01 & 0.736 & 0.688 & 0.489 & 96.8 & 33.7 \\
-\addlinespace
-5 & 0 & 0.877 & 0.732 & 0.763 & 88.0 & 71.1 \\
- & 0.0005 & 0.876 & 0.731 & 0.761 & 88.7 & 70.0 \\
- & 0.002 & 0.842 & 0.720 & 0.730 & 91.5 & 63.3 \\
- & 0.01 & 0.718 & 0.648 & 0.478 & 95.5 & 32.6 \\
-\addlinespace
+
 10 & 0 & 0.857 & 0.615 & 0.750 & 82.2 & 70.2 \\
  & 0.0005 & 0.854 & 0.614 & 0.747 & 82.8 & 69.0 \\
  & 0.002 & 0.808 & 0.606 & 0.704 & 86.2 & 60.0 \\
@@ -1368,7 +980,7 @@ $k$ & Noise (p.u.) & Fused & Network only & \acs{PSM} & With network & With \acs
 \end{tabular}
 \end{table}
 
-The comparison does not identify which element of \ac{PC-STGNN} produces the gain. The model differs from the reference in three elements: the fused residual, the held-out term with $\lambda_2=0.1$ and the auxiliary loss with $\gamma=1$. The expected residual on the available sensors is not among them, because $\lambda_1=0$, so no part of the gain is due to it. The data show where the gain is realized. The network branch of \ac{PC-STGNN} alone scores below the reference in 45 of the 60 pairs, and its mean deficit per condition is between 0.014 and 0.041. Only the fused output is better than the reference. The gain therefore arises in the fusion step and not through a stronger network branch. The contribution of the held-out term is measured by a model that keeps this term without the fusion [PENDING: R4]. The effect of the auxiliary loss on the fused score at 30 epochs is measured by a model with $\gamma=0$ [PENDING: R5-$\gamma$0]. Whether the gain needs the correct assignment of signatures to locations is tested with a shuffled table [PENDING: R6]. Whether a learned decoder of matched size gives the same gain is tested separately [PENDING: R2], and so is a wider backbone [PENDING: R7].
+The comparison does not identify which element of \ac{PC-STGNN} produces the gain. The model differs from the reference in the fused residual, the held-out term with $\lambda_2=0.1$ and the auxiliary loss with $\gamma=1$. The expected residual is not among them, because $\lambda_1=0$. The data show where the gain is realized. The network branch of \ac{PC-STGNN} alone scores below the reference in 45 of the 60 pairs, with a mean deficit per condition between 0.014 and 0.041, and only the fused output is better than the reference. The gain therefore arises in the fusion step and not through a stronger network branch. One single-seed ablation was completed: a model trained for 30 epochs with the same noise augmentation and the held-out term, but without the auxiliary loss ($\gamma=0$). At its selected checkpoint, epoch 8, the network branch alone localized poorly: its macro-F1 was between 0.055 and 0.080 in all twenty conditions (0.079 at $k=0$ without noise), against 0.55 to 0.81 for the model with $\gamma=1$ at the same seed, a deficit of 0.49 to 0.73. At epoch 30 the network-only score had risen to 0.21 at $k=0$ without noise, which is still far below. The fused macro-F1 was lower than that of the $\gamma=1$ model in 19 of the 20 conditions, by 0.009 on average (the largest difference is 0.018 and one condition is higher by 0.001), and at $k=0$ without noise the fused class agreed with the network branch for 56\% of the windows instead of 92\%. With one seed no significance is claimed, and the result supports only a statement about the network branch: without the auxiliary loss the network branch alone does not localize faults, even with noise augmentation. The other ablations that separate the three elements, and the test of whether the gain needs the correct assignment of signatures to locations, were not completed and are left for future work.
 
 \section{Discussion}
 
@@ -1378,40 +990,40 @@ Second, the remedy works because it changes what the mask means. In the clean co
 
 Third, the conclusions have limits. Scores on the event-level split fall by about 0.36 on unseen scenarios for the standard model, worst-case loss and noise are stressors that the remedy does not absorb, and the data are quasi-static magnitudes from one simulated feeder.
 
-Fourth, the physical operator is informative but does not replace the learned model. Fusion at inference helps most under noise and heavy sensor loss in the preliminary test, whereas injection through the loss was neutral or harmful, and in the tuning at one seed the network branch collapsed without the auxiliary loss, even under noise. Noise augmentation is needed for robustness to measurement noise, but with $\gamma=1$ it is not necessary to prevent the collapse. Trained at three seeds, the fusion scores higher than the noise-augmented reference in every seed and condition, most under sensor loss (Table~\ref{tab:gate4}). The network branch and the physical prediction fail under different perturbations, and the fused output is better than each of them (Table~\ref{tab:decomp}). Which element of the model produces the gain is not yet separated [PENDING: R4] [PENDING: R5-$\gamma$0] [PENDING: R6].
+Fourth, the physical operator is informative but does not replace the learned model. Fusion at inference helps most under noise and heavy sensor loss in the preliminary test, whereas injection through the loss was neutral or harmful, and in the tuning at one seed the network branch collapsed without the auxiliary loss. Trained at three seeds, the fusion scores higher than the noise-augmented reference in every seed and condition, most under sensor loss (Table~\ref{tab:gate4}). The network branch and the physical prediction fail under different perturbations, and the fused output is better than each of them (Table~\ref{tab:decomp}). The comparison does not separate which element of the model produces the gain.
 
 \section{Summary}
 
-The most accurate model is the most fragile, and dropout-aware training restores 80.3\% of the clean score at 40\% sensor loss at no inference cost. Neither a gate nor imputation matches it.
+The most accurate model is the most fragile, and dropout-aware training restores 80.3\% of the clean score at 40\% sensor loss at no inference cost. Neither a gate nor imputation matches it. A fixed physical operator is informative and, fused into the network with one learned parameter, raised the validation macro-F1 over a noise-augmented reference in every seed and condition tested, most under heavy sensor loss.
 
 \chapter{Conclusion and Future Enhancements}
 \label{chap:conclusion}
 
 \section{Summary of the Work}
 
-The thesis studied fault localization in a distribution grid in which only a few sensors are installed, and it asked what happens to a learned localizer when sensors fail or are noisy after deployment. It adopted the framework of \citet{karabulut2026} on the IEEE 123-bus feeder, regenerated a corpus of 1.65 million windows, and benchmarked five architectures at three seeds. It then measured their degradation under sensor loss at inference, developed dropout-aware training as a remedy, and compared the remedy with an availability-gated architecture and with three kinds of imputation. The conclusions were tested against worst-case, persistent and clustered loss, noise, a wider training grid, a classical baseline and a scenario-held-out split. In the second part, a table of simulated fault signatures defined a fixed physical operator, used to measure identifiability, to localize without training, to impute and to fuse with a trained model. A physics-consistent model with one added parameter was designed, verified and tuned.
+The thesis studied what happens to a learned fault localizer on a sparsely instrumented feeder when sensors fail or are noisy after deployment. It adopted the framework of \citet{karabulut2026} on the IEEE 123-bus feeder, regenerated a corpus of 1.65 million windows and benchmarked five architectures at three seeds. It measured their degradation under sensor loss, developed dropout-aware training as a remedy and compared it with an availability-gated architecture and with three kinds of imputation. It then tested the conclusions under harder conditions, built a fixed physical operator from simulated fault signatures, and designed a physics-consistent model.
 
 \section{Conclusions}
 
 The conclusions follow the research questions of Section~\ref{sec:rq}.
 
-\textbf{RQ1: degradation and its relation to accuracy.} Localization degrades sharply with sensor loss. The most accurate baseline, RGSAGE-Max, falls from 0.846 to 0.048 when 10 of 25 sensors are lost and keeps only 5.7\% of its clean score, which is 1.9 times the score of a classifier that always answers no fault. Clean accuracy is an unreliable guide to robustness: the accuracy ranking of the five baselines is essentially reversed by the robustness ranking, in absolute as well as relative terms. Sensor loss destroys localization before detection.
+\textbf{RQ1: degradation and its relation to accuracy.} Localization degrades sharply with sensor loss. The most accurate baseline, RGSAGE-Max, falls from 0.846 to 0.048 when 10 of 25 sensors are lost and keeps only 5.7\% of its clean score. Clean accuracy is an unreliable guide to robustness: the accuracy ranking of the five baselines is essentially reversed by the robustness ranking, in absolute as well as relative terms. Sensor loss destroys localization before detection.
 
-\textbf{RQ2: remedies.} Dropout-aware training raises the macro-F1 of RGSAGE-Max at 40\% sensor loss from 0.048 to 0.674 and the retention from 5.7\% to 80.3\% ($p_{\mathrm{Holm}}=0.004$), at no cost in parameters or latency and with 2.7\% more training time per epoch. It improves the area under the retention curve for all five architectures, although for RGCN and RGSAGE-Mean it costs about 0.1 macro-F1 under full observability. The availability-gated model matches the remedy but does not exceed it, and it adds 18\% to the latency. Neighbor-mean, learned and physics-based imputation recover little, because a model that was never trained to distrust the filled values still trusts them. Robustness is therefore better obtained during training than through the architecture or at the input.
+\textbf{RQ2: remedies.} Dropout-aware training raises the macro-F1 of RGSAGE-Max at 40\% sensor loss from 0.048 to 0.674 and the retention from 5.7\% to 80.3\% ($p_{\mathrm{Holm}}=0.004$), at no cost in parameters or latency and with 2.7\% more training time per epoch. It improves the area under the retention curve for all five architectures, although for RGCN and RGSAGE-Mean it costs about 0.1 macro-F1 under full observability. The availability-gated model matches the remedy but does not exceed it, and it adds 18\% to the latency. Neighbor-mean, learned and physics-based imputation recover little, because a model that was never trained to distrust the filled values still trusts them.
 
 \textbf{RQ3: harder conditions.} The advantage of the remedy persists under persistent and clustered loss, but two conditions limit it. Targeted loss of the sensors nearest the fault is a distinct stressor that the remedy does not absorb, since its area falls from 0.913 to 0.747, although the remedy still outperforms the standard model under the same targeting. Measurement noise defeats the remedy completely at full observability, because noise leaves the availability mask unchanged and the learned response to a dark node has nothing to react to. On the scenario-held-out split the standard model falls from 0.846 to 0.490, so the reported accuracy holds for unseen loads and not for unseen fault configurations.
 
 \textbf{RQ4: information content of the sensors.} Twenty-five magnitude-only sensors carry enough information to separate almost every pair of fault locations: 1.5\% of the pairs are indistinguishable for $k=0$ to 5 and 1.8\% for $k=10$, and the limit lies at high resistance and not in the number of sensors. The physical operator does not beat the learned model on its own ground, since training-free matching reaches 0.772 against 0.855 for the learned model on the validation split. It is nearly insensitive to sensor loss and, applied at inference to a trained checkpoint, improved the score in every condition tested in a preliminary test, most strongly under noise and heavy sensor loss.
 
-\textbf{RQ5: fusion in the network.} The fusion can be added without adding capacity or leaking labels: it adds one parameter, reduces exactly to the backbone when switched off, and sends gradient to the network weights and not to the fixed table. In the tuning at one seed, its design needed two further elements. Without noise augmentation the network learned to defer entirely to the physics, and without an auxiliary loss on the network-only logits it still failed to localize on its own. The first finding was tested once more for 30 epochs with the auxiliary loss ($\gamma=1$) kept and the noise augmentation removed, at seed 42 only, so no significance is claimed. This model did not defer to the physics. Without noise at test time, its network branch alone scored 0.828 at $k=0$, against 0.807 for the noise-trained model at the same seed, and its fused class agreed with the network branch for 91.7\% of the windows, against 92.0\%. Its fused score was lower than that of the noise-trained model by 0.008 to 0.014 at the five sensor-loss levels. There is therefore no evidence that noise augmentation is necessary to keep the network branch useful when $\gamma=1$. Noise augmentation still matters for robustness to noise: with noise added at test time, the model trained without it scored lower in all 15 conditions, by 0.075 to 0.259, which is consistent with a model that never saw noise in training. Whether the auxiliary loss is itself necessary at 30 epochs is not yet tested [PENDING: R5-$\gamma$0]. The loss on the expected residual of the available sensors did not contribute, so the final model does not use it ($\lambda_1=0$). The held-out term was kept, but its effect has not been tested [PENDING: R4]. Trained for 30 epochs at three seeds, the fused model scores higher than a model with the same noise augmentation and no physics in every seed at all twenty combinations of noise and sensor loss (Table~\ref{tab:gate4}), meeting the primary, pre-registered criterion of sign consistency across the three seeds at every pre-registered condition that can be evaluated before the test on unseen resistances (faults of 10~$\Omega$, sensor loss and measurement noise). Under a seven-condition family formed after the results were seen, not fixed in advance, the comparisons under sensor loss are also significant after the Holm correction, and the largest gain is $+0.201$ macro-F1 at $k=10$ without noise ($p_{\mathrm{Holm}}=0.009$). The gain decreases as the noise rises and is not significant at $k=0$ and 0.01 p.u. It arises in the fusion step: the network branch alone scores below the reference in 45 of the 60 pairs, and the fused output is better than both the network branch and \ac{PSM} in every condition. The reference was still improving at its last epoch, so the margins can decrease with longer training. Whether the gain requires the correct physical signatures, and not only an added input, is not yet tested [PENDING: R6] [PENDING: R2] [PENDING: R7].
+\textbf{RQ5: fusion in the network.} The fusion adds one parameter, reduces exactly to the backbone when switched off, and sends gradient to the network weights and not to the fixed table. Its design needed noise augmentation and an auxiliary loss on the network-only logits: in the tuning at one seed, the network learned to defer entirely to the physics without them. A single-seed run with the auxiliary loss and without noise augmentation did not defer to the physics, so there is no evidence that noise augmentation is needed for this purpose, although it is needed for robustness to noise. A single-seed run of 30 epochs without the auxiliary loss, but with noise augmentation, confirmed the second element for the network branch: its network-only macro-F1 was 0.055 to 0.080 against 0.55 to 0.81 with the auxiliary loss, while its fused macro-F1 was only 0.009 lower on average. Trained for 30 epochs at three seeds, the fused model scores higher than a reference with the same noise augmentation and no physics in every seed at all twenty combinations of noise and sensor loss (Table~\ref{tab:gate4}). The largest gain is $+0.201$ macro-F1 at $k=10$ without noise ($p_{\mathrm{Holm}}=0.009$). The comparisons under sensor loss are significant in a seven-condition family chosen after the results were seen, and the gain decreases as the noise rises and is not significant at $k=0$ with 0.01 p.u. It arises in the fusion step: the network branch alone scores below the reference in 45 of the 60 pairs, and the fused output is better than both the network branch and \ac{PSM} in every condition. The reference was still improving at its last epoch, so the margins can decrease with longer training. The comparison does not show which element of the model produces the gain, or whether the gain requires the correct physical signatures. The other ablations that would show it were not completed.
 
 \section{Limitations}
 
-The limitations are those of the scope in Section~\ref{sec:scope}. All data come from simulation of one feeder with a fixed sensor placement and quasi-static \ac{RMS} magnitudes, so field performance and transient content are not tested. The statistics rest on three seeds, so several orderings are only observations. The clustered comparison does not isolate spatial correlation, because a connected block drops some sensors much more often than others. The learned imputer did not fully converge for two seeds and was used only with a standard-trained classifier. The signature table comes from the simulator of the corpus, so clean-data comparisons favor the physical operator. The scenario-held-out split covers RGSAGE-Max only, and the depth of four layers was selected on it and applied to every architecture.
+The limitations are those of the scope in Section~\ref{sec:scope}. All data come from simulation of one feeder with a fixed sensor placement and quasi-static \ac{RMS} magnitudes, so field performance and transient content are not tested. The statistics rest on three seeds, so several orderings are only observations. The clustered comparison does not isolate spatial correlation, because a connected block drops some sensors much more often than others. The signature table comes from the simulator of the corpus, so clean-data comparisons favor the physical operator. The scenario-held-out split covers RGSAGE-Max only, and the depth of four layers was selected on it and applied to every architecture.
 
 \section{Future Enhancements}
 
-Several extensions follow from the work. The evaluation of the physics-consistent model is to be extended by the ablations that test whether the gain comes from physics: a shuffled assignment of signatures to locations, a learned decoder of matched size, and a wider backbone. The model is to be evaluated on resistances outside the training values, with a test set that was generated and sealed in advance, and under a perturbed signature table, to measure its tolerance to an imperfect feeder model. A sensor that keeps reporting wrong values can be studied with a per-sensor trust score derived from the residual. Other directions are the validation on additional feeders such as the IEEE 34-bus system and on reconfigured topologies, the use of voltage phase angles, which the simulator computes but the thesis does not use, and joint training of an imputer and a classifier. The clustered comparison can use equal drop rates, the depth can be chosen per architecture, more seeds would test the observed orderings, and field \ac{UPMU} data would test the findings beyond simulation.
+Several extensions follow from the work. The physics-consistent model needs ablations that test whether its gain comes from the physics: a model that keeps only the held-out term, a model without the auxiliary loss, a shuffled assignment of signatures to locations, and a learned decoder of matched size. It is also to be evaluated on resistances outside the training values, with a test set that was generated and sealed in advance, and under a perturbed signature table, to measure its tolerance to an imperfect feeder model. A sensor that keeps reporting wrong values can be studied with a per-sensor trust score derived from the residual. Other directions are the validation on additional feeders such as the IEEE 34-bus system and on reconfigured topologies, the use of voltage phase angles, joint training of an imputer and a classifier, equal drop rates in the clustered comparison, more seeds to test the observed orderings, and field \ac{UPMU} data.
 %------------------------------------------------------------------------------------------------%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
