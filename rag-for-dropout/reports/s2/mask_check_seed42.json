@@ -1,0 +1,100 @@
+{
+  "n_batches": 40,
+  "n_windows": 1280,
+  "n_mask_calls_paper": 480,
+  "n_mask_calls_gridsense": 480,
+  "mask_calls_identical": true,
+  "first_call": {
+    "k": 1,
+    "seed": 100000000
+  },
+  "seed_formula": "(10000*k + offset)*10000 + batch_idx",
+  "f1": [
+    {
+      "k": 1,
+      "offset": 0,
+      "f1_paper_function": 0.27668531926843226,
+      "f1_gridsense": 0.27668531926843226,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 1,
+      "offset": 1,
+      "f1_paper_function": 0.27654906543394453,
+      "f1_gridsense": 0.27654906543394453,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 1,
+      "offset": 2,
+      "f1_paper_function": 0.2767927735751673,
+      "f1_gridsense": 0.2767927735751673,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 2,
+      "offset": 0,
+      "f1_paper_function": 0.2758912827005477,
+      "f1_gridsense": 0.2758912827005477,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 2,
+      "offset": 1,
+      "f1_paper_function": 0.2767927735751673,
+      "f1_gridsense": 0.2767927735751673,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 2,
+      "offset": 2,
+      "f1_paper_function": 0.32306671799974335,
+      "f1_gridsense": 0.32306671799974335,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 5,
+      "offset": 0,
+      "f1_paper_function": 0.276257143818524,
+      "f1_gridsense": 0.276257143818524,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 5,
+      "offset": 1,
+      "f1_paper_function": 0.27580032775886865,
+      "f1_gridsense": 0.27580032775886865,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 5,
+      "offset": 2,
+      "f1_paper_function": 0.2757846474024312,
+      "f1_gridsense": 0.2757846474024312,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 10,
+      "offset": 0,
+      "f1_paper_function": 0.24021765712888238,
+      "f1_gridsense": 0.24021765712888238,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 10,
+      "offset": 1,
+      "f1_paper_function": 0.2401097172028482,
+      "f1_gridsense": 0.2401097172028482,
+      "abs_diff": 0.0
+    },
+    {
+      "k": 10,
+      "offset": 2,
+      "f1_paper_function": 0.274552118484839,
+      "f1_gridsense": 0.274552118484839,
+      "abs_diff": 0.0
+    }
+  ],
+  "max_f1_abs_diff": 0.0,
+  "passes": true
+}

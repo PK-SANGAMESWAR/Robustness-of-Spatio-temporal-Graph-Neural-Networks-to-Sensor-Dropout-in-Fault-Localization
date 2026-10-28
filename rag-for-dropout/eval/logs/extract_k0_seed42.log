@@ -1,0 +1,23 @@
+[test] batch 0 windows 32/247000 0s
+[test] batch 1000 windows 32032/247000 12s
+[test] batch 2000 windows 64032/247000 23s
+[test] batch 3000 windows 96032/247000 35s
+[test] batch 4000 windows 128032/247000 48s
+[test] batch 5000 windows 160032/247000 66s
+[test] batch 6000 windows 192032/247000 77s
+[test] batch 7000 windows 224032/247000 89s
+{"tag": "test", "n_windows": 247000, "wall_seconds": 98.3, "peak_rss_mb": 2005.7}
+[val] batch 0 windows 32/248000 0s
+[val] batch 1000 windows 32032/248000 12s
+[val] batch 2000 windows 64032/248000 23s
+[val] batch 3000 windows 96032/248000 34s
+[val] batch 4000 windows 128032/248000 46s
+[val] batch 5000 windows 160032/248000 58s
+[val] batch 6000 windows 192032/248000 70s
+[val] batch 7000 windows 224032/248000 87s
+{"tag": "val", "n_windows": 248000, "wall_seconds": 98.0, "peak_rss_mb": 2366.3}
+[train_sub10] batch 0 windows 32/115520 0s
+[train_sub10] batch 1000 windows 32032/115520 11s
+[train_sub10] batch 2000 windows 64032/115520 23s
+[train_sub10] batch 3000 windows 96032/115520 36s
+{"tag": "train_sub10", "n_windows": 115520, "wall_seconds": 44.6, "peak_rss_mb": 1557.5}

@@ -1,0 +1,54 @@
+{
+  "cal_a_windows": 120900,
+  "cal_b_windows": 120900,
+  "cal_a_runs": 3100,
+  "cal_b_runs": 3100,
+  "ece_bins": "15 equal-mass (P)",
+  "results_on_cal_b": {
+    "raw_top1_share": {
+      "ece": 0.05846689738746119,
+      "brier": 0.04502318271334935,
+      "ece_ci": null
+    },
+    "platt": {
+      "ece": 0.014520086109194502,
+      "brier": 0.03559500568486797,
+      "ece_ci": null
+    },
+    "isotonic": {
+      "ece": 0.002241781355429511,
+      "brier": 0.034278784250600554,
+      "ece_ci": null
+    }
+  },
+  "results_on_cal_b_post_fault_w_ge_21": {
+    "raw_top1_share": {
+      "ece": 0.11997727054944471,
+      "brier": 0.09237301769997298,
+      "mean_prob": 0.761278510093689
+    },
+    "platt": {
+      "ece": 0.027130285560173988,
+      "brier": 0.07301457039889313,
+      "mean_prob": 0.8865408897399902
+    },
+    "isotonic": {
+      "ece": 0.007070584027491923,
+      "brier": 0.07033749599606304,
+      "mean_prob": 0.8820698857307434
+    }
+  },
+  "post_fault_accuracy_cal_b": 0.880679117147708,
+  "n_post_fault_cal_b": 58900,
+  "lower_ece_on_cal_b": "isotonic",
+  "platt_coef_intercept": [
+    8.449761390686035,
+    -2.9925448894500732
+  ],
+  "top1_share_mean_cal_b": 0.8836588263511658,
+  "margin_mean_cal_b": 0.8215718269348145,
+  "margin_median_cal_b": 1.0,
+  "top1_accuracy_cal_b": 0.9418610421836229,
+  "argmax_unchanged": true,
+  "note": "monotone maps never change the argmax; margin saved in eval/calibration_k0_val.npz"
+}

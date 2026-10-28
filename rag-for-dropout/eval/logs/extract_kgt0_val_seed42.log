@@ -1,0 +1,10 @@
+[val] batch 0 windows 32/248000 0s
+[val] batch 1000 windows 32032/248000 115s
+[val] batch 2000 windows 64032/248000 231s
+[val] batch 3000 windows 96032/248000 346s
+[val] batch 4000 windows 128032/248000 461s
+[val] batch 5000 windows 160032/248000 577s
+[val] batch 6000 windows 192032/248000 697s
+[val] batch 7000 windows 224032/248000 813s
+{"tag": "val", "n_windows": 248000, "wall_seconds": 898.3, "peak_rss_mb": 2515.5}
+exit 0

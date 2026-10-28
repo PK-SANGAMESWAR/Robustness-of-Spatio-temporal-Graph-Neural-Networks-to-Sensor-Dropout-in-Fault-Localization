@@ -7,8 +7,9 @@ skip with `pending: <module>` until it exists (same pattern as `tests/pinns/`). 
 1. Wrap the existing code. Do not copy or change `fault_localization/`. Import `masking.py`, `voting.py`, the dataset
    and the model classes. The evaluation uses the real pipeline, not a copy (`rag-eval.md` §1).
 2. No expensive work at import. Load models, indexes and API clients inside functions, on first use.
-3. One settings module (`gridsense.settings`) reads environment variables (`OPENAI_API_KEY`, `LANGSMITH_API_KEY`,
-   `LANGSMITH_PROJECT`). Nothing else reads the environment.
+3. One settings module (`gridsense.settings`) reads `rag-for-dropout/.env` and the environment (`OPENAI_API_KEY`,
+   `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT`). It switches DeepEval and Chroma telemetry off and keeps LangSmith
+   tracing off until O8. Import it before those libraries. Nothing else reads the environment.
 4. One config file: `rag-for-dropout/configs/eval.yaml`. Code reads it through `gridsense.config` (typed, validated).
 5. Every LLM call goes through one interface (`gridsense.llm.client`), with a recorded model name, prompt hash,
    token usage, retries and a response cache. A mock client exists for tests.
@@ -24,7 +25,7 @@ skip with `pending: <module>` until it exists (same pattern as `tests/pinns/`). 
 | `model/report_window.py` | Accuracy per window index on `val`; the O3 stop rule; writes `chosen_index` to config | S2 |
 | `verification/gate.py` | Three outcomes, reason codes, fail-closed, policy version | S2 |
 | `verification/conformal.py` | Candidate set at a stated coverage, fit on `val` | S2 |
-| `cases/store.py` | Case store (FAISS flat), fingerprint, run-grouped LOO, leakage assertion | S2 |
+| `cases/store.py` | Case store (FAISS flat, for the saved system store; S2 analysis uses exact torch kNN), fingerprint, run-grouped LOO, leakage assertion | S2 |
 | `cases/evidence.py` | kNN agreement, kNN vote, neighbour error rate, distance to nearest | S2 |
 | `ingest/` | `parsers.py` (LaTeX sections, md headings), `chunking.py` (six strategies), `manifest.py` | S3 |
 | `retrieval/` | `embeddings.py` (prefixes in one function), `stores.py` (FAISS, Chroma, Qdrant local), `bm25.py`, `hybrid.py` (RRF), `rerank.py` | S3 |
@@ -88,8 +89,10 @@ change does not break the golden set.
 ## 9. Commands (planned; available from the stage shown)
 ```
 uv run pytest tests/gridsense -q                                         # S0
-uv sync --group rag                                                      # S2, after approval
-PYTHONPATH=src uv run python -m gridsense latents --split train --seed 42      # S2, through pinns.cpu_guard
+uv sync --group rag --inexact      # rag group; pinned list: rag-for-dropout/requirements.txt (uv export)
+PYTHONPATH=src:. nice -n 19 .venv/bin/python -m gridsense.model.extract --split test --k 0 --latents   # S2
+PYTHONPATH=src:. .venv/bin/python -m gridsense.eval.identity 42     # identity gate; exit 1 = stop and report
+PYTHONPATH=src:. nice -n 19 .venv/bin/python -m gridsense.eval.s2_k0   # report window, latent method, calibration
 PYTHONPATH=src uv run python -m gridsense eval --layers 0 --label <name>      # S2
 PYTHONPATH=src uv run python -m gridsense ingest --config rag-for-dropout/configs/eval.yaml   # S3
 PYTHONPATH=src uv run python -m gridsense sweep --axis chunker --split dev    # S3
@@ -100,7 +103,8 @@ PYTHONPATH=src uv run python -m gridsense langsmith push-datasets             # 
 
 ## 10. Resource rules (T1000 8 GB, 15 GB RAM, about 4 GB free on 2026-10-28)
 - The S4.4 GPU queue has the GPU until about 6 Nov. All S2–S3 work is CPU.
-- Latents (O4): mean + max pooled 128-d float16 for 1,155,000 train windows ≈ 0.30 GB; concatenated 1,600-d ≈ 3.7 GB,
-  which does not fit beside the other jobs. The O4 comparison uses a 10 % train-run subsample (O15).
+- Latents (O4) are **float32**: `h` has entries above 65,504, so float16 overflows to inf (found 2026-10-28).
+  Sizes: `h` [25, 64] = 6.4 kB per window → test 1.58 GB, val 1.59 GB, 10 % train subsample 0.74 GB on disk
+  (memmaps, Git-ignored). A full train store of concatenated `h` = 7.4 GB → ask first (O15).
 - Embedders and rerankers run on CPU, in batches. Load one model at a time.
 - Measure peak RAM before a full run with a 1 % subset; never size a result from a subset (root `CLAUDE.md`).

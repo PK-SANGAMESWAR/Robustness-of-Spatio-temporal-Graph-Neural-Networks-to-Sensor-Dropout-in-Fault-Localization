@@ -66,3 +66,10 @@ problem here with: the source location, the problem, the evidence, the proposal,
 - Proposal: the track docs live in `rag-for-dropout/` (`EVAL.md`, `EXPERIMENT_LOG.md`, `configs/eval.yaml`); code in
   `src/gridsense/` (author decision 2026-10-28).
 - Status: accepted (2026-10-28).
+
+## P9 — CPU predictions differ from the paper's CUDA predictions in 6 of 247,000 windows
+- Source: S2 instruction "predictions must be identical to the paper".
+- Evidence: `reports/s2/identity_k0_seed42.json`: 6 near-tie flips (gap ≤ 1.835e-3), macro-F1 −7.04e-6.
+- Resolution (author 2026-10-28): the pipeline uses its own CPU predictions; tolerance < 2e-3 vote gap; rule set
+  after the data was seen; limitation 7 in `dropout-rag-intro.md`.
+- Status: accepted (2026-10-28).

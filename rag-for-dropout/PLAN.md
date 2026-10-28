@@ -8,8 +8,8 @@ entry to `EXPERIMENT_LOG.md`, update `DONE.md`, and wait for approval. Do not st
 | Stage | Content | Cost | Blocked by |
 |---|---|---|---|
 | S0 | Support files, skills, config skeleton, stage-1 inspection | 0 | — (done 2026-10-28) |
-| S1 | Author closes the open items that S2–S3 need | 0 | — (done 2026-10-28; O11b, O12, O15 still open) |
-| S2 | `rag` dependency group; prediction wrapper; latents; case store; Layer 0 | 0 (CPU) | S1, CPU approval |
+| S1 | Author closes the open items that S2–S3 need | 0 | — (done 2026-10-28) |
+| S2 | `rag` dependency group; prediction wrapper; latents; case store; Layer 0 | 0 (CPU) | approved 2026-10-28 |
 | S3 | Corpus ingestion; retrieval golden drafts; free component sweeps (Layer 1, deterministic) | 0 (CPU) | S2, golden review |
 | S4 | Cost estimate; judge-validation pilot; DeepEval contextual metrics on the top configs | paid | O1, O9, approval |
 | S5 | Generator, LangGraph workflow, report schema; Layers 2 and 3 | paid | S4 |
@@ -40,7 +40,8 @@ O5 (case-store seed), O9 (cost limit), O10 (git), O11 (paper version in the corp
    isotonic maps on the top-1 share, fit on cal-A, compared on cal-B (ECE, Brier on top-1 correctness). Record the
    top-1 − top-2 margin. Assert that argmax predictions equal the paper predictions. Thresholds on cal-B.
 4b. Report window (O3): top-1 accuracy per window index 21–39 on `val`; earliest index where it stops rising.
-4c. Latent method (O4): (a) concatenation vs (b) mean + max pooling by kNN-vote accuracy on `val` (store: O15).
+4c. Latent method (O4/O15): (a) concat, (b) mean + max, (c) concat + PCA-256, on one 10 % train-run subsample.
+4d. Identity gate: k = 0 test predictions = `predictions_test.csv`; val macro-F1 = `best_validation_graph_f1`.
 5. Layer 0 metrics (`EVAL.md` § Layer 0) at k ∈ {0,1,2,5,10}, seed 42; seeds 43 and 44 if each < 30 min CPU (O5).
 6. Leakage: assert no test run in the store; LOO excludes the same run; sanity run with test in the store
    (kNN accuracy should rise to near 1.0); informational scenario-held-out control.

@@ -1,0 +1,10 @@
+[test] batch 0 windows 32/247000 0s
+[test] batch 1000 windows 32032/247000 115s
+[test] batch 2000 windows 64032/247000 232s
+[test] batch 3000 windows 96032/247000 348s
+[test] batch 4000 windows 128032/247000 464s
+[test] batch 5000 windows 160032/247000 577s
+[test] batch 6000 windows 192032/247000 690s
+[test] batch 7000 windows 224032/247000 805s
+{"tag": "test", "n_windows": 247000, "wall_seconds": 888.5, "peak_rss_mb": 2586.3}
+exit 0

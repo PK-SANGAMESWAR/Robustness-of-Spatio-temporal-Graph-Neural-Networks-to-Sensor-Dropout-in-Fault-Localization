@@ -5,3 +5,7 @@
 eval/judge_cache/
 *.npy
 *.memmap
+eval/latents/
+eval/*.npz
+# Unpublished revision manuscript: kept local like /resubmit/ (root .gitignore). Its sha256 is in corpus/v1/MANIFEST.json
+corpus/v1/1170_revised.tex

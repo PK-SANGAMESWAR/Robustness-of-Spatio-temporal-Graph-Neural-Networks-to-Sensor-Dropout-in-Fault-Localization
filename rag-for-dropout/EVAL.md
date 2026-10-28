@@ -22,8 +22,8 @@ Values marked **(P)** are proposals. The author approves them (`OPEN_ITEMS.md` O
 | Error-detection AUROC and AUPRC | Signals: calibrated top-1, top-1 − top-2 vote-share margin, kNN agreement, neighbour error rate, combined (fit on `val`) |
 | Candidate-set coverage and mean size | LOW_CONFIDENCE windows; conformal coverage vs nominal |
 | Error recall | Wrong predictions sent to LOW_CONFIDENCE or REJECT |
-| Report-window choice (O3) | Top-1 accuracy per window index 21–39 on `val` (w − 20 post-fault samples); earliest index where it stops rising |
-| Latent method (O4) | kNN-vote accuracy on `val`: concatenation (1,600-d) vs mean + max pooling (128-d) |
+| Report-window choice (O3, O12) | Top-1 accuracy per window index on `val` (w − 20 post-fault samples); earliest w ≥ 21 within 1 pp of the max over w ≥ 21 |
+| Latent method (O4, O15) | kNN-vote accuracy on `val` vs the 10 % train-run subsample: (a) concat 1,600-d, (b) mean + max 128-d, (c) standardized concat + PCA-256 (scaler and PCA fitted on the subsample only). Rule fixed before the run: highest all-window accuracy at k_nn = 10; post-fault (w ≥ 21) accuracy and the paired run-bootstrap difference reported next to it |
 | Informational | Event-level aggregation (40 windows of a run); accuracy by window position; scenario-held-out control; leakage sanity run |
 Questions to answer: does ECE hold as k grows? Does kNN agreement degrade more slowly than the soft-vote score?
 

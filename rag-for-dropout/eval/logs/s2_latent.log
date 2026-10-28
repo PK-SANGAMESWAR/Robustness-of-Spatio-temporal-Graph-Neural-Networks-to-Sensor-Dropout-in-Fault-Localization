@@ -1,0 +1,24 @@
+scaler+PCA fitted on 115520 train-subsample windows in 10s; explained variance of 256 dims: 0.998
+  a_concat 8192/241800 8s
+  a_concat 49152/241800 46s
+  a_concat 90112/241800 85s
+  a_concat 131072/241800 124s
+  a_concat 172032/241800 164s
+  a_concat 212992/241800 203s
+a_concat {5: 0.9652, 10: 0.9627, 20: 0.961}
+  b_mean_max 8192/241800 2s
+  b_mean_max 49152/241800 9s
+  b_mean_max 90112/241800 16s
+  b_mean_max 131072/241800 22s
+  b_mean_max 172032/241800 29s
+  b_mean_max 212992/241800 36s
+b_mean_max {5: 0.966, 10: 0.9635, 20: 0.9616}
+  c_concat_pca256 8192/241800 5s
+  c_concat_pca256 49152/241800 16s
+  c_concat_pca256 90112/241800 26s
+  c_concat_pca256 131072/241800 37s
+  c_concat_pca256 172032/241800 47s
+  c_concat_pca256 212992/241800 58s
+c_concat_pca256 {5: 0.9657, 10: 0.9629, 20: 0.9613}
+latent written
+exit 0

@@ -24,21 +24,23 @@ splits:
   data_root: dataset_fullscale_50
   case_store: train
   calibration: val                # split by run into cal_a / cal_b (O2b)
-  cal_split: {parts: [cal_a, cal_b], by: run, fractions: [0.5, 0.5], stratify: fault_bus, seed: 42}  # fractions/stratify/seed (P)
+  cal_split: {parts: [cal_a, cal_b], by: run, fractions: [0.5, 0.5], stratify: scenario, seed: 42}  # O12 (seed: implementation)
   report: test
   scenario_heldout_control: dataset_fullscale_50_scenario   # informational only
   unit: window
   group_by: run                   # LOO and bootstrap group all windows of a run
   report_window:
-    rule: earliest_index_where_val_accuracy_stops_rising   # O3; never chosen on test
+    rule: earliest_w_ge_21_within_1pp_of_max_val_accuracy   # O12; at k = 0; never chosen on test
     candidates: [21, 39]          # window w has w - 20 post-fault samples; w0020 has 0
-    chosen_index: null            # set in S2 from val
-    stop_rule: gain_not_above_zero_at_95pct   # (P) O12
+    chosen_index: 25              # S2 (2026-10-28): val k=0 accuracy 0.9061; max 0.9097 at w=32; reports/s2/s2_window_k0_val.json
+    tolerance_pp: 1.0
+    k_for_choice: 0
+  layer0_mask: unlabelable_window_mask   # drops w0020 (0 post-fault samples) from all Layer 0 metrics
 
 calibration:
   input: top1_vote_share          # soft vote / 25 (O2, closed)
   methods: [platt, isotonic]      # compare both; fit on cal_a
-  chosen_method: null             # set in S2 (on cal_b)
+  chosen_method: isotonic         # S2: lower ECE on cal_b (0.0022 vs Platt 0.0145); reports/s2/s2_calib_k0_val.json
   node_logit_temperature: false   # forbidden: predictions must stay identical to the paper
   record_margin: true             # top-1 minus top-2 vote share
   ece_bins: 15                    # (P) equal-mass
@@ -57,9 +59,12 @@ gate:
 
 case_store:
   latent_layer: last_spatial_layer_h   # per-node embeddings before the head [25, 64] (O4)
-  pooling_candidates: [concat_node_order, mean_max]   # 1600-d vs 128-d; choose by kNN-vote accuracy on val
-  pooling: null                   # set in S2
-  comparison_store: {train_run_fraction: 0.10, stratify: fault_bus, seed: 42}   # (P) O15
+  pooling_candidates: [concat_node_order, mean_max, concat_pca256]   # 1600-d, 128-d, 256-d; kNN-vote accuracy on val
+  pca_fit_on: comparison_store
+  pooling: b_mean_max             # S2: highest kNN-vote accuracy on val at k_nn=10 (0.9635; tie within CI); reports/s2/s2_latent_k0_val.json
+  pca256_params: rag-for-dropout/eval/latents/seed42/scaler_pca256_train_sub10.npz   # arm (c); fitted on the train subsample only
+  comparison_store: {train_run_fraction: 0.10, whole_runs: true, stratify: scenario, seed: 42}   # O15
+  full_store: ask_author_first
   dtype: float16
   system_seed: 42                 # O5
   layer0_extra_seeds: [43, 44]    # only if each < 30 min CPU
@@ -70,10 +75,12 @@ corpus:
   documents:
     - path: paper/overleaf.tex
       document_type: model_card
-      version: null               # tag set at ingestion; file: OPEN O11b; numbers must match RESULTS.md
+      file: rag-for-dropout/corpus/v1/1170_revised.tex   # O11b; sha256 in corpus/v1/MANIFEST.json
+      version: paper1-rev1170@4e34b95fe132
     - path: results/RESULTS.md
+      file: rag-for-dropout/corpus/v1/RESULTS.md
       document_type: model_card
-      version: null               # git blob hash at ingestion
+      version: results-md@a4b9f4388ade
   approval_status: curated_for_research
   extra_sources: []               # OPEN: O7
 

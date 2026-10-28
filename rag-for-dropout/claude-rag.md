@@ -32,9 +32,15 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 | Code home | `src/gridsense/`, `tests/gridsense/`. Docs, configs, golden sets, snapshots in `rag-for-dropout/` |
 | System seed | Seed 42. Layer 0 is repeated for seeds 43 and 44 if each takes < 30 min of CPU (O5) |
 | Calibration | Vote share = soft vote / 25. Monotone map on the top-1 share, Platt and isotonic compared. No temperature on node logits: predictions stay identical to the paper. Record the top-1 − top-2 margin (O2) |
-| Cal split | `val` split by run into cal-A (fit calibration) and cal-B (select thresholds and the calibrator). Checkpoint-selection bias goes in the limitations |
-| Case latent | Per-node embeddings before the head, `h` [25, 64]. Choose (a) concatenation in node order or (b) mean + max pooling by kNN-vote accuracy on `val` (O4; RAM: O15) |
-| Paper version | The current paper version with a version tag; its numbers must match `results/RESULTS.md` for the checkpoint (test). Camera-ready = a later corpus version (O11, file: O11b) |
+| Cal split | `val` split 50/50 by run, stratified by scenario: cal-A (fit calibration), cal-B (thresholds, calibrator choice). Checkpoint-selection bias in the limitations |
+| Report rule | Earliest w ≥ 21 with `val` accuracy within 1 pp of the max over w ≥ 21 (k = 0). `unlabelable_window_mask` in all Layer 0 metrics |
+| Predictions | The pipeline uses its **own CPU predictions** in all layers. Paper predictions are a check only, never pipeline input |
+| Identity rule | CPU may differ from the paper only where the vote gap (CPU class − paper class) is < 2e-3. Rule set **after** the data was seen; state it in the limitations. k > 0: macro-F1 within 1e-3 of `degradation_curves.csv`. Any other difference: stop and report |
+| Determinism | Re-running an extraction must give byte-identical votes and latents; else stop and report |
+| Compute | S2 and S3 on the CPU only; no GPU before the S4.4 queue is complete. `nice -n 19`, 4 torch threads. Record the S4.4 epoch time before and during; if it rises by > 10 %, use 2 threads |
+| PCA arm | Standardize, then PCA-256; scaler and PCA fitted on the train subsample only |
+| Case latent | Per-node embeddings before the head, `h` [25, 64]. On one 10 % train-run subsample (stratified by scenario) compare (a) concatenation, (b) mean + max pooling, (c) concatenation + PCA-256 fitted on the subsample, by kNN-vote accuracy on `val`. Ask before a full store (O4, O15) |
+| Paper version | `corpus/v1/`: frozen copies of `resubmit/1170_revised.tex` and `RESULTS.md`, SHA-256 in `MANIFEST.json`; numbers tested against the checkpoint curve. Camera-ready = corpus v2 (O11) |
 | Cost | **5 USD in total** for the track. Stop and ask before more (O9, author update 2026-10-28) |
 | Git | Commit only to branch `gridsense-eval`, never to `main` (O10). Commit without a checkout (§ 9) |
 | Keys | `rag-for-dropout/.env` (Git-ignored). LangSmith key present and valid (2026-10-28). OpenAI key: later (O16) |
@@ -77,6 +83,9 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
   from pre-fault windows. Label c ≥ 1 is fault bus `FAULT_BUSES[c-1]` [`config/constants.py`].
 - Soft vote = sum of 25 node softmaxes; scores sum to 25, not 1 [`models/voting.py`].
 - Latent candidates: last spatial-layer output `h` [B, 25, 64] before `NodeClassifier` [`models/graphsage.py`].
+- S2 results (seed 42, `val`, k = 0; `reports/s2/`): report window index 25 (accuracy 0.9061; max 0.9097 at w = 32);
+  latent method (b) mean + max, 128-d (kNN-vote 0.9635 at k_nn = 10; (a) 0.9627, (c) 0.9629: a statistical tie);
+  calibrator isotonic on the top-1 vote share (cal-B ECE 0.0022; Platt 0.0145; raw 0.0585).
 
 ## 6. Stop and ask before
 - any GPU run; any CPU job longer than 30 min; any paid API call; the first LangSmith upload;

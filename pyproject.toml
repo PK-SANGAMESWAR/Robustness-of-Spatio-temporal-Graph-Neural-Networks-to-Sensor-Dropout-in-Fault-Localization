@@ -35,3 +35,38 @@ torch = { index = "pytorch-cu121" }
 name = "pytorch-cu121"
 url = "https://download.pytorch.org/whl/cu121"
 explicit = true
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.170.5",
+]
+rag = [
+    "chromadb>=1.5.9",
+    "deepeval>=4.3.2",
+    "faiss-cpu>=1.15.1",
+    "langchain-core>=1.7.0",
+    "langchain-text-splitters>=1.1.3",
+    "langgraph>=1.2.18",
+    "langsmith>=0.14.14",
+    "openai>=3.40.0",
+    "pydantic>=2.14.1",
+    "pylatexenc>=2.11",
+    "python-dotenv>=1.2.4",
+    "qdrant-client>=1.20.0",
+    "rank-bm25>=0.2.2",
+    "sentence-transformers>=6.2.0",
+    "tiktoken>=0.14.0",
+]
+
+# PINNS track (UFIR-GNN): see CLAUDE-PINNS.md. `pythonpath` makes `src/pinns` importable in tests.
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+markers = [
+    "unit: fast tests of single functions",
+    "dataset: dataset schema, balance, split and noise validators (PINNS/02_DATASET.md)",
+    "physics: physics unit tests and gates (PINNS/05_GATES_AND_VALIDATION.md)",
+    "model: model contracts (PINNS/04_UFIR_GNN_ARCHITECTURE.md); pending until the model exists",
+    "eval: evaluation metrics (PINNS/06_EVALUATION_AND_METRICS.md)",
+    "slow: slow tests (disk I/O or generator runs)",
+    "requires_opendss: needs OpenDSS and the IEEE 123 export; skipped until the export exists",
+]

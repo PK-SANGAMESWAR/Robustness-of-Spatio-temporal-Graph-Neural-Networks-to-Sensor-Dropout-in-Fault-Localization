@@ -1,0 +1,23 @@
+[test] batch 0 windows 64/247000 0s
+[test] batch 1000 windows 64064/247000 96s
+[test] batch 2000 windows 128064/247000 192s
+[test] batch 3000 windows 192064/247000 286s
+{"tag": "test", "n_windows": 247000, "wall_seconds": 368.6, "peak_rss_mb": 965.5}
+[test] batch 0 windows 16/247000 0s
+[test] batch 1000 windows 16016/247000 18s
+[test] batch 2000 windows 32016/247000 36s
+[test] batch 3000 windows 48016/247000 52s
+[test] batch 4000 windows 64016/247000 68s
+[test] batch 5000 windows 80016/247000 84s
+[test] batch 6000 windows 96016/247000 100s
+[test] batch 7000 windows 112016/247000 116s
+[test] batch 8000 windows 128016/247000 132s
+[test] batch 9000 windows 144016/247000 149s
+[test] batch 10000 windows 160016/247000 165s
+[test] batch 11000 windows 176016/247000 181s
+[test] batch 12000 windows 192016/247000 197s
+[test] batch 13000 windows 208016/247000 213s
+[test] batch 14000 windows 224016/247000 229s
+[test] batch 15000 windows 240016/247000 245s
+{"tag": "test", "n_windows": 247000, "wall_seconds": 252.5, "peak_rss_mb": 880.3}
+exit 0

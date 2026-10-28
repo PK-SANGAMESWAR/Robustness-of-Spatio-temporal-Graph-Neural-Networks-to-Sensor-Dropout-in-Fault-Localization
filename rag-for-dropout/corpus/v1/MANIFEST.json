@@ -1,0 +1,33 @@
+{
+  "corpus_version": "v1",
+  "created_utc": "2026-10-28T10:55:58Z",
+  "approval_status": "curated_for_research",
+  "document_type": "model_card",
+  "note": "Frozen copies. Never edit. A new paper version (e.g. camera-ready) becomes corpus v2.",
+  "documents": [
+    {
+      "document_id": "paper1_rev1170",
+      "file": "1170_revised.tex",
+      "version_tag": "paper1-rev1170@4e34b95fe132",
+      "source_path": "Fault-Localization-rev1170/resubmit/1170_revised.tex",
+      "source_branch": "revision-1170",
+      "source_head_commit": "49fb80c",
+      "source_uncommitted_edits": true,
+      "git_blob": "ee097f856d3392c8ebdfd77e4c8c775e9480b38d",
+      "sha256": "4e34b95fe132094ae01828cd73953c4d34a7ab070b994880f029afaef93460f7",
+      "bytes": 82220
+    },
+    {
+      "document_id": "results_md",
+      "file": "RESULTS.md",
+      "version_tag": "results-md@a4b9f4388ade",
+      "source_path": "results/RESULTS.md",
+      "source_branch": "main",
+      "source_head_commit": "977d3bc",
+      "source_uncommitted_edits": false,
+      "git_blob": "7573e88f6e9159bbbe5e23df6cd1e83a88a41a3b",
+      "sha256": "a4b9f4388adefb43f878a5af554f9b308aab79cb43708fcabaff189bad6cce4d",
+      "bytes": 13142
+    }
+  ]
+}

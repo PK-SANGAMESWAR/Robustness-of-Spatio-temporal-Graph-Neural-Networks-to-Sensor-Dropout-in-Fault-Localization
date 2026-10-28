@@ -70,4 +70,10 @@ simplified and the result is reported as it is.
 5. An LLM judge can be wrong. A judge metric counts only after its agreement with human labels is measured.
 6. The report window is one fixed index chosen on `val` (window w has w − 20 post-fault samples; w0020 has none).
    Its accuracy is not the paper's macro-F1, which averages all 40 windows. Layer 0 reports accuracy by window index.
-7. n = 3 training seeds. Seed-level comparisons are trends unless a paired test with Holm correction says otherwise.
+7. **CPU vs paper predictions.** The pipeline uses its own CPU predictions. On `test` at k = 0 (seed 42), 6 of 247,000
+   window predictions differ from the paper's CUDA run: `21_ABG_0p1_0042_w0020`, `21_BCG_0p1_0030_w0020`,
+   `51_AG_0p1_0030_w0020`, `62_BG_10p0_0034_w0031`, `65_CA_10p0_0031_w0029`, `93_BCG_0p1_0013_w0020`. All are near-ties
+   (vote gap 1.9e-6 to 1.835e-3; votes sum to 25). Macro-F1 differs by −7.04e-6 on `test` (0.8515212 vs 0.8515282)
+   and −2.6e-7 on `val`. The tolerance rule (differ only where the gap is < 2e-3) was set **after** these data were
+   seen. A re-run on the same CPU is byte-identical, so the CPU predictions are deterministic.
+8. n = 3 training seeds. Seed-level comparisons are trends unless a paired test with Holm correction says otherwise.
