@@ -1,0 +1,158 @@
+# GridSense evaluation configuration (skeleton, S0, 2026-10-28).
+# One file for all evaluation settings (rag-eval.md §7). A null value marked "OPEN: Oxx" is not chosen yet:
+# code must refuse to run a stage whose required keys are null. See rag-for-dropout/OPEN_ITEMS.md.
+# Values marked "(P)" are proposals (O12), not approved.
+version: 0
+
+model:
+  name: rgsage_max
+  training: dropout_aware
+  checkpoints:
+    42: results/dropout_aware/rgsage_max/seed_00042/checkpoint_best.pt
+    43: results/dropout_aware/rgsage_max/seed_00043/checkpoint_best.pt
+    44: results/dropout_aware/rgsage_max/seed_00044/checkpoint_best.pt
+  gnn_layers: 4
+  num_classes: 26
+
+dropout:
+  k_levels: [0, 1, 2, 5, 10]      # paper protocol (PROPOSED_CHANGES.md P2, accepted)
+  n_mask_seeds: 3
+  policy: zero_messages
+  reference_curves: results/dropout_study_aware/degradation_curves.csv
+
+splits:
+  data_root: dataset_fullscale_50
+  case_store: train
+  calibration: val                # split by run into cal_a / cal_b (O2b)
+  cal_split: {parts: [cal_a, cal_b], by: run, fractions: [0.5, 0.5], stratify: fault_bus, seed: 42}  # fractions/stratify/seed (P)
+  report: test
+  scenario_heldout_control: dataset_fullscale_50_scenario   # informational only
+  unit: window
+  group_by: run                   # LOO and bootstrap group all windows of a run
+  report_window:
+    rule: earliest_index_where_val_accuracy_stops_rising   # O3; never chosen on test
+    candidates: [21, 39]          # window w has w - 20 post-fault samples; w0020 has 0
+    chosen_index: null            # set in S2 from val
+    stop_rule: gain_not_above_zero_at_95pct   # (P) O12
+
+calibration:
+  input: top1_vote_share          # soft vote / 25 (O2, closed)
+  methods: [platt, isotonic]      # compare both; fit on cal_a
+  chosen_method: null             # set in S2 (on cal_b)
+  node_logit_temperature: false   # forbidden: predictions must stay identical to the paper
+  record_margin: true             # top-1 minus top-2 vote share
+  ece_bins: 15                    # (P) equal-mass
+  ece_binning: equal_mass         # (P)
+
+gate:
+  policy_version: null            # set when the gate is built (S2)
+  target_accuracy_confident: null # OPEN: O6
+  tau_p: null                     # fitted on val (S2)
+  tau_k: null                     # fitted on val (S2)
+  per_k_thresholds: null          # decided from val (S2)
+  candidate_set: conformal
+  conformal_coverage: null        # OPEN: O6
+  report_trigger: report_window   # one report per event at the O3 window
+  threshold_split: cal_b
+
+case_store:
+  latent_layer: last_spatial_layer_h   # per-node embeddings before the head [25, 64] (O4)
+  pooling_candidates: [concat_node_order, mean_max]   # 1600-d vs 128-d; choose by kNN-vote accuracy on val
+  pooling: null                   # set in S2
+  comparison_store: {train_run_fraction: 0.10, stratify: fault_bus, seed: 42}   # (P) O15
+  dtype: float16
+  system_seed: 42                 # O5
+  layer0_extra_seeds: [43, 44]    # only if each < 30 min CPU
+  k_nn: [5, 10, 20]
+  index: faiss_flat_ip
+
+corpus:
+  documents:
+    - path: paper/overleaf.tex
+      document_type: model_card
+      version: null               # tag set at ingestion; file: OPEN O11b; numbers must match RESULTS.md
+    - path: results/RESULTS.md
+      document_type: model_card
+      version: null               # git blob hash at ingestion
+  approval_status: curated_for_research
+  extra_sources: []               # OPEN: O7
+
+chunking:
+  strategy: null                  # chosen by the S3 sweep
+  candidates: [fixed_token, recursive, structure_aware, sentence, semantic, parent_child]
+  chunk_size_tokens: null
+  overlap_fraction: null
+  parser_version: null
+
+embedding:
+  model: sentence-transformers/all-MiniLM-L6-v2   # baseline, not the final choice
+  revision: null
+  max_seq_length: null            # read from the model at build time
+  query_prefix: ""
+  passage_prefix: ""
+  candidates: []                  # filled in S3 after model cards are checked
+  device: cpu
+
+vector_store:
+  backend: faiss_flat             # reference; the S3 sweep compares chroma and qdrant_local
+  candidates: [faiss_flat, chroma, qdrant_local]
+  distance: cosine
+
+retrieval:
+  mode: dense
+  top_k: 5
+  dense_candidates: 20
+  lexical_candidates: 20
+  rrf_k: 60                       # (P)
+  filters:
+    approval_status: [curated_for_research]
+
+reranker:
+  enabled: false
+  model: null
+  rerank_top: 20
+
+generation:
+  provider: openai
+  model: null                     # OPEN: O1
+  candidates: []                  # OPEN: O1
+  temperature: null
+  prompt_version: null
+
+judge:
+  provider: openai
+  model: null                     # OPEN: O1 (must differ from generation.model)
+  candidates: []                  # OPEN: O1
+  temperature: 0
+  kappa_bar: 0.6                  # (P)
+  cache_dir: rag-for-dropout/eval/judge_cache
+
+golden_sets:
+  retrieval: {path: rag-for-dropout/data/eval/golden_retrieval.jsonl, version: null}
+  events: {path: rag-for-dropout/data/eval/golden_events.jsonl, version: null}
+  safety: {path: rag-for-dropout/data/eval/golden_safety.jsonl, version: null}
+  human_labels: {path: rag-for-dropout/data/eval/golden_human_labels.jsonl, version: null}
+
+repeats:
+  generation_runs: 3
+  noise_runs: 3                   # 3-5 runs for measured tolerance (S7)
+  bootstrap_resamples: 2000       # (P)
+  ci_level: 0.95
+
+cost:
+  prices: null                    # OPEN: O1 — {model: {input_per_1m: x, output_per_1m: y, date: YYYY-MM-DD}}
+  limit_usd_total: 5.0            # O9 (author update 2026-10-28): whole track; stop and ask before more
+  limit_usd_per_run: 5.0          # never above the remaining total
+  ledger: rag-for-dropout/eval/cost_ledger.jsonl   # cumulative spend across runs
+
+langsmith:
+  enabled: false                  # OPEN: O8 (key present and valid 2026-10-28)
+  endpoint: https://api.smith.langchain.com   # US region (EU returned 403)
+  project: null                   # OPEN: O8
+  online_sample_rate: null
+  upload_approved: false
+
+snapshots:
+  dir: rag-for-dropout/eval/snapshots
+  items_dir: rag-for-dropout/eval/items
+  registry: rag-for-dropout/configs/registry.yaml

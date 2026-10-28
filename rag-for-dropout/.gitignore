@@ -1,0 +1,7 @@
+# GridSense track: secrets and regenerable outputs stay out of Git
+.env
+.env.*
+!.env.example
+eval/judge_cache/
+*.npy
+*.memmap

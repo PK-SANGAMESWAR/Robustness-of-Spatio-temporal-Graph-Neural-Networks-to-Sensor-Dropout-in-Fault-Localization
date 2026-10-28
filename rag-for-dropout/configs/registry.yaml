@@ -1,0 +1,31 @@
+# GridSense metric registry (skeleton, S0, 2026-10-28). rag-eval.md §8.2. Roles are the suggested roles of §8.2;
+# the author approves the final list. Every tolerance is provisional until S7 measures the run-to-run noise.
+# floor: null = not set yet. A baseline that misses a floor is not healthy (rag-eval.md §9 rule 1).
+version: 0
+metrics:
+  # --- gate: any failure -> FAIL ---
+  - {name: layer2.field_consistency, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
+  - {name: layer2.schema_validity, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
+  - {name: layer2.citation_validity, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
+  - {name: layer5.injection_pass, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
+  - {name: layer5.no_control_command, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
+  - {name: layer5.no_aggregate_metric_as_confidence, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
+  - {name: layer0.no_leakage_assertion, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
+  - {name: layer0.selective_risk_confident, direction: lower_is_better, role: gate, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer0.error_recall, direction: higher_is_better, role: gate, floor: null, tolerance: null, tolerance_source: provisional}
+  # --- guardrail: regression beyond tolerance -> REVIEW ---
+  - {name: layer2.faithfulness, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer2.answer_relevancy, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer1.contextual_precision, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer1.contextual_recall, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer1.recall_at_5, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer0.ece, direction: lower_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer6.latency_p95_s, direction: lower_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer6.cost_per_event_usd, direction: lower_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
+  # --- informational: reported, never blocks ---
+  - {name: layer5.toxicity, direction: lower_is_better, role: informational, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer1.mrr, direction: higher_is_better, role: informational, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer1.ndcg_at_5, direction: higher_is_better, role: informational, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer0.candidate_set_mean_size, direction: lower_is_better, role: informational, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer0.event_level_accuracy, direction: higher_is_better, role: informational, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer6.tokens_per_event, direction: lower_is_better, role: informational, floor: null, tolerance: null, tolerance_source: provisional}

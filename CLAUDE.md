@@ -12,6 +12,8 @@ Three linked deliverables on the IEEE-123 feeder, 25 μPMUs, partial observabili
    `PC-STGNN/00_INDEX.md` (read order, gate map, five guiding rules).
 3. **M.Tech thesis** — `thesis-for-college/`; rules in `thesis-for-college/thesis-rules.md`.
 4. **UFIR-GNN physics-informed track** — `PINNS/` (spec), `src/pinns/`, `tests/pinns/`. Rules: @CLAUDE-PINNS.md
+5. **GridSense RAG track** — `rag-for-dropout/` (spec, docs, configs, golden sets), `src/gridsense/`, `tests/gridsense/`.
+   Gate + case retrieval + RAG report around the dropout-aware STGNN. Rules: @rag-for-dropout/claude-rag.md
 
 ## Current state (2026-10-16)
 - **Revision 1170**: decision email 2026-10-10, deadline **2026-10-17**. Work lives in worktree
