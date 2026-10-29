@@ -31,7 +31,7 @@ def _git_commit() -> str:
 
 def extract(seed: int, split: str, k_levels: list[int], n_offsets: int, latents: bool, run_fraction: float | None,
             batch_size: int = 32, threads: int = 4, limit_batches: int | None = None, out_root: Path = OUT_ROOT,
-            latent_repr: str = "full") -> Path:
+            latent_repr: str = "full", offset_start: int = 0) -> Path:
     from fault_localization.data.dataset import make_dataloader
     from fault_localization.dropout.masking import apply_sensor_dropout_batch
     from fault_localization.models.voting import soft_vote
@@ -47,7 +47,7 @@ def extract(seed: int, split: str, k_levels: list[int], n_offsets: int, latents:
     cap = LatentCapture(model)
     loader = make_dataloader(ds, batch_size, shuffle=False)
     n = len(ds) if limit_batches is None else min(len(ds), limit_batches * batch_size)
-    combos = [(k, off) for k in k_levels for off in (range(n_offsets) if k > 0 else [0])]
+    combos = [(k, off) for k in k_levels for off in (range(offset_start, offset_start + n_offsets) if k > 0 else [0])]
 
     out = out_root / f"seed{seed}" / tag
     out.mkdir(parents=True, exist_ok=True)
@@ -93,7 +93,7 @@ def extract(seed: int, split: str, k_levels: list[int], n_offsets: int, latents:
     if ids_file.exists() and ids_file.read_text() != new_ids:
         raise RuntimeError(f"{ids_file} differs from this run's window order; refusing to overwrite")
     ids_file.write_text(new_ids)
-    meta = {"seed": seed, "split": split, "tag": tag, "n_windows": n, "k_levels": k_levels, "n_mask_offsets": n_offsets,
+    meta = {"seed": seed, "split": split, "tag": tag, "n_windows": n, "k_levels": k_levels, "n_mask_offsets": n_offsets, "offset_start": offset_start,
             "combos": [list(c) for c in combos], "batch_size": batch_size, "policy": "zero_messages",
             "loader": "EventChunkBatchSampler(shuffle=False)", "run_fraction": run_fraction, "run_subsample_seed": 42,
             "latents": latents, "latent_repr": latent_repr,
@@ -102,7 +102,7 @@ def extract(seed: int, split: str, k_levels: list[int], n_offsets: int, latents:
             "wall_seconds": round(time.time() - t0, 1),
             "peak_rss_mb": round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024, 1),
             "git_commit": _git_commit(), "limit_batches": limit_batches}
-    meta_name = "extract_meta.json" if k_levels == [0] else f"extract_meta_k{'-'.join(map(str, k_levels))}.json"
+    meta_name = "extract_meta.json" if k_levels == [0] else f"extract_meta_k{'-'.join(map(str, k_levels))}" + (f"_o{offset_start}" if offset_start else "") + ".json"
     (out / meta_name).write_text(json.dumps(meta, indent=2) + "\n")
     print(json.dumps({k: meta[k] for k in ("tag", "n_windows", "wall_seconds", "peak_rss_mb")}), flush=True)
     return out
@@ -114,6 +114,7 @@ def main() -> None:
     p.add_argument("--split", choices=["train", "val", "test"], required=True)
     p.add_argument("--k", type=int, nargs="+", default=[0])
     p.add_argument("--offsets", type=int, default=3, help="mask seeds per k > 0 (paper: 3)")
+    p.add_argument("--offset-start", type=int, default=0, help="first mask offset (paper: 0,1,2; O17 uses 3..7)")
     p.add_argument("--latents", action="store_true")
     p.add_argument("--latent-repr", choices=["full", *METHODS], default="full", help="what to store for --latents (O4: b_mean_max)")
     p.add_argument("--run-fraction", type=float, default=None, help="whole-run stratified subsample (O15)")
@@ -123,7 +124,7 @@ def main() -> None:
     p.add_argument("--out-root", type=Path, default=OUT_ROOT)
     a = p.parse_args()
     extract(a.seed, a.split, a.k, a.offsets, a.latents, a.run_fraction, batch_size=a.batch_size, threads=a.threads,
-            limit_batches=a.limit_batches, out_root=a.out_root, latent_repr=a.latent_repr)
+            limit_batches=a.limit_batches, out_root=a.out_root, latent_repr=a.latent_repr, offset_start=a.offset_start)
 
 
 if __name__ == "__main__":

@@ -65,3 +65,14 @@ When this file reaches about 180 lines, move the old entries to `EXPERIMENT_LOG_
 - Extraction: k = 0 test/val/train-10 %; k > 0 test and val (votes for 3 offsets; mean + max latents). Disk: eval/latents about 8 GB (Git-ignored).
 - Not done: Layer 0 metrics, case-store index, leakage tests, scenario-held-out control, seeds 43/44 (O18, O19).
 - Decision needed: O17, O18, O19.
+
+## E4 — 2026-10-29 — O17 five-offset check and scenario-held-out control (Layer 0 step 1); stop before step 2
+- Cost: 0. CPU only, nice 19, 4 threads. Report: `reports/layer0/STEP1_REPORT.md`. The S4.4 queue is scoring R4 seed 43 (no epoch times);
+  its CPU rate was 100.6 % without a GridSense job and 100.8 % with one.
+- O17 (author method): k = 10, `test`, offsets 3–7, batch 32: mean 0.689934, SD 7.00e-4; stored 0.688959 at z = −1.39 → pass. The
+  1.31e-3 SD quoted in E3/S2_REPORT § 2 came from 9 values over three batch sizes and is superseded by this 5-offset estimate.
+- Scenario-held-out control (`val`, k = 0, 10 % store, (b) mean + max): post-fault kNN vote at k_nn = 10 0.9252 standard vs 0.8551 held-out
+  (−7.01 pp); STGNN 0.8807; held-out − STGNN −2.55 pp (CI −3.16 to −1.98). 73 % of standard top-10 neighbours are same-scenario.
+  Agreement gap (STGNN correct − wrong): 0.68 standard, 0.44 held-out.
+- Not done (stopped as instructed): Layer 0 metrics with both stores, leakage tests, FAISS case store, O6 thresholds.
+- Decision needed: O18 (seeds 43/44), O20 (store version for the gate), go-ahead for step 2.

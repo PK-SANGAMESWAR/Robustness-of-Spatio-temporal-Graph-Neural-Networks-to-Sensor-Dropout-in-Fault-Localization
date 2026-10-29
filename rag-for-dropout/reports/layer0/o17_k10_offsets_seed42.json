@@ -1,0 +1,32 @@
+{
+  "seed": 42,
+  "k": 10,
+  "offsets": [
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "f1_per_offset": [
+    0.6892696915975662,
+    0.6893275613916006,
+    0.6900086833488722,
+    0.690996245470036,
+    0.6900684567451195
+  ],
+  "mean": 0.6899341277106389,
+  "sd_ddof1": 0.0007001955111378636,
+  "stored_value": 0.688959,
+  "stored_minus_mean": -0.0009751277106389011,
+  "z": -1.3926506170458801,
+  "pass_within_2sd": true,
+  "info_sd_of_3_offset_mean": 0.00040425806684081316,
+  "info_z_vs_sd_over_sqrt3": -2.412141625915612,
+  "info_earlier_batch32_offsets_0_1_2": [
+    0.6901004436097835,
+    0.6909334068530426,
+    0.6900012022565268
+  ],
+  "method": "5 new mask offsets, batch 32, k = 10, test; pass if |stored - mean| <= 2 SD (SD of one offset, ddof = 1); tolerance 1e-3 unchanged"
+}

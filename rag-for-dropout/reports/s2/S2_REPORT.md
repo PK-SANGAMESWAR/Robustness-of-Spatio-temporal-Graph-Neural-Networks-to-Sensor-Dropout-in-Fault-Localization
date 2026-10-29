@@ -36,6 +36,9 @@ The three means spread by 8.0e-4. One mask offset has a standard deviation of 1.
 independent 3-offset means has a standard deviation of 1.07e-3: the 1e-3 tolerance is about 0.9 standard deviations of pure
 mask-draw noise at k = 10. This is evidence, not proof: the stored batch size is unknown.
 
+Note 2026-10-29: the SD estimate in this section (1.31e-3, 9 values) is superseded by the author's 5-offset method: SD 7.00e-4, stored value
+at z = −1.39, pass (`reports/layer0/STEP1_REPORT.md` § 1).
+
 ## 3. Report window (O12), `val`, k = 0
 Rule: earliest w ≥ 21 within 1 pp of the max over w ≥ 21. Max 0.9097 at w = 32; threshold 0.8997.
 **Chosen index: w = 25** (accuracy 0.9061, 95 % CI 0.8990 to 0.9135; 5 post-fault samples).

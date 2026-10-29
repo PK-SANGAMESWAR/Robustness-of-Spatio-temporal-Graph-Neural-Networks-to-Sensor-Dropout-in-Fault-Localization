@@ -15,13 +15,15 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 | O13 | Human labels for judge validation: who labels, how many (≈50), which rubric scale | S4 | The author labels 50 reports on the rubric scales in `rubrics/` |
 | O14 | Event-level aggregation rule for the informational Layer 0 metric | S2 | Sum of window vote shares over the fault windows of a run, argmax |
 
-| O17 | k = 10 test macro-F1 (seed 42, batch 32) is 1.39e-3 from the stored curve; the tolerance is 1e-3. k = 1, 2, 5 pass (1.8e-4, 2.9e-4, 4.1e-4). Diagnostic: batch size alone moves it by 8.0e-4; one mask offset has std 1.31e-3 (`reports/s2/S2_REPORT.md` § 2) | S2 close | Accept as mask-draw noise (the pipeline uses its own predictions); or tolerance 2e-3 at k = 10; or re-evaluate at another batch size |
-| O18 | Seeds 43 and 44 for Layer 0: extraction alone is about 34 min each (k = 0 ≈ 4 min, k > 0 ≈ 30 min), above the 30-min rule (O5) | S2 close | Run both, one after the other, nice 19, 4 threads; or skip |
-| O19 | Next step after S2: Layer 0 metrics, saved case store (FAISS), leakage assertion and sanity run, scenario-held-out control (uses the `scenario_heldout_*` checkpoints; confirm). The gate target O6 is still open | S2 close | As listed |
+| O18 | Seeds 43 and 44 for Layer 0 (about 34 min each, above the 30-min rule O5). Author 2026-10-29: do not run now; ask again after the scenario-held-out control (asked in `reports/layer0/STEP1_REPORT.md` § 6) | after step 1 | Run both, nice 19, 4 threads; or skip |
+| O20 | Which store version defines τ_k and the gate: standard or scenario-held-out (73 % of standard neighbours are same-scenario near-duplicates) | O6 | Held-out (conservative); both reported |
+| O19 | (approved 2026-10-29; step 1 done, stop before step 2) Next step after S2: Layer 0 metrics, saved case store (FAISS), leakage assertion and sanity run, scenario-held-out control (uses the `scenario_heldout_*` checkpoints; confirm). The gate target O6 is still open | S2 close | As listed |
 
-## Closed (author answers 2026-10-28)
+## Closed (author answers 2026-10-28 and 2026-10-29)
 | ID | Answer |
 |---|---|
+| O17 | 2026-10-29: tolerance unchanged; k = 10 on `test` with 5 offsets (3–7): mean 0.689934, SD 7.00e-4; stored 0.688959 is z = −1.39 from the mean → **pass** (within 2 SD). Method in limitation 9 (`dropout-rag-intro.md`). `reports/layer0/o17_k10_offsets_seed42.json` |
+| O6 | 2026-10-29: select τ_p and τ_k on cal-B; maximum coverage with ≥ 95 % accuracy on CONFIDENT post-fault windows; also report coverage at 98 %; compare one threshold vs per-k thresholds on cal-B; if coverage at 95 % is < 50 %, stop and ask. (Store version: O20) |
 | O11b | Use `resubmit/1170_revised.tex`; copied to `corpus/v1/` with its SHA-256 in `corpus/v1/MANIFEST.json` (`RESULTS.md` copied too). `tests/gridsense/test_corpus.py` checks hashes and curve numbers |
 | O12 | Report window = the earliest w ≥ 21 whose `val` accuracy is within 1 percentage point of the maximum `val` accuracy over w ≥ 21 (applied at k = 0; per-k curves reported). cal-A/cal-B = 50/50 by run, stratified by scenario. `unlabelable_window_mask` (drops w0020) in all Layer 0 metrics |
 | O15 | 10 % subsample of train runs: whole runs, stratified by scenario (a scenario fixes bus, fault type and R_f, so fault type is stratified too); one subsample for all methods. Compare (a) concatenation (1,600-d), (b) mean + max pooling (128-d), (c) concatenation + PCA to 256-d fitted on the subsample. Ask before building a full store |
