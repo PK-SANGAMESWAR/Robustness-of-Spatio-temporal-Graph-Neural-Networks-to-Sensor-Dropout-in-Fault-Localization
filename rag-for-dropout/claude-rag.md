@@ -29,6 +29,8 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 | Corpus | Paper 1 and `results/RESULTS.md`, `document_type: model_card`, paper version in the metadata. Other sources: O7 |
 | Dropout grid | k ∈ {0, 1, 2, 5, 10} of 25 sensors, the paper protocol (`dropout/masking.py`, `zero_messages`) |
 | Long docs | Frozen sources plus verbatim split copies in `spec/`. Every new md file < 200 lines |
+| Store version | The scenario-held-out store defines the gate and τ_k; the standard store is secondary only (O20, 2026-10-30) |
+| kNN agreement | Kept in the gate: pre-registered rule (`reports/layer0/DECISION_RULE.md`) gave D = +0.0112, CI [+0.0086, +0.0138]. Seeds 43/44 only after the author answers (O18) |
 | Code home | `src/gridsense/`, `tests/gridsense/`. Docs, configs, golden sets, snapshots in `rag-for-dropout/` |
 | System seed | Seed 42. Layer 0 is repeated for seeds 43 and 44 if each takes < 30 min of CPU (O5) |
 | Calibration | Vote share = soft vote / 25. Monotone map on the top-1 share, Platt and isotonic compared. No temperature on node logits: predictions stay identical to the paper. Record the top-1 − top-2 margin (O2) |

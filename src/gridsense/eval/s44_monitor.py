@@ -61,7 +61,7 @@ def _is_gs_job(pid: str) -> bool:
         cmd = open(f"/proc/{pid}/cmdline", "rb").read().split(b"\0")
     except OSError:
         return False
-    return len(cmd) > 2 and cmd[1:3] == [b"-m", b"gridsense.model.extract"] or (len(cmd) > 2 and cmd[1:3] == [b"-m", b"gridsense.eval.s2_k0"])
+    return len(cmd) > 2 and cmd[1] == b"-m" and cmd[2].startswith(b"gridsense.") and not cmd[2].startswith(b"gridsense.eval.s44_monitor")
 
 
 if __name__ == "__main__":

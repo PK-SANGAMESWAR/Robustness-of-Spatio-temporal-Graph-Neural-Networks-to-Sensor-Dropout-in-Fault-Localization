@@ -76,3 +76,15 @@ When this file reaches about 180 lines, move the old entries to `EXPERIMENT_LOG_
   Agreement gap (STGNN correct − wrong): 0.68 standard, 0.44 held-out.
 - Not done (stopped as instructed): Layer 0 metrics with both stores, leakage tests, FAISS case store, O6 thresholds.
 - Decision needed: O18 (seeds 43/44), O20 (store version for the gate), go-ahead for step 2.
+
+## E5 — 2026-10-30 — Layer 0 step 2 (`val`, both stores), decision rule, leakage tests, FAISS case store, O6 thresholds; stopped as instructed
+- Cost 0; CPU only, nice 19, 4 threads. Report: `reports/layer0/STEP2_REPORT.md`. Rule fixed first: `DECISION_RULE.md`, commit `aa7454b`.
+- Decision: kNN agreement KEPT. D = +0.0112, 95 % CI [+0.0086, +0.0138] (mean over k of within-k AUROC differences; 1000 run-bootstrap samples).
+  All secondary readings agree. A smoke run (k = 0, 1; 20 resamples) was seen before the full run; the pre-registered blocks were identical on a re-run.
+- Post hoc (labelled): agreement adds beyond p + margin (+0.0056, CI [+0.0037, +0.0074]); 3-feature gate coverage 0.7514 / 0.6579 at 95 / 98 %.
+- Gate (p + agreement, held-out, per-k thresholds): coverage at 95 %: 0.839, 0.825, 0.803, 0.724, 0.502 for k = 0, 1, 2, 5, 10 (stop rule not triggered; margin 0.15 pp).
+  One global pair: 93.3 % accuracy at k = 10. Calibration (k = 0 map) ECE 0.007 at k = 0, 0.048 at k = 10 (post-fault).
+- Leakage: runs and seeds disjoint; FAISS = torch (votes identical on 3,000 queries); queries put into the store: k_nn = 1 accuracy 1.0000; leave-run-out 0.9737 (clean 0.9739).
+  The k_nn = 10 vote reached 0.9857, not ~1.0 (explained in the report); my own threshold of 0.99 for that was not met.
+- S4.4: epoch 14 +1.75 % (limit +10 %). `test` untouched. Not done: conformal candidate sets (O23), seeds 43/44 (O18), gate freeze and `test` (O24).
+- Decision needed: O18, O21, O22, O23, O24.

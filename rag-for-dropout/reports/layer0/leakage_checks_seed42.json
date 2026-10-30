@@ -1,0 +1,78 @@
+{
+  "disjointness": {
+    "n_runs": {
+      "train": 28875,
+      "val": 6200,
+      "test": 6175
+    },
+    "train_val": 0,
+    "train_test": 0,
+    "val_test": 0,
+    "store_runs": 2888,
+    "store_runs_not_in_train": 0,
+    "store_runs_in_val_or_test": 0,
+    "distinct_seeds_all_runs": 41250,
+    "n_runs_with_seed": 41250,
+    "store_seeds_in_val_or_test": 0,
+    "store_fingerprint_matches_expected": true
+  },
+  "saved_store_equals_rebuilt": true,
+  "faiss_vs_torch_3000_val_queries": {
+    "standard": {
+      "vote10_identical_to_torch": 1.0,
+      "agree10_max_abs_diff": 2.384185793236071e-08,
+      "nn_sim_max_abs_diff": 4.172325134277344e-07,
+      "own_scenario_in_top20": 19757
+    },
+    "heldout": {
+      "vote10_identical_to_torch": 1.0,
+      "agree10_max_abs_diff": 2.384185793236071e-08,
+      "nn_sim_max_abs_diff": 3.5762786865234375e-07,
+      "own_scenario_in_top20": 0
+    }
+  },
+  "sanity_polluted_store": {
+    "n_runs": 124,
+    "n_queries": 4836,
+    "n_post_fault": 2356,
+    "k_nn_10": {
+      "clean_store_standard": {
+        "all": 0.9662944582299421,
+        "post_fault": 0.9308149405772496
+      },
+      "polluted_store_no_exclusion": {
+        "all": 0.9857320099255583,
+        "post_fault": 0.9707130730050934
+      },
+      "polluted_store_leave_run_out": {
+        "all": 0.9660876757650951,
+        "post_fault": 0.9303904923599321
+      },
+      "polluted_store_scenario_held_out": {
+        "all": 0.9381720430107527,
+        "post_fault": 0.8730899830220713
+      },
+      "clean_store_scenario_held_out": {
+        "all": 0.9387923904052936,
+        "post_fault": 0.8743633276740238
+      }
+    },
+    "k_nn_1": {
+      "clean_store_standard": {
+        "all": 0.9739454094292804,
+        "post_fault": 0.9465195246179966
+      },
+      "polluted_store_no_exclusion": {
+        "all": 1.0,
+        "post_fault": 1.0
+      },
+      "polluted_store_leave_run_out": {
+        "all": 0.9737386269644334,
+        "post_fault": 0.9460950764006791
+      }
+    },
+    "self_match_k1_is_exact": true,
+    "k10_vote_above_0.99_with_queries_in_store (author-free criterion I set; not met)": false,
+    "note": "k_nn=10 also counts 9 other windows, some across the fault-onset label transition, so it stays below 1; k_nn=1 must be exactly 1."
+  }
+}

@@ -1,0 +1,9 @@
+val windows 241800, cal-A runs/windows, cal-B runs 3100; isotonic map equals S2: True
+primary decision statistic: {'diff': 0.011219432966009534, 'ci': [0.008642685300448564, 0.013754179703347021], 'ci_lower_above_zero': True}
+  per-k metrics k=0 done
+  per-k metrics k=1 done
+  per-k metrics k=2 done
+  per-k metrics k=5 done
+  per-k metrics k=10 done
+written in 58s
+exit 0

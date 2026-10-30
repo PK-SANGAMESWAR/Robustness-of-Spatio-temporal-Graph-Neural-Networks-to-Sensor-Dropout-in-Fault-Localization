@@ -20,6 +20,8 @@ To unfreeze an item, the author must say so; record the date and reason in § 4.
 | Accepted baselines (listed in § 3) | A new baseline needs the author's approval |
 | `rubrics/*.md` with `status: approved` | The rubric hash is in snapshots |
 | `rag-for-dropout/reports/s2/*.json`, `eval/latents/seed42/**` | S2 results and extracted votes/latents (seed 42, checkpoint sha256 in each `extract_meta*.json`); re-extract only with the author's approval |
+| `rag-for-dropout/reports/layer0/DECISION_RULE.md` | Pre-registration (commit `aa7454b`); only dated addenda at the end |
+| `rag-for-dropout/eval/case_store/seed42_sub10/**` | Case store; the fingerprint is in `manifest.json`; rebuild only with the author's approval |
 | `rag-for-dropout/corpus/v1/**` | Frozen corpus copies; SHA-256 in `MANIFEST.json`, checked by `tests/gridsense/test_corpus.py`. `1170_revised.tex` stays local and Git-ignored (unpublished manuscript, like `/resubmit/`) |
 | `rag-for-dropout/.env` | Secrets. Never read aloud, print, copy or commit. Git-ignored |
 | Root `CLAUDE.md`, `CLAUDE-PINNS.md` | Only the 2-line GridSense import was added (2026-10-28); other edits need the author |
@@ -46,6 +48,7 @@ without the author's approval for that action.
 |---|---|---|---|
 | S0 — support files, skills, scaffold, stage-1 inspection | 2026-10-28 | `EXPERIMENT_LOG.md` E0; `tests/gridsense/test_docs.py` passes | yes (answers to O2–O11, 2026-10-28) |
 | S1 — open items O2–O5, O9–O11 closed | 2026-10-28 | `OPEN_ITEMS.md` § Closed; `EXPERIMENT_LOG.md` E1; first commit on `gridsense-eval` | yes |
+| Layer 0 step 2 (`val`, both stores), leakage tests, FAISS case store, O6 thresholds | 2026-10-30 | `reports/layer0/STEP2_REPORT.md`; `EXPERIMENT_LOG.md` E5; commit of this entry | pending (O18, O21–O24) |
 | S2 — wrapper, k = 0 and k > 0 extraction, report window (25), latent method (b), calibrator (isotonic), identity gate | 2026-10-28 | `reports/s2/S2_REPORT.md`; `EXPERIMENT_LOG.md` E3; k = 10 tolerance open (O17) | O17 closed 2026-10-29 (pass); O18–O20 open |
 
 ## 4. Unfreeze log

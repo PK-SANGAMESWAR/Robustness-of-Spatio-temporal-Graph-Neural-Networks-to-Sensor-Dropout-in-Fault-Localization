@@ -1,0 +1,18 @@
+{
+  "checkpoint_sha256": "0172a60aab3a86970a5af748a505bd410c5ce341cff9f97549bc7a42dd3988d7",
+  "n": 115520,
+  "dim": 128,
+  "window_ids_sha256": "3458f0a65032483fd9e27bd6b6f1ff5d771b50625256f85f2ea8bda1c325ecb6",
+  "fingerprint": "c95e8700c51a62c3194141a70ee6177c140b3582fedad94eb44d3047dcb8b0ee",
+  "fingerprint_parts": {
+    "latent_layer": "model.classifier input h [25,64]",
+    "pooling": "b_mean_max",
+    "split": "train",
+    "run_fraction": 0.1,
+    "run_subsample_seed": 42,
+    "stratify": "scenario",
+    "k_dropout": 0,
+    "policy": "zero_messages",
+    "index": "faiss IndexFlatIP exact, L2-normalised"
+  }
+}

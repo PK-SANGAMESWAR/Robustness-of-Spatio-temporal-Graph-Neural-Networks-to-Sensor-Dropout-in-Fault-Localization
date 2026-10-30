@@ -83,4 +83,8 @@ simplified and the result is reported as it is.
    and pass if the stored value lies within 2 sample SDs (ddof = 1, SD of one offset) of their mean. Result: mean 0.689934, SD 7.00e-4,
    stored 0.688959, z = −1.39: pass. Against the stricter SD/√3 (the stored value is a 3-offset mean) z would be −2.41. The method was
    chosen after the 1.39e-3 miss was seen. The tolerance of 1e-3 was not changed.
-9. n = 3 training seeds. Seed-level comparisons are trends unless a paired test with Holm correction says otherwise.
+9. **Gate numbers (Layer 0 step 2).** They are for `val`, seed 42, a 10 % train-run store and k = 0 clean cases, with the scenario held out of the store.
+   Thresholds were fitted on cal-B and the combination and isotonic map on cal-A; on cal-A the accuracy of CONFIDENT windows is up to 0.3 points lower
+   (`reports/layer0/STEP2_REPORT.md`). The gate was not evaluated on `test`. kNN agreement stays in the gate by the pre-registered rule, with a small
+   effect (AUROC +0.011); the margin is the strongest single signal.
+10. n = 3 training seeds. Seed-level comparisons are trends unless a paired test with Holm correction says otherwise.

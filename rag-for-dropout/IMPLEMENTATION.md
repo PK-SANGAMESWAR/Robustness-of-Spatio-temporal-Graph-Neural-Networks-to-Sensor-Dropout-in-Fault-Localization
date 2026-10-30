@@ -25,7 +25,7 @@ skip with `pending: <module>` until it exists (same pattern as `tests/pinns/`). 
 | `model/report_window.py` | Accuracy per window index on `val`; the O3 stop rule; writes `chosen_index` to config | S2 |
 | `verification/gate.py` | Three outcomes, reason codes, fail-closed, policy version | S2 |
 | `verification/conformal.py` | Candidate set at a stated coverage, fit on `val` | S2 |
-| `cases/store.py` | Case store (FAISS flat, for the saved system store; S2 analysis uses exact torch kNN), fingerprint, run-grouped LOO, leakage assertion | S2 |
+| `cases/store.py`, `cases/build.py` | Case store (FAISS exact): fingerprint, exclusion of own scenario or run, `LeakageError` for val/test runs and shared seeds, `StaleIndexError` for a stale store or another checkpoint (built 2026-10-30: `eval/case_store/seed42_sub10/`) | S2 |
 | `cases/evidence.py` | kNN agreement, kNN vote, neighbour error rate, distance to nearest | S2 |
 | `ingest/` | `parsers.py` (LaTeX sections, md headings), `chunking.py` (six strategies), `manifest.py` | S3 |
 | `retrieval/` | `embeddings.py` (prefixes in one function), `stores.py` (FAISS, Chroma, Qdrant local), `bm25.py`, `hybrid.py` (RRF), `rerank.py` | S3 |

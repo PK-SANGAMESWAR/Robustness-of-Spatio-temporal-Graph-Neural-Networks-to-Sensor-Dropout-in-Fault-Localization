@@ -15,13 +15,18 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 | O13 | Human labels for judge validation: who labels, how many (≈50), which rubric scale | S4 | The author labels 50 reports on the rubric scales in `rubrics/` |
 | O14 | Event-level aggregation rule for the informational Layer 0 metric | S2 | Sum of window vote shares over the fault windows of a run, argmax |
 
-| O18 | Seeds 43 and 44 for Layer 0 (about 34 min each, above the 30-min rule O5). Author 2026-10-29: do not run now; ask again after the scenario-held-out control (asked in `reports/layer0/STEP1_REPORT.md` § 6) | after step 1 | Run both, nice 19, 4 threads; or skip |
-| O20 | Which store version defines τ_k and the gate: standard or scenario-held-out (73 % of standard neighbours are same-scenario near-duplicates) | O6 | Held-out (conservative); both reported |
-| O19 | (approved 2026-10-29; step 1 done, stop before step 2) Next step after S2: Layer 0 metrics, saved case store (FAISS), leakage assertion and sanity run, scenario-held-out control (uses the `scenario_heldout_*` checkpoints; confirm). The gate target O6 is still open | S2 close | As listed |
+| O18 | Seeds 43 and 44 for Layer 0 (about 34 min each, above the 30-min rule O5). Author 2026-10-30: run them only if the decision rule keeps kNN agreement; it did (D = +0.0112, CI [+0.0086, +0.0138]); the rule says ask before running: **asked** in `reports/layer0/STEP2_REPORT.md` § 8 | author answer | Run both, nice 19, 4 threads; or skip |
+| O21 | Gate composition: the rule's gate (p + agreement) or p + margin + agreement (post hoc: same coverage at 95 %, +3.6 points at 98 %) | gate freeze | Three features |
+| O22 | One global threshold pair or per-k thresholds (one global pair gives 93.3 % accuracy at k = 10 for a 95 % target) | gate freeze | Per-k |
+| O23 | Conformal candidate sets: nominal coverage (claude-rag keeps it open; not computed) | Layer 0 close | 90 % |
+| O24 | Freeze the gate and evaluate it once on `test`; build the full train store (about 0.6 GB; O15 asks first) | after O21/O22 | As listed |
+| O19 | (approved 2026-10-29; steps 1 and 2 done 2026-10-30, stopped as instructed) Next step after S2: Layer 0 metrics, saved case store (FAISS), leakage assertion and sanity run, scenario-held-out control (uses the `scenario_heldout_*` checkpoints; confirm). The gate target O6 is still open | S2 close | As listed |
 
-## Closed (author answers 2026-10-28 and 2026-10-29)
+## Closed (author answers 2026-10-28 to 2026-10-30)
 | ID | Answer |
 |---|---|
+| O20 | 2026-10-30: use the held-out store for the gate and for τ_k; report the standard store as secondary only |
+| Rule | 2026-10-30: kNN agreement stays in the gate only if the CI of the AUROC difference (probability + agreement) − (isotonic probability) is above 0 (cal-B, post-fault, held-out, bootstrap by run, 1000). Fixed in `reports/layer0/DECISION_RULE.md` (commit `aa7454b`). Result: CI above 0 → kept (`STEP2_REPORT.md`) |
 | O17 | 2026-10-29: tolerance unchanged; k = 10 on `test` with 5 offsets (3–7): mean 0.689934, SD 7.00e-4; stored 0.688959 is z = −1.39 from the mean → **pass** (within 2 SD). Method in limitation 9 (`dropout-rag-intro.md`). `reports/layer0/o17_k10_offsets_seed42.json` |
 | O6 | 2026-10-29: select τ_p and τ_k on cal-B; maximum coverage with ≥ 95 % accuracy on CONFIDENT post-fault windows; also report coverage at 98 %; compare one threshold vs per-k thresholds on cal-B; if coverage at 95 % is < 50 %, stop and ask. (Store version: O20) |
 | O11b | Use `resubmit/1170_revised.tex`; copied to `corpus/v1/` with its SHA-256 in `corpus/v1/MANIFEST.json` (`RESULTS.md` copied too). `tests/gridsense/test_corpus.py` checks hashes and curve numbers |
