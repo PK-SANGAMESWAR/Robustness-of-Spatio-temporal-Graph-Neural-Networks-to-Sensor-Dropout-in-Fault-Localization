@@ -1,0 +1,112 @@
+{
+ "n_windows": 117325,
+ "n_runs": 6175,
+ "per_k": {
+  "0": {
+   "n": 18193,
+   "coverage": 0.9057879404166438,
+   "mean_size": 3.130819545979223,
+   "median_size": 3.0,
+   "coverage_ci": [
+    0.9008571733436251,
+    0.9104448922027937
+   ],
+   "mean_size_ci": [
+    3.0631636696427096,
+    3.1994821626694887
+   ],
+   "old_all_window_sets": {
+    "coverage": 0.5469686143022041,
+    "mean_size": 1.0901995272907161
+   },
+   "n_low_confidence_windows": 18193,
+   "fraction_of_post_fault_windows": 0.1550649904112508
+  },
+  "1": {
+   "n": 20564,
+   "coverage": 0.9073137521882902,
+   "mean_size": 3.236870258704532,
+   "median_size": 3.0,
+   "coverage_ci": [
+    0.9032259566357197,
+    0.9112997938984571
+   ],
+   "mean_size_ci": [
+    3.1786958895580653,
+    3.2974221028581194
+   ],
+   "old_all_window_sets": {
+    "coverage": 0.5747422680412371,
+    "mean_size": 1.189943590741101
+   },
+   "n_low_confidence_windows": 20564,
+   "fraction_of_post_fault_windows": 0.17527381206051565
+  },
+  "2": {
+   "n": 23368,
+   "coverage": 0.9100907223553577,
+   "mean_size": 3.489130434782609,
+   "median_size": 4.0,
+   "coverage_ci": [
+    0.9061770332210811,
+    0.9140779768714701
+   ],
+   "mean_size_ci": [
+    3.434480295705954,
+    3.544870779502807
+   ],
+   "old_all_window_sets": {
+    "coverage": 0.5919205751454981,
+    "mean_size": 1.28076857240671
+   },
+   "n_low_confidence_windows": 23368,
+   "fraction_of_post_fault_windows": 0.1991732367355636
+  },
+  "5": {
+   "n": 31558,
+   "coverage": 0.903447620254769,
+   "mean_size": 3.7157297674123835,
+   "median_size": 4.0,
+   "coverage_ci": [
+    0.8991623276847822,
+    0.9073784015474722
+   ],
+   "mean_size_ci": [
+    3.671922464492405,
+    3.7608779259317573
+   ],
+   "old_all_window_sets": {
+    "coverage": 0.6707332530578617,
+    "mean_size": 1.8062614867862348
+   },
+   "n_low_confidence_windows": 31558,
+   "fraction_of_post_fault_windows": 0.2689793309183891
+  },
+  "10": {
+   "n": 57179,
+   "coverage": 0.8999108064149426,
+   "mean_size": 4.274698753038703,
+   "median_size": 4.0,
+   "coverage_ci": [
+    0.8957601003493547,
+    0.9040098174731364
+   ],
+   "mean_size_ci": [
+    4.242050857464568,
+    4.303723145979777
+   ],
+   "old_all_window_sets": {
+    "coverage": 0.8070445443257139,
+    "mean_size": 2.9890694135959004
+   },
+   "n_low_confidence_windows": 57179,
+   "fraction_of_post_fault_windows": 0.487355636053697
+  }
+ },
+ "component": {
+  "config_sha256": "686e7d0edd70f5b8a59b8f33b2dad43e1acb395345ee808abdbe187299454980",
+  "gate_v1_config_sha256": "693ff351157dc70ee748657b92c036d1b5e0ab672aeed1fdcab099457ac8b497",
+  "run_utc": "2026-10-30T19:18:03Z",
+  "test_use": "second use of the test split, for the candidate-set component only; gate_v1 unchanged"
+ }
+}

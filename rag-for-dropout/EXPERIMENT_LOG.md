@@ -120,3 +120,7 @@ When this file reaches about 180 lines, move the old entries to `EXPERIMENT_LOG_
 - cal-B (LOW_CONFIDENCE windows only), k = 0, 1, 2, 5, 10: coverage 0.9048, 0.9057, 0.9066, 0.9053, 0.9011; mean set size 3.08, 3.20, 3.45, 3.70, 4.27. The old all-window sets covered 0.56, 0.58, 0.59, 0.68, 0.81 of the same windows with sizes 1.1–3.0.
 - O25: seed 42 is the system; deployment rules in `claude-rag.md` § 9 (each new checkpoint needs its own calibration, gate fit and frozen test run). O27: gate_v1 kept, no gate_v2. O28: 2 threads (default now 2).
 - The one test run of this component is the second use of test (ledger: `reports/layer0/TEST_USE.md`).
+
+## E10 — 2026-10-31 — `candidate_sets_v1` run once on test (second use of test)
+- Run 2026-10-30 19:18 UTC; config `686e7d0edd70…`, frozen in `9afd240`; gate_v1 unchanged. Result/lock: `reports/layer0/candidate_sets_test_run_seed42.json`; report `reports/layer0/CANDIDATE_SETS_REPORT.md`.
+- LOW_CONFIDENCE windows, k = 0, 1, 2, 5, 10: coverage 0.9058, 0.9073, 0.9101, 0.9034, 0.8999 (CIs contain 0.90 at k = 10); mean size 3.13, 3.24, 3.49, 3.72, 4.27. Old all-window sets on the same windows: 0.547–0.807.
