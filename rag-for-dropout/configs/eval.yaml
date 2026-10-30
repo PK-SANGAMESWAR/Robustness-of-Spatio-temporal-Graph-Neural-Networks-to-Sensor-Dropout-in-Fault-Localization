@@ -47,13 +47,13 @@ calibration:
   ece_binning: equal_mass         # (P)
 
 gate:
-  policy_version: null            # set when the gate is built (S2)
-  target_accuracy_confident: null # OPEN: O6
-  tau_p: null                     # fitted on val (S2)
-  tau_k: null                     # fitted on val (S2)
-  per_k_thresholds: null          # decided from val (S2)
+  policy_version: gate_v1         # FROZEN 2026-10-30: rag-for-dropout/configs/gate_v1.json, sha256 693ff351157dc70ee748657b92c036d1b5e0ab672aeed1fdcab099457ac8b497
+  frozen_config: rag-for-dropout/configs/gate_v1.json
+  target_accuracy_confident: 0.95 # O6 (operating point acc95); 0.98 reported
+  features: [isotonic_probability_per_k, margin_top1_minus_top2, knn_agreement_heldout_10]   # O21
+  per_k_thresholds: true          # O22; k or pattern not fitted -> REJECT UNSUPPORTED_DROPOUT_PATTERN
   candidate_set: conformal
-  conformal_coverage: null        # OPEN: O6
+  conformal_coverage: 0.90        # O23, per k, fitted on cal-A
   report_trigger: report_window   # one report per event at the O3 window
   threshold_split: cal_b
 

@@ -29,3 +29,9 @@ def require(cfg: dict[str, Any], dotted: str) -> Any:
     if node is None:
         raise OpenItemError(f"configs/eval.yaml '{dotted}' is not set (see OPEN_ITEMS.md)")
     return node
+
+
+def torch_threads() -> int:
+    """Torch threads for CPU jobs: `rag-for-dropout/eval/threads.txt` if it exists, else 4 (author rule: 4; 2 if the S4.4 epoch time rises > 10 %)."""
+    f = TRACK / "eval" / "threads.txt"
+    return int(f.read_text().strip()) if f.exists() else 4

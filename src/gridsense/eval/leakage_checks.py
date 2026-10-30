@@ -13,10 +13,11 @@ import json
 import numpy as np
 import torch
 
-from gridsense.cases.build import STORE_DIR, build_store, expected_fingerprint, run_seeds
+from gridsense.cases.build import build_store, expected_fingerprint, run_seeds, store_dir
 from gridsense.cases.store import CaseStore
 from gridsense.config import TRACK
 from gridsense.data.splits import event_of, scenario_of, split_events, stratified_run_subsample
+from gridsense.eval.knn_features import knn_path as full_knn_path
 from gridsense.eval.layer0_knn import knn_path
 from gridsense.eval.s2_k0 import LAT, split_arrays
 from gridsense.eval.scenario_control import _vote
@@ -32,13 +33,16 @@ def _vote_acc(store: CaseStore, q: np.ndarray, truth: np.ndarray, ckpt: str, k: 
     return pred == truth
 
 
-def main() -> None:
+def main(tag: str = "train_sub10") -> None:
     torch.set_num_threads(4)
     ckpt = checkpoint_sha256(42)
     res: dict = {}
     runs = {s: set(split_events(s)) for s in ("train", "val", "test")}
-    store = build_store()                                              # raises LeakageError on any forbidden run or seed
-    sample = (LAT / "train_sub10" / "window_ids.txt").read_text().split()
+    sample = (LAT / tag / "window_ids.txt").read_text().split()
+    if tag == "train_sub10":
+        store = build_store(42, tag)                                   # raises LeakageError on any forbidden run or seed
+    else:                                                              # full store (RAM): load the saved store; the build already asserted; re-check below
+        store = CaseStore.load(store_dir(42, tag), expected_fingerprint(sample, 42, tag))   # StaleIndexError if the fingerprint differs
     seeds = run_seeds()
     res["disjointness"] = {"n_runs": {s: len(v) for s, v in runs.items()},
                            "train_val": len(runs["train"] & runs["val"]), "train_test": len(runs["train"] & runs["test"]), "val_test": len(runs["val"] & runs["test"]),
@@ -46,16 +50,24 @@ def main() -> None:
                            "store_runs_in_val_or_test": len(set(store.runs) & (runs["val"] | runs["test"])),
                            "distinct_seeds_all_runs": len(set(seeds.values())), "n_runs_with_seed": len(seeds),
                            "store_seeds_in_val_or_test": len({seeds[r] for r in store.runs} & {seeds[r] for r in runs["val"] | runs["test"]}),
-                           "store_fingerprint_matches_expected": store.manifest["fingerprint"] == expected_fingerprint(sample)}
-    loaded = CaseStore.load(STORE_DIR, store.manifest["fingerprint"])  # saved store == rebuilt store
-    res["saved_store_equals_rebuilt"] = bool(np.array_equal(loaded.vectors, store.vectors) and loaded.window_ids == store.window_ids)
+                           "store_fingerprint_matches_expected": store.manifest["fingerprint"] == expected_fingerprint(sample, 42, tag)}
+    if tag == "train_sub10":
+        loaded = CaseStore.load(store_dir(42, tag), store.manifest["fingerprint"])  # saved store == rebuilt store
+        res["saved_store_equals_rebuilt"] = bool(np.array_equal(loaded.vectors, store.vectors) and loaded.window_ids == store.window_ids)
+        del loaded
+    else:
+        res["saved_store_window_ids_equal_extracted_order"] = bool(store.window_ids == sample)
 
     ids, keep, votes0, y, runs_all, w = split_arrays("val")
-    sel = np.flatnonzero(keep)
-    z = np.load(knn_path(0, 0))
+    if tag == "train_sub10":
+        sel = np.flatnonzero(keep)
+        z = np.load(knn_path(0, 0))
+    else:                                     # full store: neighbour features exist for post-fault windows only
+        z = np.load(full_knn_path(42, "val", 0))
+        sel = z["rows"].astype(int)
     assert (z["rows"] == sel).all()
     rng = np.random.default_rng(0)
-    pos = np.sort(rng.choice(len(sel), size=3000, replace=False))
+    pos = np.sort(rng.choice(len(sel), size=3000 if tag == "train_sub10" else 1000, replace=False))
     rows = sel[pos]
     hq = np.load(LAT / "val" / "h_k0_o0.npy", mmap_mode="r")
     q = represent(np.asarray(hq[rows]), "b_mean_max")
@@ -71,7 +83,13 @@ def main() -> None:
                     "agree10_max_abs_diff": float(np.abs(agree - z[f"{name}_agree_10"][pos]).max()),
                     "nn_sim_max_abs_diff": float(np.abs(sim[:, 0] - z[f"{name}_nnsim"][pos]).max()),
                     "own_scenario_in_top20": int((store.scenarios[idx] == np.array(scn)[:, None]).sum())}
-    res["faiss_vs_torch_3000_val_queries"] = eq
+    res["faiss_vs_torch_val_queries"] = {"n_queries": int(len(pos)), **eq}
+    if tag != "train_sub10":
+        res["sanity_polluted_store"] = "not repeated for the full store (RAM); shown with the same code on the 10 % store"
+        OUT.mkdir(parents=True, exist_ok=True)
+        (OUT / f"leakage_checks_seed42_{tag}.json").write_text(json.dumps(res, indent=2) + "\n")
+        print(json.dumps(res, indent=2))
+        return
 
     # sanity run (§ 13.9) with 2 % of val runs
     pick = set(stratified_run_subsample(split_events("val"), 0.02, seed=42))
@@ -104,4 +122,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    main(sys.argv[1] if len(sys.argv) > 1 else "train_sub10")

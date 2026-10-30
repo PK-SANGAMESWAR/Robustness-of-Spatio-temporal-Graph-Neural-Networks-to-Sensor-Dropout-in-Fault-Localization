@@ -15,16 +15,16 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 | O13 | Human labels for judge validation: who labels, how many (≈50), which rubric scale | S4 | The author labels 50 reports on the rubric scales in `rubrics/` |
 | O14 | Event-level aggregation rule for the informational Layer 0 metric | S2 | Sum of window vote shares over the fault windows of a run, argmax |
 
-| O18 | Seeds 43 and 44 for Layer 0 (about 34 min each, above the 30-min rule O5). Author 2026-10-30: run them only if the decision rule keeps kNN agreement; it did (D = +0.0112, CI [+0.0086, +0.0138]); the rule says ask before running: **asked** in `reports/layer0/STEP2_REPORT.md` § 8 | author answer | Run both, nice 19, 4 threads; or skip |
-| O21 | Gate composition: the rule's gate (p + agreement) or p + margin + agreement (post hoc: same coverage at 95 %, +3.6 points at 98 %) | gate freeze | Three features |
-| O22 | One global threshold pair or per-k thresholds (one global pair gives 93.3 % accuracy at k = 10 for a 95 % target) | gate freeze | Per-k |
-| O23 | Conformal candidate sets: nominal coverage (claude-rag keeps it open; not computed) | Layer 0 close | 90 % |
-| O24 | Freeze the gate and evaluate it once on `test`; build the full train store (about 0.6 GB; O15 asks first) | after O21/O22 | As listed |
 | O19 | (approved 2026-10-29; steps 1 and 2 done 2026-10-30, stopped as instructed) Next step after S2: Layer 0 metrics, saved case store (FAISS), leakage assertion and sanity run, scenario-held-out control (uses the `scenario_heldout_*` checkpoints; confirm). The gate target O6 is still open | S2 close | As listed |
 
 ## Closed (author answers 2026-10-28 to 2026-10-30)
 | ID | Answer |
 |---|---|
+| O18 | 2026-10-30: run seeds 43 and 44 now with the frozen method, Layer 0 only, no new thresholds. Done per `reports/layer0/FINAL_REPORT.md` |
+| O21 | 2026-10-30: three-feature gate (isotonic probability, margin, kNN agreement); combination on cal-A, thresholds on cal-B; the report states the composition was selected on val after the pre-registered test |
+| O22 | 2026-10-30: per-k thresholds; isotonic calibration fitted separately for each k; a k or dropout pattern not fitted → REJECT, `UNSUPPORTED_DROPOUT_PATTERN` |
+| O23 | 2026-10-30: conformal sets, 90 % coverage, per k, fitted on cal-A, checked on cal-B |
+| O24 | 2026-10-30: full train store → refit → freeze (commit, hash) → one run on test; no change after; report coverage at k = 10 if below 50 %, do not stop |
 | O20 | 2026-10-30: use the held-out store for the gate and for τ_k; report the standard store as secondary only |
 | Rule | 2026-10-30: kNN agreement stays in the gate only if the CI of the AUROC difference (probability + agreement) − (isotonic probability) is above 0 (cal-B, post-fault, held-out, bootstrap by run, 1000). Fixed in `reports/layer0/DECISION_RULE.md` (commit `aa7454b`). Result: CI above 0 → kept (`STEP2_REPORT.md`) |
 | O17 | 2026-10-29: tolerance unchanged; k = 10 on `test` with 5 offsets (3–7): mean 0.689934, SD 7.00e-4; stored 0.688959 is z = −1.39 from the mean → **pass** (within 2 SD). Method in limitation 9 (`dropout-rag-intro.md`). `reports/layer0/o17_k10_offsets_seed42.json` |

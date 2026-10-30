@@ -1,0 +1,36 @@
+{
+  "disjointness": {
+    "n_runs": {
+      "train": 28875,
+      "val": 6200,
+      "test": 6175
+    },
+    "train_val": 0,
+    "train_test": 0,
+    "val_test": 0,
+    "store_runs": 28875,
+    "store_runs_not_in_train": 0,
+    "store_runs_in_val_or_test": 0,
+    "distinct_seeds_all_runs": 41250,
+    "n_runs_with_seed": 41250,
+    "store_seeds_in_val_or_test": 0,
+    "store_fingerprint_matches_expected": true
+  },
+  "saved_store_window_ids_equal_extracted_order": true,
+  "faiss_vs_torch_val_queries": {
+    "n_queries": 1000,
+    "standard": {
+      "vote10_identical_to_torch": 1.0,
+      "agree10_max_abs_diff": 2.384185793236071e-08,
+      "nn_sim_max_abs_diff": 5.364418029785156e-07,
+      "own_scenario_in_top20": 16665
+    },
+    "heldout": {
+      "vote10_identical_to_torch": 1.0,
+      "agree10_max_abs_diff": 2.384185793236071e-08,
+      "nn_sim_max_abs_diff": 3.5762786865234375e-07,
+      "own_scenario_in_top20": 0
+    }
+  },
+  "sanity_polluted_store": "not repeated for the full store (RAM); shown with the same code on the 10 % store"
+}

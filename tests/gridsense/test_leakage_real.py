@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT))
 pytest.importorskip("faiss", reason="pending: rag dependency group")
-STORE = ROOT / "rag-for-dropout" / "eval" / "case_store" / "seed42_sub10"
+STORE = ROOT / "rag-for-dropout" / "eval" / "case_store" / "seed42_sub10"   # the full store is checked by gridsense.eval.leakage_checks train
 pytestmark = [pytest.mark.slow, pytest.mark.skipif(not (STORE / "store_manifest.json").exists(), reason="pending: case store (python -m gridsense.cases.build)")]
 
 
@@ -37,7 +37,7 @@ def test_store_has_no_val_or_test_run_and_no_shared_seed() -> None:
 def test_saved_store_fingerprint_is_the_expected_one() -> None:
     from gridsense.cases.build import expected_fingerprint
     s = _store()
-    assert s.manifest["fingerprint"] == expected_fingerprint(s.window_ids)
+    assert s.manifest["fingerprint"] == expected_fingerprint(s.window_ids, 42, "train_sub10")
 
 
 def test_heldout_search_never_returns_own_scenario_on_real_data() -> None:

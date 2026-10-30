@@ -1,0 +1,9 @@
+seed 42 val: store 1155000 windows, queries 117800 post-fault windows, k [0]
+  k=0 64/117800 0s
+  k=0 25664/117800 147s
+  k=0 51264/117800 297s
+  k=0 76864/117800 445s
+  k=0 102464/117800 599s
+k=0 done in 695s
+all done
+exit 0

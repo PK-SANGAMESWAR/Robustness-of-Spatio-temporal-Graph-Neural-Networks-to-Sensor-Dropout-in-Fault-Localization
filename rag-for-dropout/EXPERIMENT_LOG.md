@@ -88,3 +88,13 @@ When this file reaches about 180 lines, move the old entries to `EXPERIMENT_LOG_
   The k_nn = 10 vote reached 0.9857, not ~1.0 (explained in the report); my own threshold of 0.99 for that was not met.
 - S4.4: epoch 14 +1.75 % (limit +10 %). `test` untouched. Not done: conformal candidate sets (O23), seeds 43/44 (O18), gate freeze and `test` (O24).
 - Decision needed: O18, O21, O22, O23, O24.
+
+## E6 — 2026-10-30 — Full train store, refit, gate_v1 FROZEN (before any test run)
+- Full train store (seed 42): 1,155,000 windows, 28,875 runs, 825 scenarios, fingerprint `e1bafcbf…`; extraction 426 s; build 26 s. Leakage checks: runs and seeds disjoint;
+  FAISS = torch (votes identical on 1,000 queries); held-out search 0 own-scenario neighbours; standard store: 83 % of the top-20 are same-scenario.
+- Full-store neighbour search on val (post-fault, offset 0): 117,800 queries per k; about 11–16 min per k.
+- `gate_fit`: isotonic per k, conformal 90 % per k, logistic combination (reported only) on cal-A; thresholds per k on cal-B. `gate_v1.json` sha256 `693ff351157dc70ee748657b92c036d1b5e0ab672aeed1fdcab099457ac8b497`.
+- Finding before freezing: at the 95 % point the selected tau_k is 0.0 at every k and tau_p is 0.0 at k = 0, 1, 5, 10 (tau_p 0.5424 at k = 2): the gate is effectively margin-only there;
+  at the 98 % point agreement is active. Procedure not changed after seeing this. Conformal sets cover 56–81 % of the LOW_CONFIDENCE windows although 90 % overall.
+- S4.4: epoch 17 (nearly continuous neighbour search) +8.2 % (limit +10 %); thread count now read from `eval/threads.txt` (default 4).
+- Next (chain, one job at a time): seed-42 test neighbours → ONE frozen run on test → seeds 43 and 44.

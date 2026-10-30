@@ -23,7 +23,8 @@ skip with `pending: <module>` until it exists (same pattern as `tests/pinns/`). 
 | `model/latents.py` | Batch latent extraction to `.npy` memmaps plus a parquet/CSV index | S2 |
 | `verification/calibration.py` | cal-A/cal-B split by run; vote share; Platt and isotonic on top-1 share; margin; ECE, Brier | S2 |
 | `model/report_window.py` | Accuracy per window index on `val`; the O3 stop rule; writes `chosen_index` to config | S2 |
-| `verification/gate.py` | Three outcomes, reason codes, fail-closed, policy version | S2 |
+| `verification/gate.py` | The frozen gate: CONFIDENT / LOW_CONFIDENCE / REJECT (`UNSUPPORTED_DROPOUT_PATTERN`, `INVALID_INPUT`), per-k isotonic map and thresholds, conformal sets, config hash check (built 2026-10-30) | S2 |
+| `eval/knn_features.py`, `layer0_final.py`, `gate_fit.py`, `gate_test.py`, `seed_runs.py` | Full-store neighbour features; evaluation with run bootstrap; fit and freeze; the single test run; seeds 43/44 with frozen thresholds | S2 |
 | `verification/conformal.py` | Candidate set at a stated coverage, fit on `val` | S2 |
 | `cases/store.py`, `cases/build.py` | Case store (FAISS exact): fingerprint, exclusion of own scenario or run, `LeakageError` for val/test runs and shared seeds, `StaleIndexError` for a stale store or another checkpoint (built 2026-10-30: `eval/case_store/seed42_sub10/`) | S2 |
 | `cases/evidence.py` | kNN agreement, kNN vote, neighbour error rate, distance to nearest | S2 |

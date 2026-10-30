@@ -31,6 +31,11 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 | Long docs | Frozen sources plus verbatim split copies in `spec/`. Every new md file < 200 lines |
 | Store version | The scenario-held-out store defines the gate and τ_k; the standard store is secondary only (O20, 2026-10-30) |
 | kNN agreement | Kept in the gate: pre-registered rule (`reports/layer0/DECISION_RULE.md`) gave D = +0.0112, CI [+0.0086, +0.0138]. Seeds 43/44 only after the author answers (O18) |
+| Gate composition | Three features: isotonic probability, margin (top-1 − top-2), kNN agreement (held-out, 10 neighbours). Combination fitted on cal-A, thresholds per k on cal-B. **Selected on val after the pre-registered test** (O21, 2026-10-30) |
+| Calibration, k | Isotonic calibration fitted separately for each k; per-k thresholds. A k or dropout pattern not fitted → REJECT with `UNSUPPORTED_DROPOUT_PATTERN` (O22) |
+| Freeze | Full train store (held-out and standard) → refit on cal-A/cal-B → freeze `configs/gate_v1.json` (sha256 recorded, committed) → ONE run on `test`; the gate is not changed afterwards; coverage at k = 10 below 50 % on test is reported, not a stop (O24) |
+| Candidate sets | Conformal 90 % per k, fitted on cal-A, checked on cal-B (O23) |
+| Seeds 43, 44 | Run now, frozen method, Layer 0 only, no new thresholds (O18) |
 | Code home | `src/gridsense/`, `tests/gridsense/`. Docs, configs, golden sets, snapshots in `rag-for-dropout/` |
 | System seed | Seed 42. Layer 0 is repeated for seeds 43 and 44 if each takes < 30 min of CPU (O5) |
 | Calibration | Vote share = soft vote / 25. Monotone map on the top-1 share, Platt and isotonic compared. No temperature on node logits: predictions stay identical to the paper. Record the top-1 − top-2 margin (O2) |

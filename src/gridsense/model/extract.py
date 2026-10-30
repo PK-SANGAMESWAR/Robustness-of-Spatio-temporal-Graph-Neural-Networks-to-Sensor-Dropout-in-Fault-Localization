@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from gridsense.config import ROOT, TRACK
+from gridsense.config import ROOT, TRACK, torch_threads
 from gridsense.data.splits import DATA_ROOT, split_events, stratified_run_subsample
 from gridsense.model.latent_repr import METHODS, load_scaler_pca, represent
 from gridsense.model.predictor import LatentCapture, checkpoint_sha256, lean_dataset, load_model
@@ -119,11 +119,11 @@ def main() -> None:
     p.add_argument("--latent-repr", choices=["full", *METHODS], default="full", help="what to store for --latents (O4: b_mean_max)")
     p.add_argument("--run-fraction", type=float, default=None, help="whole-run stratified subsample (O15)")
     p.add_argument("--batch-size", type=int, default=32, help="paper protocol: 32; other values only for the mask-realisation diagnostic")
-    p.add_argument("--threads", type=int, default=4)
+    p.add_argument("--threads", type=int, default=None, help="default: eval/threads.txt or 4")
     p.add_argument("--limit-batches", type=int, default=None)
     p.add_argument("--out-root", type=Path, default=OUT_ROOT)
     a = p.parse_args()
-    extract(a.seed, a.split, a.k, a.offsets, a.latents, a.run_fraction, batch_size=a.batch_size, threads=a.threads,
+    extract(a.seed, a.split, a.k, a.offsets, a.latents, a.run_fraction, batch_size=a.batch_size, threads=a.threads or torch_threads(),
             limit_batches=a.limit_batches, out_root=a.out_root, latent_repr=a.latent_repr, offset_start=a.offset_start)
 
 

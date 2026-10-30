@@ -83,7 +83,7 @@ class CaseStore:
 
         folder.mkdir(parents=True, exist_ok=True)
         faiss.write_index(self.index, str(folder / "index.faiss"))
-        np.savez_compressed(folder / "meta.npz", vectors=self.vectors, window_ids=np.array(self.window_ids), labels=self.labels, pred=self.pred)
+        np.savez(folder / "meta.npz", vectors=self.vectors, window_ids=np.array(self.window_ids), labels=self.labels, pred=self.pred)
         (folder / "store_manifest.json").write_text(json.dumps(self.manifest, indent=2) + "\n")
 
     @classmethod
