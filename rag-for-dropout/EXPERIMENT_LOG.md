@@ -98,3 +98,12 @@ When this file reaches about 180 lines, move the old entries to `EXPERIMENT_LOG_
   at the 98 % point agreement is active. Procedure not changed after seeing this. Conformal sets cover 56–81 % of the LOW_CONFIDENCE windows although 90 % overall.
 - S4.4: epoch 17 (nearly continuous neighbour search) +8.2 % (limit +10 %); thread count now read from `eval/threads.txt` (default 4).
 - Next (chain, one job at a time): seed-42 test neighbours → ONE frozen run on test → seeds 43 and 44.
+- 2026-10-30 12:22 IST: S4.4 epoch 18 = 2,790.7 s (+9.4 %; limit 2,807 s; baseline 2,551.8 s) with the neighbour search running almost continuously. Precaution: `eval/threads.txt` = 2 for every job started from now (author rule: 2 threads above +10 %).
+
+## E7 — 2026-10-30 — the ONE run of frozen gate_v1 on `test` (seed 42); no change to the gate afterwards
+- Run 2026-10-30 07:43:41 UTC (`gate_test.py`, config sha256 `693ff351…`, committed in `b7a80b9` first). 117,325 post-fault windows, 6,175 runs. Result file = lock: `reports/layer0/test_run_seed42.json`.
+- Coverage at the 95 % point (CI) k = 0, 1, 2, 5, 10: 0.8449 (0.838–0.852), 0.8247, 0.8008, 0.7310, **0.5126 (0.504–0.521)** — not below 50 % at k = 10. cal-B had 0.850, 0.830, 0.811, 0.740, 0.520.
+- CONFIDENT accuracy: 0.9493, 0.9487, 0.9502, 0.9491, 0.9488 (every CI contains 0.95; four point estimates are 0.0–0.13 points below). 98 % point: coverage 0.772, 0.745, 0.719, 0.628, 0.376; accuracy 0.9782, 0.9786, 0.9799, 0.9799, 0.9804.
+- Conformal 90 %: coverage 0.8986, 0.8980, 0.8979, 0.8971, 0.9003 (CIs contain 0.90); mean size 1.05–2.37; among LOW_CONFIDENCE windows coverage only 0.547, 0.575, 0.592, 0.671, 0.807.
+- Per-k isotonic calibration holds on test: ECE 0.0084, 0.0056, 0.0064, 0.0086, 0.0057. Held-out kNN vote 0.831 (k = 0) vs STGNN 0.876; standard store 0.958 (near-duplicates).
+- Seeds 43 and 44 are running in the chain (`eval/chain_after_freeze.sh`), 2 threads (`eval/threads.txt`).

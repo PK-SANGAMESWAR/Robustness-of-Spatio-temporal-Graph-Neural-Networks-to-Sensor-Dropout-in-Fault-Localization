@@ -50,6 +50,7 @@ without the author's approval for that action.
 |---|---|---|---|
 | S0 — support files, skills, scaffold, stage-1 inspection | 2026-10-28 | `EXPERIMENT_LOG.md` E0; `tests/gridsense/test_docs.py` passes | yes (answers to O2–O11, 2026-10-28) |
 | S1 — open items O2–O5, O9–O11 closed | 2026-10-28 | `OPEN_ITEMS.md` § Closed; `EXPERIMENT_LOG.md` E1; first commit on `gridsense-eval` | yes |
+| The single run of the frozen gate on `test` (seed 42) | 2026-10-30 | `reports/layer0/test_run_seed42.json`; `EXPERIMENT_LOG.md` E7 | pending |
 | Gate frozen: `configs/gate_v1.json` (sha256 in `configs/gate_v1.sha256` and the commit message); full train store (seed 42); leakage checks on it | 2026-10-30 | `EXPERIMENT_LOG.md` E6; freeze commit | pending (author reads the report) |
 | Layer 0 step 2 (`val`, both stores), leakage tests, FAISS case store, O6 thresholds | 2026-10-30 | `reports/layer0/STEP2_REPORT.md`; `EXPERIMENT_LOG.md` E5; commit of this entry | pending (O18, O21–O24) |
 | S2 — wrapper, k = 0 and k > 0 extraction, report window (25), latent method (b), calibrator (isotonic), identity gate | 2026-10-28 | `reports/s2/S2_REPORT.md`; `EXPERIMENT_LOG.md` E3; k = 10 tolerance open (O17) | O17 closed 2026-10-29 (pass); O18–O20 open |

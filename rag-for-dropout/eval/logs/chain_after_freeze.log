@@ -1,0 +1,50 @@
+=== 06:35:00 .venv/bin/python -m gridsense.eval.knn_features --seed 42 --split test --k 0
+seed 42 test: store 1155000 windows, queries 117325 post-fault windows, k [0]
+  k=0 64/117325 1s
+  k=0 25664/117325 218s
+  k=0 51264/117325 414s
+  k=0 76864/117325 622s
+  k=0 102464/117325 836s
+k=0 done in 956s
+all done
+=== 06:51:04 .venv/bin/python -m gridsense.eval.knn_features --seed 42 --split test --k 1
+seed 42 test: store 1155000 windows, queries 117325 post-fault windows, k [1]
+  k=1 64/117325 1s
+  k=1 25664/117325 194s
+  k=1 51264/117325 397s
+  k=1 76864/117325 596s
+  k=1 102464/117325 787s
+k=1 done in 905s
+all done
+=== 07:06:16 .venv/bin/python -m gridsense.eval.knn_features --seed 42 --split test --k 2
+seed 42 test: store 1155000 windows, queries 117325 post-fault windows, k [2]
+  k=2 64/117325 0s
+  k=2 25664/117325 178s
+  k=2 51264/117325 362s
+  k=2 76864/117325 527s
+  k=2 102464/117325 747s
+k=2 done in 858s
+all done
+=== 07:20:38 .venv/bin/python -m gridsense.eval.knn_features --seed 42 --split test --k 5
+seed 42 test: store 1155000 windows, queries 117325 post-fault windows, k [5]
+  k=5 64/117325 0s
+  k=5 25664/117325 144s
+  k=5 51264/117325 289s
+  k=5 76864/117325 433s
+  k=5 102464/117325 576s
+k=5 done in 661s
+all done
+=== 07:31:43 .venv/bin/python -m gridsense.eval.knn_features --seed 42 --split test --k 10
+seed 42 test: store 1155000 windows, queries 117325 post-fault windows, k [10]
+  k=10 64/117325 0s
+  k=10 25664/117325 150s
+  k=10 51264/117325 298s
+  k=10 76864/117325 450s
+  k=10 102464/117325 600s
+k=10 done in 687s
+all done
+=== 07:43:13 .venv/bin/python -m gridsense.eval.gate_test
+test run written: coverage at k = 10 (95 % point) = 0.5126
+=== 07:43:41 .venv/bin/python -m gridsense.model.extract --seed 43 --split train --k 0 --latents --latent-repr b_mean_max
+[train] batch 0 windows 32/1155000 0s
+[train] batch 1000 windows 32032/1155000 17s

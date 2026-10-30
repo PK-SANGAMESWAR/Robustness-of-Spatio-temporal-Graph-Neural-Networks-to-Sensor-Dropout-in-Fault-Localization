@@ -1,0 +1,700 @@
+{
+ "n_windows": 117325,
+ "n_runs": 6175,
+ "per_k": {
+  "0": {
+   "stgnn_accuracy": 0.8760196036650331,
+   "macro_f1_all_windows_val_or_test": 0.881133920733111,
+   "calibration": {
+    "ece_isotonic": 0.0084098672621127,
+    "brier_isotonic": 0.07144034862717234,
+    "mean_p": 0.8779128119535481,
+    "ece_raw_vote_share": 0.121108572335226
+   },
+   "selective": {
+    "aurc_isotonic": 0.022266025070528293,
+    "risk_at_coverage_0.8": 0.06240391059250207
+   },
+   "knn_vote_accuracy": {
+    "heldout": {
+     "5": 0.8299936075005327,
+     "10": 0.8311357340720221,
+     "20": 0.8315789473684211
+    },
+    "standard": {
+     "5": 0.96153419987215,
+     "10": 0.95815896015342,
+     "20": 0.9524653739612189
+    }
+   },
+   "error_detection": {
+    "raw_vote_share": {
+     "auroc": 0.9100163084812427,
+     "auprc": 0.5827106081719641,
+     "auroc_ci": [
+      0.903727789885042,
+      0.9167211882870402
+     ]
+    },
+    "isotonic_prob": {
+     "auroc": 0.9109149784012669,
+     "auprc": 0.567935015684233,
+     "auroc_ci": [
+      0.9046066723364056,
+      0.9174519440752278
+     ]
+    },
+    "margin": {
+     "auroc": 0.9152135263595825,
+     "auprc": 0.5830140409721123,
+     "auroc_ci": [
+      0.9089179131069577,
+      0.9217197622011732
+     ]
+    },
+    "knn_agreement_heldout": {
+     "auroc": 0.7477635051413853,
+     "auprc": 0.30464470205243943,
+     "auroc_ci": [
+      0.7354246802303674,
+      0.7609893351509783
+     ]
+    },
+    "neighbour_error_rate_heldout": {
+     "auroc": 0.7510955163459676,
+     "auprc": 0.2945500849403416,
+     "auroc_ci": [
+      0.7387871421043704,
+      0.7635424737139065
+     ]
+    },
+    "knn_agreement_standard (secondary)": {
+     "auroc": 0.982532880654022,
+     "auprc": 0.9261555231740513,
+     "auroc_ci": [
+      0.9787448248247902,
+      0.9862550350270979
+     ]
+    },
+    "logistic_combination_p+margin+agreement": {
+     "auroc": 0.9162832504659757,
+     "auprc": 0.5990935657703703,
+     "auroc_ci": [
+      0.9101536171320537,
+      0.9227248495209538
+     ]
+    }
+   },
+   "gate_acc95": {
+    "coverage": 0.8449350095887492,
+    "accuracy_confident": 0.9492999233345438,
+    "n_windows": 117325,
+    "n_errors": 14546,
+    "errors_accepted": 5026,
+    "error_recall": 0.6544754571703562,
+    "outcomes": {
+     "CONFIDENT": 99132,
+     "LOW_CONFIDENCE": 18193,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.8378001278499894,
+     0.85187428084381
+    ],
+    "accuracy_confident_ci": [
+     0.9447331365766268,
+     0.9539207079646216
+    ]
+   },
+   "conformal_90": {
+    "coverage_all_post_fault": 0.8986234817813765,
+    "mean_size_all_post_fault": 1.0543277221393565,
+    "coverage_low_confidence": 0.5469686143022041,
+    "mean_size_low_confidence": 1.0901995272907161,
+    "n_low_confidence": 18193,
+    "coverage_all_ci": [
+     0.8925710632857448,
+     0.9047097805241849
+    ]
+   },
+   "gate_acc98": {
+    "coverage": 0.7720264223311315,
+    "accuracy_confident": 0.9782397491664643,
+    "n_windows": 117325,
+    "n_errors": 14546,
+    "errors_accepted": 1971,
+    "error_recall": 0.8644988312938264,
+    "outcomes": {
+     "CONFIDENT": 90578,
+     "LOW_CONFIDENCE": 26747,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.7634089068825911,
+     0.7805412316215641
+    ],
+    "accuracy_confident_ci": [
+     0.9750962779194039,
+     0.9813309760867686
+    ]
+   }
+  },
+  "1": {
+   "stgnn_accuracy": 0.8632005113999573,
+   "macro_f1_all_windows_val_or_test": 0.8691831826441457,
+   "calibration": {
+    "ece_isotonic": 0.005597834368348098,
+    "brier_isotonic": 0.07550214498197216,
+    "mean_p": 0.8646909429764208,
+    "ece_raw_vote_share": 0.12465829874924095
+   },
+   "selective": {
+    "aurc_isotonic": 0.025171002504652724,
+    "risk_at_coverage_0.8": 0.0618133538735963
+   },
+   "knn_vote_accuracy": {
+    "heldout": {
+     "5": 0.8217515448540379,
+     "10": 0.8231323247389729,
+     "20": 0.8231919880673343
+    },
+    "standard": {
+     "5": 0.9293245258896229,
+     "10": 0.9274152993820584,
+     "20": 0.9243298529725122
+    }
+   },
+   "error_detection": {
+    "raw_vote_share": {
+     "auroc": 0.9116527166477875,
+     "auprc": 0.6111153987072839,
+     "auroc_ci": [
+      0.9057724104157516,
+      0.917595657841662
+     ]
+    },
+    "isotonic_prob": {
+     "auroc": 0.9124651407944349,
+     "auprc": 0.5978760803654829,
+     "auroc_ci": [
+      0.9066571246892628,
+      0.9181916779140397
+     ]
+    },
+    "margin": {
+     "auroc": 0.9159687910603974,
+     "auprc": 0.6037300719480989,
+     "auroc_ci": [
+      0.9102655102884936,
+      0.9217874261914508
+     ]
+    },
+    "knn_agreement_heldout": {
+     "auroc": 0.7805985784057011,
+     "auprc": 0.3688353068665924,
+     "auroc_ci": [
+      0.7710370332083105,
+      0.790805612331025
+     ]
+    },
+    "neighbour_error_rate_heldout": {
+     "auroc": 0.7672188010959949,
+     "auprc": 0.33646023082111887,
+     "auroc_ci": [
+      0.7581839973235985,
+      0.7770608614881431
+     ]
+    },
+    "knn_agreement_standard (secondary)": {
+     "auroc": 0.9558326945156421,
+     "auprc": 0.8197674953413542,
+     "auroc_ci": [
+      0.9522320259754521,
+      0.9594208211120201
+     ]
+    },
+    "logistic_combination_p+margin+agreement": {
+     "auroc": 0.9178579546913919,
+     "auprc": 0.6209677757353855,
+     "auroc_ci": [
+      0.9125886386167991,
+      0.9235056526105058
+     ]
+    }
+   },
+   "gate_acc95": {
+    "coverage": 0.8247261879394844,
+    "accuracy_confident": 0.9487293434338214,
+    "n_windows": 117325,
+    "n_errors": 16050,
+    "errors_accepted": 4961,
+    "error_recall": 0.6909034267912773,
+    "outcomes": {
+     "CONFIDENT": 96761,
+     "LOW_CONFIDENCE": 20564,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.8175567867036011,
+     0.8316047304496058
+    ],
+    "accuracy_confident_ci": [
+     0.9441865938616318,
+     0.9532056732160785
+    ]
+   },
+   "conformal_90": {
+    "coverage_all_post_fault": 0.8980183251651396,
+    "mean_size_all_post_fault": 1.0929384189217983,
+    "coverage_low_confidence": 0.5747422680412371,
+    "mean_size_low_confidence": 1.189943590741101,
+    "n_low_confidence": 20564,
+    "coverage_all_ci": [
+     0.8924268058810996,
+     0.9035344129554657
+    ]
+   },
+   "gate_acc98": {
+    "coverage": 0.7448455145962071,
+    "accuracy_confident": 0.9786471981599515,
+    "n_windows": 117325,
+    "n_errors": 16050,
+    "errors_accepted": 1866,
+    "error_recall": 0.8837383177570093,
+    "outcomes": {
+     "CONFIDENT": 87389,
+     "LOW_CONFIDENCE": 29936,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.7360639249946729,
+     0.7534545067121244
+    ],
+    "accuracy_confident_ci": [
+     0.9759033497433347,
+     0.9814912789291618
+    ]
+   }
+  },
+  "2": {
+   "stgnn_accuracy": 0.8497165991902834,
+   "macro_f1_all_windows_val_or_test": 0.8565824905386314,
+   "calibration": {
+    "ece_isotonic": 0.0064124037775884195,
+    "brier_isotonic": 0.07974123896227601,
+    "mean_p": 0.8508563613528439,
+    "ece_raw_vote_share": 0.1292446093055807
+   },
+   "selective": {
+    "aurc_isotonic": 0.028608068426758212,
+    "risk_at_coverage_0.8": 0.06722104595620199
+   },
+   "knn_vote_accuracy": {
+    "heldout": {
+     "5": 0.8113104623907949,
+     "10": 0.812554868953761,
+     "20": 0.8121372256552312
+    },
+    "standard": {
+     "5": 0.8975495418708715,
+     "10": 0.8972767952269337,
+     "20": 0.895478372043469
+    }
+   },
+   "error_detection": {
+    "raw_vote_share": {
+     "auroc": 0.9123379316698271,
+     "auprc": 0.6340762233550081,
+     "auroc_ci": [
+      0.9072178327610588,
+      0.9178163529572839
+     ]
+    },
+    "isotonic_prob": {
+     "auroc": 0.9129787283166216,
+     "auprc": 0.6200363718623388,
+     "auroc_ci": [
+      0.9078802748211838,
+      0.9182651285898228
+     ]
+    },
+    "margin": {
+     "auroc": 0.9166499396682297,
+     "auprc": 0.6273136030318874,
+     "auroc_ci": [
+      0.9117576825644691,
+      0.922051937243485
+     ]
+    },
+    "knn_agreement_heldout": {
+     "auroc": 0.7998548431616096,
+     "auprc": 0.417327617662007,
+     "auroc_ci": [
+      0.7913823828935006,
+      0.8079562356998732
+     ]
+    },
+    "neighbour_error_rate_heldout": {
+     "auroc": 0.7783373925168962,
+     "auprc": 0.37542147538370974,
+     "auroc_ci": [
+      0.7710150568517942,
+      0.7855056378549453
+     ]
+    },
+    "knn_agreement_standard (secondary)": {
+     "auroc": 0.9332999043110444,
+     "auprc": 0.7393980177435926,
+     "auroc_ci": [
+      0.9298825478716903,
+      0.9366442169036396
+     ]
+    },
+    "logistic_combination_p+margin+agreement": {
+     "auroc": 0.9196958212642941,
+     "auprc": 0.6490432186607645,
+     "auroc_ci": [
+      0.9147428433850343,
+      0.9247519920151004
+     ]
+    }
+   },
+   "gate_acc95": {
+    "coverage": 0.8008267632644364,
+    "accuracy_confident": 0.9501686941898954,
+    "n_windows": 117325,
+    "n_errors": 17632,
+    "errors_accepted": 4682,
+    "error_recall": 0.7344600725952812,
+    "outcomes": {
+     "CONFIDENT": 93957,
+     "LOW_CONFIDENCE": 23368,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.7931210313232474,
+     0.8082682718943107
+    ],
+    "accuracy_confident_ci": [
+     0.946014486021828,
+     0.9543945226108279
+    ]
+   },
+   "conformal_90": {
+    "coverage_all_post_fault": 0.8978734285105476,
+    "mean_size_all_post_fault": 1.1435414447048795,
+    "coverage_low_confidence": 0.5919205751454981,
+    "mean_size_low_confidence": 1.28076857240671,
+    "n_low_confidence": 23368,
+    "coverage_all_ci": [
+     0.8929117835073515,
+     0.9031410611549116
+    ]
+   },
+   "gate_acc98": {
+    "coverage": 0.7189431067547412,
+    "accuracy_confident": 0.9798577356253705,
+    "n_windows": 117325,
+    "n_errors": 17632,
+    "errors_accepted": 1699,
+    "error_recall": 0.9036411070780399,
+    "outcomes": {
+     "CONFIDENT": 84350,
+     "LOW_CONFIDENCE": 32975,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.7094890262092478,
+     0.7273901555508204
+    ],
+    "accuracy_confident_ci": [
+     0.9772434827990121,
+     0.9823081176478895
+    ]
+   }
+  },
+  "5": {
+   "stgnn_accuracy": 0.8022927764756019,
+   "macro_f1_all_windows_val_or_test": 0.8123875218129407,
+   "calibration": {
+    "ece_isotonic": 0.008625674678626169,
+    "brier_isotonic": 0.09298066113784738,
+    "mean_p": 0.806292260611955,
+    "ece_raw_vote_share": 0.14432745070338576
+   },
+   "selective": {
+    "aurc_isotonic": 0.04235298338219485,
+    "risk_at_coverage_0.8": 0.08900170630490194
+   },
+   "knn_vote_accuracy": {
+    "heldout": {
+     "5": 0.7691199659066695,
+     "10": 0.76951203920733,
+     "20": 0.7696825058597911
+    },
+    "standard": {
+     "5": 0.8156573620285532,
+     "10": 0.8166290219475815,
+     "20": 0.8169529085872577
+    }
+   },
+   "error_detection": {
+    "raw_vote_share": {
+     "auroc": 0.9110052698498606,
+     "auprc": 0.6987834837704111,
+     "auroc_ci": [
+      0.9066695111819002,
+      0.9153775388693591
+     ]
+    },
+    "isotonic_prob": {
+     "auroc": 0.9111225230286869,
+     "auprc": 0.6901716075778644,
+     "auroc_ci": [
+      0.9068034881494947,
+      0.9153275332907392
+     ]
+    },
+    "margin": {
+     "auroc": 0.9149886524799775,
+     "auprc": 0.6868355437791666,
+     "auroc_ci": [
+      0.9107105772216497,
+      0.9193968535737551
+     ]
+    },
+    "knn_agreement_heldout": {
+     "auroc": 0.8254995434026908,
+     "auprc": 0.520244187318268,
+     "auroc_ci": [
+      0.8198920713656234,
+      0.831390370768876
+     ]
+    },
+    "neighbour_error_rate_heldout": {
+     "auroc": 0.778339328809366,
+     "auprc": 0.4526799342400427,
+     "auroc_ci": [
+      0.7732219379765944,
+      0.7837456149457405
+     ]
+    },
+    "knn_agreement_standard (secondary)": {
+     "auroc": 0.8828967360124351,
+     "auprc": 0.6385161484524206,
+     "auroc_ci": [
+      0.8789399501519194,
+      0.8869902973916477
+     ]
+    },
+    "logistic_combination_p+margin+agreement": {
+     "auroc": 0.922697583032224,
+     "auprc": 0.7293862972655369,
+     "auroc_ci": [
+      0.9186084673588715,
+      0.9267790953248674
+     ]
+    }
+   },
+   "gate_acc95": {
+    "coverage": 0.7310206690816109,
+    "accuracy_confident": 0.9491062996257301,
+    "n_windows": 117325,
+    "n_errors": 23196,
+    "errors_accepted": 4365,
+    "error_recall": 0.811821003621314,
+    "outcomes": {
+     "CONFIDENT": 85767,
+     "LOW_CONFIDENCE": 31558,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.7227783933518006,
+     0.7385825697847859
+    ],
+    "accuracy_confident_ci": [
+     0.9454375253096413,
+     0.9527380959123674
+    ]
+   },
+   "conformal_90": {
+    "coverage_all_post_fault": 0.8970978052418496,
+    "mean_size_all_post_fault": 1.4099126358406138,
+    "coverage_low_confidence": 0.6707332530578617,
+    "mean_size_low_confidence": 1.8062614867862348,
+    "n_low_confidence": 31558,
+    "coverage_all_ci": [
+     0.8927592158533987,
+     0.9015644577029619
+    ]
+   },
+   "gate_acc98": {
+    "coverage": 0.6280758576603452,
+    "accuracy_confident": 0.9799427322938294,
+    "n_windows": 117325,
+    "n_errors": 23196,
+    "errors_accepted": 1478,
+    "error_recall": 0.9362821176064838,
+    "outcomes": {
+     "CONFIDENT": 73689,
+     "LOW_CONFIDENCE": 43636,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.6193616023865331,
+     0.6367952269337311
+    ],
+    "accuracy_confident_ci": [
+     0.9778642948298676,
+     0.9821174011267505
+    ]
+   }
+  },
+  "10": {
+   "stgnn_accuracy": 0.6942851054762412,
+   "macro_f1_all_windows_val_or_test": 0.7114632273237308,
+   "calibration": {
+    "ece_isotonic": 0.005728129348917801,
+    "brier_isotonic": 0.1254470879846732,
+    "mean_p": 0.6938199900244945,
+    "ece_raw_vote_share": 0.17256988385186983
+   },
+   "selective": {
+    "aurc_isotonic": 0.09444973544860502,
+    "risk_at_coverage_0.8": 0.19475305073522456
+   },
+   "knn_vote_accuracy": {
+    "heldout": {
+     "5": 0.6445685062859579,
+     "10": 0.6457873428510548,
+     "20": 0.6472789260600895
+    },
+    "standard": {
+     "5": 0.6650074579160452,
+     "10": 0.6669422544214788,
+     "20": 0.6689026209247816
+    }
+   },
+   "error_detection": {
+    "raw_vote_share": {
+     "auroc": 0.8850461444552661,
+     "auprc": 0.7552932109678616,
+     "auroc_ci": [
+      0.8811713392761416,
+      0.8887689992755535
+     ]
+    },
+    "isotonic_prob": {
+     "auroc": 0.8850100671674921,
+     "auprc": 0.749211875998105,
+     "auroc_ci": [
+      0.8811867707296783,
+      0.8887375561313593
+     ]
+    },
+    "margin": {
+     "auroc": 0.8867551240061129,
+     "auprc": 0.736850733703816,
+     "auroc_ci": [
+      0.8831766014494838,
+      0.8905938701669387
+     ]
+    },
+    "knn_agreement_heldout": {
+     "auroc": 0.7958601567096865,
+     "auprc": 0.5799282822885234,
+     "auroc_ci": [
+      0.7910980080195251,
+      0.8005521649616784
+     ]
+    },
+    "neighbour_error_rate_heldout": {
+     "auroc": 0.7315408488274755,
+     "auprc": 0.5218019636253763,
+     "auroc_ci": [
+      0.726694878547891,
+      0.73630721812348
+     ]
+    },
+    "knn_agreement_standard (secondary)": {
+     "auroc": 0.813718827958004,
+     "auprc": 0.6071156226741146,
+     "auroc_ci": [
+      0.8092104888256411,
+      0.8183124047819013
+     ]
+    },
+    "logistic_combination_p+margin+agreement": {
+     "auroc": 0.8977237155979341,
+     "auprc": 0.7749311244752315,
+     "auroc_ci": [
+      0.8941767347039876,
+      0.9014008950977459
+     ]
+    }
+   },
+   "gate_acc95": {
+    "coverage": 0.512644363946303,
+    "accuracy_confident": 0.9487912745652246,
+    "n_windows": 117325,
+    "n_errors": 35868,
+    "errors_accepted": 3080,
+    "error_recall": 0.9141295862607338,
+    "outcomes": {
+     "CONFIDENT": 60146,
+     "LOW_CONFIDENCE": 57179,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.5042471766460687,
+     0.5207244832729597
+    ],
+    "accuracy_confident_ci": [
+     0.945597825855815,
+     0.9522095477240972
+    ]
+   },
+   "conformal_90": {
+    "coverage_all_post_fault": 0.9002770083102493,
+    "mean_size_all_post_fault": 2.370534839122097,
+    "coverage_low_confidence": 0.8070445443257139,
+    "mean_size_low_confidence": 2.9890694135959004,
+    "n_low_confidence": 57179,
+    "coverage_all_ci": [
+     0.8966100575324952,
+     0.9040954613253782
+    ]
+   },
+   "gate_acc98": {
+    "coverage": 0.376092051992329,
+    "accuracy_confident": 0.9803739376770538,
+    "n_windows": 117325,
+    "n_errors": 35868,
+    "errors_accepted": 866,
+    "error_recall": 0.9758559161369466,
+    "outcomes": {
+     "CONFIDENT": 44125,
+     "LOW_CONFIDENCE": 73200,
+     "REJECT": 0
+    },
+    "coverage_ci": [
+     0.3680530577455785,
+     0.3842593223950565
+    ],
+    "accuracy_confident_ci": [
+     0.9782426614941722,
+     0.9825560715281733
+    ]
+   }
+  }
+ },
+ "frozen_gate": {
+  "config_sha256": "693ff351157dc70ee748657b92c036d1b5e0ab672aeed1fdcab099457ac8b497",
+  "base_commit": "a21077903e9c440e03c0e132ae88e5b7d477e70c",
+  "operating_point": "acc95 (accuracy >= 95 % on CONFIDENT, thresholds from cal-B)",
+  "run_utc": "2026-10-30T07:43:41Z",
+  "run_once": true,
+  "coverage_at_k10_acc95": 0.512644363946303,
+  "coverage_at_k10_below_50_percent": false
+ }
+}
