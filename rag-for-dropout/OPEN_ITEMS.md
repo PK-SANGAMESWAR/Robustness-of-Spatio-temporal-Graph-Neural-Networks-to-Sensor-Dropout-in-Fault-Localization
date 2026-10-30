@@ -8,7 +8,6 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 |---|---|---|---|
 | O1 | OpenAI generator, judge and (optional) embedding models: exact snapshot names, price per 1M input/output tokens, with the date | S4 | Cheap generator candidates; judge candidates of a higher tier; prices from the provider page, given by the author |
 | O6 | Gate target for τ_p and τ_k (selected on cal-B) | S2 | Accuracy ≥ 95 % on CONFIDENT windows, per k if one threshold does not hold |
-| O7 | Extra corpus sources: generated feeder docs, curated notes, illustrative SOP | S3 | Not approved on 2026-10-28. Without an SOP, the control-command trap uses an injected chunk |
 | O8 | LangSmith: project name, workspace, approval of the first upload. (Key: in `rag-for-dropout/.env`, valid — HTTP 200 on the US endpoint, 2026-10-28; ignored by Git) | S8 | Project `gridsense-dev`; reviewed datasets only; traces redacted |
 | O16 | `OPENAI_API_KEY` (the author adds it when coding starts) | S4 | Same `.env`; `gridsense.settings` reads it |
 | O12r | Remaining proposed defaults marked (P): bootstrap 2,000 resamples; ECE 15 equal-mass bins; k_rrf = 60; judge κ bar 0.6. (Report-window rule and cal split: closed as O12) | S2 report, S4 | As listed |
@@ -17,14 +16,15 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 
 | O19 | (approved 2026-10-29; steps 1 and 2 done 2026-10-30, stopped as instructed) Next step after S2: Layer 0 metrics, saved case store (FAISS), leakage assertion and sanity run, scenario-held-out control (uses the `scenario_heldout_*` checkpoints; confirm). The gate target O6 is still open | S2 close | As listed |
 
-| O25 | Which checkpoint is the system (seed 42)? The frozen thresholds do not transfer: on seeds 43 and 44 CONFIDENT accuracy at the 95 % point is 0.897–0.932 (`reports/layer0/FINAL_REPORT.md` § 5). Any other checkpoint needs its own fit and frozen run | Layer 1 | Seed 42 is the system |
-| O26 | Candidate sets on LOW_CONFIDENCE reports: the 90 % sets cover only 55–81 % of those windows (seed 42, test). State the measured conditional coverage, fit on LOW_CONFIDENCE windows only, or use a fixed top-k set | report design | State the measured coverage |
-| O27 | gate_v1 is margin-only at its 95 % point (agreement and probability off). Keep as frozen, or define gate_v2 (needs its own fit and a test that is not the used `test` numbers) | optional | Keep gate_v1 |
-| O28 | Thread count: `eval/threads.txt` = 2 since 2026-10-30 (S4.4 epoch +9.4 % at 4 threads); the neighbour search was not slower at 2 threads. Keep 2 until the S4.4 queue ends | compute | Keep 2 |
 
-## Closed (author answers 2026-10-28 to 2026-10-30)
+## Closed (author answers 2026-10-28 to 2026-10-31)
 | ID | Answer |
 |---|---|
+| O7 | 2026-10-31: corpus = generated feeder docs; curated notes (about 30, `status: draft` until the author reviews them); one illustrative SOP; Paper 1 and RESULTS.md as `model_card`. Local embedding models only |
+| O25 | 2026-10-31: seed 42 is the system checkpoint. Deployment rule: each new checkpoint needs its own calibration, gate fit and frozen test run (`claude-rag.md` § 9) |
+| O26 | 2026-10-31: conformal quantile fitted on LOW_CONFIDENCE windows only, per k, on cal-A; checked on cal-B; run once on test (second use of test, this component only; `reports/layer0/TEST_USE.md`); gate_v1 unchanged |
+| O27 | 2026-10-31: no gate_v2; keep gate_v1. The report states that at the 95 % target only the margin is used and kNN agreement has an effect only at the 98 % target |
+| O28 | 2026-10-31: 2 threads from now on (`eval/threads.txt`, default 2) |
 | O18 | 2026-10-30: run seeds 43 and 44 now with the frozen method, Layer 0 only, no new thresholds. Done per `reports/layer0/FINAL_REPORT.md` |
 | O21 | 2026-10-30: three-feature gate (isotonic probability, margin, kNN agreement); combination on cal-A, thresholds on cal-B; the report states the composition was selected on val after the pre-registered test |
 | O22 | 2026-10-30: per-k thresholds; isotonic calibration fitted separately for each k; a k or dropout pattern not fitted → REJECT, `UNSUPPORTED_DROPOUT_PATTERN` |

@@ -49,7 +49,7 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 | Case latent | Per-node embeddings before the head, `h` [25, 64]. On one 10 % train-run subsample (stratified by scenario) compare (a) concatenation, (b) mean + max pooling, (c) concatenation + PCA-256 fitted on the subsample, by kNN-vote accuracy on `val`. Ask before a full store (O4, O15) |
 | Paper version | `corpus/v1/`: frozen copies of `resubmit/1170_revised.tex` and `RESULTS.md`, SHA-256 in `MANIFEST.json`; numbers tested against the checkpoint curve. Camera-ready = corpus v2 (O11) |
 | Cost | **5 USD in total** for the track. Stop and ask before more (O9, author update 2026-10-28) |
-| Git | Commit only to branch `gridsense-eval`, never to `main` (O10). Commit without a checkout (§ 9) |
+| Git | Commit only to branch `gridsense-eval`, never to `main` (O10). Commit without a checkout (§ 10) |
 | Keys | `rag-for-dropout/.env` (Git-ignored). LangSmith key present and valid (2026-10-28). OpenAI key: later (O16) |
 
 ## 4. Hard rules
@@ -126,7 +126,15 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 | `reports/stage1_inspection.md` | Stage-1 inspection (`rag-eval.md` §3) |
 | `configs/`, `rubrics/`, `data/eval/SCHEMA.md` | Eval config and registry; GEval rubrics; golden-set fields |
 
-## 9. Git workflow (O10)
+## 9. Deployment rules (O25, 2026-10-31)
+1. The system checkpoint is **seed 42**: `results/dropout_aware/rgsage_max/seed_00042/checkpoint_best.pt` (sha256 `0172a60a…`).
+2. **Each new checkpoint needs its own calibration, its own gate fit (cal-A / cal-B) and its own frozen test run.** Thresholds, isotonic maps and conformal quantiles do not
+   transfer: with seed 42's thresholds, seeds 43 and 44 reach only 0.897–0.932 CONFIDENT accuracy at the 95 % point (`reports/layer0/FINAL_REPORT.md` § 5).
+3. `gate_v1` is kept as frozen (O27). At its 95 % target the selected thresholds use only the margin; kNN agreement has an effect only at the 98 % target.
+4. A candidate set is shown only for LOW_CONFIDENCE windows, from `candidate_sets_v1` (O26); a REJECT shows no set and no location.
+5. Threads: 2 for every CPU job (`eval/threads.txt`, default 2).
+
+## 10. Git workflow (O10)
 `main` stays checked out: other tracks have uncommitted work and a running GPU queue. Never `git switch` or
 `git checkout` for this track. Commit the GridSense paths to `gridsense-eval` with a temporary index:
 ```

@@ -1,0 +1,130 @@
+{
+ "alpha": 0.1,
+ "code_sha256": {
+  "src/gridsense/eval/candidate_sets_run.py": "501e19c5aa48451043b90389ffce839f926d110b180aa0520dfaa9973e147726",
+  "src/gridsense/eval/gate_fit.py": "caf176ee92f764760b1642af636712de55df080eb0eb649e354371c2f5769df2",
+  "src/gridsense/verification/candidate_sets.py": "7544fad7518fa92987ceb6b5614b7212d37a0583d489b8c40d2991f95ea6b115"
+ },
+ "component": "candidate_sets_v1",
+ "config_sha256": "686e7d0edd70f5b8a59b8f33b2dad43e1acb395345ee808abdbe187299454980",
+ "created_utc": "2026-10-30T19:15:33Z",
+ "fit": "cal-A (LOW_CONFIDENCE windows only); checked on cal-B",
+ "gate_v1_config_sha256": "693ff351157dc70ee748657b92c036d1b5e0ab672aeed1fdcab099457ac8b497",
+ "nonconformity": "1 - vote share of the true class",
+ "operating_point": "acc95",
+ "per_k": {
+  "0": {
+   "cal_a": {
+    "coverage": 0.9000807661243798,
+    "mean_size": 3.113764855197877,
+    "median_size": 3.0,
+    "n": 8667
+   },
+   "cal_b": {
+    "coverage": 0.9048104131295982,
+    "mean_size": 3.0784380305602714,
+    "median_size": 3.0,
+    "n": 8835
+   },
+   "cal_b_old_all_window_sets": {
+    "coverage": 0.555631013016412,
+    "mean_size": 1.1230333899264289,
+    "median_size": 1.0,
+    "n": 8835
+   },
+   "n_cal_a_low_confidence": 8667,
+   "q": 0.9193319082260132
+  },
+  "1": {
+   "cal_a": {
+    "coverage": 0.9000407996736026,
+    "mean_size": 3.230110159118727,
+    "median_size": 3.0,
+    "n": 9804
+   },
+   "cal_b": {
+    "coverage": 0.9057225606711276,
+    "mean_size": 3.2002396884050732,
+    "median_size": 3.0,
+    "n": 10013
+   },
+   "cal_b_old_all_window_sets": {
+    "coverage": 0.5766503545390992,
+    "mean_size": 1.1981424148606812,
+    "median_size": 1.0,
+    "n": 10013
+   },
+   "n_cal_a_low_confidence": 9804,
+   "q": 0.9206162095069885
+  },
+  "10": {
+   "cal_a": {
+    "coverage": 0.9000035371935906,
+    "mean_size": 4.270206218386332,
+    "median_size": 4.0,
+    "n": 28271
+   },
+   "cal_b": {
+    "coverage": 0.901068194680249,
+    "mean_size": 4.266270514997171,
+    "median_size": 4.0,
+    "n": 28272
+   },
+   "cal_b_old_all_window_sets": {
+    "coverage": 0.8053197509903792,
+    "mean_size": 2.973401245048104,
+    "median_size": 3.0,
+    "n": 28272
+   },
+   "n_cal_a_low_confidence": 28271,
+   "q": 0.9387590885162354
+  },
+  "2": {
+   "cal_a": {
+    "coverage": 0.9001063641198369,
+    "mean_size": 3.4574543520652368,
+    "median_size": 4.0,
+    "n": 11282
+   },
+   "cal_b": {
+    "coverage": 0.9066200215285253,
+    "mean_size": 3.4478830283458914,
+    "median_size": 4.0,
+    "n": 11148
+   },
+   "cal_b_old_all_window_sets": {
+    "coverage": 0.5929314675278077,
+    "mean_size": 1.2786149982059563,
+    "median_size": 2.0,
+    "n": 11148
+   },
+   "n_cal_a_low_confidence": 11282,
+   "q": 0.9243454933166504
+  },
+  "5": {
+   "cal_a": {
+    "coverage": 0.9000064428838348,
+    "mean_size": 3.699246182591328,
+    "median_size": 4.0,
+    "n": 15521
+   },
+   "cal_b": {
+    "coverage": 0.9052500979495887,
+    "mean_size": 3.6989682643332897,
+    "median_size": 4.0,
+    "n": 15314
+   },
+   "cal_b_old_all_window_sets": {
+    "coverage": 0.6810761394802142,
+    "mean_size": 1.797505550476688,
+    "median_size": 2.0,
+    "n": 15314
+   },
+   "n_cal_a_low_confidence": 15521,
+   "q": 0.9285103678703308
+  }
+ },
+ "population": "windows that gate_v1 labels LOW_CONFIDENCE (95 % point), post-fault, mask offset 0, per k",
+ "seed": 42,
+ "set": "classes with vote share >= 1 - q"
+}

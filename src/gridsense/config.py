@@ -32,6 +32,6 @@ def require(cfg: dict[str, Any], dotted: str) -> Any:
 
 
 def torch_threads() -> int:
-    """Torch threads for CPU jobs: `rag-for-dropout/eval/threads.txt` if it exists, else 4 (author rule: 4; 2 if the S4.4 epoch time rises > 10 %)."""
+    """Torch threads for CPU jobs: `rag-for-dropout/eval/threads.txt` if it exists, else 2 (author, 2026-10-31: 2 threads from now on)."""
     f = TRACK / "eval" / "threads.txt"
-    return int(f.read_text().strip()) if f.exists() else 4
+    return int(f.read_text().strip()) if f.exists() else 2
