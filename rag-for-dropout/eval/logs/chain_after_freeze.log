@@ -48,3 +48,217 @@ test run written: coverage at k = 10 (95 % point) = 0.5126
 === 07:43:41 .venv/bin/python -m gridsense.model.extract --seed 43 --split train --k 0 --latents --latent-repr b_mean_max
 [train] batch 0 windows 32/1155000 0s
 [train] batch 1000 windows 32032/1155000 17s
+[train] batch 2000 windows 64032/1155000 34s
+[train] batch 3000 windows 96032/1155000 51s
+[train] batch 4000 windows 128032/1155000 68s
+[train] batch 5000 windows 160032/1155000 85s
+[train] batch 6000 windows 192032/1155000 102s
+[train] batch 7000 windows 224032/1155000 118s
+[train] batch 8000 windows 256032/1155000 135s
+[train] batch 9000 windows 288032/1155000 152s
+[train] batch 10000 windows 320032/1155000 169s
+[train] batch 11000 windows 352032/1155000 185s
+[train] batch 12000 windows 384032/1155000 202s
+[train] batch 13000 windows 416032/1155000 218s
+[train] batch 14000 windows 448032/1155000 235s
+[train] batch 15000 windows 480032/1155000 252s
+[train] batch 16000 windows 512032/1155000 268s
+[train] batch 17000 windows 544032/1155000 285s
+[train] batch 18000 windows 576032/1155000 301s
+[train] batch 19000 windows 608032/1155000 318s
+[train] batch 20000 windows 640032/1155000 335s
+[train] batch 21000 windows 672032/1155000 351s
+[train] batch 22000 windows 704032/1155000 368s
+[train] batch 23000 windows 736032/1155000 384s
+[train] batch 24000 windows 768032/1155000 401s
+[train] batch 25000 windows 800032/1155000 418s
+[train] batch 26000 windows 832032/1155000 434s
+[train] batch 27000 windows 864032/1155000 451s
+[train] batch 28000 windows 896032/1155000 468s
+[train] batch 29000 windows 928032/1155000 484s
+[train] batch 30000 windows 960032/1155000 501s
+[train] batch 31000 windows 992032/1155000 517s
+[train] batch 32000 windows 1024032/1155000 534s
+[train] batch 33000 windows 1056032/1155000 550s
+[train] batch 34000 windows 1088032/1155000 567s
+[train] batch 35000 windows 1120032/1155000 583s
+[train] batch 36000 windows 1152032/1155000 600s
+{"tag": "train", "n_windows": 1155000, "wall_seconds": 601.7, "peak_rss_mb": 1828.0}
+=== 07:53:49 .venv/bin/python -m gridsense.cases.build --seed 43 --tag train
+case store seed 43 train: 1155000 entries, 28875 runs, 825 scenarios, fingerprint a449871ff3f0f4af
+=== 07:54:04 .venv/bin/python -m gridsense.model.extract --seed 43 --split val --k 0 1 2 5 10 --offsets 1
+[val] batch 0 windows 32/248000 0s
+[val] batch 1000 windows 32032/248000 77s
+[val] batch 2000 windows 64032/248000 152s
+[val] batch 3000 windows 96032/248000 227s
+[val] batch 4000 windows 128032/248000 303s
+[val] batch 5000 windows 160032/248000 379s
+[val] batch 6000 windows 192032/248000 455s
+[val] batch 7000 windows 224032/248000 531s
+{"tag": "val", "n_windows": 248000, "wall_seconds": 588.5, "peak_rss_mb": 961.6}
+=== 08:03:59 .venv/bin/python -m gridsense.model.extract --seed 43 --split test --k 0 1 2 5 10 --offsets 1 --latents --latent-repr b_mean_max
+[test] batch 0 windows 32/247000 0s
+[test] batch 1000 windows 32032/247000 76s
+[test] batch 2000 windows 64032/247000 152s
+[test] batch 3000 windows 96032/247000 228s
+[test] batch 4000 windows 128032/247000 305s
+[test] batch 5000 windows 160032/247000 381s
+[test] batch 6000 windows 192032/247000 457s
+[test] batch 7000 windows 224032/247000 533s
+{"tag": "test", "n_windows": 247000, "wall_seconds": 588.3, "peak_rss_mb": 1564.8}
+=== 08:13:51 .venv/bin/python -m gridsense.eval.knn_features --seed 43 --split test --k 0
+seed 43 test: store 1155000 windows, queries 117325 post-fault windows, k [0]
+  k=0 64/117325 0s
+  k=0 25664/117325 144s
+  k=0 51264/117325 286s
+  k=0 76864/117325 427s
+  k=0 102464/117325 568s
+k=0 done in 651s
+all done
+=== 08:24:46 .venv/bin/python -m gridsense.eval.knn_features --seed 43 --split test --k 1
+seed 43 test: store 1155000 windows, queries 117325 post-fault windows, k [1]
+  k=1 64/117325 0s
+  k=1 25664/117325 146s
+  k=1 51264/117325 289s
+  k=1 76864/117325 430s
+  k=1 102464/117325 572s
+k=1 done in 656s
+all done
+=== 08:35:44 .venv/bin/python -m gridsense.eval.knn_features --seed 43 --split test --k 2
+seed 43 test: store 1155000 windows, queries 117325 post-fault windows, k [2]
+  k=2 64/117325 0s
+  k=2 25664/117325 142s
+  k=2 51264/117325 285s
+  k=2 76864/117325 428s
+  k=2 102464/117325 573s
+k=2 done in 656s
+all done
+=== 08:46:42 .venv/bin/python -m gridsense.eval.knn_features --seed 43 --split test --k 5
+seed 43 test: store 1155000 windows, queries 117325 post-fault windows, k [5]
+  k=5 64/117325 0s
+  k=5 25664/117325 142s
+  k=5 51264/117325 284s
+  k=5 76864/117325 429s
+  k=5 102464/117325 572s
+k=5 done in 655s
+all done
+=== 08:57:40 .venv/bin/python -m gridsense.eval.knn_features --seed 43 --split test --k 10
+seed 43 test: store 1155000 windows, queries 117325 post-fault windows, k [10]
+  k=10 64/117325 0s
+  k=10 25664/117325 141s
+  k=10 51264/117325 281s
+  k=10 76864/117325 421s
+  k=10 102464/117325 562s
+k=10 done in 644s
+all done
+=== 09:08:26 .venv/bin/python -m gridsense.eval.seed_runs 43
+written seed43_layer0_test.json
+=== 09:08:51 .venv/bin/python -m gridsense.model.extract --seed 44 --split train --k 0 --latents --latent-repr b_mean_max
+[train] batch 0 windows 32/1155000 0s
+[train] batch 1000 windows 32032/1155000 17s
+[train] batch 2000 windows 64032/1155000 34s
+[train] batch 3000 windows 96032/1155000 51s
+[train] batch 4000 windows 128032/1155000 68s
+[train] batch 5000 windows 160032/1155000 84s
+[train] batch 6000 windows 192032/1155000 101s
+[train] batch 7000 windows 224032/1155000 118s
+[train] batch 8000 windows 256032/1155000 134s
+[train] batch 9000 windows 288032/1155000 151s
+[train] batch 10000 windows 320032/1155000 169s
+[train] batch 11000 windows 352032/1155000 186s
+[train] batch 12000 windows 384032/1155000 204s
+[train] batch 13000 windows 416032/1155000 221s
+[train] batch 14000 windows 448032/1155000 238s
+[train] batch 15000 windows 480032/1155000 255s
+[train] batch 16000 windows 512032/1155000 273s
+[train] batch 17000 windows 544032/1155000 290s
+[train] batch 18000 windows 576032/1155000 307s
+[train] batch 19000 windows 608032/1155000 324s
+[train] batch 20000 windows 640032/1155000 341s
+[train] batch 21000 windows 672032/1155000 357s
+[train] batch 22000 windows 704032/1155000 374s
+[train] batch 23000 windows 736032/1155000 390s
+[train] batch 24000 windows 768032/1155000 408s
+[train] batch 25000 windows 800032/1155000 424s
+[train] batch 26000 windows 832032/1155000 441s
+[train] batch 27000 windows 864032/1155000 458s
+[train] batch 28000 windows 896032/1155000 474s
+[train] batch 29000 windows 928032/1155000 491s
+[train] batch 30000 windows 960032/1155000 508s
+[train] batch 31000 windows 992032/1155000 524s
+[train] batch 32000 windows 1024032/1155000 541s
+[train] batch 33000 windows 1056032/1155000 558s
+[train] batch 34000 windows 1088032/1155000 574s
+[train] batch 35000 windows 1120032/1155000 591s
+[train] batch 36000 windows 1152032/1155000 607s
+{"tag": "train", "n_windows": 1155000, "wall_seconds": 608.7, "peak_rss_mb": 1779.7}
+=== 09:19:06 .venv/bin/python -m gridsense.cases.build --seed 44 --tag train
+case store seed 44 train: 1155000 entries, 28875 runs, 825 scenarios, fingerprint f1eb6041a651e2d3
+=== 09:19:59 .venv/bin/python -m gridsense.model.extract --seed 44 --split val --k 0 1 2 5 10 --offsets 1
+[val] batch 0 windows 32/248000 0s
+[val] batch 1000 windows 32032/248000 77s
+[val] batch 2000 windows 64032/248000 153s
+[val] batch 3000 windows 96032/248000 229s
+[val] batch 4000 windows 128032/248000 305s
+[val] batch 5000 windows 160032/248000 380s
+[val] batch 6000 windows 192032/248000 457s
+[val] batch 7000 windows 224032/248000 532s
+{"tag": "val", "n_windows": 248000, "wall_seconds": 588.1, "peak_rss_mb": 962.6}
+=== 09:29:52 .venv/bin/python -m gridsense.model.extract --seed 44 --split test --k 0 1 2 5 10 --offsets 1 --latents --latent-repr b_mean_max
+[test] batch 0 windows 32/247000 0s
+[test] batch 1000 windows 32032/247000 77s
+[test] batch 2000 windows 64032/247000 153s
+[test] batch 3000 windows 96032/247000 230s
+[test] batch 4000 windows 128032/247000 307s
+[test] batch 5000 windows 160032/247000 384s
+[test] batch 6000 windows 192032/247000 461s
+[test] batch 7000 windows 224032/247000 539s
+{"tag": "test", "n_windows": 247000, "wall_seconds": 594.0, "peak_rss_mb": 1563.7}
+=== 09:39:51 .venv/bin/python -m gridsense.eval.knn_features --seed 44 --split test --k 0
+seed 44 test: store 1155000 windows, queries 117325 post-fault windows, k [0]
+  k=0 64/117325 0s
+  k=0 25664/117325 145s
+  k=0 51264/117325 294s
+  k=0 76864/117325 440s
+  k=0 102464/117325 588s
+k=0 done in 674s
+all done
+=== 09:51:07 .venv/bin/python -m gridsense.eval.knn_features --seed 44 --split test --k 1
+seed 44 test: store 1155000 windows, queries 117325 post-fault windows, k [1]
+  k=1 64/117325 0s
+  k=1 25664/117325 143s
+  k=1 51264/117325 286s
+  k=1 76864/117325 428s
+  k=1 102464/117325 575s
+k=1 done in 661s
+all done
+=== 10:02:12 .venv/bin/python -m gridsense.eval.knn_features --seed 44 --split test --k 2
+seed 44 test: store 1155000 windows, queries 117325 post-fault windows, k [2]
+  k=2 64/117325 0s
+  k=2 25664/117325 145s
+  k=2 51264/117325 289s
+  k=2 76864/117325 433s
+  k=2 102464/117325 576s
+k=2 done in 660s
+all done
+=== 10:13:15 .venv/bin/python -m gridsense.eval.knn_features --seed 44 --split test --k 5
+seed 44 test: store 1155000 windows, queries 117325 post-fault windows, k [5]
+  k=5 64/117325 0s
+  k=5 25664/117325 150s
+  k=5 51264/117325 295s
+  k=5 76864/117325 442s
+  k=5 102464/117325 589s
+k=5 done in 673s
+all done
+=== 10:24:31 .venv/bin/python -m gridsense.eval.knn_features --seed 44 --split test --k 10
+seed 44 test: store 1155000 windows, queries 117325 post-fault windows, k [10]
+  k=10 64/117325 0s
+  k=10 25664/117325 145s
+  k=10 51264/117325 289s
+  k=10 76864/117325 434s
+  k=10 102464/117325 577s
+k=10 done in 663s
+all done
+=== 10:35:37 .venv/bin/python -m gridsense.eval.seed_runs 44
+written seed44_layer0_test.json
+=== chain done 10:36:02

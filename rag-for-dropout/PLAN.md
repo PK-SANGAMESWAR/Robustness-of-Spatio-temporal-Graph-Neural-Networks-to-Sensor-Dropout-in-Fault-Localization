@@ -9,7 +9,7 @@ entry to `EXPERIMENT_LOG.md`, update `DONE.md`, and wait for approval. Do not st
 |---|---|---|---|
 | S0 | Support files, skills, config skeleton, stage-1 inspection | 0 | — (done 2026-10-28) |
 | S1 | Author closes the open items that S2–S3 need | 0 | — (done 2026-10-28) |
-| S2 | `rag` dependency group; prediction wrapper; latents; case store; Layer 0 | 0 (CPU) | approved 2026-10-28 |
+| S2 | `rag` dependency group; prediction wrapper; latents; case store; Layer 0 | 0 (CPU) | done 2026-10-30 (frozen gate, one test run, seeds 43/44): `reports/layer0/FINAL_REPORT.md` |
 | S3 | Corpus ingestion; retrieval golden drafts; free component sweeps (Layer 1, deterministic) | 0 (CPU) | S2, golden review |
 | S4 | Cost estimate; judge-validation pilot; DeepEval contextual metrics on the top configs | paid | O1, O9, approval |
 | S5 | Generator, LangGraph workflow, report schema; Layers 2 and 3 | paid | S4 |

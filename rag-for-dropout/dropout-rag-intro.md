@@ -87,4 +87,7 @@ simplified and the result is reported as it is.
    Thresholds were fitted on cal-B and the combination and isotonic map on cal-A; on cal-A the accuracy of CONFIDENT windows is up to 0.3 points lower
    (`reports/layer0/STEP2_REPORT.md`). The gate was not evaluated on `test`. kNN agreement stays in the gate by the pre-registered rule, with a small
    effect (AUROC +0.011); the margin is the strongest single signal.
-10. n = 3 training seeds. Seed-level comparisons are trends unless a paired test with Holm correction says otherwise.
+10. **The gate belongs to one checkpoint.** `gate_v1` (seed 42) meets its 95 % target on test within the CIs (CONFIDENT accuracy 0.949–0.950 at every k), but its thresholds do not
+    transfer: on seeds 43 and 44 the accuracy is 0.897–0.932. At its 95 % point the gate is effectively margin-only; the kNN agreement and (at four k) the probability thresholds are 0.
+    The composition was selected on val after the pre-registered test. The 90 % conformal sets cover 55–81 % of the LOW_CONFIDENCE windows (90 % holds over all windows only).
+11. n = 3 training seeds. Seed-level comparisons are trends unless a paired test with Holm correction says otherwise.

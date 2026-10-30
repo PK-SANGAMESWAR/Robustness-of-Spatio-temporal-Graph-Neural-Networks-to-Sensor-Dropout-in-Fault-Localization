@@ -21,6 +21,7 @@ To unfreeze an item, the author must say so; record the date and reason in § 4.
 | `rubrics/*.md` with `status: approved` | The rubric hash is in snapshots |
 | `rag-for-dropout/reports/s2/*.json`, `eval/latents/seed42/**` | S2 results and extracted votes/latents (seed 42, checkpoint sha256 in each `extract_meta*.json`); re-extract only with the author's approval |
 | `rag-for-dropout/configs/gate_v1.json`, `gate_v1.sha256` | The frozen gate (sha256 `693ff351157dc70e…`). Never edit; a changed gate is a new version `gate_v2` with the author's approval. `gate_test.py` refuses a second run on test |
+| `rag-for-dropout/reports/layer0/seed43_layer0_test.json`, `seed44_layer0_test.json` | Seeds 43/44 results (frozen thresholds; not re-run) |
 | `rag-for-dropout/reports/layer0/test_run_seed42.json` | Result and lock of the single frozen test run |
 | `rag-for-dropout/reports/layer0/DECISION_RULE.md` | Pre-registration (commit `aa7454b`); only dated addenda at the end |
 | `rag-for-dropout/eval/case_store/seed42_sub10/**` | Case store; the fingerprint is in `manifest.json`; rebuild only with the author's approval |
@@ -51,6 +52,7 @@ without the author's approval for that action.
 | S0 — support files, skills, scaffold, stage-1 inspection | 2026-10-28 | `EXPERIMENT_LOG.md` E0; `tests/gridsense/test_docs.py` passes | yes (answers to O2–O11, 2026-10-28) |
 | S1 — open items O2–O5, O9–O11 closed | 2026-10-28 | `OPEN_ITEMS.md` § Closed; `EXPERIMENT_LOG.md` E1; first commit on `gridsense-eval` | yes |
 | The single run of the frozen gate on `test` (seed 42) | 2026-10-30 | `reports/layer0/test_run_seed42.json`; `EXPERIMENT_LOG.md` E7 | pending |
+| Conformal 90 % per k; seeds 43 and 44 (Layer 0, frozen thresholds); `FINAL_REPORT.md` | 2026-10-30 | `reports/layer0/{seed43,seed44}_layer0_test.json`; E8 | pending (O25–O28) |
 | Gate frozen: `configs/gate_v1.json` (sha256 in `configs/gate_v1.sha256` and the commit message); full train store (seed 42); leakage checks on it | 2026-10-30 | `EXPERIMENT_LOG.md` E6; freeze commit | pending (author reads the report) |
 | Layer 0 step 2 (`val`, both stores), leakage tests, FAISS case store, O6 thresholds | 2026-10-30 | `reports/layer0/STEP2_REPORT.md`; `EXPERIMENT_LOG.md` E5; commit of this entry | pending (O18, O21–O24) |
 | S2 — wrapper, k = 0 and k > 0 extraction, report window (25), latent method (b), calibrator (isotonic), identity gate | 2026-10-28 | `reports/s2/S2_REPORT.md`; `EXPERIMENT_LOG.md` E3; k = 10 tolerance open (O17) | O17 closed 2026-10-29 (pass); O18–O20 open |

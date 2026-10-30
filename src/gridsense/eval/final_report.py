@@ -57,6 +57,14 @@ def build(test_file: str | None = None) -> str:
     lc = {k: test["per_k"][k]["conformal_90"]["coverage_low_confidence"] for k in KS}
     A("- 90 % candidate sets: coverage over all post-fault windows " + ", ".join(f"k = {k}: {test['per_k'][k]['conformal_90']['coverage_all_post_fault']:.3f}" for k in KS)
       + "; over the LOW_CONFIDENCE windows only " + ", ".join(f"k = {k}: {v:.3f}" for k, v in lc.items() if v is not None) + " (§ 3).")
+    if s43 and s44:
+        for name, d in (("43", s43), ("44", s44)):
+            acc = [d["per_k"][k]["gate_acc95"]["accuracy_confident"] for k in KS]
+            cov = [d["per_k"][k]["gate_acc95"]["coverage"] for k in KS]
+            c10s = d["per_k"]["10"]["gate_acc95"]["coverage"]
+            A(f"- **Seed {name}, frozen seed-42 thresholds:** CONFIDENT accuracy at the 95 % point {min(acc):.4f}–{max(acc):.4f} (target 0.95), coverage {min(cov):.3f}–{max(cov):.3f}; coverage at k = 10: {c10s:.4f}" + (" (**below 50 %**)" if c10s < 0.5 else "")
+              + (": **the frozen thresholds do not transfer to another training seed** (below the target at every k)." if max(acc) < 0.95 else "."))
+        A("  Thresholds on the raw margin belong to the checkpoint they were selected on; a new checkpoint needs its own thresholds (fitted on its own cal split). New thresholds were NOT selected for seeds 43 and 44 (your instruction).")
     A("")
     A("## 1. The frozen gate (per k; CONFIDENT iff p ≥ τ_p and margin ≥ τ_m and agreement ≥ τ_k)")
     A("| k | operating point | τ_p | τ_m | τ_k | conformal q | isotonic knots |")
@@ -125,6 +133,12 @@ def build(test_file: str | None = None) -> str:
     A("- Mask offset 0 only; one realisation per window and k. Post-fault windows only for the gate and for every neighbour metric.")
     A("- Thresholds fitted on cal-B sit at the selection boundary; the test run is the unbiased check. Only the store is held out; the encoder saw every scenario.")
     A("- `test` was used once for the frozen gate (seed 42). Seeds 43 and 44 are reported test numbers with frozen thresholds, not new selections.")
+    A("")
+    A("## 9. For the author")
+    A("1. **The gate is effectively margin-only at its 95 % point.** Agreement and (at four k) the probability add nothing there; they matter at the 98 % point. gate_v1 stays as frozen and tested. A simpler gate_v2 would be a new version, and `test` has now been used, so a v2 must not be judged on the same test numbers.")
+    A("2. **Thresholds belong to a checkpoint.** On seeds 43 and 44 the frozen thresholds miss the 95 % target by 2–5 points (§ 5). Any other checkpoint needs its own cal-A / cal-B fit and its own frozen run. Which checkpoint is the system: seed 42?")
+    A("3. **Candidate sets on LOW_CONFIDENCE reports are not 90 % sets** (§ 3: 55–81 % at seed 42). Options for the report text: state the measured conditional coverage; fit the conformal quantile on LOW_CONFIDENCE windows only (new fit and check); or use a fixed top-k set.")
+    A("4. **Next stage: Layer 1 (document ingestion and retrieval).** Ready: `corpus/v1` (the revised paper stays a local copy, SHA-256 in `MANIFEST.json`), the span-based golden schema, the sweep skills. Open before it: O7 (extra corpus sources), O1 (OpenAI models and prices, needed only for the paid steps), O13 (human labels), and the golden retrieval drafts for your review.")
     return "\n".join(L) + "\n"
 
 

@@ -89,6 +89,8 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 - Windows w0000–w0019 of every run have label 0; fault windows start at w0020 [`processing/labels.py`]. Class 0 comes
   from pre-fault windows. Label c ≥ 1 is fault bus `FAULT_BUSES[c-1]` [`config/constants.py`].
 - Soft vote = sum of 25 node softmaxes; scores sum to 25, not 1 [`models/voting.py`].
+- Gate (2026-10-30): `configs/gate_v1.json`, sha256 `693ff351157d…` (frozen in `b7a80b9`). One run on test: coverage at the 95 % point 0.845 / 0.825 / 0.801 / 0.731 / 0.513 for k = 0 / 1 / 2 / 5 / 10;
+  CONFIDENT accuracy 0.949–0.950 [`reports/layer0/test_run_seed42.json`]. Thresholds do not transfer to seeds 43 and 44 (accuracy 0.897–0.932). Thread count: `eval/threads.txt` (2).
 - Latent candidates: last spatial-layer output `h` [B, 25, 64] before `NodeClassifier` [`models/graphsage.py`].
 - S2 results (seed 42, `val`, k = 0; `reports/s2/`): report window index 25 (accuracy 0.9061; max 0.9097 at w = 32);
   latent method (b) mean + max, 128-d (kNN-vote 0.9635 at k_nn = 10; (a) 0.9627, (c) 0.9629: a statistical tie);
