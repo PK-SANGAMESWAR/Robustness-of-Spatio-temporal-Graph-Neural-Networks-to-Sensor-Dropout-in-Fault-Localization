@@ -6,7 +6,7 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 ## Open
 | ID | Question | Blocks | Proposal (not approved) |
 |---|---|---|---|
-| O1 | OpenAI generator, judge and (optional) embedding models: exact snapshot names, price per 1M input/output tokens, with the date | S4 | Cheap generator candidates; judge candidates of a higher tier; prices from the provider page, given by the author |
+| O1 | (2026-10-31: embedding model `text-embedding-3-small`, 0.02 USD / 1M input, given by the author; generator and judge still open) OpenAI generator, judge and (optional) embedding models: exact snapshot names, price per 1M input/output tokens, with the date | S4 | Cheap generator candidates; judge candidates of a higher tier; prices from the provider page, given by the author |
 | O6 | Gate target for τ_p and τ_k (selected on cal-B) | S2 | Accuracy ≥ 95 % on CONFIDENT windows, per k if one threshold does not hold |
 | O8 | LangSmith: project name, workspace, approval of the first upload. (Key: in `rag-for-dropout/.env`, valid — HTTP 200 on the US endpoint, 2026-10-28; ignored by Git) | S8 | Project `gridsense-dev`; reviewed datasets only; traces redacted |
 | O16 | `OPENAI_API_KEY` (the author adds it when coding starts) | S4 | Same `.env`; `gridsense.settings` reads it |
@@ -16,6 +16,12 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 
 | O19 | (approved 2026-10-29; steps 1 and 2 done 2026-10-30, stopped as instructed) Next step after S2: Layer 0 metrics, saved case store (FAISS), leakage assertion and sanity run, scenario-held-out control (uses the `scenario_heldout_*` checkpoints; confirm). The gate target O6 is still open | S2 close | As listed |
 
+
+| O29 | **SUPERSEDED 2026-10-31 by O30** (session B wording, kept). Review the 30 draft notes (`corpus/v2/notes/`, each with a `source_ref` to verify) and the 54 draft golden queries (`data/eval/golden_retrieval.jsonl`); until then every Layer 1 number is PRELIMINARY and none may be reported. `rag-golden-review` prepares the table | before any reported Layer 1 number | Table of items with accept / edit / reject |
+| O30 | Review (`rag-golden-review`): the 30 merged notes (`corpus/notes_v1/`, check each `source_ref`; B's textbook sources are unverified paraphrases), the SOP (`corpus/sop_v1/`), the 4 generated feeder docs and the 54 golden queries (`data/eval/golden_retrieval.jsonl`, `recheck` per context). Until then every Layer 1 number is PRELIMINARY | any reported Layer 1 number; the sweep table | Table of items: accept / edit / reject |
+| O31 | Approve the first paid call: `text-embedding-3-small` as one embedder candidate, estimate 0.0013 USD (E12) | sweep step 3 (OpenAI arm only) | Approve after O30, on the reviewed set |
+| O32 | Paper 1 graph finding (`reports/findings/paper1_open_switch.md`): limitation, measurement (GPU), or future work | Paper 1 / thesis text | Limitation text now; measurement only if you want it |
+| O33 | Delete `_quarantine_session2/`? Keep until the author approves (2026-10-31) | — | Keep until S3 is reviewed |
 
 ## Closed (author answers 2026-10-28 to 2026-10-31)
 | ID | Answer |

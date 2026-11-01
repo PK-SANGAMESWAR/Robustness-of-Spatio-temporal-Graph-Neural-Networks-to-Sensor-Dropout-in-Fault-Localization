@@ -1,0 +1,70 @@
+{
+  "corpus_part": "feeder_v1",
+  "generator": "feeder_docs_v2",
+  "created_utc": "2026-10-30T19:44:15Z",
+  "sources": {
+    "constants": {
+      "path": "fault_localization/config/constants.py",
+      "sha256": "5bebc9484c6c2b8fda9c8d510eff3f85bcb5ffeaff3e482e494ea91ad644e625"
+    },
+    "node_mapping": {
+      "path": "dataset_fullscale_50/processed/node_mapping.json",
+      "sha256": "4e1146072573f3b586f4620aa87ab68c53f2b0fa576b1fdddcae2fa12061794d"
+    },
+    "edge_index": {
+      "path": "dataset_fullscale_50/processed/edge_index.npy",
+      "sha256": "91d2e7c2ee8e1de10e3efb4dedd2646b792ffbdc246e78371deb8023f813b6bd"
+    },
+    "phase_metadata": {
+      "path": "config/pmu_phase_metadata.yaml",
+      "sha256": "fbce326c0bb5cab2dc58a96fdf1d28fde440700d828be4effbd89248c5e7bbd6"
+    },
+    "feeder_model": {
+      "path": "fault_localization/data/ieee123/IEEE123Master.dss",
+      "sha256": "c92a69d9b218b1b2646ec7911783826229309038e72f16b848304c0457c0a54d"
+    },
+    "split_train": {
+      "path": "dataset_fullscale_50/splits/train.txt",
+      "sha256": "186da6af158230db54907c32cc9955298cbeb8ef5df89885842f982ef9f54eb0"
+    },
+    "split_val": {
+      "path": "dataset_fullscale_50/splits/val.txt",
+      "sha256": "6d0634d7d0ff1c4f2e372fe3436ddbe63d86ad53408b79d8c4b414075c52289e"
+    },
+    "split_test": {
+      "path": "dataset_fullscale_50/splits/test.txt",
+      "sha256": "1a44c1faa3b328e823ba6c7140215726aad9c779a5894bf7ed333eaf1e924b87"
+    }
+  },
+  "note": "Generated. Never edit; regenerate into a new version folder.",
+  "documents": [
+    {
+      "document_id": "feeder_overview",
+      "file": "feeder_overview.md",
+      "document_type": "feeder_documentation",
+      "approval_status": "curated_for_research",
+      "sha256": "f46ae3bd88f16e6c9f2963426659d6ce3c4818be39b2cf554d1e39e10d5b12d6"
+    },
+    {
+      "document_id": "feeder_fault_taxonomy",
+      "file": "feeder_fault_taxonomy.md",
+      "document_type": "feeder_documentation",
+      "approval_status": "curated_for_research",
+      "sha256": "ed62c6db4552b550d369568135d0c02b5aa97170f12d671d2a0a985bc0a94c77"
+    },
+    {
+      "document_id": "feeder_fault_buses",
+      "file": "feeder_fault_buses.md",
+      "document_type": "feeder_documentation",
+      "approval_status": "curated_for_research",
+      "sha256": "bf534de5581d5f1cede6cbdf739528db2c2de3948208ba48ef4be8ed98810bad"
+    },
+    {
+      "document_id": "feeder_pmu_nodes",
+      "file": "feeder_pmu_nodes.md",
+      "document_type": "feeder_documentation",
+      "approval_status": "curated_for_research",
+      "sha256": "973ccdbb80e22bf4f99eaf5eb9e4139a640ac7b345b18b0f314f8090cf4cecef"
+    }
+  ]
+}

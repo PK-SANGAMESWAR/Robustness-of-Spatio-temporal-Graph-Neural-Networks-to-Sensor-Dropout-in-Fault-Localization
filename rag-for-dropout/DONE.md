@@ -36,6 +36,7 @@ To unfreeze an item, the author must say so; record the date and reason in § 4.
 | `rag-for-dropout/configs/*.yaml` | Only keys that are not `# OPEN`; an OPEN key needs the author's answer |
 | `rag-for-dropout/data/eval/*.jsonl` | Add or edit items with `status: draft` only |
 | `rag-for-dropout/rubrics/*.md` | Only while `status: draft` |
+| `rag-for-dropout/corpus/notes_v1/`, `corpus/sop_v1/` | Only while `status: draft`; a reviewed note changes only with the author. `corpus/feeder_v*/` is generated: never edit, regenerate into a new folder |
 | `rag-for-dropout/reports/**` | Generated reports and sweep tables |
 | `rag-for-dropout/eval/snapshots/`, `eval/items/` | Add new files only |
 | `PLAN.md`, `IMPLEMENTATION.md`, `EVAL.md`, `claude-rag.md`, `dropout-rag-intro.md` | Keep each < 200 lines; no new number without a source |
@@ -51,6 +52,8 @@ without the author's approval for that action.
 |---|---|---|---|
 | S0 — support files, skills, scaffold, stage-1 inspection | 2026-10-28 | `EXPERIMENT_LOG.md` E0; `tests/gridsense/test_docs.py` passes | yes (answers to O2–O11, 2026-10-28) |
 | S1 — open items O2–O5, O9–O11 closed | 2026-10-28 | `OPEN_ITEMS.md` § Closed; `EXPERIMENT_LOG.md` E1; first commit on `gridsense-eval` | yes |
+| S3 part 1 (session A): corpus `s3_a1` (merged notes, feeder_v1, sop_v1), retrieval stack, golden v0 re-checked, smoke run (PRELIMINARY) | 2026-10-31 | `EXPERIMENT_LOG.md` E12; `tests/gridsense/test_s3_retrieval.py` | pending (O30) |
+| ~~Layer 1 minimal pipeline (session B): corpus v2, parsers, chunker, MiniLM index, golden draft, baseline (PRELIMINARY)~~ **SUPERSEDED 2026-10-31** by session A's S3 (E12); files in `_quarantine_session2/` | 2026-10-31 | `_quarantine_session2/rag-for-dropout/reports/layer1/BASELINE_REPORT.md`; `EXPERIMENT_LOG.md` E11 | superseded |
 | The single run of the frozen gate on `test` (seed 42) | 2026-10-30 | `reports/layer0/test_run_seed42.json`; `EXPERIMENT_LOG.md` E7 | pending |
 | Conformal 90 % per k; seeds 43 and 44 (Layer 0, frozen thresholds); `FINAL_REPORT.md` | 2026-10-30 | `reports/layer0/{seed43,seed44}_layer0_test.json`; E8 | pending (O25–O28) |
 | Gate frozen: `configs/gate_v1.json` (sha256 in `configs/gate_v1.sha256` and the commit message); full train store (seed 42); leakage checks on it | 2026-10-30 | `EXPERIMENT_LOG.md` E6; freeze commit | pending (author reads the report) |
@@ -59,3 +62,7 @@ without the author's approval for that action.
 
 ## 4. Unfreeze log
 (none)
+
+## 5. Stage ownership
+S3: owned by session A. Session B is closed. Its work is in _quarantine_session2/.
+A session must not write to files of a stage that it does not own. Keep `_quarantine_session2/` until the author approves deleting it (2026-10-31).

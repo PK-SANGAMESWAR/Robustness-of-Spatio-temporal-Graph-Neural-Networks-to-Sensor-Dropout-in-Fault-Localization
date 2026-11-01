@@ -28,8 +28,10 @@ skip with `pending: <module>` until it exists (same pattern as `tests/pinns/`). 
 | `verification/conformal.py` | Candidate set at a stated coverage, fit on `val` | S2 |
 | `cases/store.py`, `cases/build.py` | Case store (FAISS exact): fingerprint, exclusion of own scenario or run, `LeakageError` for val/test runs and shared seeds, `StaleIndexError` for a stale store or another checkpoint (built 2026-10-30: `eval/case_store/seed42_sub10/`) | S2 |
 | `cases/evidence.py` | kNN agreement, kNN vote, neighbour error rate, distance to nearest | S2 |
-| `ingest/` | `parsers.py` (LaTeX sections, md headings), `chunking.py` (six strategies), `manifest.py` | S3 |
-| `retrieval/` | `embeddings.py` (prefixes in one function), `stores.py` (FAISS, Chroma, Qdrant local), `bm25.py`, `hybrid.py` (RRF), `rerank.py` | S3 |
+| `ingest/` | `parsers.py` (`parsers_v1`: md headings, LaTeX sections), `corpus.py` (parts v1, feeder_v1, notes_v1, sop_v1; integrity, fingerprint), `chunking.py` (six strategies), `feeder_docs.py` (`feeder_docs_v2`) | S3 (session A, 2026-10-31) |
+| ~~`ingest/` (session B)~~ | SUPERSEDED 2026-10-31: `documents.py` (parsers p1, corpus v2), `structure_recursive` chunker; in `_quarantine_session2/` | — |
+| `retrieval/` | `embeddings.py` (local + OpenAI; prefixes in one function; cache; ledger), `stores.py` (FAISS, Chroma, Qdrant local = exact), `lexical.py` (BM25, RRF, cross-encoder), `retriever.py` (fingerprinted index; dense, bm25, hybrid; sufficiency signal); `cost.py` (ledger) | S3 (session A) |
+| ~~`retrieval/` (session B)~~ | SUPERSEDED 2026-10-31: `index.py` (exact FAISS + dense); in `_quarantine_session2/` | — |
 | `llm/client.py` | OpenAI client, mock client, cache, token and cost counters, total-cost ledger (5 USD) | S4 |
 | `agent/` | `state.py`, `graph.py` (LangGraph), `prompts/` (versioned files), `report_validation.py` | S5 |
 | `review/approval.py` | Human approval log; a model string never changes the state | S5 |

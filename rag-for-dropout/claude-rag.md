@@ -124,6 +124,8 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 | `OPEN_ITEMS.md`, `PROPOSED_CHANGES.md` | Blocking questions; spec corrections |
 | `EXPERIMENT_LOG.md` | One entry per stage and per run |
 | `reports/stage1_inspection.md` | Stage-1 inspection (`rag-eval.md` §3) |
+| `corpus/` | v1 (frozen model cards), feeder_v1 (generated), notes_v1 (30 merged drafts), sop_v1 (illustrative draft) |
+| `reports/layer1/REVIEW_v0.md`, `reports/findings/` | O30 review table; findings for other tracks (Paper 1 open switch) |
 | `configs/`, `rubrics/`, `data/eval/SCHEMA.md` | Eval config and registry; GEval rubrics; golden-set fields |
 
 ## 9. Deployment rules (O25, 2026-10-31)
