@@ -25,6 +25,9 @@ RE_ANCHOR = {  # (query_id, document_id) -> new span (substring of the old span)
 
 
 def main() -> None:
+    if not SRC.exists():
+        raise SystemExit("session B's files are archived, not in the tree. To re-run, extract ~/archive/gridsense/_quarantine_session2_archived_2026-11-01.tar.gz "
+                         "(sha256 cc38a3aff77eca85...) into rag-for-dropout/")
     docs = load_corpus()
     by = {d.document_id: d for d in docs}
     out = []

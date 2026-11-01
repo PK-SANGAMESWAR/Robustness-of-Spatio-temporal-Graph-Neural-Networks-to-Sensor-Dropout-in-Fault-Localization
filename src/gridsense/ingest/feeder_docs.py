@@ -1,6 +1,6 @@
 """Generate the feeder documents of the corpus (O7, 2026-10-31: "generated feeder docs") from the frozen repo sources.
 
-Layout and document IDs follow session B's corpus v2 feeder documents (quarantined, `_quarantine_session2/`), so its golden
+Layout and document IDs follow session B's corpus v2 feeder documents (archived 2026-11-01, see rag-for-dropout/DONE.md section 5), so its golden
 spans stay valid; session A added the nearest-μPMU distances on the operated feeder and the dropout protocol (author, 2026-10-31).
 Sources (read only): fault_localization/config/constants.py, dataset_fullscale_50/processed/{node_mapping.json,edge_index.npy},
 dataset_fullscale_50/splits/*.txt, config/pmu_phase_metadata.yaml and the OpenDSS IEEE 123 model. No value is typed by hand.

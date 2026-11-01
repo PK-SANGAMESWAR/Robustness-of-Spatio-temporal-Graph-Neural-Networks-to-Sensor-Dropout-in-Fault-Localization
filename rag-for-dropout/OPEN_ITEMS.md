@@ -19,13 +19,13 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 
 | O29 | **SUPERSEDED 2026-10-31 by O30** (session B wording, kept). Review the 30 draft notes (`corpus/v2/notes/`, each with a `source_ref` to verify) and the 54 draft golden queries (`data/eval/golden_retrieval.jsonl`); until then every Layer 1 number is PRELIMINARY and none may be reported. `rag-golden-review` prepares the table | before any reported Layer 1 number | Table of items with accept / edit / reject |
 | O30 | Review (`rag-golden-review`): the 30 merged notes (`corpus/notes_v1/`, check each `source_ref`; B's textbook sources are unverified paraphrases), the SOP (`corpus/sop_v1/`), the 4 generated feeder docs and the 54 golden queries (`data/eval/golden_retrieval.jsonl`, `recheck` per context). Until then every Layer 1 number is PRELIMINARY | any reported Layer 1 number; the sweep table | Table of items: accept / edit / reject |
-| O31 | Approve the first paid call: `text-embedding-3-small` as one embedder candidate, estimate 0.0013 USD (E12) | sweep step 3 (OpenAI arm only) | Approve after O30, on the reviewed set |
-| O32 | Paper 1 graph finding (`reports/findings/paper1_open_switch.md`): limitation, measurement (GPU), or future work | Paper 1 / thesis text | Limitation text now; measurement only if you want it |
-| O33 | Delete `_quarantine_session2/`? Keep until the author approves (2026-10-31) | — | Keep until S3 is reviewed |
 
 ## Closed (author answers 2026-10-28 to 2026-10-31)
 | ID | Answer |
 |---|---|
+| O31 | 2026-11-01: approved. Run the OpenAI embedding (`text-embedding-3-small`, 0.02 USD / 1M input, about 0.0013 USD) after the O30 review, together with the sweeps. The cost ledger and the 5 USD limit apply |
+| O32 | 2026-11-01: proposed paper text and one limitation sentence are in `reports/findings/paper1_open_switch.md` § 9 (no paper file changed; the author edits the paper). The thesis future work has the measurement (retrain with the corrected graph; needs the GPU after the S4.4 queue; not started) |
+| O33 | 2026-11-01: approved. `_quarantine_session2/` archived outside Git and deleted (`DONE.md` § 5) |
 | O7 | 2026-10-31: corpus = generated feeder docs; curated notes (about 30, `status: draft` until the author reviews them); one illustrative SOP; Paper 1 and RESULTS.md as `model_card`. Local embedding models only |
 | O25 | 2026-10-31: seed 42 is the system checkpoint. Deployment rule: each new checkpoint needs its own calibration, gate fit and frozen test run (`claude-rag.md` § 9) |
 | O26 | 2026-10-31: conformal quantile fitted on LOW_CONFIDENCE windows only, per k, on cal-A; checked on cal-B; run once on test (second use of test, this component only; `reports/layer0/TEST_USE.md`); gate_v1 unchanged |

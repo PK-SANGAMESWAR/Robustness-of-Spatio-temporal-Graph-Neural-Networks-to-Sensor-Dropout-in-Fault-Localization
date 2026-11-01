@@ -73,7 +73,7 @@ case_store:
 
 corpus:
   version: s3_a1                  # session A (2026-10-31): v1 model cards + feeder_v1 (generated) + notes_v1 (30 merged drafts) + sop_v1 (illustrative); gridsense.ingest.corpus
-  # SUPERSEDED (session B, 2026-10-31): version v2 (corpus/v2/, now in _quarantine_session2/)
+  # SUPERSEDED (session B, 2026-10-31): version v2 (corpus/v2/, archived 2026-11-01; DONE.md section 5)
   parts: [v1, feeder_v1, notes_v1, sop_v1]
   documents:
     - path: paper/overleaf.tex
