@@ -882,6 +882,53 @@ effect of the table on the fusion) is **superseded, not deleted**. **The λ₂ =
 loss. With a shuffled table, the fusion term β · residual moves the true-class logit by a large amount, and training fails.**
 The first record in this section (d: "the collapse is from the held-out loss scale") was a reading, and the λ₂ = 0 run does not support it.
 
+### S4.4 — R4 (3 seeds) and R3 (1 seed) results `[Recorded 2026-11-02 11:42 IST / 2026-11-02T06:12:05Z]`
+
+R4 = held-out term only (λ₂ = 0.1), fusion off, γ = 0 (`config/s4_4/r4.yaml`), seeds 42/43/44. R3 = expected-residual term only (λ₁ = 0.01), fusion off, γ = 0
+(`config/s4_4/r3.yaml`), seed 42. Both load the physics table for the loss only; the fused class equals the network-only class in 100 % of windows (self-check passed).
+None collapsed. Validation split, full grid; differences are the arm minus the comparison model at the **same seed**. **R3 has one seed: no significance is claimed.**
+
+| Arm | Seed | Best epoch | Best validation F1 | R5 (best epoch / F1) | R0ⁿ (best epoch / F1) |
+|---|---|---|---|---|---|
+| R4 | 42 | 30 | 0.7950 | 19 / 0.8951 | 30 / 0.8461 |
+| R4 | 43 | 26 | 0.8017 | 29 / 0.9019 | 29 / 0.8309 |
+| R4 | 44 | 24 | 0.7868 | 17 / 0.8975 | 27 / 0.8407 |
+| R3 | 42 | 26 | 0.7275 | 19 / 0.8951 | 30 / 0.8461 |
+| R5-γ0 | 42 | 8 | 0.8819 | 19 / 0.8951 | 30 / 0.8461 |
+
+**R4 minus R5**, fused macro-F1, mean over the 3 seeds (range over seeds): lower than R5 in **60 of 60** seed-by-condition pairs, sign-consistent at all 20 conditions;
+range −0.049 to −0.291; per-seed mean over the 20 conditions -0.1319 / -0.1397 / -0.1340.
+
+| σ (p.u.) | k=0 | k=1 | k=2 | k=5 | k=10 |
+|---|---|---|---|---|---|
+| 0 | -0.104 (-0.111 to -0.100) | -0.117 (-0.122 to -0.113) | -0.130 (-0.135 to -0.126) | -0.173 (-0.174 to -0.170) | -0.270 (-0.291 to -0.257) |
+| 0.0005 | -0.104 (-0.110 to -0.098) | -0.117 (-0.122 to -0.111) | -0.130 (-0.134 to -0.124) | -0.172 (-0.174 to -0.171) | -0.268 (-0.290 to -0.255) |
+| 0.002 | -0.094 (-0.102 to -0.089) | -0.104 (-0.109 to -0.100) | -0.114 (-0.118 to -0.111) | -0.148 (-0.153 to -0.144) | -0.229 (-0.254 to -0.212) |
+| 0.01 | -0.056 (-0.060 to -0.049) | -0.060 (-0.064 to -0.053) | -0.066 (-0.070 to -0.058) | -0.090 (-0.103 to -0.079) | -0.159 (-0.192 to -0.138) |
+
+**R4 minus R0ⁿ** (the noise-augmented reference): lower in **60 of 60** pairs, sign-consistent at all 20 conditions; range −0.015 to −0.085; per-seed mean -0.0613 / -0.0431 / -0.0468.
+
+| σ (p.u.) | k=0 | k=1 | k=2 | k=5 | k=10 |
+|---|---|---|---|---|---|
+| 0 | -0.045 (-0.054 to -0.029) | -0.049 (-0.058 to -0.033) | -0.052 (-0.062 to -0.038) | -0.061 (-0.070 to -0.054) | -0.069 (-0.085 to -0.053) |
+| 0.0005 | -0.045 (-0.053 to -0.029) | -0.049 (-0.059 to -0.034) | -0.052 (-0.063 to -0.038) | -0.061 (-0.071 to -0.054) | -0.069 (-0.085 to -0.053) |
+| 0.002 | -0.042 (-0.054 to -0.024) | -0.046 (-0.060 to -0.029) | -0.049 (-0.063 to -0.034) | -0.056 (-0.069 to -0.049) | -0.065 (-0.081 to -0.047) |
+| 0.01 | -0.031 (-0.052 to -0.015) | -0.032 (-0.053 to -0.017) | -0.034 (-0.055 to -0.020) | -0.042 (-0.060 to -0.028) | -0.058 (-0.075 to -0.032) |
+
+**R3 minus R5** (seed 42): lower in 20 of 20 cells, range -0.292 to -0.105, mean -0.1801.
+
+| σ (p.u.) | k=0 | k=1 | k=2 | k=5 | k=10 |
+|---|---|---|---|---|---|
+| 0 | -0.168 | -0.177 | -0.186 | -0.216 | -0.292 |
+| 0.0005 | -0.170 | -0.179 | -0.187 | -0.217 | -0.289 |
+| 0.002 | -0.157 | -0.162 | -0.167 | -0.187 | -0.242 |
+| 0.01 | -0.105 | -0.106 | -0.108 | -0.120 | -0.167 |
+
+**R3 minus R0ⁿ** (seed 42): lower in 20 of 20 cells, range -0.120 to -0.089, mean -0.1096.
+
+**Reading.** With fusion off, the held-out term alone (R4) and the expected-residual term alone (R3) both score below the noise-augmented reference in every cell, so neither physical loss term by itself
+produces the gain of R5; the held-out term lowers the score in this setting (R4 is below R0ⁿ in 60 of 60 pairs). The gain of R5 is therefore not carried by either loss term alone. (The R5-γ0 record is above.)
+
 ### S4.4 — R6 λ₂ = 0 seed 42 collapse, residual measurement, and the end of R6 training `[Recorded 2026-11-02 11:40 IST / 2026-11-02T06:10:30Z]`
 
 **Collapse.** R6 with λ₂ = 0 (`config/s4_4/r6_lam2_0.yaml`, seed 42) started 2026-11-01T05:59:49Z and the epoch-3 guard fired
