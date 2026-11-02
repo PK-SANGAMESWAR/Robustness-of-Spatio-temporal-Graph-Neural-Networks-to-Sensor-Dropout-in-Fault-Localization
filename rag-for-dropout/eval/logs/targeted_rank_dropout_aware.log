@@ -1,0 +1,16 @@
+[dropout_aware] batch 500/7720  0.6 min  ETA 8.7 min
+[dropout_aware] batch 1000/7720  1.2 min  ETA 8.2 min
+[dropout_aware] batch 1500/7720  1.8 min  ETA 7.5 min
+[dropout_aware] batch 2000/7720  2.4 min  ETA 6.8 min
+[dropout_aware] batch 2500/7720  3.0 min  ETA 6.3 min
+[dropout_aware] batch 3000/7720  3.7 min  ETA 5.9 min
+[dropout_aware] batch 3500/7720  4.5 min  ETA 5.4 min
+[dropout_aware] batch 4000/7720  5.2 min  ETA 4.8 min
+[dropout_aware] batch 4500/7720  5.8 min  ETA 4.2 min
+[dropout_aware] batch 5000/7720  6.4 min  ETA 3.5 min
+[dropout_aware] batch 5500/7720  7.0 min  ETA 2.8 min
+[dropout_aware] batch 6000/7720  7.6 min  ETA 2.2 min
+[dropout_aware] batch 6500/7720  8.3 min  ETA 1.6 min
+[dropout_aware] batch 7000/7720  8.9 min  ETA 0.9 min
+[dropout_aware] batch 7500/7720  9.5 min  ETA 0.3 min
+/home/ubuntu/Fault-Localization/rag-for-dropout/eval/targeted_rank/dropout_aware_seed42.npz

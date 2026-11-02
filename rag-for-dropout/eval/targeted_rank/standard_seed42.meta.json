@@ -1,0 +1,80 @@
+{
+  "arm": "standard",
+  "n_windows": 247000,
+  "limit_batches": null,
+  "elapsed_s": 574.2484522610903,
+  "torch": "2.5.1+cu121",
+  "threads": 2,
+  "device": "cpu",
+  "batch_size": 32,
+  "checkpoint": "results/fullscale_final/rgsage_max/seed_00042/checkpoint_best.pt",
+  "checkpoint_sha256": "a7f9218e9292e411daf03484764ac9d4afa100022b6a5ba36444b4877944c179",
+  "f1_average": "macro",
+  "rank_checks": {
+    "saved_rank_equals_rebuilt_as_built": true
+  },
+  "changed_fault_labels": {
+    "1": [
+      10
+    ],
+    "2": [
+      10,
+      21
+    ],
+    "5": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      20,
+      21
+    ],
+    "10": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      20,
+      21,
+      25
+    ]
+  },
+  "changed_fault_buses": {
+    "1": [
+      51
+    ],
+    "2": [
+      51,
+      93
+    ],
+    "5": [
+      47,
+      51,
+      53,
+      55,
+      57,
+      89,
+      93
+    ],
+    "10": [
+      42,
+      47,
+      51,
+      53,
+      55,
+      57,
+      62,
+      65,
+      89,
+      93,
+      108
+    ]
+  },
+  "git_commit": "d90a36c",
+  "split_test_sha256": "1a44c1faa3b328e823ba6c7140215726aad9c779a5894bf7ed333eaf1e924b87"
+}

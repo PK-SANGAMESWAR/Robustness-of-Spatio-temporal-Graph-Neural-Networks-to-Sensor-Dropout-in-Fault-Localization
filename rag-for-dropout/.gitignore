@@ -12,3 +12,4 @@ corpus/v1/1170_revised.tex
 eval/layer0/
 eval/case_store/*/*.faiss
 eval/case_store/*/*.npz
+eval/targeted_rank/*.npz

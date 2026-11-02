@@ -52,6 +52,7 @@ without the author's approval for that action.
 |---|---|---|---|
 | S0 — support files, skills, scaffold, stage-1 inspection | 2026-10-28 | `EXPERIMENT_LOG.md` E0; `tests/gridsense/test_docs.py` passes | yes (answers to O2–O11, 2026-10-28) |
 | S1 — open items O2–O5, O9–O11 closed | 2026-10-28 | `OPEN_ITEMS.md` § Closed; `EXPERIMENT_LOG.md` E1; first commit on `gridsense-eval` | yes |
+| Corrected targeted-dropout ranking, seed 42, no retraining (finding § 11) | 2026-11-01 | `reports/findings/targeted_rank_seed42.json`; `EXPERIMENT_LOG.md` E14 | author reads the finding |
 | S3 part 1 (session A): corpus `s3_a1` (merged notes, feeder_v1, sop_v1), retrieval stack, golden v0 re-checked, smoke run (PRELIMINARY) | 2026-10-31 | `EXPERIMENT_LOG.md` E12; `tests/gridsense/test_s3_retrieval.py` | pending (O30) |
 | ~~Layer 1 minimal pipeline (session B): corpus v2, parsers, chunker, MiniLM index, golden draft, baseline (PRELIMINARY)~~ **SUPERSEDED 2026-10-31** by session A's S3 (E12); files archived (section 5) | 2026-10-31 | `_quarantine_session2/rag-for-dropout/reports/layer1/BASELINE_REPORT.md`; `EXPERIMENT_LOG.md` E11 | superseded |
 | The single run of the frozen gate on `test` (seed 42) | 2026-10-30 | `reports/layer0/test_run_seed42.json`; `EXPERIMENT_LOG.md` E7 | pending |
