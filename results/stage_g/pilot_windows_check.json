@@ -1,0 +1,31 @@
+{
+  "n_event_files_compared": 1100,
+  "n_event_files_different": 0,
+  "csv_byte_identical": {
+    "labels.csv": true,
+    "metadata.csv": true
+  },
+  "all_txt_byte_identical": true,
+  "stats": {
+    "n_events": 1100,
+    "n_windows": 44000,
+    "n_no_fault": 22000,
+    "resistances": [
+      5.0,
+      20.0
+    ],
+    "fault_types": [
+      "AB",
+      "ABC",
+      "ABCG",
+      "ABG",
+      "AG",
+      "BC",
+      "BCG",
+      "BG",
+      "CA",
+      "CAG",
+      "CG"
+    ]
+  }
+}
