@@ -1,16 +1,13 @@
-"""S4.4 merged queue -- the only queue. One run at a time, in this order:
+"""S4.4 merged queue -- the only queue. Remaining work after the R6 collapses (restarted 2026-11-02), in this order:
 
-  1. G-TF core scoring            (``scripts/run_gtf.py``; pre-registration in ``PC-STGNN/07_STAGE_F_gate.md``)
-  2. R5-gamma0                    seed 42
-  3. R4                           seeds 42, 43, 44
-  4. R3                           seed 42
-  5. R6 with lambda2 = 0          seeds 42, 43, 44   (``config/s4_4/r6_lam2_0.yaml``; amendment in
-                                                      ``06_STAGE_E_pcstgnn.md`` "R6 seed 42 collapse")
-  6. R1                           seed 42
-  7. R2                           seeds 42, 43, 44
+  1. R6^i scoring, seeds 42, 43, 44   inference only: the three trained R5 checkpoints scored with the shuffled table
+                                      (shuffle_seed 6) on the full S4.4 grid; pre-registered in ``06_STAGE_E_pcstgnn.md``
+  2. R1                               seed 42
+  3. R2                               seeds 42, 43, 44
 
-It replaces ``run_s4_4_remaining_queue.py`` (stopped by the R6 collapse guard on 2026-10-24; now refuses to run)
-and the part-2 runner/watcher (removed). A lock file lets only one copy run at a time.
+Done earlier by this queue (see ``results/s4_4/queue_progress.json``): G-TF core, R5-gamma0, R4 x3, R3. R6 training was stopped after two
+collapses (seeds 43 and 44 are not run). The G-TF2 watcher (``scripts/run_gtf2_after_queue.py``) starts G-TF2 when this queue writes
+``queue_complete``. A lock file lets only one copy run at a time.
 
 Safety (same pattern as the queues it replaces):
   - **Resume guard.** A run's training is skipped only if ``checkpoint_best.pt`` and ``metrics.json`` exist and
@@ -50,14 +47,12 @@ if "--dry-run" in sys.argv:          # must happen before torch is imported anyw
 import yaml
 
 QUEUE = [
-    ("gtf_core", None, None),
-    ("r5_gamma0", 1, 42),
-    ("r4", 1, 42), ("r4", 2, 43), ("r4", 3, 44),
-    ("r3", 1, 42),
-    ("r6_lam2_0", 1, 42), ("r6_lam2_0", 2, 43), ("r6_lam2_0", 3, 44),
+    ("r6i", 1, 42), ("r6i", 2, 43), ("r6i", 3, 44),
     ("r1", 1, 42),
     ("r2", 1, 42), ("r2", 2, 43), ("r2", 3, 44),
 ]
+R6I_SHUFFLE_SEED = 6                  # same permutation as the R6 training arm
+R6I_CHECKPOINT_ARM = "r5"
 PROGRESS_PATH = REPO / "results/s4_4/queue_progress.json"
 STOP_PATH = REPO / "results/s4_4/queue_STOPPED.json"
 LOCK_PATH = REPO / "results/s4_4/queue.lock"
@@ -118,6 +113,19 @@ def run_gtf_core(progress) -> dict:
             "decision_rule": summary.get("decision_rule_bias2pct_sigma1e-2")}
 
 
+def run_r6i(seed: int, position: int, score_run) -> None:
+    """R6^i: score the trained R5 checkpoint with the shuffled table. Scoring only; nothing is trained."""
+    out = REPO / f"results/s4_4/r6i/pcstgnn/seed_{seed:05d}/scoring_full_grid.json"
+    if out.exists():
+        _append({"position": position, "arm": "r6i", "seed": seed, "stage": "scoring_skipped_already_done"})
+        return
+    _append({"position": position, "arm": "r6i", "seed": seed, "stage": "scoring_started", "utc": utc()})
+    t1 = time.perf_counter()
+    summary = score_run(R6I_CHECKPOINT_ARM, seed, shuffle_seed=R6I_SHUFFLE_SEED, out_arm="r6i")
+    _append({"position": position, "arm": "r6i", "seed": seed, "stage": "scoring_done",
+             "scoring_seconds": time.perf_counter() - t1, "table_check": summary.get("table_check"), "utc": utc()})
+
+
 def dry_run() -> int:
     import numpy as np
     import torch
@@ -136,6 +144,20 @@ def dry_run() -> int:
             for p in problems:
                 print(f"            - {p}")
             ok = ok and ready
+            continue
+        if arm == "r6i":
+            ck = REPO / f"results/s4_4/{R6I_CHECKPOINT_ARM}/pcstgnn/seed_{seed:05d}/checkpoint_best.pt"
+            cfgs = yaml.safe_load((ck.parent / "config.yaml").read_text())
+            cfgs.setdefault("model", {})["shuffle_seed"] = R6I_SHUFFLE_SEED
+            m = _model(cfgs, edge_index)
+            perm = json.loads((REPO / "config/s4_4/r6_shuffle_permutation.json").read_text())["permutation_26"]
+            state = torch.load(ck, map_location="cpu", weights_only=True)["model"]
+            out_exists = (REPO / f"results/s4_4/r6i/pcstgnn/seed_{seed:05d}/scoring_full_grid.json").exists()
+            good = (ck.exists() and m.shuffle_map.tolist() == perm and not torch.equal(m.phys_table, state["phys_table"])
+                    and torch.equal(m.phys_table, state["phys_table"][m.shuffle_map]))
+            print(f"[dry-run] {position:2d}. r6i seed {seed}: scoring only; R5 checkpoint present: {ck.exists()}, shuffled table equals the "
+                  f"R6 permutation and differs from the true table: {good}, already scored: {out_exists}")
+            ok = ok and good
             continue
         cfg = rq._frozen_config(arm, seed)
         n_params = sum(p.numel() for p in _model(cfg, edge_index).parameters())
@@ -185,6 +207,20 @@ def main() -> int:
                 return 1
             rq._release_gpu()
             _append({"position": position, "arm": arm, **entry, "utc": utc()})
+            continue
+
+        if arm == "r6i":
+            try:
+                run_r6i(seed, position, score_run)
+            except Exception:
+                tb = traceback.format_exc()
+                rq._release_gpu()
+                _stop("exception", tb, position)
+                _append({"position": position, "arm": arm, "seed": seed, "stage": "scoring_failed", "error": tb})
+                print(f"QUEUE STOPPED at position {position} (r6i seed {seed}): scoring raised an exception.\n{tb}", file=sys.stderr)
+                return 1
+            rq._release_gpu()
+            print(f"[{position}/{len(QUEUE)}] r6i seed (seed={seed}) done.", flush=True)
             continue
 
         run_dir = rq._run_dir(arm, seed)
@@ -239,7 +275,7 @@ def main() -> int:
         print(f"[{position}/{len(QUEUE)}] {arm} seed{seed_label} (seed={seed}) done.", flush=True)
 
     _append({"stage": "queue_complete", "utc": utc()})
-    print("Merged queue complete: G-TF core, R5-gamma0, R4 x3, R3, R6(lambda2=0) x3, R1, R2 x3.", flush=True)
+    print("Queue complete: R6^i x3, R1, R2 x3.", flush=True)
     return 0
 
 

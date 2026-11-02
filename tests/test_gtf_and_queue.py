@@ -111,8 +111,8 @@ def test_gtf_not_ready_until_preregistration_complete(tmp_path, monkeypatch):
 
 def test_merged_queue_order():
     assert [(a, sd) for a, _, sd in Q.QUEUE] == [
-        ("gtf_core", None), ("r5_gamma0", 42), ("r4", 42), ("r4", 43), ("r4", 44), ("r3", 42),
-        ("r6_lam2_0", 42), ("r6_lam2_0", 43), ("r6_lam2_0", 44), ("r1", 42), ("r2", 42), ("r2", 43), ("r2", 44)]
+        ("r6i", 42), ("r6i", 43), ("r6i", 44), ("r1", 42), ("r2", 42), ("r2", 43), ("r2", 44)]
+    assert Q.R6I_SHUFFLE_SEED == 6 and Q.R6I_CHECKPOINT_ARM == "r5"
 
 
 def test_merged_queue_lock_allows_one_process(tmp_path, monkeypatch):

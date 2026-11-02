@@ -121,10 +121,18 @@ def _load_run_config(run_dir: Path) -> dict:
     return yaml.safe_load(config_path.read_text())
 
 
-def score_run(arm: str, seed: int, max_windows: int | None = None) -> dict:
+def score_run(arm: str, seed: int, max_windows: int | None = None, *, shuffle_seed: int | None = None,
+              out_arm: str | None = None) -> dict:
     """Score any S4.4 checkpoint. ``max_windows``, if given, restricts scoring to the first
     ``max_windows`` windows by global index (val split order) -- used only by the equivalence
-    test; production calls (the CLI / the orchestrator) leave it ``None`` (the full split)."""
+    test; production calls (the CLI / the orchestrator) leave it ``None`` (the full split).
+
+    ``shuffle_seed`` / ``out_arm`` (R6-inference, ``R6^i``, 2026-11-02): score the ``arm`` checkpoint with the
+    signature table permuted by ``shuffle_seed`` (the same permutation as the R6 training arm) and write the
+    result under ``results/s4_4/<out_arm>/``. The checkpoint's ``phys_table``/``shuffle_map`` buffers are
+    persistent, so loading the R5 state would silently restore the TRUE table; they are therefore taken from
+    the freshly built shuffled model and put back after ``load_state_dict`` (asserted). No fusion code is
+    touched and no weight is trained."""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     run_dir = Path("results/s4_4") / arm / "pcstgnn" / f"seed_{seed:05d}"
     ckpt_path = run_dir / "checkpoint_best.pt"
@@ -132,6 +140,8 @@ def score_run(arm: str, seed: int, max_windows: int | None = None) -> dict:
         raise FileNotFoundError(f"No checkpoint at {ckpt_path} -- train before scoring")
 
     run_config = _load_run_config(run_dir)
+    if shuffle_seed is not None:
+        run_config.setdefault("model", {})["shuffle_seed"] = int(shuffle_seed)
     data_root = run_config.get("data_root", DATA_ROOT)
     val_ds = WindowGraphDataset(data_root, "val")
     edge_index = val_ds.edge_index
@@ -144,7 +154,21 @@ def score_run(arm: str, seed: int, max_windows: int | None = None) -> dict:
     # the arm name. Works for any S4.4 arm.
     model = build_model_from_config(run_config, edge_index).to(device)
     state = torch.load(ckpt_path, map_location=device, weights_only=True)["model"]
+    shuffled_buffers = ({k: v.clone() for k, v in model.named_buffers() if k in ("phys_table", "shuffle_map")}
+                        if shuffle_seed is not None else None)
     model.load_state_dict(state)
+    table_check = None
+    if shuffle_seed is not None:
+        true_table = state["phys_table"].to(device)
+        for k, v in shuffled_buffers.items():
+            getattr(model, k).copy_(v)
+        perm = model.shuffle_map
+        table_check = {"permutation_is_not_identity": bool((perm != torch.arange(26, device=perm.device)).any()),
+                       "class0_fixed": bool(perm[0] == 0),
+                       "table_equals_true_table_permuted": bool(torch.equal(model.phys_table, true_table[perm])),
+                       "table_differs_from_true_table": bool(not torch.equal(model.phys_table, true_table))}
+        if not all(table_check.values()):
+            raise RuntimeError(f"shuffled-table check failed: {table_check}")
     model.eval()
     use_fusion = bool(getattr(model, "use_fusion", False))
     has_table = bool(getattr(model, "phys_table", torch.empty(0)).numel())
@@ -273,6 +297,9 @@ def score_run(arm: str, seed: int, max_windows: int | None = None) -> dict:
         "has_table": has_table,
         "beta": beta,
         "n_windows": n_windows_seen,
+        "shuffle_seed": shuffle_seed,
+        "table_check": table_check,
+        "checkpoint_arm": arm,
         "k_levels": K_LEVELS,
         "sigma_levels": SIGMA_LEVELS,
         "n_mask_seeds": N_MASK_SEEDS,
@@ -292,7 +319,11 @@ def score_run(arm: str, seed: int, max_windows: int | None = None) -> dict:
                 "no-fault windows, as the existing helper does.",
     }
     if max_windows is None:
-        out_path = run_dir / "scoring_full_grid.json"
+        out_dir = Path("results/s4_4") / out_arm / "pcstgnn" / f"seed_{seed:05d}" if out_arm else run_dir
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_path = out_dir / "scoring_full_grid.json"
+        if out_arm:
+            summary["arm"] = out_arm
         out_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
 
     del model
