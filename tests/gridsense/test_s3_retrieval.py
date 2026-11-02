@@ -238,21 +238,23 @@ def test_reviewed_note_front_matter_follows_the_o30_rules():
         assert not any(w in m["source_ref"] for w in ("Phadke", "Thorp", "Anderson", "Kersting"))
 
 
-def test_golden_retrieval_v2_is_valid_and_statuses_follow_the_author():
+def test_golden_retrieval_v4_is_valid_and_statuses_follow_the_author():
     from gridsense.config import ROOT, load_config
     from gridsense.ingest.corpus import load_corpus
     rows = G.load(ROOT / load_config()["golden_sets"]["retrieval"]["path"], statuses=("draft", "reviewed"))
     by = {r["query_id"]: r for r in rows}
-    assert len(rows) == 68 and all(r["golden_version"] == 2 for r in rows)
+    assert len(rows) == 68 and all(r["golden_version"] == 4 for r in rows)
     drafts = [r["query_id"] for r in rows if r["status"] == "draft"]
-    assert drafts == ["R-0055", "R-0056"] + [f"R-{i:04d}" for i in range(57, 69)]       # the author checks the spans (O34) and the 12 near-miss queries
-    assert sum(r["status"] == "reviewed" for r in rows) == 54
+    assert drafts == [f"R-{i:04d}" for i in range(57, 69) if i not in (59, 60)]       # R-0055, R-0056 accepted (O39), R-0059 and R-0060 (O39b); the other 10 near-miss queries wait for the author
+    assert sum(r["status"] == "reviewed" for r in rows) == 58 and by["R-0059"]["expected_output"] == "insufficient_evidence"
     assert G.validate(rows, load_corpus()) == []
     assert [c["document_id"] for c in by["R-0005"]["golden_contexts"]] == ["note_05_fault_resistance"]     # results_md row removed (O30)
+    assert by["R-0055"]["status"] == by["R-0056"]["status"] == "reviewed"     # O39
     assert by["R-0055"]["split"] == "test" and by["R-0055"]["golden_contexts"][0]["document_id"] == "feeder_fault_buses" and "bus 47" in by["R-0055"]["reference_answer"].lower()
     assert by["R-0056"]["split"] == "dev" and by["R-0056"]["golden_contexts"][0]["document_id"] == "feeder_fault_taxonomy"
     reviewed = [r for r in rows if r["status"] == "reviewed"]
-    assert sum(r["split"] == "dev" and r["answerable"] for r in reviewed) == 24 and sum(r["split"] == "test" and r["answerable"] for r in reviewed) == 22
+    assert sum(r["split"] == "dev" and r["answerable"] for r in reviewed) == 25 and sum(r["split"] == "test" and r["answerable"] for r in reviewed) == 23
+    assert sum(r["split"] == "dev" and not r["answerable"] for r in reviewed) == 6 and sum(r["split"] == "test" and not r["answerable"] for r in reviewed) == 4
 
 
 def test_near_miss_unanswerable_queries_stay_unanswerable_by_the_corpus():
@@ -260,7 +262,7 @@ def test_near_miss_unanswerable_queries_stay_unanswerable_by_the_corpus():
     import re
     from gridsense.config import ROOT, load_config
     from gridsense.ingest.corpus import load_corpus
-    rows = [r for r in G.load(ROOT / load_config()["golden_sets"]["retrieval"]["path"], statuses=("draft",)) if r["query_type"] == "unanswerable"]
+    rows = [r for r in G.load(ROOT / load_config()["golden_sets"]["retrieval"]["path"], statuses=("draft", "reviewed")) if r["query_id"] >= "R-0057"]
     assert len(rows) == 12 and sum(r["split"] == "dev" for r in rows) == 6 and sum(r["split"] == "test" for r in rows) == 6
     corpus = "\n".join(d.text for d in load_corpus())
     for r in rows:

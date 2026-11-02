@@ -1,6 +1,6 @@
 # Layer 1 sweeps — summary and the final retrieval configuration (stage S3)
 
-Written for: the author. Updated 2026-11-02 after the O34 decision. Golden set v2: **54 reviewed queries** (24 + 22 answerable and 4 + 4 unanswerable on dev and test) are used; the 14 drafts (R-0055, R-0056 and 12 near-miss queries) are not.
+Written for: the author. Updated 2026-11-02 after the O34, O39 and O41 decisions. All numbers below use the **54 reviewed queries of golden v2** (24 + 22 answerable and 4 + 4 unanswerable on dev and test). Golden v3 (O39) added R-0055 and R-0056 as reviewed (56 queries); no run was repeated. The 12 near-miss queries are still draft and are not used.
 All choices were made on the **dev split**; the **test split** was used once per frozen configuration (`reports/layer1/GOLDEN_TEST_USE.md`). Sources: `WINNERS.json`, the per-axis reports in this folder, `FROZEN_TEST*.md`, `REVIEWED_ONLY.md`,
 `PRECISION*.md`, snapshots in `eval/snapshots/`. CPU only, 2 threads.
 
@@ -11,7 +11,7 @@ All choices were made on the **dev split**; the **test split** was used once per
 | chunking | recursive, 200 tokens, 10 % overlap; **v2: one chunk per table row with the header repeated** | `chunker.md`, `chunk_size.md`, `overlap.md`, `table_rows.md` |
 | retrieval | hybrid: dense plus BM25, RRF (k = 60), 20 candidates from each; no reranker; top 3 | `retrieval_mode.md`, `reranker.md`, `candidates.md`, `top_k.md` |
 | vector store | **Qdrant (local mode)**, not FAISS; Chroma gives identical results | `vector_store.md` |
-Configuration **v2** (table rows) was frozen on dev by the rule that you gave and that I fixed before the run (not worse on dev); `v1` is the same without table rows. **v2 did not repeat its dev gain on test (section 2): the choice between v1 and v2 is yours.**
+Configuration **v2** (table rows) was frozen on dev by the rule that you gave and that I fixed before the run (not worse on dev); `v1` is the same without table rows. **Decision O41 (author, 2026-11-02): keep v2.** It passed the pre-set rule; v1 or v2 is not chosen with test results. The test difference is a known limitation (section 2 and section 7).
 
 ## 2. Test results (reviewed queries, one run each; 22 answerable; 95 % intervals over queries)
 | | Recall@1 | Recall@5 | MRR@10 | nDCG@5 | P@3 | P@5 | unanswerable flagged / answerable flagged |
@@ -19,7 +19,7 @@ Configuration **v2** (table rows) was frozen on dev by the rule that you gave an
 | v1 (no table rows) | 0.77 (0.59–0.91) | 0.95 (0.86–1.00) | 0.83 (0.68–0.94) | 0.79 (0.66–0.90) | 0.30 | 0.22 | 1.00 / 0.23 (tau 0.490) |
 | v2 (table rows) | 0.73 (0.55–0.91) | 0.91 (0.77–1.00) | 0.80 (0.65–0.93) | 0.75 (0.60–0.88) | 0.27 | 0.20 | 1.00 / 0.23 (tau 0.464) |
 Dev: v2 was better (quality Q +0.024, Recall@1 0.88 against 0.79); test: v2 against v1 is Q −0.036 (95 % interval −0.106 to +0.014), Recall@1 −0.045. Both differences lie inside the noise of 22 to 24 queries, but the sign changed. Table-row lookups improved
-(R-0033 on dev from rank 2 to 1, R-0034 on test from 4 to 2); R-0036 ("which fault buses also carry a micro-PMU") fell on test from rank 1 to 5, because 111 near-identical row chunks now compete with the narrative passage. I changed nothing.
+(R-0033 on dev from rank 2 to 1, R-0034 on test from 4 to 2); R-0036 ("which fault buses also carry a micro-PMU") fell on test from rank 1 to 5, because 111 near-identical row chunks now compete with the narrative passage. I changed nothing. **Known limitation (O41):** on test, v2 minus v1 is Q −0.036 (95 % interval −0.106 to +0.014); the cause of the largest single loss (R-0036) is the competition of 111 near-identical row chunks with the narrative passage.
 Hybrid against dense, on test: MRR@10 +0.145 (+0.045 to +0.255) and Recall@1 +0.261 (+0.087 to +0.435) (23 queries incl. the draft R-0055; `FROZEN_TEST.md`).
 
 ## 3. Precision (`PRECISION.md`, `PRECISION_final_v2.md`; a passage is relevant if it holds a golden span; M = relevant chunks in the index, 1 or 2 per query)
@@ -56,8 +56,9 @@ Without the two draft queries no winner changes (`REVIEWED_ONLY.md`).
 Rule v1 (cheapest inside the 95 % interval) was replaced by rule v2 (best quality, then cheap) at your instruction, after the dev results of three axes had been seen; v1 results: `rule_v1/`. All axes were rerun. The table-row rule and the store rule were written before their runs.
 
 ## 7. Limits and open points
+- **Known limitation (O41):** v2 was kept although its test result is lower than v1 (section 2). **Future work:** a diversity limit for row chunks (for example, at most n row chunks of one table in the candidate list). It is to be designed and selected on dev only; it is not part of v2.
 - 24 dev and 22 test answerable queries: wide intervals; test numbers are lower than dev after selection on dev. Ties are ties.
-- **Drafts:** R-0055 and R-0056 (you check the spans), 12 near-miss queries (you review), the SOP (1 of 37 documents). The 11 notes were accepted (O34).
+- **Drafts:** 10 near-miss queries (R-0059 and R-0060 were accepted in O39b; you review the rest; `reports/layer1/NEAR_MISS_CHECK.md`), the SOP (1 of 37 documents). The 11 notes (O34) and the spans of R-0055 and R-0056 (O39) were accepted.
 - **The OpenAI embedding call (0.000626 USD) sent the text of all 37 corpus documents, including the local-only revision manuscript, to OpenAI.** No API call and no paid embedder on this corpus again (code refuses). In S4, manuscript chunks would be 24 % of the passages sent (`S4_PLAN.md` § 2).
 - Golden contexts name one answering span; other passages that answer count as misses; several queries use bare table rows as spans (accepted in your review; v2 repeats the header).
 - Not done: LLM-judged precision (S4, needs your approval and the golden events); graded precision (needs your labels); the case store keeps FAISS (frozen, part of the gate).

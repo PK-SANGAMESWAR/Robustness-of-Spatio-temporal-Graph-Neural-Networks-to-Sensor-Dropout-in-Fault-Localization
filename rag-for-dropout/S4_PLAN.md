@@ -9,13 +9,12 @@ Written for: the author. Prepared 2026-11-02 (step 7 of your instructions). **No
 | generator | `gpt-6-luna` | 0.10 / 0.50 | 0.05 / 0.25 | your numbers; OpenAI pricing page and the luna model page read 2026-11-02 (Batch supported, 50 % of standard) |
 | judge | `gpt-6.1-terra` | 1.00 / 5.00 | 0.50 / 2.50 | your numbers; OpenAI pricing page read 2026-11-02 |
 The generator and the judge differ (rule 6.1 of `rag-eval.md`). Both are in `configs/eval.yaml` (`generation`, `judge`, `cost.prices`, each price with date and source). **Before the first call** the names and prices are read again on the page
-(step 0 of section 6); if a number differs, the run stops and asks. The ledger (`gridsense.cost.Ledger`) books every call at the standard or the Batch price and stops at the limit. Judge temperature 0; generator temperature is open (O35).
+(step 0 of section 6); if a number differs, the run stops and asks. The ledger (`gridsense.cost.Ledger`) books every call at the standard or the Batch price and stops at the limit. Judge temperature 0; generator temperature 0 (author, O35). If `gpt-6-luna` does not accept a temperature, the call sends none and the snapshot records the model default.
 
 ## 2. What is sent to OpenAI
 - **Only retrieved chunks and the structured event fields** go to the generator and to the judge: the event object (location, probability, gate outcome and reason codes, dark sensors, candidate set), the 10 case neighbours, and the top-3 passages. The corpus is never sent.
 - The judge gets the same retrieved chunks, the question or event, and the generated report.
-- **Open point (O37):** chunks of the local-only revision manuscript (`paper1_rev1170`) are 24 % of the passages in the top 3 (39 of 162; 28 of 54 queries have at least one). They would go to OpenAI inside prompts.
-  Option: exclude that document from the retrieval of S4 (a document filter; the retrieval metrics of the other documents stay as measured, but the manuscript answers would be missing). Your decision.
+- **O37 (decided 2026-11-02):** chunks of the local-only revision manuscript (`paper1_rev1170`, 24 % of the top-3 passages) are allowed in S4 prompts. The corpus is unchanged. The author accepted that these chunks go to OpenAI inside prompts.
 - No key, local path or environment value is placed in a prompt or in a trace.
 
 ## 3. Run set (from your instruction) and cost
@@ -41,9 +40,9 @@ The tau-only numbers (dev, tau 0.464 for v2: unanswerable 4 of 4 flagged, answer
 ## 5. Dependencies and open decisions (all need you)
 | id | what | needed for |
 |---|---|---|
-| O35 | generator temperature (the noise estimate depends on it); proposal: the value that production would use, not 0 | the noise runs |
-| O36 | the golden events: none exist. I draft 60–100 events from the test split with the seeded stratified sampler (all k, 11 fault types, many high-confidence errors), status draft; you review; 30 of the reviewed events are used | any S4 run |
-| O37 | the manuscript chunks (section 2) | the first prompt |
+| O35 | **closed:** generator temperature 0 (fallback: model default, recorded) | – |
+| O36 | the golden events: 60 drafted (`reports/events/`); the 30 for S4 are selected by seed, 2 per k x stratum cell (`s4_selection.json`, E22); open: the author approves the 3 fixed judgement statements and reviews the 67 other points | any S4 run |
+| O37 | **closed:** manuscript chunks allowed (section 2) | – |
 | O13 | human labels for the judge validation (about 50 reports; Cohen's kappa); not in the 30-event run set; without them every judge metric stays informational | claims about judge quality |
 | O38 | approve the five GEval rubrics (`status: draft`); their hashes enter the snapshots | the judge run |
 

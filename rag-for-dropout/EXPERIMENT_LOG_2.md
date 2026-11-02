@@ -35,3 +35,32 @@ One entry per stage and per run. Append only.
 - S4 prepared, not started: `S4_PLAN.md`; draft prompts `prompts/generator_v0.md` and `prompts/evidence_check_v0.md`; models and prices in `configs/eval.yaml` (generator gpt-6-luna 0.10 / 0.50, judge gpt-6.1-terra 1.00 / 5.00, Batch rates 50 %); names and prices read on the OpenAI pricing page and the luna model page on 2026-11-02 (no API call); the ledger prices Batch calls separately.
 - Cost estimate (`reports/s4/COST_ESTIMATE.md`; tokens counted locally from the real prompts and DeepEval templates; fixtures for events): 1,088 calls; expected 1.29 USD at standard rates and 0.65 USD with Batch; ceiling 2.43 and 1.21 USD; limit 5 USD; spent 0.0006.
 - Evidence decision for S4: tau is one input; the generator's "insufficient evidence" output is another; fail-closed OR; deterministic tests specified in `S4_PLAN.md` § 4. Manuscript chunks are 24 % of the passages in the top 3 (O37). No API call was made. Not committed yet at the time of this entry.
+
+## E21 — 2026-11-02 — Decisions O35, O37, O39, O41 applied; golden events drafted (O36); S4 not started
+- O41: v2 kept. The test difference (Q −0.036, interval −0.106 to +0.014) and the R-0036 cause are written as a known limitation in `reports/sweeps/SUMMARY.md` (sections 2 and 7); a diversity limit for row chunks is future work, to be selected on dev only. v1 or v2 is not chosen with test results.
+- O37: manuscript chunks allowed in S4 prompts, corpus unchanged. O35: generator temperature 0 (`configs/eval.yaml`); if gpt-6-luna refuses a temperature, none is sent and the model default is recorded.
+- O39: R-0055 and R-0056 → reviewed (golden v3, 56 reviewed + 12 near-miss drafts). Corpus check of three near-miss queries in `reports/layer1/NEAR_MISS_CHECK.md`: R-0064 and R-0067 are clean near-misses; R-0059 has only totals in the corpus (an estimate is possible, so I flag it for you). R-0060 rephrased to "Which five μPMUs does the targeted study remove when the fault is at bus 57?". No run was repeated: all sweep and test numbers still use the 54 reviewed queries of v2.
+- O36: 60 draft events (`data/eval/golden_events.jsonl`, `reports/events/`): test split, w = 25, 12 per k (4 CONFIDENT right, 4 CONFIDENT wrong with p >= 0.9, 4 LOW_CONFIDENCE), 11 of 11 fault types, 25 of 25 fault buses. Built from stored Layer-0 votes and latents (seed 36, deterministic); masks replayed with the paper's function and the stored votes reproduced (largest difference 0.0). Reference points from the event object are `reviewed`, judgement points and passages `draft`. Tests: `tests/gridsense/test_events.py`.
+- Not started: S4. It waits for O38 (rubrics), O42 (SOP) and the cost approval. No API call, no paid embedder.
+
+## E22 — 2026-11-02 — Author decisions on the draft events; S4 event selection (recorded before any S4 run)
+- R-0059 kept as a near-miss trap (expected output: "insufficient evidence"; field `expected_output`); R-0060 new wording accepted. Both set `reviewed`: golden v4 = 58 reviewed + 10 near-miss drafts. No run repeated.
+- High probability = calibrated p >= 0.9 (accepted). The 180 copies of the 3 fixed judgement statements stay `draft` until the author approves each statement (`reports/events/fixed_statements.md`). The other 67 judgement points: `reports/events/judgement_points_review.csv`.
+- **S4 selection (30 events).** Rule: 2 events per cell, seeded inside each cell, no hand selection. The author's "k x gate outcome" gives only 10 cells (no REJECT event exists in the pool), so the cell is k x stratum (confident_correct, high_conf_error, low_confidence) = 15 cells x 2 = 30. Cell seed = 360000 + 10 k + stratum index (0, 1, 2); `numpy.random.default_rng(seed).choice` on the sorted event IDs of the cell. File: `reports/events/s4_selection.json` (code `select_s4`; test `test_O36_s4_selection_...`). Result by cell:
+  - k=0 confident_correct seed 360000: 55_CA_10p0_0034, 99_BC_0p1_0021
+  - k=0 high_conf_error seed 360001: 53_AB_10p0_0009, 93_ABG_10p0_0008
+  - k=0 low_confidence seed 360002: 29_BC_10p0_0034, 47_ABG_10p0_0011
+  - k=1 confident_correct seed 360010: 108_ABG_1p0_0044, 86_BCG_10p0_0008
+  - k=1 high_conf_error seed 360011: 18_BG_1p0_0017, 93_CAG_10p0_0040
+  - k=1 low_confidence seed 360012: 101_BC_0p1_0025, 62_BC_10p0_0009
+  - k=2 confident_correct seed 360020: 13_CA_0p1_0023, 62_AG_1p0_0046
+  - k=2 high_conf_error seed 360021: 42_CA_1p0_0046, 93_ABG_1p0_0001
+  - k=2 low_confidence seed 360022: 65_CAG_10p0_0044, 99_CG_10p0_0040
+  - k=5 confident_correct seed 360050: 7_AB_10p0_0048, 97_CAG_0p1_0042
+  - k=5 high_conf_error seed 360051: 47_ABC_1p0_0040, 57_BG_0p1_0035
+  - k=5 low_confidence seed 360052: 21_CAG_10p0_0022, 80_ABCG_10p0_0011
+  - k=10 confident_correct seed 360100: 13_ABCG_10p0_0039, 35_CG_0p1_0041
+  - k=10 high_conf_error seed 360101: 55_BG_1p0_0028, 72_BC_0p1_0030
+  - k=10 low_confidence seed 360102: 35_AB_10p0_0035, 99_CAG_10p0_0021
+- The selection covers 11 of 11 fault types and 21 of 25 fault buses; 13 of 30 top-1 right; 33 of the 67 other judgement points belong to these 30 events. The events are still `draft`; S4 needs their judgement points reviewed.
+- S4 not started. No API call.

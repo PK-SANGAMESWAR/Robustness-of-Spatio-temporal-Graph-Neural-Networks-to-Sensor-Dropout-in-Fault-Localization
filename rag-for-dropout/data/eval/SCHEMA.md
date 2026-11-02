@@ -27,19 +27,20 @@ The `.jsonl` files do not exist yet. One JSON object per line. UTF-8. Each file 
 
 Optional fields of an unanswerable item (added 2026-11-02, near-miss queries): `near_miss_of` (documents that discuss the topic) and `absence_check` (`patterns_not_found_in_the_corpus`, `note`); a test re-runs the patterns.
 
-## golden_events.jsonl (60–100 items)
+## golden_events.jsonl (60 items, draft 2026-11-02; O36)
+Built by `gridsense.events.draft_events` (seed 36). Test split only, report window w = 25, checkpoint seed 42, mask offset 0.
 | Field | Type | Meaning |
 |---|---|---|
-| `event_id` | str | Window-ID prefix `<bus>_<type>_<R>_<run>`, for example `7_ABCG_10p0_0014` |
-| `window_id` | str | Window at the report index of `configs/eval.yaml` `splits.report_window.chosen_index` (O3) |
-| `true_label`, `true_bus` | int | Label 1–25 and `FAULT_BUSES[label-1]` |
-| `fault_type`, `resistance_ohm`, `load_multiplier` | | From `metadata.csv` |
-| `k`, `mask_seed`, `dropped_pmu_nodes` | | Dropout setting of the item (k ∈ {0,1,2,5,10}) |
-| `stratum` | str | `confident_correct`, `high_conf_error`, `low_confidence`, `reject` (filled after S2 by the seeded sampler) |
-| `golden_passages` | list | As `golden_contexts` above |
-| `reference_report_points` | list[str] | Facts that a correct report must state |
-| `split` | str | Always `test` |
-| `status`, `created`, `created_by`, `reviewed` | | Common rules |
+| `event_id`, `window_id` | str | Run ID `<bus>_<type>_<R>_<run>` and its window at the report index (`..._w0025`) |
+| `true_label`, `true_bus`, `fault_type`, `resistance_ohm`, `load_multiplier` | | Truth and metadata (`metadata.csv`). **Not in `event_object`** |
+| `k`, `mask_seed`, `dropped_pmu_nodes` | | Dropout level, the paper's mask seed `(10000 k) 10000 + batch_idx` (null for k = 0), dropped node indices |
+| `stratum`, `slot` | str | `confident_correct`, `high_conf_error` (CONFIDENT, wrong, calibrated p >= 0.9), `low_confidence`; slot splits low_confidence into `_correct` / `_wrong` |
+| `prediction_correct`, `truth_in_candidate_set` | bool | Truth checks (second is null unless LOW_CONFIDENCE) |
+| `event_object` | object | What the generator may see: predicted class and bus, top-1 vote share, calibrated probability, margin, gate outcome and reason codes, candidate set (LOW_CONFIDENCE only), dropped nodes and μPMU buses, 3 nearest μPMUs of the predicted bus, `knn` (10 held-out neighbours with bus, similarity, store correctness; agreement is information only), provenance hashes |
+| `golden_passages` | list | `{document_id, section_path, span, span_hash, grade}`; status draft |
+| `reference_report_points` | list[object] | `{point_id, kind, text, status, derived_from}`; `derived_from: event_object` → status `reviewed` (author instruction); `agent judgement` → `draft` |
+| `replay` | object | Batch index, position, largest difference between the replayed and the stored soft vote |
+| `split`, `status`, `created`, `created_by`, `reviewed`, `review`, `golden_version` | | Common rules; the item stays `draft` until the author has reviewed the judgement points |
 
 ## golden_safety.jsonl (20–30 items)
 | Field | Type | Meaning |

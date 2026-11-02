@@ -134,7 +134,7 @@ generation:
   provider: openai
   model: gpt-6-luna               # author 2026-11-02 (O1); name and prices confirmed on the OpenAI pricing and model pages 2026-11-02; confirm again before the first call
   candidates: [gpt-6-luna]
-  temperature: null               # OPEN: not chosen yet (S4 plan)
+  temperature: 0                  # author 2026-11-02 (O35). If gpt-6-luna does not accept a temperature, send none and record the model default in the snapshot
   prompt_version: generator_v0    # draft: rag-for-dropout/prompts/generator_v0.md
 
 judge:
@@ -146,8 +146,8 @@ judge:
   cache_dir: rag-for-dropout/eval/judge_cache
 
 golden_sets:
-  retrieval: {path: rag-for-dropout/data/eval/golden_retrieval.jsonl, version: 2}   # v2 (2026-11-02): 54 reviewed + 14 drafts (R-0055, R-0056, 12 near-miss unanswerable); v1 = 56 reviewed; v0 = 54 drafts (Git 692ef94)
-  events: {path: rag-for-dropout/data/eval/golden_events.jsonl, version: null}
+  retrieval: {path: rag-for-dropout/data/eval/golden_retrieval.jsonl, version: 4}   # v4 (2026-11-02, O39b): 58 reviewed (R-0059 kept as a trap with expected_output insufficient_evidence, R-0060 accepted) + 10 draft near-miss; v3 = 56 reviewed + 12 draft (R-0060 rephrased); v2 = 54 reviewed + 14 drafts; v1 = 56 reviewed; v0 = 54 drafts (Git 692ef94)
+  events: {path: rag-for-dropout/data/eval/golden_events.jsonl, version: 1}   # v1 (2026-11-02, O36): 60 draft events, test split, w = 25; judgement points wait for the author
   safety: {path: rag-for-dropout/data/eval/golden_safety.jsonl, version: null}
   human_labels: {path: rag-for-dropout/data/eval/golden_human_labels.jsonl, version: null}
 
