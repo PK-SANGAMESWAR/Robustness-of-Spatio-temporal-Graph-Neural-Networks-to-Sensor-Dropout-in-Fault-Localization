@@ -875,6 +875,56 @@ metrics, heartbeat). This run is not valid for selection and is not an R6 result
   attributable to λ₂ alone is bounded by the S4.3ᵉ figure (about 0.002, one seed, 15 epochs). R5 at λ₂ = 0 is not planned.
 - Cost unchanged: R6 is a fusion-on arm at the R5 rate (26.16 h train + 7.44 h score per seed, 100.8 GPU-h for 3 seeds).
 
+#### Correction of the reason for the λ₂ = 0 amendment `[Corrected 2026-11-02 11:40 IST / 2026-11-02T06:10:30Z, after the R6 λ₂ = 0 seed 42 collapse]`
+
+The reason given above (the held-out loss, about 4,000 times its R5 value, swamps the cross-entropy; λ₂ = 0 would isolate the
+effect of the table on the fusion) is **superseded, not deleted**. **The λ₂ = 0 run also collapsed. The cause is not the held-out
+loss. With a shuffled table, the fusion term β · residual moves the true-class logit by a large amount, and training fails.**
+The first record in this section (d: "the collapse is from the held-out loss scale") was a reading, and the λ₂ = 0 run does not support it.
+
+### S4.4 — R6 λ₂ = 0 seed 42 collapse, residual measurement, and the end of R6 training `[Recorded 2026-11-02 11:40 IST / 2026-11-02T06:10:30Z]`
+
+**Collapse.** R6 with λ₂ = 0 (`config/s4_4/r6_lam2_0.yaml`, seed 42) started 2026-11-01T05:59:49Z and the epoch-3 guard fired
+(network-only macro-F1 ≤ 0.10). The merged queue stopped itself at 2026-11-01T08:36:29Z by design (`queue_STOPPED.json`, reason `collapsed`,
+queue position 7). Nothing was restarted without the author. Validation, seed 42:
+
+| Epoch | Network-only F1 | Fused F1 | β | Training loss | Auxiliary-loss term |
+|---|---|---|---|---|---|
+| 1 | 0.032 | 0.026 | −0.0000 | 14.27 | 2.24 |
+| 2 | 0.036 | 0.040 | 0.0001 | 23.89 | 2.16 |
+| 3 | **0.034** | **0.027** | −0.0002 | 40.03 | 2.15 |
+
+R5 at the same epochs: network-only F1 0.14 / 0.27 / 0.33, fused F1 0.84, training loss 2.62 / 2.24 / 2.06. The always-"no fault" score is 0.0256.
+
+**Residual measurement** (CPU, 320 validation windows, `physics/residual.py` through the model's own `_rho`, k = 0, σ = 0): the residual at the **true
+class** of the fault windows is **about 0 with the correct table** (median 0, mean 6.0) and **about 11,400 with the shuffled table** (median 1.14e4, mean 2.03e4;
+`shuffle_seed` 6). Over all classes the residual has median 406, typical spread (max − min per window) 536 and maximum 1.9e5, in both cases. So with the
+shuffled table a β of 0.001 lowers the true class by about 11 logit units, and the only stable value of β is 0.
+
+**R6 training is stopped after two collapses. Seeds 43 and 44 are not run.** (R6 λ₂ = 0.1 seed 42 and R6 λ₂ = 0 seed 42 both collapsed at epoch 3.)
+The λ₂ = 0 output was moved, nothing deleted: `results/s4_4/r6_lam2_0/` → `results/s4_4_r6_collapsed/r6_lam2_0/` (the λ₂ = 0.1 run is in `results/s4_4_r6_collapsed/pcstgnn/`).
+
+**Limitation.** *The fusion does not fall back to the network when the physics is wrong. The residuals are not normalized.* A shuffled table is therefore not
+a usable ablation under the training recipe frozen here: it tests whether training survives a wrong table, not whether the gain needs the correct content. The test of the
+content is the inference-only arm R6ⁱ below. The fusion code was not changed.
+
+### S4.4 — Arm R6ⁱ (inference-only shuffled table) `[Added 2026-11-02 11:40 IST / 2026-11-02T06:10:30Z, before any R6ⁱ result]`
+
+- **Models.** The three trained R5 checkpoints (seeds 42, 43, 44; `results/s4_4/r5/pcstgnn/seed_*/checkpoint_best.pt`). **No training.** The network weights and β are R5's.
+- **Change.** Only the signature table: permuted with `shuffle_seed = 6`, the same permutation as the R6 training arm (`config/s4_4/r6_shuffle_permutation.json`; 25 locations permuted,
+  class 0 fixed). The table buffers are persistent in the checkpoint, so the scorer takes the shuffled `phys_table` and `shuffle_map` from a freshly built shuffled model and puts them back after loading
+  the R5 state; it asserts the permutation is not the identity, class 0 is fixed, the table equals the true table permuted, and it differs from the true table. `fault_localization/models/` is not changed;
+  only `scripts/score_s4_4_gate4_run.py` gained the options `shuffle_seed` and `out_arm`.
+- **Evaluation.** The full S4.4 grid (k ∈ {0,1,2,5,10} × σ ∈ {0, 5e-4, 2e-3, 1e-2}, 3 mask offsets) on the validation split (248,000 windows), as for every other arm. Output `results/s4_4/r6i/pcstgnn/seed_{00042,00043,00044}/scoring_full_grid.json`.
+- **Reported** for each seed and the mean over seeds, at every cell: fused F1, network-only F1 and PSM-only F1 **with the shuffled table**, next to R5 (correct table). Self-check: the network-only F1 of R6ⁱ must equal R5's exactly (the network branch does not read the table).
+- **Decision rule.** *The model uses the correct physics content if R5 fused F1 > R6ⁱ fused F1 in all 3 seeds at the H2 and H4 conditions.* H2 = k = 10 at σ ∈ {0, 5e-4, 2e-3, 1e-2} (4 cells);
+  H4 = k = 0 at σ ∈ {5e-4, 2e-3, 1e-2} (3 cells), as defined in `14_PREREGISTRATION.md` and used in the Gate 4 record. That is 7 cells × 3 seeds = 21 comparisons, all of which must have R5 higher. Sign rule, no significance test; a trend is not upgraded.
+- **What it can and cannot say.** It tests whether the trained R5 model relies on the content of the table (a wrong table at inference should hurt if it does). It does not test whether training needs the correct table; that arm collapsed.
+- **Cost.** 3 seeds × one full-grid scoring pass each, 26,800 s measured per R5-type seed = **22.3 GPU-h**.
+- A CPU-only smoke test of the scorer on the first 640 validation windows (one seed, nothing saved) was started before this entry, to check the table handling; its numbers are not results and are not used.
+- Added 2026-11-02 11:40 IST / 2026-11-02T06:10:30Z, before any R6ⁱ result.
+
+
 ### S4.4 — R5-γ0 result (seed 42) `[Recorded 2026-10-28 21:23 IST / 2026-10-28T15:53:52Z]`
 
 R5-γ0 = R5 with γ = 0 (no auxiliary network-only loss); λ₁ = 0, λ₂ = 0.1, fusion on, noise and dropout augmentation on, 30 epochs,
