@@ -2,11 +2,15 @@
 document_id: note_22_conformal_sets
 title: Conformal candidate sets
 document_type: technical_note
-status: draft
+status: reviewed
 approval_status: curated_for_research
-version: 0
-source_ref: Vovk, Gammerman and Shafer (2005); Angelopoulos and Bates (2021); reports/layer0/CANDIDATE_SETS_REPORT.md; rag-for-dropout/claude-rag.md section 9 rule 4
-verification: unverified paraphrase; author review pending
+version: 1
+source_ref: general background, not checked against a specific page
+further_reading:
+- Vovk, Gammerman and Shafer (2005)
+- Angelopoulos and Bates (2021)
+project_sources: reports/layer0/CANDIDATE_SETS_REPORT.md; reports/layer0/FINAL_REPORT.md § 0 and § 3; rag-for-dropout/claude-rag.md § 9 rule 4
+verification: project numbers checked against the named files 2026-11-02; general background not checked against a specific page; author review O30 2026-11-02
 merged_from:
 - B:note_22_conformal_sets
 - A:N17
@@ -14,7 +18,8 @@ merged_from:
 - A:N19
 created: '2026-10-31'
 created_by: agent:claude-sonnet-5-5 (B) + agent:claude-opus-5-5 (A, merge)
-reviewed: null
+reviewed: '2026-11-02'
+review: accepted by the author in the O30 review (2026-11-02)
 ---
 # Conformal candidate sets
 

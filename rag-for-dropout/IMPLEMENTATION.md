@@ -35,6 +35,7 @@ skip with `pending: <module>` until it exists (same pattern as `tests/pinns/`). 
 | `llm/client.py` | OpenAI client, mock client, cache, token and cost counters, total-cost ledger (5 USD) | S4 |
 | `agent/` | `state.py`, `graph.py` (LangGraph), `prompts/` (versioned files), `report_validation.py` | S5 |
 | `review/approval.py` | Human approval log; a model string never changes the state | S5 |
+| `eval/sweep.py`, `eval/store_bench.py` | Layer 1 sweeps (8 axes, selection rule v2, frozen test runs with a one-time ledger) and the vector-store benchmark (parity, end-to-end precision, operations); `layer1.evaluate()` and `reachability()` | S3 (done) |
 | `eval/` | `metrics.py`, `golden.py` (span matching), `layers/l0.py … l6.py`, `snapshot.py`, `registry.py`, `compare.py`, `cost.py`, `langsmith_sync.py` | S2–S8 |
 | `cli.py` | `python -m gridsense <command>` | S2+ |
 

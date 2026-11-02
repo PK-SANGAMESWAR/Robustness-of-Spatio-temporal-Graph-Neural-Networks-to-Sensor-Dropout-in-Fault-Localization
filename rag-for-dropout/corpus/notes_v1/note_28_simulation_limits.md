@@ -2,17 +2,18 @@
 document_id: note_28_simulation_limits
 title: Limits of the simulated data
 document_type: technical_note
-status: draft
+status: reviewed
 approval_status: curated_for_research
-version: 0
-source_ref: results/RESULTS.md (this project); CLAUDE.md; implementation-plan.md section 5.1
-verification: unverified paraphrase; author review pending
+version: 1
+source_ref: implementation-plan.md § 2.2 and § 5.1; rag-for-dropout/dropout-rag-intro.md § 6 (limitations 1 to 3); results/RESULTS.md
+verification: checked against the named project documents 2026-11-02; author review O30 2026-11-02
 merged_from:
 - B:note_28_simulation_limits
 - A:N29
 created: '2026-10-31'
 created_by: agent:claude-sonnet-5-5 (B) + agent:claude-opus-5-5 (A, merge)
-reviewed: null
+reviewed: '2026-11-02'
+review: accepted by the author in the O30 review (2026-11-02)
 ---
 # Limits of the simulated data
 

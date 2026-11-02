@@ -20,7 +20,7 @@ from gridsense.cases.store import StaleIndexError, fingerprint
 from gridsense.ingest.chunking import CHUNKER_VERSION, Chunk, chunk_document
 from gridsense.ingest.corpus import corpus_fingerprint
 from gridsense.ingest.parsers import PARSER_VERSION, Document
-from gridsense.retrieval.embeddings import Embedder
+from gridsense.retrieval.embeddings import Embedder, get_meter
 from gridsense.retrieval.lexical import BM25, Reranker, rrf
 from gridsense.retrieval.stores import make_store
 
@@ -44,14 +44,16 @@ class RetrievalConfig:
     rerank_top: int = 20
     filters: dict = field(default_factory=lambda: {"approval_status": ["curated_for_research", "illustrative"]})
     semantic_percentile: float = 20.0
+    chunk_meter: str | None = None   # tokenizer that measures chunk size; None = the embedder's own (sweeps pin MiniLM so all embedders see the same chunks)
 
     def index_part(self) -> dict:
-        return {k: getattr(self, k) for k in ("chunker", "chunk_size", "overlap", "parent_size", "store", "semantic_percentile")}
+        return {k: getattr(self, k) for k in ("chunker", "chunk_size", "overlap", "parent_size", "store", "semantic_percentile", "chunk_meter")}
 
 
-def index_fingerprint(cfg: RetrievalConfig, embedder: Embedder, docs: list[Document]) -> str:
+def index_fingerprint(cfg: RetrievalConfig, embedder: Embedder, docs: list[Document], chunk_embedder: Embedder | None = None) -> str:
+    ce = chunk_embedder.spec.key() if (cfg.chunker == "semantic" and chunk_embedder is not None) else None   # semantic cuts depend on this model
     return fingerprint(corpus=corpus_fingerprint(docs), parser=PARSER_VERSION, chunker_version=CHUNKER_VERSION,
-                       index=cfg.index_part(), embedder=embedder.spec.key(), window=embedder.window)
+                       index=cfg.index_part(), embedder=embedder.spec.key(), window=embedder.window, chunk_embedder=ce)
 
 
 @dataclass
@@ -69,21 +71,23 @@ class DocIndex:
     bm25: BM25 | None = None
 
     @classmethod
-    def build(cls, cfg: RetrievalConfig, embedder: Embedder, docs: list[Document]) -> "DocIndex":
+    def build(cls, cfg: RetrievalConfig, embedder: Embedder, docs: list[Document], chunk_embedder: Embedder | None = None) -> "DocIndex":
         t0 = time.perf_counter()
         if cfg.chunk_size > embedder.window:
             raise ValueError(f"chunk size {cfg.chunk_size} > embedder window {embedder.window}: the size would only measure truncation")
-        embed_fn = (lambda texts: embedder.encode(texts, "passage")) if cfg.chunker == "semantic" else None
+        ce = chunk_embedder or embedder
+        embed_fn = (lambda texts: ce.encode(texts, "passage")) if cfg.chunker == "semantic" else None
+        count = get_meter(cfg.chunk_meter).count_tokens if cfg.chunk_meter else embedder.count_tokens
         chunks: list[Chunk] = []
         for d in docs:
-            chunks += chunk_document(d, cfg.chunker, cfg.chunk_size, embedder.count_tokens, cfg.overlap,
+            chunks += chunk_document(d, cfg.chunker, cfg.chunk_size, count, cfg.overlap,
                                      parent_size=cfg.parent_size, embed_fn=embed_fn, semantic_percentile=cfg.semantic_percentile)
         meta = {d.document_id: d for d in docs}
         payloads = [{"document_id": c.document_id, "approval_status": meta[c.document_id].approval_status,
                      "document_type": meta[c.document_id].document_type, "status": meta[c.document_id].status} for c in chunks]
         before = embedder.truncated
         vectors = embedder.encode([c.embed_text for c in chunks], "passage")
-        idx = cls(cfg, embedder, chunks, vectors, index_fingerprint(cfg, embedder, docs), payloads,
+        idx = cls(cfg, embedder, chunks, vectors, index_fingerprint(cfg, embedder, docs, chunk_embedder), payloads,
                   truncated=embedder.truncated - before,
                   max_embed_tokens=max(embedder.count_tokens(c.embed_text) for c in chunks))
         idx._attach()
@@ -105,18 +109,18 @@ class DocIndex:
         (folder / "index_manifest.json").write_text(json.dumps(
             {"fingerprint": self.fingerprint, "config": asdict(self.cfg), "embedder": self.embedder.spec.key(),
              "window": self.embedder.window, "n_chunks": len(self.chunks), "truncated": self.truncated,
-             "max_embed_tokens": self.max_embed_tokens, "parser": PARSER_VERSION, "chunker": CHUNKER_VERSION}, indent=2))
+             "max_embed_tokens": self.max_embed_tokens, "parser": PARSER_VERSION, "chunker": CHUNKER_VERSION, "build_seconds": self.build_seconds}, indent=2))
 
     @classmethod
-    def load(cls, folder: Path, cfg: RetrievalConfig, embedder: Embedder, docs: list[Document]) -> "DocIndex":
+    def load(cls, folder: Path, cfg: RetrievalConfig, embedder: Embedder, docs: list[Document], chunk_embedder: Embedder | None = None) -> "DocIndex":
         man = json.loads((folder / "index_manifest.json").read_text())
-        want = index_fingerprint(cfg, embedder, docs)
+        want = index_fingerprint(cfg, embedder, docs, chunk_embedder)
         if man["fingerprint"] != want:
             raise StaleIndexError(f"{folder}: index fingerprint {man['fingerprint'][:12]} != requested {want[:12]}; rebuild")
         rows = [json.loads(l) for l in (folder / "chunks.jsonl").read_text(encoding="utf-8").splitlines()]
         chunks = [Chunk(**{k: (tuple(v) if k == "section_path" else v) for k, v in r.items() if k != "payload"}) for r in rows]
         idx = cls(cfg, embedder, chunks, np.load(folder / "vectors.npy"), want, [r["payload"] for r in rows],
-                  truncated=man["truncated"], max_embed_tokens=man["max_embed_tokens"])
+                  truncated=man["truncated"], max_embed_tokens=man["max_embed_tokens"], build_seconds=man.get("build_seconds", float("nan")))
         idx._attach()
         return idx
 

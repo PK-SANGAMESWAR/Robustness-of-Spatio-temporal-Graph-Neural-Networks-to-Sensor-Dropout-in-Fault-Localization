@@ -18,11 +18,12 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 
 
 | O29 | **SUPERSEDED 2026-10-31 by O30** (session B wording, kept). Review the 30 draft notes (`corpus/v2/notes/`, each with a `source_ref` to verify) and the 54 draft golden queries (`data/eval/golden_retrieval.jsonl`); until then every Layer 1 number is PRELIMINARY and none may be reported. `rag-golden-review` prepares the table | before any reported Layer 1 number | Table of items with accept / edit / reject |
-| O30 | Review (`rag-golden-review`): the 30 merged notes (`corpus/notes_v1/`, check each `source_ref`; B's textbook sources are unverified paraphrases), the SOP (`corpus/sop_v1/`), the 4 generated feeder docs and the 54 golden queries (`data/eval/golden_retrieval.jsonl`, `recheck` per context). Until then every Layer 1 number is PRELIMINARY | any reported Layer 1 number; the sweep table | Table of items: accept / edit / reject |
+| O34 | The review did not mention note_08, 10, 12, 13, 17, 18, 23, 24, 27, 29, 30 and the SOP (12 of the 37 corpus documents). They stay `draft`. Say "accept" or give edits | any reported number that depends on them; stage S4 | Accept or edit each |
 
 ## Closed (author answers 2026-10-28 to 2026-10-31)
 | ID | Answer |
 |---|---|
+| O30 | 2026-11-02: review applied; record `reports/layer1/O30_REVIEW_RECORD.md` (golden set v1, 19 notes reviewed, feeder documents accepted) |
 | O31 | 2026-11-01: approved. Run the OpenAI embedding (`text-embedding-3-small`, 0.02 USD / 1M input, about 0.0013 USD) after the O30 review, together with the sweeps. The cost ledger and the 5 USD limit apply |
 | O32 | 2026-11-01: proposed paper text and one limitation sentence are in `reports/findings/paper1_open_switch.md` § 9 (no paper file changed; the author edits the paper). The thesis future work has the measurement (retrain with the corrected graph; needs the GPU after the S4.4 queue; not started) |
 | O33 | 2026-11-01: approved. `_quarantine_session2/` archived outside Git and deleted (`DONE.md` § 5) |

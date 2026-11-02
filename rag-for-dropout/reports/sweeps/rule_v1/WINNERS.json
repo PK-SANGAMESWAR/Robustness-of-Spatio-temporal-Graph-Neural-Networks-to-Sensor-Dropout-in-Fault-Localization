@@ -1,0 +1,84 @@
+{
+ "state": {
+  "retrieval": {
+   "chunker": "fixed_token",
+   "chunk_size": 150,
+   "overlap": 0.1,
+   "parent_size": null,
+   "store": "faiss_flat",
+   "mode": "dense",
+   "top_k": 5,
+   "dense_candidates": 20,
+   "lexical_candidates": 20,
+   "rrf_k": 60,
+   "reranker": null,
+   "reranker_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+   "rerank_top": 20,
+   "filters": {
+    "approval_status": [
+     "curated_for_research",
+     "illustrative"
+    ]
+   },
+   "semantic_percentile": 20.0,
+   "chunk_meter": "sentence-transformers/all-MiniLM-L6-v2"
+  },
+  "embedder": "minilm"
+ },
+ "axes": {
+  "chunker": {
+   "winner": "fixed_token",
+   "best": "parent_child",
+   "tied_with_best": [
+    "parent_child",
+    "fixed_token",
+    "recursive",
+    "structure_aware",
+    "sentence"
+   ],
+   "reason": "fixed_token is the cheapest or simplest of 5 candidates whose difference from the best (parent_child) lies inside the 95 % interval",
+   "mrr@10": {
+    "fixed_token": 0.7416666666666666,
+    "recursive": 0.758,
+    "structure_aware": 0.748,
+    "sentence": 0.7557142857142857,
+    "semantic": 0.5987142857142856,
+    "parent_child": 0.78
+   },
+   "report": "rag-for-dropout/reports/sweeps/chunker.md",
+   "date": "2026-11-02"
+  },
+  "chunk_size": {
+   "winner": "size_150",
+   "best": "size_200",
+   "tied_with_best": [
+    "size_200",
+    "size_150"
+   ],
+   "reason": "size_150 is the cheapest or simplest of 2 candidates whose difference from the best (size_200) lies inside the 95 % interval",
+   "mrr@10": {
+    "size_100": 0.5503809523809524,
+    "size_150": 0.689047619047619,
+    "size_200": 0.7416666666666666
+   },
+   "report": "rag-for-dropout/reports/sweeps/chunk_size.md",
+   "date": "2026-11-02"
+  },
+  "overlap": {
+   "winner": "overlap_0.10",
+   "best": "overlap_0.15",
+   "tied_with_best": [
+    "overlap_0.15",
+    "overlap_0.10"
+   ],
+   "reason": "overlap_0.10 is the cheapest or simplest of 2 candidates whose difference from the best (overlap_0.15) lies inside the 95 % interval",
+   "mrr@10": {
+    "overlap_0.00": 0.689047619047619,
+    "overlap_0.10": 0.7246666666666667,
+    "overlap_0.15": 0.7623809523809524
+   },
+   "report": "rag-for-dropout/reports/sweeps/overlap.md",
+   "date": "2026-11-02"
+  }
+ }
+}

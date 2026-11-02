@@ -162,3 +162,5 @@ Engineering decisions (mine, per your instruction; none changes a reported resul
 ## E15 — 2026-11-02 — Limitation sentence rewritten; E14 files committed to `gridsense-eval`
 - Author instruction: the sentence says that the corrected targeted ranking changes the targeted-dropout results by less than the spread between training seeds, and that the effect of the edges on message passing is not measured. Checked before writing: in all eight cells (two models, k = 1, 2, 5, 10) the absolute seed-42 shift is smaller than the 3-seed std of the paper curve (largest ratio 0.85; `reports/findings/paper1_open_switch.md` § 11, point 3). The comparison sets one seed against a spread over three seeds, so it stays context.
 - Committed: `targeted_rank_check.py` and its test, the result JSON, `eval/targeted_rank/` meta files and table, the finding, `DONE.md`, `EXPERIMENT_LOG.md` (E14, E15), `.gitignore`, and the three run logs (each below 1 MB). Per-window predictions (`*.npz`) stay out of Git. The S4.4 queue was not touched. O30 review still pending; no sweep was started.
+
+Entries from E16 continue in `EXPERIMENT_LOG_2.md` (this file is near the 200-line limit).

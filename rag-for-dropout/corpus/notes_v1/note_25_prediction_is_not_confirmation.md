@@ -2,17 +2,18 @@
 document_id: note_25_prediction_is_not_confirmation
 title: A prediction is not a confirmed fault
 document_type: technical_note
-status: draft
+status: reviewed
 approval_status: curated_for_research
-version: 0
-source_ref: Phadke, A. G. and Thorp, J. S. Synchronized Phasor Measurements and Their Applications. Springer; implementation-plan.md sections 10.2 and 12.4
-verification: unverified paraphrase; author review pending
+version: 1
+source_ref: implementation-plan.md § 10.2 (prompt design), § 10.3 (report schema, pending_human_review), § 12.4 (human review) and § 13.5 (report quality)
+verification: checked against the named project documents 2026-11-02; author review O30 2026-11-02
 merged_from:
 - B:note_25_prediction_is_not_confirmation
 - A:N26
 created: '2026-10-31'
 created_by: agent:claude-sonnet-5-5 (B) + agent:claude-opus-5-5 (A, merge)
-reviewed: null
+reviewed: '2026-11-02'
+review: accepted by the author in the O30 review (2026-11-02)
 ---
 # A prediction is not a confirmed fault
 

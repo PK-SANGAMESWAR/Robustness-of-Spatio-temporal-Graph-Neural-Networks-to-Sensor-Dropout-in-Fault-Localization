@@ -2,17 +2,22 @@
 document_id: note_19_calibration
 title: Calibration and isotonic regression
 document_type: technical_note
-status: draft
+status: reviewed
 approval_status: curated_for_research
-version: 0
-source_ref: Guo et al. (2017) On Calibration of Modern Neural Networks; Zadrozny and Elkan (2002); reports/layer0/STEP2_REPORT.md; reports/layer0/FINAL_REPORT.md section 4
-verification: unverified paraphrase; author review pending
+version: 1
+source_ref: general background, not checked against a specific page
+further_reading:
+- Guo et al. (2017) On Calibration of Modern Neural Networks
+- Zadrozny and Elkan (2002)
+project_sources: reports/layer0/STEP2_REPORT.md; reports/layer0/FINAL_REPORT.md § 4
+verification: project numbers checked against the named files 2026-11-02; general background not checked against a specific page; author review O30 2026-11-02
 merged_from:
 - B:note_19_calibration
 - A:N13
 created: '2026-10-31'
 created_by: agent:claude-sonnet-5-5 (B) + agent:claude-opus-5-5 (A, merge)
-reviewed: null
+reviewed: '2026-11-02'
+review: accepted by the author in the O30 review (2026-11-02)
 ---
 # Calibration and isotonic regression
 

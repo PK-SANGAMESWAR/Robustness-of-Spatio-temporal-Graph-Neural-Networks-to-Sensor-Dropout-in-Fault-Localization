@@ -88,11 +88,12 @@ corpus:
   extra_sources: [feeder_v1, notes_v1, sop_v1]   # O7 closed 2026-10-31
 
 chunking:
-  strategy: structure_aware       # BASELINE for the sweep (session A); not a sweep winner. SUPERSEDED: structure_recursive (session B)
+  strategy: recursive             # S3 sweep winner on dev, frozen 2026-11-02 (reports/sweeps/SUMMARY.md). The sweep started from structure_aware, overlap 0, dense, top_k 5, FAISS. SUPERSEDED: structure_recursive (session B)
   candidates: [fixed_token, recursive, structure_aware, sentence, semantic, parent_child]
-  chunk_size_tokens: 200          # baseline (same as session B); embedded text = section header + chunk, must stay <= window 256
+  chunk_size_tokens: 200          # sweep winner (size axis: 100, 150, 200); must stay inside the embedder window (MiniLM 256)
+  chunk_meter: sentence-transformers/all-MiniLM-L6-v2   # tokenizer that measures chunk size, so that every embedder sees the same chunks
   parent_size_tokens: null        # parent_child only; default 4 x chunk size
-  overlap_fraction: 0
+  overlap_fraction: 0.10          # sweep winner (0, 0.10, 0.15)
   parser_version: parsers_v1      # session A (gridsense.ingest.parsers). SUPERSEDED: p1 (session B)
 
 embedding:
@@ -109,13 +110,13 @@ embedding:
   device: cpu
 
 vector_store:
-  backend: faiss_flat             # reference; the S3 sweep compares chroma and qdrant_local
-  candidates: [faiss_flat, chroma, qdrant_local]
+  backend: qdrant_local           # S3 winner (author 2026-11-02: a real vector store, not FAISS; precision identical to exact search). Local mode today; a Qdrant server later
+  candidates: [qdrant_local, chroma, chroma_default, faiss_flat]   # faiss_flat = the exact reference of the parity checks only; the case store (S2, frozen) keeps FAISS
   distance: cosine
 
 retrieval:
-  mode: dense
-  top_k: 5
+  mode: hybrid                  # S3 sweep winner: dense + BM25, RRF
+  top_k: 3                        # S3 sweep winner (3, 5, 8 tie in recall; fewest tokens)
   dense_candidates: 20
   lexical_candidates: 20
   rrf_k: 60                       # (P)
@@ -144,7 +145,7 @@ judge:
   cache_dir: rag-for-dropout/eval/judge_cache
 
 golden_sets:
-  retrieval: {path: rag-for-dropout/data/eval/golden_retrieval.jsonl, version: 0}   # 54 drafts from session B, spans re-checked by session A (O29)
+  retrieval: {path: rag-for-dropout/data/eval/golden_retrieval.jsonl, version: 1}   # O30 review 2026-11-02: 56 reviewed items (v0 = 54 drafts from session B, in Git 692ef94)
   events: {path: rag-for-dropout/data/eval/golden_events.jsonl, version: null}
   safety: {path: rag-for-dropout/data/eval/golden_safety.jsonl, version: null}
   human_labels: {path: rag-for-dropout/data/eval/golden_human_labels.jsonl, version: null}

@@ -1,0 +1,179 @@
+{
+ "state": {
+  "retrieval": {
+   "chunker": "recursive",
+   "chunk_size": 200,
+   "overlap": 0.1,
+   "parent_size": null,
+   "store": "qdrant_local",
+   "mode": "hybrid",
+   "top_k": 3,
+   "dense_candidates": 20,
+   "lexical_candidates": 20,
+   "rrf_k": 60,
+   "reranker": null,
+   "reranker_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+   "rerank_top": 20,
+   "filters": {
+    "approval_status": [
+     "curated_for_research",
+     "illustrative"
+    ]
+   },
+   "semantic_percentile": 20.0,
+   "chunk_meter": "sentence-transformers/all-MiniLM-L6-v2"
+  },
+  "embedder": "minilm"
+ },
+ "axes": {
+  "chunker": {
+   "winner": "recursive",
+   "best": "parent_child",
+   "as_good_as_best": [
+    "recursive",
+    "sentence",
+    "parent_child"
+   ],
+   "reason": "parent_child has the best quality (Q = 0.832); recursive is the cheapest of the 3 candidates within 0.013 of it (Q = 0.821)",
+   "rule": "v2",
+   "quality": {
+    "fixed_token": 0.811263688110782,
+    "recursive": 0.8208236225417335,
+    "structure_aware": 0.8135309066403906,
+    "sentence": 0.8198141097586672,
+    "semantic": 0.6517564233399203,
+    "parent_child": 0.8323728692105966
+   },
+   "report": "rag-for-dropout/reports/sweeps/chunker.md",
+   "date": "2026-11-02"
+  },
+  "chunk_size": {
+   "winner": "size_200",
+   "best": "size_200",
+   "as_good_as_best": [
+    "size_200"
+   ],
+   "reason": "size_200 has the best quality; no other candidate is within 0.013 of it",
+   "rule": "v2",
+   "quality": {
+    "size_100": 0.6703907660671846,
+    "size_150": 0.7363693967827956,
+    "size_200": 0.8208236225417335
+   },
+   "report": "rag-for-dropout/reports/sweeps/chunk_size.md",
+   "date": "2026-11-02"
+  },
+  "overlap": {
+   "winner": "overlap_0.10",
+   "best": "overlap_0.10",
+   "as_good_as_best": [
+    "overlap_0.10",
+    "overlap_0.15"
+   ],
+   "reason": "overlap_0.10 has the best quality and is also the cheapest of the 2 candidates within 0.013 of it",
+   "rule": "v2",
+   "quality": {
+    "overlap_0.00": 0.8208236225417335,
+    "overlap_0.10": 0.8477982253252082,
+    "overlap_0.15": 0.8385582490851892
+   },
+   "report": "rag-for-dropout/reports/sweeps/overlap.md",
+   "date": "2026-11-02"
+  },
+  "embedder": {
+   "winner": "minilm",
+   "best": "minilm",
+   "as_good_as_best": [
+    "minilm"
+   ],
+   "reason": "minilm has the best quality; no other candidate is within 0.013 of it",
+   "rule": "v2",
+   "quality": {
+    "minilm": 0.8477982253252082,
+    "bge_small": 0.7900725126809576,
+    "e5_small": 0.8058253776660683,
+    "openai_3_small": 0.7687752272895151
+   },
+   "report": "rag-for-dropout/reports/sweeps/embedder.md",
+   "date": "2026-11-02"
+  },
+  "retrieval_mode": {
+   "winner": "hybrid_k60",
+   "best": "hybrid_k60",
+   "as_good_as_best": [
+    "hybrid_k20",
+    "hybrid_k60",
+    "hybrid_k100"
+   ],
+   "reason": "hybrid_k60 has the best quality and is also the cheapest of the 3 candidates within 0.013 of it",
+   "rule": "v2",
+   "quality": {
+    "dense": 0.8477982253252082,
+    "bm25": 0.7865915360644469,
+    "hybrid_k20": 0.8816798737982557,
+    "hybrid_k60": 0.8816798737982557,
+    "hybrid_k100": 0.8816798737982557
+   },
+   "report": "rag-for-dropout/reports/sweeps/retrieval_mode.md",
+   "date": "2026-11-02"
+  },
+  "reranker": {
+   "winner": "rerank_off",
+   "best": "rerank_off",
+   "as_good_as_best": [
+    "rerank_off"
+   ],
+   "reason": "rerank_off has the best quality; no other candidate is within 0.013 of it",
+   "rule": "v2",
+   "quality": {
+    "rerank_off": 0.8816798737982557,
+    "rerank_on": 0.859353990262783
+   },
+   "report": "rag-for-dropout/reports/sweeps/reranker.md",
+   "date": "2026-11-02"
+  },
+  "candidates": {
+   "winner": "cand_20",
+   "best": "cand_20",
+   "as_good_as_best": [
+    "cand_20",
+    "cand_50"
+   ],
+   "reason": "cand_20 has the best quality and is also the cheapest of the 2 candidates within 0.013 of it",
+   "rule": "v2",
+   "quality": {
+    "cand_20": 0.8816798737982557,
+    "cand_50": 0.8816798737982557
+   },
+   "report": "rag-for-dropout/reports/sweeps/candidates.md",
+   "date": "2026-11-02"
+  },
+  "top_k": {
+   "winner": "k3",
+   "best": "k3",
+   "as_good_as_best": [
+    "k3",
+    "k5",
+    "k8"
+   ],
+   "reason": "k3 has the best quality and is also the cheapest of the 3 candidates within 0.040 of it",
+   "rule": "v2",
+   "report": "rag-for-dropout/reports/sweeps/top_k.md",
+   "date": "2026-11-02"
+  },
+  "vector_store": {
+   "winner": "qdrant_local",
+   "eligible": [
+    "chroma_default",
+    "chroma",
+    "qdrant_local"
+   ],
+   "tied": [
+    "qdrant_local"
+   ],
+   "rule": "v2.1 (author: real vector store, not FAISS; precision identical to exact)",
+   "report": "rag-for-dropout/reports/sweeps/vector_store.md",
+   "date": "2026-11-02"
+  }
+ }
+}

@@ -142,6 +142,26 @@ class Embedder:
         return _norm(np.stack(out)) if out else np.zeros((0, self.spec.dimensions or 1), np.float32)
 
 
+class TokenMeter:
+    """Counts tokens with a Hugging Face tokenizer only (no model weights). Used to cut chunks, so that every embedder under test sees the same chunks."""
+
+    def __init__(self, model: str):
+        self.model, self._tok = model, None
+
+    def count_tokens(self, text: str) -> int:
+        if self._tok is None:
+            from transformers import AutoTokenizer
+            self._tok = AutoTokenizer.from_pretrained(self.model)
+        return len(self._tok(text, add_special_tokens=True, truncation=False)["input_ids"])
+
+
+_METERS: dict[str, TokenMeter] = {}
+
+
+def get_meter(model: str) -> TokenMeter:
+    return _METERS.setdefault(model, TokenMeter(model))
+
+
 def _openai_client():
     from openai import OpenAI
 

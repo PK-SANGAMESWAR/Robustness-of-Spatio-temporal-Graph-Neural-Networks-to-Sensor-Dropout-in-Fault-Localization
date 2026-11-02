@@ -18,7 +18,7 @@ import numpy as np
 
 from gridsense.eval.golden import matches, norm
 
-KS = (1, 3, 5, 10)
+KS = (1, 3, 5, 8, 10)
 
 
 def query_metrics(passages: list[dict], item: dict, ks: tuple[int, ...] = KS) -> dict:

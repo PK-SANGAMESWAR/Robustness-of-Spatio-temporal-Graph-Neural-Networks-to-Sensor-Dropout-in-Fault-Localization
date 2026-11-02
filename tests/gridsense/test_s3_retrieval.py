@@ -205,13 +205,47 @@ def test_corpus_loads_with_integrity_and_unique_ids():
     docs = load_corpus()
     ids = [d.document_id for d in docs]
     assert len(ids) == len(set(ids)) and {"paper1_rev1170", "results_md", "feeder_overview", "sop_illustrative_gridsense_review"} <= set(ids)
-    assert sum(d.document_type == "technical_note" for d in docs) == 30
-    assert all(d.status == "draft" for d in docs if d.document_type in ("technical_note", "sop_illustrative"))
+    notes = [d for d in docs if d.document_type == "technical_note"]
+    assert len(notes) == 30
+    # O30 (2026-11-02): 19 notes accepted by the author; the 11 notes that the review did not mention stay draft, and so does the SOP
+    assert sorted({d.status for d in notes}) == ["draft", "reviewed"] and sum(d.status == "reviewed" for d in notes) == 19
+    assert next(d for d in docs if d.document_type == "sop_illustrative").status == "draft"
 
 
-def test_golden_retrieval_file_is_valid_and_all_draft():
+def test_no_note_calls_0p846_the_dropout_aware_value():
+    """Author rule (O30): 0.846 is the STANDARD RGSAGE-Max macro-F1 at k = 0; the dropout-aware value is 0.839."""
+    import re
+    from gridsense.ingest.corpus import load_corpus
+    for d in load_corpus():
+        if d.document_type not in ("technical_note", "sop_illustrative"):
+            continue
+        for sent in re.split(r"(?<=[.!?])\s+", d.text):
+            if "0.846" in sent:
+                assert "standard" in sent.lower() and "dropout-aware" not in sent.lower(), (d.document_id, sent)
+
+
+def test_reviewed_note_front_matter_follows_the_o30_rules():
+    from gridsense.ingest.corpus import CORPUS
+    from gridsense.ingest.parsers import split_frontmatter
+    generic = "general background, not checked against a specific page"
+    for n in ("01_single_line_to_ground", "02_line_to_line", "03_double_line_to_ground", "04_three_phase_fault", "05_fault_resistance",
+              "06_voltage_sag_propagation", "07_micro_pmu", "11_causes_of_sensor_dropout", "19_calibration", "20_margin", "21_selective_prediction", "22_conformal_sets"):
+        m, _ = split_frontmatter((CORPUS / "notes_v1" / f"note_{n}.md").read_text(encoding="utf-8"))
+        assert m["source_ref"] == generic and m["further_reading"], n
+    for n in ("09_ambiguity_set", "25_prediction_is_not_confirmation", "26_gate_is_not_changed_by_text", "28_simulation_limits"):
+        m, _ = split_frontmatter((CORPUS / "notes_v1" / f"note_{n}.md").read_text(encoding="utf-8"))
+        assert "implementation-plan.md" in m["source_ref"] and "further_reading" not in m
+        assert not any(w in m["source_ref"] for w in ("Phadke", "Thorp", "Anderson", "Kersting"))
+
+
+def test_golden_retrieval_v1_is_valid_and_reviewed():
     from gridsense.config import ROOT, load_config
     from gridsense.ingest.corpus import load_corpus
     rows = G.load(ROOT / load_config()["golden_sets"]["retrieval"]["path"])
-    assert len(rows) == 54 and all(r["status"] == "draft" and r["source"].startswith("session_b:") for r in rows)
+    by = {r["query_id"]: r for r in rows}
+    assert len(rows) == 56 and all(r["status"] == "reviewed" and r["golden_version"] == 1 for r in rows)
     assert G.validate(rows, load_corpus()) == []
+    assert [c["document_id"] for c in by["R-0005"]["golden_contexts"]] == ["note_05_fault_resistance"]     # results_md row removed (O30)
+    assert by["R-0055"]["split"] == "test" and by["R-0055"]["golden_contexts"][0]["document_id"] == "feeder_fault_buses" and "bus 47" in by["R-0055"]["reference_answer"].lower()
+    assert by["R-0056"]["split"] == "dev" and by["R-0056"]["golden_contexts"][0]["document_id"] == "feeder_fault_taxonomy"
+    assert sum(r["split"] == "dev" and r["answerable"] for r in rows) == 25 and sum(r["split"] == "test" and r["answerable"] for r in rows) == 23

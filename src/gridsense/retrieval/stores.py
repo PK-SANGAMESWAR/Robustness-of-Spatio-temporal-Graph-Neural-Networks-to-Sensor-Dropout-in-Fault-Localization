@@ -14,7 +14,9 @@ import uuid
 
 import numpy as np
 
-STORES = ("faiss_flat", "chroma", "qdrant_local")
+STORES = ("faiss_flat", "chroma", "chroma_default", "qdrant_local")
+# chroma = HNSW with high-recall settings (ef_search 200 >= corpus size, ef_construction 200, M 32); chroma_default = Chroma's defaults (100 / 100 / 16)
+CHROMA_HNSW = {"chroma": {"ef_construction": 200, "ef_search": 200, "max_neighbors": 32}, "chroma_default": {"ef_construction": 100, "ef_search": 100, "max_neighbors": 16}}
 
 
 def _passes(payload: dict, filters: dict | None) -> bool:
@@ -43,11 +45,11 @@ class FaissFlat:
 class ChromaStore:
     name = "chroma"
 
-    def __init__(self, dim: int, path: str | None = None):
+    def __init__(self, dim: int, path: str | None = None, hnsw: dict | None = None):
         import gridsense.settings  # noqa: F401  (telemetry off before chromadb)
         import chromadb
         self.client = chromadb.PersistentClient(path=path or tempfile.mkdtemp(prefix="gs_chroma_"))
-        self.col = self.client.create_collection(f"gs_{uuid.uuid4().hex[:8]}", metadata={"hnsw:space": "ip"})
+        self.col = self.client.create_collection(f"gs_{uuid.uuid4().hex[:8]}", configuration={"hnsw": {"space": "ip", **(hnsw or CHROMA_HNSW["chroma"])}})
 
     def add(self, ids, vectors, payloads) -> None:
         meta = [{k: (v if isinstance(v, (str, int, float, bool)) else str(v)) for k, v in p.items()} for p in payloads]
@@ -97,8 +99,8 @@ class QdrantLocal:
 def make_store(name: str, dim: int):
     if name == "faiss_flat":
         return FaissFlat(dim)
-    if name == "chroma":
-        return ChromaStore(dim)
+    if name in CHROMA_HNSW:
+        return ChromaStore(dim, hnsw=CHROMA_HNSW[name])
     if name == "qdrant_local":
         return QdrantLocal(dim)
     raise ValueError(f"unknown store {name!r}; one of {STORES}")

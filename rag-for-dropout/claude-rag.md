@@ -29,6 +29,8 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 | Corpus | Paper 1 and `results/RESULTS.md`, `document_type: model_card`, paper version in the metadata. Other sources: O7 |
 | Dropout grid | k ∈ {0, 1, 2, 5, 10} of 25 sensors, the paper protocol (`dropout/masking.py`, `zero_messages`) |
 | Long docs | Frozen sources plus verbatim split copies in `spec/`. Every new md file < 200 lines |
+| Doc vector store (2026-11-02) | A real vector store, not FAISS; Chroma and Qdrant were tested and give the same ranking and precision as exact search. Winner: Qdrant, local mode (`reports/sweeps/vector_store.md`). The case store (S2, frozen) keeps FAISS |
+| Component choice (2026-11-02) | Best quality first; among candidates within one query on one metric of the best, the cheapest. Not "the cheapest inside the confidence interval" (`reports/sweeps/SUMMARY.md` § 5) |
 | Store version | The scenario-held-out store defines the gate and τ_k; the standard store is secondary only (O20, 2026-10-30) |
 | kNN agreement | Kept in the gate: pre-registered rule (`reports/layer0/DECISION_RULE.md`) gave D = +0.0112, CI [+0.0086, +0.0138]. Seeds 43/44 only after the author answers (O18) |
 | Gate composition | Three features: isotonic probability, margin (top-1 − top-2), kNN agreement (held-out, 10 neighbours). Combination fitted on cal-A, thresholds per k on cal-B. **Selected on val after the pre-registered test** (O21, 2026-10-30) |
@@ -124,6 +126,7 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 | `OPEN_ITEMS.md`, `PROPOSED_CHANGES.md` | Blocking questions; spec corrections |
 | `EXPERIMENT_LOG.md` | One entry per stage and per run |
 | `reports/stage1_inspection.md` | Stage-1 inspection (`rag-eval.md` §3) |
+| `reports/sweeps/`, `reports/layer1/O30_REVIEW_RECORD.md` | Sweep reports, winners and frozen test run (`SUMMARY.md` first); how the O30 review was applied |
 | `corpus/` | v1 (frozen model cards), feeder_v1 (generated), notes_v1 (30 merged drafts), sop_v1 (illustrative draft) |
 | `reports/layer1/REVIEW_v0.md`, `reports/findings/` | O30 review table; findings for other tracks (Paper 1 open switch) |
 | `configs/`, `rubrics/`, `data/eval/SCHEMA.md` | Eval config and registry; GEval rubrics; golden-set fields |
