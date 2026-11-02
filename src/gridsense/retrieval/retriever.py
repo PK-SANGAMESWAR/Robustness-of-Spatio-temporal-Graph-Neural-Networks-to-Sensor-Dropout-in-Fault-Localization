@@ -44,10 +44,12 @@ class RetrievalConfig:
     rerank_top: int = 20
     filters: dict = field(default_factory=lambda: {"approval_status": ["curated_for_research", "illustrative"]})
     semantic_percentile: float = 20.0
+    table_rows: bool = False          # one chunk per markdown table row, header repeated (plan section 5.4); recursive chunker only
     chunk_meter: str | None = None   # tokenizer that measures chunk size; None = the embedder's own (sweeps pin MiniLM so all embedders see the same chunks)
 
     def index_part(self) -> dict:
-        return {k: getattr(self, k) for k in ("chunker", "chunk_size", "overlap", "parent_size", "store", "semantic_percentile", "chunk_meter")}
+        part = {k: getattr(self, k) for k in ("chunker", "chunk_size", "overlap", "parent_size", "store", "semantic_percentile", "chunk_meter")}
+        return part | ({"table_rows": True} if self.table_rows else {})      # only when on: the fingerprints of existing indices stay valid
 
 
 def index_fingerprint(cfg: RetrievalConfig, embedder: Embedder, docs: list[Document], chunk_embedder: Embedder | None = None) -> str:
@@ -81,7 +83,7 @@ class DocIndex:
         chunks: list[Chunk] = []
         for d in docs:
             chunks += chunk_document(d, cfg.chunker, cfg.chunk_size, count, cfg.overlap,
-                                     parent_size=cfg.parent_size, embed_fn=embed_fn, semantic_percentile=cfg.semantic_percentile)
+                                     parent_size=cfg.parent_size, embed_fn=embed_fn, semantic_percentile=cfg.semantic_percentile, table_rows=cfg.table_rows)
         meta = {d.document_id: d for d in docs}
         payloads = [{"document_id": c.document_id, "approval_status": meta[c.document_id].approval_status,
                      "document_type": meta[c.document_id].document_type, "status": meta[c.document_id].status} for c in chunks]

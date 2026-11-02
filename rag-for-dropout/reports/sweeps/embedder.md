@@ -35,7 +35,7 @@ Quality Q = mean of MRR@10, Recall@5 and nDCG@5. As good as the best = within 0.
 | e5_small | 0.806 | +0.042 (-0.044 to +0.151) | no | 2 | 0 |
 | openai_3_small | 0.769 | +0.079 (-0.005 to +0.174) | no | 3 | 0 |
 
-**Winner: `minilm`.** Reason: minilm has the best quality; no other candidate is within 0.013 of it.
+**Winner: `minilm`.** Reason: minilm has the best quality; no other candidate is within 0.013 of it. On this corpus, with settings tuned for MiniLM, the other embedders did not perform better. The chunk settings (recursive, 200 tokens, 10 % overlap) were selected with MiniLM before this embedder sweep. The paired intervals by query and the integrity checks (self-retrieval, normalization, prefixes) are in `embedder_check.md`. (This sentence was added by hand on 2026-11-02 at the author's instruction; the tables above are as generated.)
 
 **Paid calls on this axis:** estimated 0.000626 USD before the call; actual 0.000626 USD (cap 0.002 USD; ledger total 0.000626 USD of 5 USD).
 

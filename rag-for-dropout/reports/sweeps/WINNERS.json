@@ -21,7 +21,8 @@
     ]
    },
    "semantic_percentile": 20.0,
-   "chunk_meter": "sentence-transformers/all-MiniLM-L6-v2"
+   "chunk_meter": "sentence-transformers/all-MiniLM-L6-v2",
+   "table_rows": true
   },
   "embedder": "minilm"
  },
@@ -95,7 +96,8 @@
     "openai_3_small": 0.7687752272895151
    },
    "report": "rag-for-dropout/reports/sweeps/embedder.md",
-   "date": "2026-11-02"
+   "date": "2026-11-02",
+   "caveat": "On this corpus, with settings tuned for MiniLM, the other embedders did not perform better. The chunk settings were selected with MiniLM before the embedder sweep; no paid embedder on this corpus again (author, 2026-11-02)."
   },
   "retrieval_mode": {
    "winner": "hybrid_k60",
@@ -173,6 +175,15 @@
    ],
    "rule": "v2.1 (author: real vector store, not FAISS; precision identical to exact)",
    "report": "rag-for-dropout/reports/sweeps/vector_store.md",
+   "date": "2026-11-02"
+  },
+  "table_rows": {
+   "decision": "frozen as v2",
+   "q_v1": 0.8750206105439972,
+   "q_v2": 0.8991614507225677,
+   "resolution": 0.013888888888888888,
+   "rule": "Q(v2) >= Q(v1) - 1/(3n), fixed before the run",
+   "report": "rag-for-dropout/reports/sweeps/table_rows.md",
    "date": "2026-11-02"
   }
  }

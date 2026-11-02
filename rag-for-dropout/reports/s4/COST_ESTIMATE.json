@@ -1,0 +1,149 @@
+{
+ "groups": [
+  {
+   "group": "generation, main run (30 events)",
+   "model": "gpt-6-luna",
+   "calls": 30,
+   "input_tokens": 37000,
+   "output_expected": 14580,
+   "output_cap": 27000,
+   "usd_expected_standard": 0.01099,
+   "usd_expected_batch": 0.005495,
+   "usd_ceiling_standard": 0.017755,
+   "usd_ceiling_batch": 0.0088775
+  },
+  {
+   "group": "generation, noise runs (10 events \u00d7 3)",
+   "model": "gpt-6-luna",
+   "calls": 30,
+   "input_tokens": 37000,
+   "output_expected": 14580,
+   "output_cap": 27000,
+   "usd_expected_standard": 0.01099,
+   "usd_expected_batch": 0.005495,
+   "usd_ceiling_standard": 0.017755,
+   "usd_ceiling_batch": 0.0088775
+  },
+  {
+   "group": "judge, main run (30 reports \u00d7 16 calls)",
+   "model": "gpt-6.1-terra",
+   "calls": 480,
+   "input_tokens": 319140,
+   "output_expected": 62700,
+   "output_cap": 165000,
+   "usd_expected_standard": 0.63264,
+   "usd_expected_batch": 0.31632,
+   "usd_ceiling_standard": 1.192011,
+   "usd_ceiling_batch": 0.5960055
+  },
+  {
+   "group": "judge, noise runs (30 reports \u00d7 16 calls)",
+   "model": "gpt-6.1-terra",
+   "calls": 480,
+   "input_tokens": 319140,
+   "output_expected": 62700,
+   "output_cap": 165000,
+   "usd_expected_standard": 0.63264,
+   "usd_expected_batch": 0.31632,
+   "usd_ceiling_standard": 1.192011,
+   "usd_ceiling_batch": 0.5960055
+  },
+  {
+   "group": "evidence-status check (68 golden retrieval queries)",
+   "model": "gpt-6-luna",
+   "calls": 68,
+   "input_tokens": 30215,
+   "output_expected": 3060,
+   "output_cap": 8160,
+   "usd_expected_standard": 0.0045515,
+   "usd_expected_batch": 0.00227575,
+   "usd_ceiling_standard": 0.007554700000000001,
+   "usd_ceiling_batch": 0.0037773500000000005
+  }
+ ],
+ "totals": {
+  "usd_expected_standard": 1.2918115,
+  "usd_expected_batch": 0.64590575,
+  "usd_ceiling_standard": 2.4270867,
+  "usd_ceiling_batch": 1.21354335
+ },
+ "judge_calls_per_report": [
+  [
+   "f_truths",
+   539
+  ],
+  [
+   "f_claims",
+   670
+  ],
+  [
+   "f_verdicts",
+   649
+  ],
+  [
+   "f_reason",
+   248
+  ],
+  [
+   "a_statements",
+   623
+  ],
+  [
+   "a_verdicts",
+   520
+  ],
+  [
+   "a_reason",
+   257
+  ],
+  [
+   "c_verdicts",
+   380
+  ],
+  [
+   "c_verdicts",
+   383
+  ],
+  [
+   "c_verdicts",
+   424
+  ],
+  [
+   "c_reason",
+   414
+  ],
+  [
+   "g_result",
+   1092
+  ],
+  [
+   "g_result",
+   1127
+  ],
+  [
+   "g_result",
+   1106
+  ],
+  [
+   "g_result",
+   1085
+  ],
+  [
+   "g_result",
+   1121
+  ]
+ ],
+ "gen_input_tokens": 1233,
+ "gen_output": [
+  486,
+  900
+ ],
+ "evidence_input_tokens": 444,
+ "spent_so_far_usd": 0.00062574,
+ "limit_usd": 5.0,
+ "samples": [
+  "R-0002",
+  "R-0004",
+  "R-0006"
+ ]
+}

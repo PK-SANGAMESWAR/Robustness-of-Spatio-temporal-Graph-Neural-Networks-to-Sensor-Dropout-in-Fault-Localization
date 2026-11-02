@@ -6,7 +6,7 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 ## Open
 | ID | Question | Blocks | Proposal (not approved) |
 |---|---|---|---|
-| O1 | (2026-10-31: embedding model `text-embedding-3-small`, 0.02 USD / 1M input, given by the author; generator and judge still open) OpenAI generator, judge and (optional) embedding models: exact snapshot names, price per 1M input/output tokens, with the date | S4 | Cheap generator candidates; judge candidates of a higher tier; prices from the provider page, given by the author |
+| O1 | (2026-11-02: generator gpt-6-luna and judge gpt-6.1-terra with prices given by the author and confirmed on the pages: closed in `configs/eval.yaml`; the embedding model is closed too: no paid embedder again) OpenAI generator, judge and (optional) embedding models: exact snapshot names, price per 1M input/output tokens, with the date | S4 | Cheap generator candidates; judge candidates of a higher tier; prices from the provider page, given by the author |
 | O6 | Gate target for τ_p and τ_k (selected on cal-B) | S2 | Accuracy ≥ 95 % on CONFIDENT windows, per k if one threshold does not hold |
 | O8 | LangSmith: project name, workspace, approval of the first upload. (Key: in `rag-for-dropout/.env`, valid — HTTP 200 on the US endpoint, 2026-10-28; ignored by Git) | S8 | Project `gridsense-dev`; reviewed datasets only; traces redacted |
 | O16 | `OPENAI_API_KEY` (the author adds it when coding starts) | S4 | Same `.env`; `gridsense.settings` reads it |
@@ -18,11 +18,19 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 
 
 | O29 | **SUPERSEDED 2026-10-31 by O30** (session B wording, kept). Review the 30 draft notes (`corpus/v2/notes/`, each with a `source_ref` to verify) and the 54 draft golden queries (`data/eval/golden_retrieval.jsonl`); until then every Layer 1 number is PRELIMINARY and none may be reported. `rag-golden-review` prepares the table | before any reported Layer 1 number | Table of items with accept / edit / reject |
-| O34 | The review did not mention note_08, 10, 12, 13, 17, 18, 23, 24, 27, 29, 30 and the SOP (12 of the 37 corpus documents). They stay `draft`. Say "accept" or give edits | any reported number that depends on them; stage S4 | Accept or edit each |
+| O35 | Generator temperature for S4 (the noise estimate depends on it). Proposal: the value that production would use | the S4 noise runs | One value |
+| O36 | Golden events: none exist. I draft 60–100 from the test split with the seeded sampler (status draft); you review; 30 are used in S4 | any S4 run | Approve drafting, then review |
+| O37 | Chunks of the local-only revision manuscript are 24 % of the passages in the top 3 and would go to OpenAI in S4 prompts. Option: exclude that document from S4 retrieval | the first S4 prompt | Send or exclude |
+| O38 | Approve the five GEval rubrics (`rubrics/*.md`, status draft) | the S4 judge run | Approve or edit |
+| O39 | Review R-0055 and R-0056 (the golden spans that I chose) and the 12 near-miss queries R-0057 to R-0068 (all draft) | their use in a reported result | Accept, edit or reject each |
+| O40 | Label the 162 passages of `reports/layer1/labelling_table.csv` (relevant, partly relevant, not relevant) | graded precision@3 and nDCG@3 | Fill the `label` column |
+| O41 | Configuration v1 or v2 (table rows)? v2 was frozen on dev by your rule; on test it was not better (Q −0.036, interval −0.106 to +0.014) | the S4 retrieval | Keep v2 or return to v1 |
+| O42 | Read the illustrative SOP (`corpus/sop_v1/`, draft) | reviewed status | Accept or edit |
 
 ## Closed (author answers 2026-10-28 to 2026-10-31)
 | ID | Answer |
 |---|---|
+| O34 | 2026-11-02: the 11 notes accepted (status reviewed); the SOP stays draft until the author has read it (O42). R-0055 and R-0056 stay draft (O39) |
 | O30 | 2026-11-02: review applied; record `reports/layer1/O30_REVIEW_RECORD.md` (golden set v1, 19 notes reviewed, feeder documents accepted) |
 | O31 | 2026-11-01: approved. Run the OpenAI embedding (`text-embedding-3-small`, 0.02 USD / 1M input, about 0.0013 USD) after the O30 review, together with the sweeps. The cost ledger and the 5 USD limit apply |
 | O32 | 2026-11-01: proposed paper text and one limitation sentence are in `reports/findings/paper1_open_switch.md` § 9 (no paper file changed; the author edits the paper). The thesis future work has the measurement (retrain with the corrected graph; needs the GPU after the S4.4 queue; not started) |

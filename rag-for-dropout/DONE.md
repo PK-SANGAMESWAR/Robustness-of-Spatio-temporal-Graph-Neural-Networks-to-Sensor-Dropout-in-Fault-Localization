@@ -16,7 +16,7 @@ To unfreeze an item, the author must say so; record the date and reason in § 4.
 | `paper/`, `thesis-for-college/`, `PC-STGNN/`, `PINNS/`, `src/pinns/` | Other tracks |
 | `data/ood_test/` (sealed), `data/ood_pilot/` (not reportable) | Root `CLAUDE.md` |
 | Golden items with `status: reviewed` | Only the author changes a reviewed item; a change makes a new golden version |
-| `rag-for-dropout/reports/sweeps/WINNERS.json`, `FROZEN_TEST.*`, `reports/layer1/GOLDEN_TEST_USE.md` | The frozen sweep result and the one-time test runs (a second run of the same configuration is refused by code) |
+| `rag-for-dropout/reports/sweeps/WINNERS.json`, `FROZEN_TEST.md`, `FROZEN_TEST_v2.md`, `reports/layer1/GOLDEN_TEST_USE.md` | The frozen sweep result and the one-time test runs (a second run of the same configuration is refused by code) |
 | Snapshots in `rag-for-dropout/eval/snapshots/` | Append-only; never edit or delete an old snapshot |
 | Accepted baselines (listed in § 3) | A new baseline needs the author's approval |
 | `rubrics/*.md` with `status: approved` | The rubric hash is in snapshots |
@@ -55,6 +55,7 @@ without the author's approval for that action.
 | S1 — open items O2–O5, O9–O11 closed | 2026-10-28 | `OPEN_ITEMS.md` § Closed; `EXPERIMENT_LOG.md` E1; first commit on `gridsense-eval` | yes |
 | Corrected targeted-dropout ranking, seed 42, no retraining (finding § 11) | 2026-11-01 | `reports/findings/targeted_rank_seed42.json`; `EXPERIMENT_LOG.md` E14 | author reads the finding |
 | O30 review applied: golden retrieval v1 (56 reviewed items), 19 notes reviewed, feeder documents accepted | 2026-11-02 | `reports/layer1/O30_REVIEW_RECORD.md`; `EXPERIMENT_LOG_2.md` E16 | yes (the author's review); O34 open |
+| O34 decided (11 notes reviewed); embedder check; precision; table rows (configuration v2 frozen on dev, one run on test); labelling table; 12 near-miss queries (draft); S4 prepared, not started | 2026-11-02 | `EXPERIMENT_LOG_2.md` E18 to E20; `S4_PLAN.md`; `reports/s4/COST_ESTIMATE.md` | pending (O35 to O42) |
 | S3 sweeps on dev, configuration frozen, one run each on the golden test split | 2026-11-02 | `reports/sweeps/SUMMARY.md`; `FROZEN_TEST.md`; E17 | pending (the author reads the summary) |
 | S3 part 1 (session A): corpus `s3_a1` (merged notes, feeder_v1, sop_v1), retrieval stack, golden v0 re-checked, smoke run (PRELIMINARY) | 2026-10-31 | `EXPERIMENT_LOG.md` E12; `tests/gridsense/test_s3_retrieval.py` | pending (O30) |
 | ~~Layer 1 minimal pipeline (session B): corpus v2, parsers, chunker, MiniLM index, golden draft, baseline (PRELIMINARY)~~ **SUPERSEDED 2026-10-31** by session A's S3 (E12); files archived (section 5) | 2026-10-31 | `_quarantine_session2/rag-for-dropout/reports/layer1/BASELINE_REPORT.md`; `EXPERIMENT_LOG.md` E11 | superseded |

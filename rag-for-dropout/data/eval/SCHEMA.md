@@ -25,6 +25,8 @@ The `.jsonl` files do not exist yet. One JSON object per line. UTF-8. Each file 
 | `split` | str | `dev` (tuning) or `test` (final) |
 | `status`, `created`, `created_by`, `reviewed` | | Common rules |
 
+Optional fields of an unanswerable item (added 2026-11-02, near-miss queries): `near_miss_of` (documents that discuss the topic) and `absence_check` (`patterns_not_found_in_the_corpus`, `note`); a test re-runs the patterns.
+
 ## golden_events.jsonl (60–100 items)
 | Field | Type | Meaning |
 |---|---|---|

@@ -1,0 +1,202 @@
+{
+ "self_retrieval": {
+  "minilm": {
+   "n": 198,
+   "strict_id": 1.0,
+   "same_text": 1.0,
+   "self_is_top1_ties_allowed": 1.0,
+   "duplicate_texts": 0,
+   "min_self_similarity": 0.9999996423721313,
+   "mean_top1_other_similarity": 0.6795352101325989
+  },
+  "bge_small": {
+   "n": 198,
+   "strict_id": 1.0,
+   "same_text": 1.0,
+   "self_is_top1_ties_allowed": 1.0,
+   "duplicate_texts": 0,
+   "min_self_similarity": 0.9999997019767761,
+   "mean_top1_other_similarity": 0.8551551103591919
+  },
+  "e5_small": {
+   "n": 198,
+   "strict_id": 1.0,
+   "same_text": 1.0,
+   "self_is_top1_ties_allowed": 1.0,
+   "duplicate_texts": 0,
+   "min_self_similarity": 0.9999995827674866,
+   "mean_top1_other_similarity": 0.9221304655075073
+  },
+  "openai_3_small": {
+   "n": 198,
+   "strict_id": 1.0,
+   "same_text": 1.0,
+   "self_is_top1_ties_allowed": 1.0,
+   "duplicate_texts": 0,
+   "min_self_similarity": 0.9999995827674866,
+   "mean_top1_other_similarity": 0.7081443667411804
+  }
+ },
+ "norms": {
+  "minilm": {
+   "min": 0.9999998807907104,
+   "max": 1.0000001192092896,
+   "dim": 384,
+   "n_chunks": 198,
+   "truncated": 0
+  },
+  "bge_small": {
+   "min": 0.9999999403953552,
+   "max": 1.0000001192092896,
+   "dim": 384,
+   "n_chunks": 198,
+   "truncated": 0
+  },
+  "e5_small": {
+   "min": 0.9999999403953552,
+   "max": 1.0000001192092896,
+   "dim": 384,
+   "n_chunks": 198,
+   "truncated": 0
+  },
+  "openai_3_small": {
+   "min": 0.9999998807907104,
+   "max": 1.0000001192092896,
+   "dim": 1536,
+   "n_chunks": 198,
+   "truncated": 0
+  }
+ },
+ "prefix": {
+  "minilm": {
+   "spec_query_prefix_ok": true,
+   "spec_passage_prefix_ok": true,
+   "dimensions": 384,
+   "max_abs_diff_with_expected_passage_prefix": 9.685754776000977e-08,
+   "max_abs_diff_with_the_other_choice": 0.06826411932706833,
+   "query_encoding_equals_expected_prefix": true
+  },
+  "bge_small": {
+   "spec_query_prefix_ok": true,
+   "spec_passage_prefix_ok": true,
+   "dimensions": 384,
+   "max_abs_diff_with_expected_passage_prefix": 1.4901161193847656e-07,
+   "max_abs_diff_with_the_other_choice": 0.10418626666069031,
+   "query_encoding_equals_expected_prefix": true
+  },
+  "e5_small": {
+   "spec_query_prefix_ok": true,
+   "spec_passage_prefix_ok": true,
+   "dimensions": 384,
+   "max_abs_diff_with_expected_passage_prefix": 1.1175870895385742e-07,
+   "max_abs_diff_with_the_other_choice": 0.04777493700385094,
+   "query_encoding_equals_expected_prefix": true
+  },
+  "openai_3_small": {
+   "spec_query_prefix_ok": true,
+   "spec_passage_prefix_ok": true,
+   "dimensions": 1536,
+   "cache_entries_found": 25,
+   "max_abs_diff_vs_cache": 0.0
+  }
+ },
+ "paired": {
+  "minilm_minus_bge_small": {
+   "n_queries": 24,
+   "Q (mean of MRR@10, Recall@5, nDCG@5)": {
+    "mean_diff": 0.06013095067109453,
+    "ci_low": -0.016577133057108156,
+    "ci_high": 0.13624337967617262
+   },
+   "MRR@10": {
+    "mean_diff": 0.09027777777777779,
+    "ci_low": -0.04861111111111111,
+    "ci_high": 0.2223090277777773
+   },
+   "Recall@5": {
+    "mean_diff": 0.0,
+    "ci_low": 0.0,
+    "ci_high": 0.0
+   },
+   "Recall@1": {
+    "mean_diff": 0.125,
+    "ci_low": -0.08333333333333333,
+    "ci_high": 0.3333333333333333
+   }
+  },
+  "minilm_minus_e5_small": {
+   "n_queries": 24,
+   "Q (mean of MRR@10, Recall@5, nDCG@5)": {
+    "mean_diff": 0.04372171631160415,
+    "ci_low": -0.05489598088514523,
+    "ci_high": 0.16292076790642612
+   },
+   "MRR@10": {
+    "mean_diff": 0.03472222222222221,
+    "ci_low": -0.11111111111111112,
+    "ci_high": 0.1875
+   },
+   "Recall@5": {
+    "mean_diff": 0.04166666666666663,
+    "ci_low": 0.0,
+    "ci_high": 0.125
+   },
+   "Recall@1": {
+    "mean_diff": 0.04166666666666674,
+    "ci_low": -0.16666666666666666,
+    "ci_high": 0.25
+   }
+  },
+  "minilm_minus_openai_3_small": {
+   "n_queries": 24,
+   "Q (mean of MRR@10, Recall@5, nDCG@5)": {
+    "mean_diff": 0.08231562295384709,
+    "ci_low": -0.00508541355659872,
+    "ci_high": 0.1897219084637325
+   },
+   "MRR@10": {
+    "mean_diff": 0.11458333333333315,
+    "ci_low": -0.01397569444444444,
+    "ci_high": 0.25
+   },
+   "Recall@5": {
+    "mean_diff": 0.04166666666666663,
+    "ci_low": 0.0,
+    "ci_high": 0.125
+   },
+   "Recall@1": {
+    "mean_diff": 0.20833333333333337,
+    "ci_low": 0.0,
+    "ci_high": 0.4166666666666667
+   }
+  }
+ },
+ "same_chunks_same_order": {
+  "chunk_ids": true,
+  "embed_texts": true,
+  "n_chunks": 198
+ },
+ "index_config": {
+  "chunker": "recursive",
+  "chunk_size": 200,
+  "overlap": 0.1,
+  "parent_size": null,
+  "store": "faiss_flat (at the time of the embedder sweep)",
+  "mode": "hybrid",
+  "top_k": 3,
+  "dense_candidates": 20,
+  "lexical_candidates": 20,
+  "rrf_k": 60,
+  "reranker": null,
+  "reranker_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+  "rerank_top": 20,
+  "filters": {
+   "approval_status": [
+    "curated_for_research",
+    "illustrative"
+   ]
+  },
+  "semantic_percentile": 20.0,
+  "chunk_meter": "sentence-transformers/all-MiniLM-L6-v2"
+ }
+}

@@ -2,16 +2,17 @@
 document_id: note_24_gate_outcomes
 title: Gate outcomes and reason codes
 document_type: technical_note
-status: draft
+status: reviewed
 approval_status: curated_for_research
-version: 0
+version: 1
 source_ref: reports/layer0/FINAL_REPORT.md; configs/gate_v1.json
-verification: unverified paraphrase; author review pending
+verification: author review O34 2026-11-02; source_ref names project files
 merged_from:
 - B:note_24_gate_outcomes
 created: '2026-10-31'
 created_by: agent:claude-sonnet-5-5 (B) + agent:claude-opus-5-5 (A, merge)
-reviewed: null
+reviewed: '2026-11-02'
+review: accepted by the author in the O34 decision (2026-11-02)
 ---
 # Gate outcomes and reason codes
 

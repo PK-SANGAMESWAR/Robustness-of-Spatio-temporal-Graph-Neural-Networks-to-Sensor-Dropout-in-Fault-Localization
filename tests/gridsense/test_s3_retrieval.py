@@ -207,8 +207,8 @@ def test_corpus_loads_with_integrity_and_unique_ids():
     assert len(ids) == len(set(ids)) and {"paper1_rev1170", "results_md", "feeder_overview", "sop_illustrative_gridsense_review"} <= set(ids)
     notes = [d for d in docs if d.document_type == "technical_note"]
     assert len(notes) == 30
-    # O30 (2026-11-02): 19 notes accepted by the author; the 11 notes that the review did not mention stay draft, and so does the SOP
-    assert sorted({d.status for d in notes}) == ["draft", "reviewed"] and sum(d.status == "reviewed" for d in notes) == 19
+    # O30 and O34 (2026-11-02): all 30 notes accepted by the author; the illustrative SOP stays draft until the author has read it
+    assert {d.status for d in notes} == {"reviewed"}
     assert next(d for d in docs if d.document_type == "sop_illustrative").status == "draft"
 
 
@@ -238,14 +238,42 @@ def test_reviewed_note_front_matter_follows_the_o30_rules():
         assert not any(w in m["source_ref"] for w in ("Phadke", "Thorp", "Anderson", "Kersting"))
 
 
-def test_golden_retrieval_v1_is_valid_and_reviewed():
+def test_golden_retrieval_v2_is_valid_and_statuses_follow_the_author():
     from gridsense.config import ROOT, load_config
     from gridsense.ingest.corpus import load_corpus
-    rows = G.load(ROOT / load_config()["golden_sets"]["retrieval"]["path"])
+    rows = G.load(ROOT / load_config()["golden_sets"]["retrieval"]["path"], statuses=("draft", "reviewed"))
     by = {r["query_id"]: r for r in rows}
-    assert len(rows) == 56 and all(r["status"] == "reviewed" and r["golden_version"] == 1 for r in rows)
+    assert len(rows) == 68 and all(r["golden_version"] == 2 for r in rows)
+    drafts = [r["query_id"] for r in rows if r["status"] == "draft"]
+    assert drafts == ["R-0055", "R-0056"] + [f"R-{i:04d}" for i in range(57, 69)]       # the author checks the spans (O34) and the 12 near-miss queries
+    assert sum(r["status"] == "reviewed" for r in rows) == 54
     assert G.validate(rows, load_corpus()) == []
     assert [c["document_id"] for c in by["R-0005"]["golden_contexts"]] == ["note_05_fault_resistance"]     # results_md row removed (O30)
     assert by["R-0055"]["split"] == "test" and by["R-0055"]["golden_contexts"][0]["document_id"] == "feeder_fault_buses" and "bus 47" in by["R-0055"]["reference_answer"].lower()
     assert by["R-0056"]["split"] == "dev" and by["R-0056"]["golden_contexts"][0]["document_id"] == "feeder_fault_taxonomy"
-    assert sum(r["split"] == "dev" and r["answerable"] for r in rows) == 25 and sum(r["split"] == "test" and r["answerable"] for r in rows) == 23
+    reviewed = [r for r in rows if r["status"] == "reviewed"]
+    assert sum(r["split"] == "dev" and r["answerable"] for r in reviewed) == 24 and sum(r["split"] == "test" and r["answerable"] for r in reviewed) == 22
+
+
+def test_near_miss_unanswerable_queries_stay_unanswerable_by_the_corpus():
+    """Author, 2026-11-02 (step 6): 12 near-miss queries (6 dev, 6 test). The topic is in the corpus, the answer is not: the absence patterns must still find nothing."""
+    import re
+    from gridsense.config import ROOT, load_config
+    from gridsense.ingest.corpus import load_corpus
+    rows = [r for r in G.load(ROOT / load_config()["golden_sets"]["retrieval"]["path"], statuses=("draft",)) if r["query_type"] == "unanswerable"]
+    assert len(rows) == 12 and sum(r["split"] == "dev" for r in rows) == 6 and sum(r["split"] == "test" for r in rows) == 6
+    corpus = "\n".join(d.text for d in load_corpus())
+    for r in rows:
+        assert not r["answerable"] and r["golden_contexts"] == [] and r["near_miss_of"] and r["absence_check"]["patterns_not_found_in_the_corpus"]
+        for pat in r["absence_check"]["patterns_not_found_in_the_corpus"]:
+            assert not re.search(pat, corpus, flags=re.I), (r["query_id"], pat)
+
+
+def test_ledger_batch_price_is_half_and_missing_batch_price_is_refused(tmp_path):
+    prices = {"m": {"input_per_1m": 1.0, "output_per_1m": 5.0, "batch_input_per_1m": 0.5, "batch_output_per_1m": 2.5, "date": "2026-11-02"}, "n": {"input_per_1m": 1.0, "date": "2026-11-02"}}
+    L = Ledger(tmp_path / "l.jsonl", prices, limit_usd=1.0)
+    assert L.price("m", 1_000_000, 1_000_000) == pytest.approx(6.0) and L.price("m", 1_000_000, 1_000_000, batch=True) == pytest.approx(3.0)
+    with pytest.raises(MissingPriceError):
+        L.price("n", 10, 10, batch=True)
+    L.commit("m", 100_000, 10_000, "t", batch=True)
+    assert json.loads((tmp_path / "l.jsonl").read_text().splitlines()[0])["batch"] is True

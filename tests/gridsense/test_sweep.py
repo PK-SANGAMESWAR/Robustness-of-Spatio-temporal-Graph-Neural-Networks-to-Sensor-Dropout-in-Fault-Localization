@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import numpy as np
+import pytest
 
 from gridsense.eval import sweep as S
 
@@ -99,4 +100,16 @@ def test_eval_yaml_matches_the_frozen_sweep_winners():
     cfg, st = load_config(), S.load_winners()["state"]["retrieval"]
     assert (cfg["chunking"]["strategy"], cfg["chunking"]["chunk_size_tokens"], cfg["chunking"]["overlap_fraction"]) == (st["chunker"], st["chunk_size"], st["overlap"])
     assert (cfg["retrieval"]["mode"], cfg["retrieval"]["top_k"], cfg["retrieval"]["rrf_k"], cfg["vector_store"]["backend"]) == (st["mode"], st["top_k"], st["rrf_k"], st["store"])
+    assert bool(cfg["chunking"].get("table_rows", False)) == bool(st.get("table_rows", False))
     assert cfg["chunking"]["chunk_meter"] == st["chunk_meter"] and st["store"] != "faiss_flat"      # author, 2026-11-02: a real vector store, not FAISS
+
+
+def test_s4_cost_estimate_is_offline_consistent_and_inside_the_budget():
+    """The S4 estimate makes no API call: expected <= ceiling, Batch = half of standard, and even the standard ceiling is inside the 5 USD limit."""
+    from gridsense.eval import s4_cost
+    r = s4_cost.estimate()
+    t = r["totals"]
+    assert t["usd_expected_standard"] <= t["usd_ceiling_standard"] < r["limit_usd"]
+    assert t["usd_expected_batch"] == pytest.approx(t["usd_expected_standard"] / 2) and t["usd_ceiling_batch"] == pytest.approx(t["usd_ceiling_standard"] / 2)
+    assert sum(g["calls"] for g in r["groups"]) == 30 + 30 + 480 + 480 + 68
+    assert len(r["judge_calls_per_report"]) == 16

@@ -94,6 +94,7 @@ chunking:
   chunk_meter: sentence-transformers/all-MiniLM-L6-v2   # tokenizer that measures chunk size, so that every embedder sees the same chunks
   parent_size_tokens: null        # parent_child only; default 4 x chunk size
   overlap_fraction: 0.10          # sweep winner (0, 0.10, 0.15)
+  table_rows: true                # configuration v2 (frozen 2026-11-02): one chunk per markdown table row, header repeated (plan 5.4); v1 = false (reports/sweeps/table_rows.md)
   parser_version: parsers_v1      # session A (gridsense.ingest.parsers). SUPERSEDED: p1 (session B)
 
 embedding:
@@ -131,21 +132,21 @@ reranker:
 
 generation:
   provider: openai
-  model: null                     # OPEN: O1
-  candidates: []                  # OPEN: O1
-  temperature: null
-  prompt_version: null
+  model: gpt-6-luna               # author 2026-11-02 (O1); name and prices confirmed on the OpenAI pricing and model pages 2026-11-02; confirm again before the first call
+  candidates: [gpt-6-luna]
+  temperature: null               # OPEN: not chosen yet (S4 plan)
+  prompt_version: generator_v0    # draft: rag-for-dropout/prompts/generator_v0.md
 
 judge:
   provider: openai
-  model: null                     # OPEN: O1 (must differ from generation.model)
-  candidates: []                  # OPEN: O1
+  model: gpt-6.1-terra            # author 2026-11-02 (O1); differs from the generator; name and prices confirmed on the OpenAI pricing page 2026-11-02; confirm again before the first call
+  candidates: [gpt-6.1-terra]
   temperature: 0
   kappa_bar: 0.6                  # (P)
   cache_dir: rag-for-dropout/eval/judge_cache
 
 golden_sets:
-  retrieval: {path: rag-for-dropout/data/eval/golden_retrieval.jsonl, version: 1}   # O30 review 2026-11-02: 56 reviewed items (v0 = 54 drafts from session B, in Git 692ef94)
+  retrieval: {path: rag-for-dropout/data/eval/golden_retrieval.jsonl, version: 2}   # v2 (2026-11-02): 54 reviewed + 14 drafts (R-0055, R-0056, 12 near-miss unanswerable); v1 = 56 reviewed; v0 = 54 drafts (Git 692ef94)
   events: {path: rag-for-dropout/data/eval/golden_events.jsonl, version: null}
   safety: {path: rag-for-dropout/data/eval/golden_safety.jsonl, version: null}
   human_labels: {path: rag-for-dropout/data/eval/golden_human_labels.jsonl, version: null}
@@ -158,7 +159,9 @@ repeats:
 
 cost:
   prices:                         # author's prices only, with date and source (O1 partly closed 2026-10-31)
-    text-embedding-3-small: {input_per_1m: 0.02, output_per_1m: 0.0, date: 2026-10-31, source: "OpenAI model page (author; page re-read by session A 2026-10-31: '$0.02 / 1M tokens')"}
+    text-embedding-3-small: {input_per_1m: 0.02, output_per_1m: 0.0, date: 2026-10-31, source: "OpenAI model page (author; page re-read by session A 2026-10-31: '$0.02 / 1M tokens')"}   # no further use (author 2026-11-02)
+    gpt-6-luna: {input_per_1m: 0.10, output_per_1m: 0.50, batch_input_per_1m: 0.05, batch_output_per_1m: 0.25, date: 2026-11-02, source: "author 2026-11-02; OpenAI pricing page read 2026-11-02 (standard and Batch rates); model page: Batch supported, priced at 50 % of standard"}
+    gpt-6.1-terra: {input_per_1m: 1.00, output_per_1m: 5.00, batch_input_per_1m: 0.50, batch_output_per_1m: 2.50, date: 2026-11-02, source: "author 2026-11-02; OpenAI pricing page read 2026-11-02 (standard and Batch rates)"}
   limit_usd_total: 5.0            # O9 (author update 2026-10-28): whole track; stop and ask before more
   limit_usd_per_run: 5.0          # never above the remaining total
   ledger: rag-for-dropout/eval/cost_ledger.jsonl   # cumulative spend across runs

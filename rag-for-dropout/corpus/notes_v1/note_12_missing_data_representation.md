@@ -2,16 +2,17 @@
 document_id: note_12_missing_data_representation
 title: How a dropped sensor is represented
 document_type: technical_note
-status: draft
+status: reviewed
 approval_status: curated_for_research
-version: 0
+version: 1
 source_ref: results/RESULTS.md (this project); fault_localization/dropout/masking.py
-verification: unverified paraphrase; author review pending
+verification: author review O34 2026-11-02; source_ref names project files
 merged_from:
 - B:note_12_missing_data_representation
 created: '2026-10-31'
 created_by: agent:claude-sonnet-5-5 (B) + agent:claude-opus-5-5 (A, merge)
-reviewed: null
+reviewed: '2026-11-02'
+review: accepted by the author in the O34 decision (2026-11-02)
 ---
 # How a dropped sensor is represented
 

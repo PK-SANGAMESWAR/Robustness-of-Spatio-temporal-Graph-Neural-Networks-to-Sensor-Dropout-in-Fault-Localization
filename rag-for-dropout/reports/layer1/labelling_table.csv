@@ -1,0 +1,673 @@
+query_id,split,query_type,answerable,query,rank,document_id,section,chunk_id,passage_text,label
+R-0001,dev,paraphrase,yes,What happens to the voltages when one phase touches ground?,1,note_01_single_line_to_ground,Single line-to-ground faults,note_01_single_line_to_ground:0-524:badb0f4b302a304e,"# Single line-to-ground faults
+
+A single line-to-ground (LG) fault connects one phase conductor to ground through a fault impedance. In symmetrical components the positive-, negative- and zero-sequence networks are connected in series at the fault point, so the fault current has all three sequence components. At the fault the voltage of the faulted phase falls toward zero when the fault resistance is low, while the voltages of the other two phases change much less. In this project the LG fault types are AG, BG and CG.
+",
+R-0001,dev,paraphrase,yes,What happens to the voltages when one phase touches ground?,2,note_02_line_to_line,Line-to-line faults,note_02_line_to_line:0-364:98146f4d7fc6e2eb,"# Line-to-line faults
+
+A line-to-line (LL) fault connects two phase conductors without a ground connection. Only the positive- and negative-sequence networks take part, connected in parallel at the fault point, and no zero-sequence current flows. The voltages of the two faulted phases move toward each other. In this project the LL fault types are AB, BC and CA.
+",
+R-0001,dev,paraphrase,yes,What happens to the voltages when one phase touches ground?,3,note_04_three_phase_fault,Three-phase faults,note_04_three_phase_fault:0-411:262e5819f5641109,"# Three-phase faults
+
+A three-phase fault involves all three phases and is balanced, so only the positive-sequence network is needed. All three phase voltages fall together near the fault. In this project the three-phase types are ABC (without ground) and ABCG (with ground). Three-phase faults are commonly reported as the least frequent fault type in practice, but this dataset contains all 11 types equally.
+",
+R-0003,dev,paraphrase,yes,Which sequence networks are involved when two phases and earth are in the fault?,1,note_03_double_line_to_ground,Double line-to-ground faults,note_03_double_line_to_ground:0-325:ad679acd71c95dc6,"# Double line-to-ground faults
+
+A double line-to-ground (LLG) fault connects two phase conductors and ground. All three sequence networks take part: the positive-sequence network is in series with the parallel combination of the negative- and zero-sequence networks. In this project the LLG fault types are ABG, BCG and CAG.
+",
+R-0003,dev,paraphrase,yes,Which sequence networks are involved when two phases and earth are in the fault?,2,note_01_single_line_to_ground,Single line-to-ground faults,note_01_single_line_to_ground:0-524:badb0f4b302a304e,"# Single line-to-ground faults
+
+A single line-to-ground (LG) fault connects one phase conductor to ground through a fault impedance. In symmetrical components the positive-, negative- and zero-sequence networks are connected in series at the fault point, so the fault current has all three sequence components. At the fault the voltage of the faulted phase falls toward zero when the fault resistance is low, while the voltages of the other two phases change much less. In this project the LG fault types are AG, BG and CG.
+",
+R-0003,dev,paraphrase,yes,Which sequence networks are involved when two phases and earth are in the fault?,3,note_02_line_to_line,Line-to-line faults,note_02_line_to_line:0-364:98146f4d7fc6e2eb,"# Line-to-line faults
+
+A line-to-line (LL) fault connects two phase conductors without a ground connection. Only the positive- and negative-sequence networks take part, connected in parallel at the fault point, and no zero-sequence current flows. The voltages of the two faulted phases move toward each other. In this project the LL fault types are AB, BC and CA.
+",
+R-0005,dev,paraphrase,yes,Why is a fault through a high resistance harder to find?,1,note_05_fault_resistance,Fault resistance and detectability,note_05_fault_resistance:0-432:8c8ccffaf50910f8,"# Fault resistance and detectability
+
+Fault resistance limits the fault current and reduces the voltage depression that remote sensors see. A high-resistance fault therefore leaves a weaker signature. This project simulates three fault resistances: 0.1, 1 and 10 Ω. The 10 Ω faults are the hardest to localize: for the standard RGSAGE-Max model the macro-F1 is 0.949 at 0.1 Ω, 0.893 at 1 Ω and 0.676 at 10 Ω (RESULTS.md section 1).
+",
+R-0005,dev,paraphrase,yes,Why is a fault through a high resistance harder to find?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0005,dev,paraphrase,yes,Why is a fault through a high resistance harder to find?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0007,dev,paraphrase,yes,What does a micro-PMU actually deliver to the model?,1,note_07_micro_pmu,What a μPMU measures,note_07_micro_pmu:0-421:3d9b4fc62b995096,"# What a μPMU measures
+
+A micro-phasor measurement unit (μPMU) measures voltage and current phasors at distribution level with precise time stamps from a common time reference, at a high reporting rate. IEEE Std C37.118.1 defines the synchrophasor measurement requirements. In this project each of the 25 μPMUs provides three RMS phase voltages per time step to the model, together with three availability-mask channels.
+",
+R-0007,dev,paraphrase,yes,What does a micro-PMU actually deliver to the model?,2,note_17_noise_versus_dropout,Measurement noise is not sensor dropout,note_17_noise_versus_dropout:0-723:1a18a22517524ac0,"# Measurement noise is not sensor dropout
+
+Noise leaves the availability mask at 1, so the pattern that dropout-aware training learns to recognise never appears. Dropout-aware training therefore does not help against measurement noise. For the standard model at no dropout the macro-F1 falls from 0.846 to 0.786, 0.579 and 0.345 as the noise standard deviation grows from 0.0005 to 0.002 and 0.01 per unit. Noise and dropout together can push the result below the always-no-fault baseline of 0.0256.
+
+A wrong value from a present μPMU (a silent failure) also leaves the mask at 1. The GridSense gate has no silent-failure check (ablation step A3 is not run), so a report cannot exclude a wrong reading from a present μPMU.
+",
+R-0007,dev,paraphrase,yes,What does a micro-PMU actually deliver to the model?,3,note_11_causes_of_sensor_dropout,Why sensors drop out,note_11_causes_of_sensor_dropout:0-375:7b5de1adf7de23e6,"# Why sensors drop out
+
+A μPMU can stop delivering usable data because of communication loss, loss of power, loss of its time reference, or a hardware failure. For the localization model the effect is the same in every case: some inputs are missing at the moment of the fault. This is different from permanently placing fewer sensors, which is known when the model is built.
+",
+R-0009,dev,paraphrase,yes,What should a report show when several locations look the same to the available sensors?,1,note_09_ambiguity_set,Ambiguity sets,note_09_ambiguity_set:0-687:48169c04ac75eedd,"# Ambiguity sets
+
+An ambiguity set is a group of candidate fault locations that produce nearly the same measurements at the available sensors, so the data cannot separate them. Which candidates are indistinguishable depends on which sensors are available. When the evidence is ambiguous a report should show the candidates and not a single bus. The current gate does not output a physical ambiguity set; for LOW_CONFIDENCE windows it outputs a conformal candidate set (about three to four classes).
+
+Two fault buses that are close to the same μPMUs give similar voltage patterns. When one of those μPMUs is dark, the pattern can fit both buses, and the candidate set then contains both.
+",
+R-0009,dev,paraphrase,yes,What should a report show when several locations look the same to the available sensors?,2,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-2 Inputs,sop_illustrative_gridsense_review:774-1514:25475176b2388320,"passages.
+SOP-ILL-2.2 The approval status of every new report is pending human review.
+
+## SOP-ILL-3 Reading the gate outcome
+SOP-ILL-3.1 CONFIDENT: the report names one candidate bus. The reviewer still confirms the location with the processes that the utility authorises.
+SOP-ILL-3.2 LOW_CONFIDENCE: the report shows a candidate set instead of one bus. The reviewer treats every member of the set as possible and reads the reason codes (LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN, LOW_KNN_AGREEMENT).
+SOP-ILL-3.3 REJECT: no report is drafted. UNSUPPORTED_DROPOUT_PATTERN means the number or pattern of dark sensors is outside what the gate was fitted for; INVALID_INPUT means the measurements were malformed. The event goes to manual review.
+
+",
+R-0009,dev,paraphrase,yes,What should a report show when several locations look the same to the available sensors?,3,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-3 Reading the gate outcome,sop_illustrative_gridsense_review:1422-2039:1c6a04b071397fdb,"for; INVALID_INPUT means the measurements were malformed. The event goes to manual review.
+
+## SOP-ILL-4 Sensor availability
+SOP-ILL-4.1 The reviewer checks how many μPMUs were dark and whether the dark sensors were close to the predicted bus.
+SOP-ILL-4.2 With 10 of 25 sensors dark, about half of the post-fault windows are LOW_CONFIDENCE. The reviewer expects a candidate set.
+SOP-ILL-4.3 The reviewer compares the similar simulated cases with the prediction. If most neighbours point to a different bus, the reviewer records the disagreement and treats the event as uncertain, also when the outcome is CONFIDENT.
+
+",
+R-0011,dev,paraphrase,yes,Why can a sensor stop delivering data?,1,note_11_causes_of_sensor_dropout,Why sensors drop out,note_11_causes_of_sensor_dropout:0-375:7b5de1adf7de23e6,"# Why sensors drop out
+
+A μPMU can stop delivering usable data because of communication loss, loss of power, loss of its time reference, or a hardware failure. For the localization model the effect is the same in every case: some inputs are missing at the moment of the fault. This is different from permanently placing fewer sensors, which is known when the model is built.
+",
+R-0011,dev,paraphrase,yes,Why can a sensor stop delivering data?,2,note_06_voltage_sag_propagation,How a voltage sag spreads along a feeder,note_06_voltage_sag_propagation:0-492:0398294f0565826e,"# How a voltage sag spreads along a feeder
+
+During a fault the voltage is lowest at the fault point and recovers with electrical distance from it. The depth of the sag at a sensor depends on the impedance between the sensor and the fault compared with the impedance between the fault and the source. Sensors close to the fault therefore carry the most information about its location. This is why losing the sensors nearest to a fault (targeted dropout) hurts more than losing random sensors.
+",
+R-0011,dev,paraphrase,yes,Why can a sensor stop delivering data?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0013,dev,paraphrase,yes,How are the dropped nodes chosen while the model is trained?,1,note_13_dropout_aware_training,Dropout-aware training,note_13_dropout_aware_training:0-433:2fd1dc2682727bb4,"# Dropout-aware training
+
+Dropout-aware training masks random μPMU nodes while the model is trained. For each training batch the number of masked nodes k is drawn from {0, 1, 2, 5}, and the model learns that the mask pattern (0,0,0) means a dark sensor. The architecture, the number of parameters (95,258) and the inference latency do not change; the training time per epoch rises by about 2.7 percent (RESULTS.md, runtime summary).
+",
+R-0013,dev,paraphrase,yes,How are the dropped nodes chosen while the model is trained?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0013,dev,paraphrase,yes,How are the dropped nodes chosen while the model is trained?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0014,dev,dropout_observability,yes,How bad does an ordinary model get when ten sensors are lost?,1,note_14_standard_training_collapse,Why standard training fails when sensors are lost,note_14_standard_training_collapse:0-506:62200134ae416aed,"# Why standard training fails when sensors are lost
+
+A model trained with every sensor present meets an input at inference that it never saw in training when some sensors are dark. For the standard RGSAGE-Max model the macro-F1 falls from 0.846 with no sensor lost to 0.048 when 10 of the 25 sensors are dark; that is 5.7 percent of its clean macro-F1. The most accurate standard model was also the one that degraded fastest, but this ordering is only a trend at three seeds (RESULTS.md sections 2 and 8).
+",
+R-0014,dev,dropout_observability,yes,How bad does an ordinary model get when ten sensors are lost?,2,note_11_causes_of_sensor_dropout,Why sensors drop out,note_11_causes_of_sensor_dropout:0-375:7b5de1adf7de23e6,"# Why sensors drop out
+
+A μPMU can stop delivering usable data because of communication loss, loss of power, loss of its time reference, or a hardware failure. For the localization model the effect is the same in every case: some inputs are missing at the moment of the fault. This is different from permanently placing fewer sensors, which is known when the model is built.
+",
+R-0014,dev,dropout_observability,yes,How bad does an ordinary model get when ten sensors are lost?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0016,dev,dropout_observability,yes,Is losing the sensors nearest the fault worse than losing random ones?,1,note_06_voltage_sag_propagation,How a voltage sag spreads along a feeder,note_06_voltage_sag_propagation:0-492:0398294f0565826e,"# How a voltage sag spreads along a feeder
+
+During a fault the voltage is lowest at the fault point and recovers with electrical distance from it. The depth of the sag at a sensor depends on the impedance between the sensor and the fault compared with the impedance between the fault and the source. Sensors close to the fault therefore carry the most information about its location. This is why losing the sensors nearest to a fault (targeted dropout) hurts more than losing random sensors.
+",
+R-0016,dev,dropout_observability,yes,Is losing the sensors nearest the fault worse than losing random ones?,2,note_16_targeted_versus_random_dropout,Targeted dropout is harder than random dropout,note_16_targeted_versus_random_dropout:0-757:688b62671e356ef3,"# Targeted dropout is harder than random dropout
+
+Targeted dropout removes the μPMUs closest to the fault. With one sensor lost, the standard model falls to 0.448 under targeted loss against 0.736 under random loss. The dropout-aware model is also penalised by targeted loss, but keeps 0.307 to 0.473 macro-F1 over the standard model under the same targeting. With one sensor lost, the dropout-aware model under targeted loss (0.755) is not distinguishable from the standard model under random loss (0.736; difference +0.018, p = 0.33 over three seeds). From two sensors lost, the dropout-aware worst case (0.695) is above the standard average case (0.590). Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+",
+R-0016,dev,dropout_observability,yes,Is losing the sensors nearest the fault worse than losing random ones?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0019,dev,paraphrase,yes,Why can the vote share not be read as a probability?,1,note_18_soft_vote,The soft vote,note_18_soft_vote:0-319:0f6e3bb0f83ebec2,"# The soft vote
+
+The model classifies each of the 25 nodes separately. The decision for a window sums the 25 node softmax vectors and takes the class with the largest sum. The summed vector adds up to 25, not to 1. Dividing by 25 gives a vote share, but the vote share is not a calibrated probability of being correct.
+",
+R-0019,dev,paraphrase,yes,Why can the vote share not be read as a probability?,2,note_19_calibration,Calibration and isotonic regression,note_19_calibration:0-719:802a4eb29f02ab79,"# Calibration and isotonic regression
+
+A confidence is calibrated when predictions made with confidence p are right about a fraction p of the time. Expected calibration error (ECE) measures the gap; this project uses 15 equal-mass bins. Isotonic regression fits a monotone map from the vote share to the probability of being correct. The map is fitted separately for each number of dark sensors, because the vote scale changes with dropout: a map fitted without dropout had ECE 0.007 at k = 0 but 0.048 at k = 10, while per-k maps give ECE of 0.006 to 0.009 on the test split.
+
+The values 0.007 and 0.048 are from the validation half cal-B (post-fault windows). On test the raw vote share has an ECE of 0.121 to 0.173.
+",
+R-0019,dev,paraphrase,yes,Why can the vote share not be read as a probability?,3,note_20_margin,The top-1 minus top-2 margin,note_20_margin:0-512:58e5f4da52b063a1,"# The top-1 minus top-2 margin
+
+The margin is the vote share of the best class minus the vote share of the second-best class. It is a simple measure of how clearly one class wins. On the test split its error-detection AUROC is 0.915 with no sensor lost and 0.887 with 10 lost, slightly above the isotonic probability (0.911 and 0.885). At the 95 percent operating point of the frozen gate the margin threshold is set at every k, the probability threshold only at k = 2, and the kNN-agreement threshold at no k.
+
+",
+R-0021,dev,paraphrase,yes,Which single signal best separates right predictions from wrong ones?,1,note_19_calibration,Calibration and isotonic regression,note_19_calibration:0-719:802a4eb29f02ab79,"# Calibration and isotonic regression
+
+A confidence is calibrated when predictions made with confidence p are right about a fraction p of the time. Expected calibration error (ECE) measures the gap; this project uses 15 equal-mass bins. Isotonic regression fits a monotone map from the vote share to the probability of being correct. The map is fitted separately for each number of dark sensors, because the vote scale changes with dropout: a map fitted without dropout had ECE 0.007 at k = 0 but 0.048 at k = 10, while per-k maps give ECE of 0.006 to 0.009 on the test split.
+
+The values 0.007 and 0.048 are from the validation half cal-B (post-fault windows). On test the raw vote share has an ECE of 0.121 to 0.173.
+",
+R-0021,dev,paraphrase,yes,Which single signal best separates right predictions from wrong ones?,2,note_23_similar_simulated_cases,Similar simulated cases (kNN evidence),note_23_similar_simulated_cases:509-1119:501722ee8455808e,"of the model itself. Neighbours are precedents, not proof that a prediction is correct.
+
+kNN agreement is the fraction of neighbours whose true bus equals the prediction; the neighbour error rate is the fraction of neighbours that the model itself got wrong. On test, kNN agreement detects wrong predictions with AUROC 0.748 to 0.826, lower than the margin. It stayed in the gate by a pre-registered rule with a small effect (AUROC +0.011 on validation), and at the 95 percent operating point its threshold is 0. Neighbours cannot show conditions outside the simulation or a wrong reading from a present μPMU.
+",
+R-0021,dev,paraphrase,yes,Which single signal best separates right predictions from wrong ones?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0022,dev,dropout_observability,yes,What share of windows does the gate accept when ten sensors are dark?,1,note_21_selective_prediction,Selective prediction and coverage,note_21_selective_prediction:0-613:db7b153ed3fb3f05,"# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+",
+R-0022,dev,dropout_observability,yes,What share of windows does the gate accept when ten sensors are dark?,2,note_09_ambiguity_set,Ambiguity sets,note_09_ambiguity_set:0-687:48169c04ac75eedd,"# Ambiguity sets
+
+An ambiguity set is a group of candidate fault locations that produce nearly the same measurements at the available sensors, so the data cannot separate them. Which candidates are indistinguishable depends on which sensors are available. When the evidence is ambiguous a report should show the candidates and not a single bus. The current gate does not output a physical ambiguity set; for LOW_CONFIDENCE windows it outputs a conformal candidate set (about three to four classes).
+
+Two fault buses that are close to the same μPMUs give similar voltage patterns. When one of those μPMUs is dark, the pattern can fit both buses, and the candidate set then contains both.
+",
+R-0022,dev,dropout_observability,yes,What share of windows does the gate accept when ten sensors are dark?,3,note_16_targeted_versus_random_dropout,Targeted dropout is harder than random dropout,note_16_targeted_versus_random_dropout:658-1158:946357e731a1ef33,"Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",
+R-0024,dev,paraphrase,yes,Why are the nearest simulated cases not proof that a prediction is right?,1,note_23_similar_simulated_cases,Similar simulated cases (kNN evidence),note_23_similar_simulated_cases:0-598:ab367043ae84b9a6,"# Similar simulated cases (kNN evidence)
+
+The case store holds latent vectors of simulated training windows with their true fault bus. The nearest cases to a new window are shown as similar simulated cases. Because every scenario appears in both train and test, about 83 percent of the 20 nearest neighbours of a window come from its own scenario when nothing is held out. The held-out store removes the scenario of the query; its kNN vote is then 0.831 on the test split with no sensor lost, below the 0.876 of the model itself. Neighbours are precedents, not proof that a prediction is correct.
+
+",
+R-0024,dev,paraphrase,yes,Why are the nearest simulated cases not proof that a prediction is right?,2,note_23_similar_simulated_cases,Similar simulated cases (kNN evidence),note_23_similar_simulated_cases:509-1119:501722ee8455808e,"of the model itself. Neighbours are precedents, not proof that a prediction is correct.
+
+kNN agreement is the fraction of neighbours whose true bus equals the prediction; the neighbour error rate is the fraction of neighbours that the model itself got wrong. On test, kNN agreement detects wrong predictions with AUROC 0.748 to 0.826, lower than the margin. It stayed in the gate by a pre-registered rule with a small effect (AUROC +0.011 on validation), and at the 95 percent operating point its threshold is 0. Neighbours cannot show conditions outside the simulation or a wrong reading from a present μPMU.
+",
+R-0024,dev,paraphrase,yes,Why are the nearest simulated cases not proof that a prediction is right?,3,note_25_prediction_is_not_confirmation,A prediction is not a confirmed fault,note_25_prediction_is_not_confirmation:0-424:bab50a178e614092,"# A prediction is not a confirmed fault
+
+The model predicts a candidate fault bus. It does not confirm a fault. A person must confirm the location with the processes that the utility authorises before any action. Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.
+
+A report is not an instruction to operate equipment.
+",
+R-0026,dev,paraphrase,yes,May the report say that the fault is confirmed?,1,note_25_prediction_is_not_confirmation,A prediction is not a confirmed fault,note_25_prediction_is_not_confirmation:0-424:bab50a178e614092,"# A prediction is not a confirmed fault
+
+The model predicts a candidate fault bus. It does not confirm a fault. A person must confirm the location with the processes that the utility authorises before any action. Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.
+
+A report is not an instruction to operate equipment.
+",
+R-0026,dev,paraphrase,yes,May the report say that the fault is confirmed?,2,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-1 Purpose,sop_illustrative_gridsense_review:460-862:e56f26737f0863c4,"is decision support. A predicted fault bus is a candidate and is not a confirmed fault.
+
+## SOP-ILL-2 Inputs
+SOP-ILL-2.1 The reviewer receives the event identifier, the predicted fault bus, the gate outcome with its reason codes, the number and position of dark sensors, the similar simulated cases, and the cited passages.
+SOP-ILL-2.2 The approval status of every new report is pending human review.
+
+",
+R-0026,dev,paraphrase,yes,May the report say that the fault is confirmed?,3,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report,sop_illustrative_gridsense_review:0-549:e19ffbef1a8006c8,"# ILLUSTRATIVE operator review procedure for a GridSense fault-location report
+
+**ILLUSTRATIVE ONLY. NOT APPROVED. NOT A UTILITY PROCEDURE.** This text is an example that shows how a report could be reviewed. It does not instruct anyone to operate equipment, and it must not be used as an operating procedure.
+
+## SOP-ILL-1 Purpose
+SOP-ILL-1.1 This example describes how a reviewer reads a GridSense draft report and records a decision.
+SOP-ILL-1.2 The report is decision support. A predicted fault bus is a candidate and is not a confirmed fault.
+
+",
+R-0028,dev,paraphrase,yes,Does a higher similarity score mean that the passage is more likely to be correct?,1,note_27_retrieval_scores,What a retrieval score means,note_27_retrieval_scores:0-424:5efcc65bead11f48,"# What a retrieval score means
+
+A similarity score between a question and a passage is not a probability that the passage is relevant or correct, and a score of 0.8 does not mean 80 percent relevance. If no passage passes the sufficiency check the system must say that the evidence is insufficient and must not fill the gap with general knowledge.
+
+It does not invent a procedure, a document section or a document revision.
+",
+R-0028,dev,paraphrase,yes,Does a higher similarity score mean that the passage is more likely to be correct?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0028,dev,paraphrase,yes,Does a higher similarity score mean that the passage is more likely to be correct?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0030,dev,paraphrase,yes,Can the gate fitted for one trained model be reused for another trained model?,1,note_29_gate_belongs_to_one_checkpoint,A gate belongs to one checkpoint,note_29_gate_belongs_to_one_checkpoint:0-400:e9e1396f3a28db82,"# A gate belongs to one checkpoint
+
+The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint. Applied unchanged to the seed-43 and seed-44 checkpoints, the accuracy of the CONFIDENT windows at the 95 percent point was 0.897 to 0.932, below the target. Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run.
+",
+R-0030,dev,paraphrase,yes,Can the gate fitted for one trained model be reused for another trained model?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0030,dev,paraphrase,yes,Can the gate fitted for one trained model be reused for another trained model?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0032,dev,paraphrase,yes,What should the reviewer do when the gate says low confidence?,1,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-2 Inputs,sop_illustrative_gridsense_review:774-1514:25475176b2388320,"passages.
+SOP-ILL-2.2 The approval status of every new report is pending human review.
+
+## SOP-ILL-3 Reading the gate outcome
+SOP-ILL-3.1 CONFIDENT: the report names one candidate bus. The reviewer still confirms the location with the processes that the utility authorises.
+SOP-ILL-3.2 LOW_CONFIDENCE: the report shows a candidate set instead of one bus. The reviewer treats every member of the set as possible and reads the reason codes (LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN, LOW_KNN_AGREEMENT).
+SOP-ILL-3.3 REJECT: no report is drafted. UNSUPPORTED_DROPOUT_PATTERN means the number or pattern of dark sensors is outside what the gate was fitted for; INVALID_INPUT means the measurements were malformed. The event goes to manual review.
+
+",
+R-0032,dev,paraphrase,yes,What should the reviewer do when the gate says low confidence?,2,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-4 Sensor availability,sop_illustrative_gridsense_review:1933-2625:e87d3688dc3754a5,"reviewer records the disagreement and treats the event as uncertain, also when the outcome is CONFIDENT.
+
+## SOP-ILL-5 Confirming the location
+SOP-ILL-5.1 The reviewer compares the candidate with other utility information (alarms, customer calls, field reports) using the utility's own authorised processes. These processes are outside this example.
+SOP-ILL-5.2 A model metric such as macro-F1 is not the confidence of this prediction. The reviewer uses the gate outcome of this window.
+SOP-ILL-5.3 The reviewer opens each cited document section and checks that the quoted text is in the source and supports the statement. A missing or unsupported citation is a reason to reject the report.
+
+",
+R-0032,dev,paraphrase,yes,What should the reviewer do when the gate says low confidence?,3,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-3 Reading the gate outcome,sop_illustrative_gridsense_review:1422-2039:1c6a04b071397fdb,"for; INVALID_INPUT means the measurements were malformed. The event goes to manual review.
+
+## SOP-ILL-4 Sensor availability
+SOP-ILL-4.1 The reviewer checks how many μPMUs were dark and whether the dark sensors were close to the predicted bus.
+SOP-ILL-4.2 With 10 of 25 sensors dark, about half of the post-fault windows are LOW_CONFIDENCE. The reviewer expects a candidate set.
+SOP-ILL-4.3 The reviewer compares the similar simulated cases with the prediction. If most neighbours point to a different bus, the reviewer records the disagreement and treats the event as uncertain, also when the outcome is CONFIDENT.
+
+",
+R-0033,dev,exact_identifier,yes,Which class index belongs to fault bus 57?,1,feeder_fault_buses,Fault buses and class indices,feeder_fault_buses:508-533:808102538da2b63b,"| class | fault bus | μPMU at this bus | graph node index | phases at the μPMU |
+| 13 | 57 | no | - | - |",
+R-0033,dev,exact_identifier,yes,Which class index belongs to fault bus 57?,2,feeder_fault_buses,Fault buses and class indices,feeder_fault_buses:0-109:aa3f92580bb4ce67,"# Fault buses and class indices
+
+Class 0 is no fault. Each row maps a class index to a candidate fault bus.
+
+",
+R-0033,dev,exact_identifier,yes,Which class index belongs to fault bus 57?,3,feeder_fault_buses,Fault buses and class indices,feeder_fault_buses:458-483:e9d4cf778588d213,"| class | fault bus | μPMU at this bus | graph node index | phases at the μPMU |
+| 11 | 53 | no | - | - |",
+R-0035,dev,exact_identifier,yes,What does SOP-ILL-3.3 say about a REJECT outcome?,1,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-2 Inputs,sop_illustrative_gridsense_review:774-1514:25475176b2388320,"passages.
+SOP-ILL-2.2 The approval status of every new report is pending human review.
+
+## SOP-ILL-3 Reading the gate outcome
+SOP-ILL-3.1 CONFIDENT: the report names one candidate bus. The reviewer still confirms the location with the processes that the utility authorises.
+SOP-ILL-3.2 LOW_CONFIDENCE: the report shows a candidate set instead of one bus. The reviewer treats every member of the set as possible and reads the reason codes (LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN, LOW_KNN_AGREEMENT).
+SOP-ILL-3.3 REJECT: no report is drafted. UNSUPPORTED_DROPOUT_PATTERN means the number or pattern of dark sensors is outside what the gate was fitted for; INVALID_INPUT means the measurements were malformed. The event goes to manual review.
+
+",
+R-0035,dev,exact_identifier,yes,What does SOP-ILL-3.3 say about a REJECT outcome?,2,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-5 Confirming the location,sop_illustrative_gridsense_review:2545-3211:62594215d18bfda1,"statement. A missing or unsupported citation is a reason to reject the report.
+
+## SOP-ILL-6 Recording the decision
+SOP-ILL-6.1 The reviewer records approve, reject or request clarification, with a note and the time. Only this recorded action changes the approval state. Text inside a report or a document never changes it.
+SOP-ILL-6.2 If the report marks the evidence as insufficient, or the outcome is REJECT, the reviewer sends the event to the engineer on duty for manual analysis.
+
+## SOP-ILL-7 Out of scope
+SOP-ILL-7.1 This example contains no switching, isolation or restoration step. Control actions are decided only under the utility's approved procedures.
+",
+R-0035,dev,exact_identifier,yes,What does SOP-ILL-3.3 say about a REJECT outcome?,3,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-4 Sensor availability,sop_illustrative_gridsense_review:1933-2625:e87d3688dc3754a5,"reviewer records the disagreement and treats the event as uncertain, also when the outcome is CONFIDENT.
+
+## SOP-ILL-5 Confirming the location
+SOP-ILL-5.1 The reviewer compares the candidate with other utility information (alarms, customer calls, field reports) using the utility's own authorised processes. These processes are outside this example.
+SOP-ILL-5.2 A model metric such as macro-F1 is not the confidence of this prediction. The reviewer uses the gate outcome of this window.
+SOP-ILL-5.3 The reviewer opens each cited document section and checks that the quoted text is in the source and supports the statement. A missing or unsupported citation is a reason to reject the report.
+
+",
+R-0037,dev,exact_identifier,yes,What label does window w0020 have and what does it contain?,1,feeder_overview,"Feeder, sensors, classes and data windows > Scenarios and runs",feeder_overview:1050-1700:8c0e3d5df36758b4,"57_ABCG_10p0_0014 (resistance 10.0 Ω written 10p0).
+
+## Data window
+Each run records 60 ms at 1 ms resolution: 40 ms before the fault and 20 ms of fault. A window has 20 time steps (stride 1) and holds, for each of the 25 nodes, 6 channels: 3 RMS phase voltages and 3 availability-mask channels. Shape: [25 nodes, 20 steps, 6 channels]. Each run keeps 40 windows, named w0000 to w0039.
+
+## Window labels
+Windows w0000 to w0019 end before the fault and have label 0. Windows from w0020 carry the fault-bus class. Window w0020 ends exactly at fault onset and holds no post-fault sample. A window w ≥ 21 holds w − 20 post-fault samples; w0025 holds 5.
+
+",
+R-0037,dev,exact_identifier,yes,What label does window w0020 have and what does it contain?,2,note_10_window_semantics,Window semantics and the report window,note_10_window_semantics:0-556:af236d91011ac3d4,"# Window semantics and the report window
+
+A window has 20 time steps of 1 ms with stride 1. Windows w0000 to w0019 end before the fault and are labelled no fault. Window w0020 is labelled with the fault bus but holds no post-fault sample. A window w of 21 or more holds w minus 20 post-fault samples. The report window is index 25 (5 post-fault samples); it was chosen on the validation split as the earliest index within one percentage point of the best accuracy.
+
+Because window w0020 has no post-fault sample, no model can classify it from its content.
+",
+R-0037,dev,exact_identifier,yes,What label does window w0020 have and what does it contain?,3,note_27_retrieval_scores,What a retrieval score means,note_27_retrieval_scores:0-424:5efcc65bead11f48,"# What a retrieval score means
+
+A similarity score between a question and a passage is not a probability that the passage is relevant or correct, and a score of 0.8 does not mean 80 percent relevance. If no passage passes the sufficiency check the system must say that the evidence is insufficient and must not fill the gap with general knowledge.
+
+It does not invent a procedure, a document section or a document revision.
+",
+R-0039,dev,exact_identifier,yes,Which fault resistances are simulated?,1,feeder_fault_taxonomy,Fault types and fault resistances,feeder_fault_taxonomy:0-503:60bf3f4819740346,"# Fault types and fault resistances
+
+## Fault types
+There are 11 fault types:
+
+- line-to-ground (LG): AG, BG, CG
+- line-to-line (LL): AB, BC, CA
+- double line-to-ground (LLG): ABG, BCG, CAG
+- three-phase: ABC, ABCG
+
+The letters are the faulted phases; a trailing G means the fault includes ground (ABG, ABCG). ABC is a three-phase fault without ground.
+
+## Fault resistance
+Three fault resistances are simulated: 0.1, 1.0, 10.0 Ω. The 10 Ω faults draw the least current and are the hardest to localize.
+",
+R-0039,dev,exact_identifier,yes,Which fault resistances are simulated?,2,note_05_fault_resistance,Fault resistance and detectability,note_05_fault_resistance:0-432:8c8ccffaf50910f8,"# Fault resistance and detectability
+
+Fault resistance limits the fault current and reduces the voltage depression that remote sensors see. A high-resistance fault therefore leaves a weaker signature. This project simulates three fault resistances: 0.1, 1 and 10 Ω. The 10 Ω faults are the hardest to localize: for the standard RGSAGE-Max model the macro-F1 is 0.949 at 0.1 Ω, 0.893 at 1 Ω and 0.676 at 10 Ω (RESULTS.md section 1).
+",
+R-0039,dev,exact_identifier,yes,Which fault resistances are simulated?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0042,dev,dropout_observability,yes,Which training settings were frozen for all models?,1,results_md,RESULTS.md — current headline numbers > 8. Reviewer-hardening findings (2026-08-17 pass; moved from CLAUDE.md 2026-10-16),results_md:7387-7895:0a3c427140463893,"**connected** subgraph of the 25-node tree from a uniform root).
+
+- **The frozen split shares 825 of 825 scenarios between train and test.** It partitions the 50 runs of each scenario, not the scenarios, so accuracy measures generalization to unseen *load conditions* of a known configuration. `dataset_fullscale_50_scenario` (575/125/125 scenarios, 0 overlap, all 26 classes per split; `processed/` is a symlink to the frozen corpus) is the held-out counterpart (`scripts/build_scenario_heldout_split.py`).
+",
+R-0042,dev,dropout_observability,yes,Which training settings were frozen for all models?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0042,dev,dropout_observability,yes,Which training settings were frozen for all models?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0044,dev,dropout_observability,yes,How is a missing sensor simulated at inference time?,1,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0044,dev,dropout_observability,yes,How is a missing sensor simulated at inference time?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0044,dev,dropout_observability,yes,How is a missing sensor simulated at inference time?,3,note_12_missing_data_representation,How a dropped sensor is represented,note_12_missing_data_representation:0-466:0975ca378e4bebe9,"# How a dropped sensor is represented
+
+A dropped μPMU has its three voltage channels set to 0 and its three mask channels set to 0, giving the mask pattern (0,0,0). A voltage of 0 can be a valid reading, so the mask is the authoritative indicator of a missing sensor. The mask channels of a working node are static and encode how many phases the μPMU measures (1, 2 or 3 phases); 14 of the 25 nodes are three-phase. Standard training never sees the pattern (0,0,0).
+",
+R-0046,dev,exact_identifier,yes,How many candidate fault buses and how many measurement buses does the study have?,1,feeder_overview,"Feeder, sensors, classes and data windows",feeder_overview:0-454:6ff86702566f8e9b,"# Feeder, sensors, classes and data windows
+
+## System
+The study feeder is the IEEE 123-bus distribution test feeder at 4.16 kV line-to-line and 60 Hz. It is simulated in OpenDSS.
+The measurement set has 25 μPMU buses (bus 300 is a load/auxiliary bus). The graph used by the model is a 25-node tree with 24 edges between μPMU buses.
+There are 25 candidate fault buses; 6 of them are μPMU buses (13, 18, 25, 35, 47, 97) and 19 are not measured directly.
+
+",
+R-0046,dev,exact_identifier,yes,How many candidate fault buses and how many measurement buses does the study have?,2,note_12_missing_data_representation,How a dropped sensor is represented,note_12_missing_data_representation:0-466:0975ca378e4bebe9,"# How a dropped sensor is represented
+
+A dropped μPMU has its three voltage channels set to 0 and its three mask channels set to 0, giving the mask pattern (0,0,0). A voltage of 0 can be a valid reading, so the mask is the authoritative indicator of a missing sensor. The mask channels of a working node are static and encode how many phases the μPMU measures (1, 2 or 3 phases); 14 of the 25 nodes are three-phase. Standard training never sees the pattern (0,0,0).
+",
+R-0046,dev,exact_identifier,yes,How many candidate fault buses and how many measurement buses does the study have?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0047,dev,unanswerable,no,What is the breaker rating at bus 42?,1,feeder_fault_buses,Fault buses and class indices,feeder_fault_buses:383-407:a6d8032ccc452d65,"| class | fault bus | μPMU at this bus | graph node index | phases at the μPMU |
+| 8 | 42 | no | - | - |",
+R-0047,dev,unanswerable,no,What is the breaker rating at bus 42?,2,feeder_fault_buses,Fault buses and class indices,feeder_fault_buses:358-383:0aed482f316dc36f,"| class | fault bus | μPMU at this bus | graph node index | phases at the μPMU |
+| 7 | 35 | yes | 7 | 3 |",
+R-0047,dev,unanswerable,no,What is the breaker rating at bus 42?,3,feeder_fault_buses,Fault buses and class indices,feeder_fault_buses:558-583:afb1f32b22e61f83,"| class | fault bus | μPMU at this bus | graph node index | phases at the μPMU |
+| 15 | 65 | no | - | - |",
+R-0049,dev,unanswerable,no,What does it cost to install one micro-PMU?,1,note_07_micro_pmu,What a μPMU measures,note_07_micro_pmu:0-421:3d9b4fc62b995096,"# What a μPMU measures
+
+A micro-phasor measurement unit (μPMU) measures voltage and current phasors at distribution level with precise time stamps from a common time reference, at a high reporting rate. IEEE Std C37.118.1 defines the synchrophasor measurement requirements. In this project each of the 25 μPMUs provides three RMS phase voltages per time step to the model, together with three availability-mask channels.
+",
+R-0049,dev,unanswerable,no,What does it cost to install one micro-PMU?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0049,dev,unanswerable,no,What does it cost to install one micro-PMU?,3,feeder_fault_buses,Fault buses and class indices > Nearest μPMUs on the operated feeder,feeder_fault_buses:2418-2494:fe03cfcfb67e8ddf,"| fault bus | nearest μPMU (km, hops) | 2nd nearest (km, hops) | 3rd nearest (km, hops) |
+| 57 | bus 54 (0.107 km, 1) | bus 60 (0.229 km, 1) | bus 13 (0.328 km, 5) |",
+R-0051,dev,unanswerable,no,How long does a repair crew need to reach bus 99?,1,feeder_fault_buses,Fault buses and class indices > Nearest μPMUs on the operated feeder,feeder_fault_buses:3179-3256:9bcf827416fb1679,"| fault bus | nearest μPMU (km, hops) | 2nd nearest (km, hops) | 3rd nearest (km, hops) |
+| 99 | bus 97 (0.251 km, 2) | bus 105 (0.411 km, 5) | bus 60 (0.434 km, 5) |",
+R-0051,dev,unanswerable,no,How long does a repair crew need to reach bus 99?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0051,dev,unanswerable,no,How long does a repair crew need to reach bus 99?,3,feeder_fault_buses,Fault buses and class indices > Nearest μPMUs on the operated feeder,feeder_fault_buses:3102-3179:c49496dd0b8336cc,"| fault bus | nearest μPMU (km, hops) | 2nd nearest (km, hops) | 3rd nearest (km, hops) |
+| 97 | bus 97 (0.000 km, 0) | bus 105 (0.160 km, 3) | bus 60 (0.183 km, 3) |",
+R-0053,dev,unanswerable,no,When was the transformer at bus 108 last maintained?,1,feeder_fault_buses,Fault buses and class indices,feeder_fault_buses:811-837:f9908b576ecd243d,"| class | fault bus | μPMU at this bus | graph node index | phases at the μPMU |
+| 25 | 108 | no | - | - |",
+R-0053,dev,unanswerable,no,When was the transformer at bus 108 last maintained?,2,feeder_overview,"Feeder, sensors, classes and data windows",feeder_overview:0-454:6ff86702566f8e9b,"# Feeder, sensors, classes and data windows
+
+## System
+The study feeder is the IEEE 123-bus distribution test feeder at 4.16 kV line-to-line and 60 Hz. It is simulated in OpenDSS.
+The measurement set has 25 μPMU buses (bus 300 is a load/auxiliary bus). The graph used by the model is a 25-node tree with 24 edges between μPMU buses.
+There are 25 candidate fault buses; 6 of them are μPMU buses (13, 18, 25, 35, 47, 97) and 19 are not measured directly.
+
+",
+R-0053,dev,unanswerable,no,When was the transformer at bus 108 last maintained?,3,note_14_standard_training_collapse,Why standard training fails when sensors are lost,note_14_standard_training_collapse:0-506:62200134ae416aed,"# Why standard training fails when sensors are lost
+
+A model trained with every sensor present meets an input at inference that it never saw in training when some sensors are dark. For the standard RGSAGE-Max model the macro-F1 falls from 0.846 with no sensor lost to 0.048 when 10 of the 25 sensors are dark; that is 5.7 percent of its clean macro-F1. The most accurate standard model was also the one that degraded fastest, but this ordering is only a trend at three seeds (RESULTS.md sections 2 and 8).
+",
+R-0002,test,paraphrase,yes,Which kind of fault joins two phases without any earth connection?,1,note_02_line_to_line,Line-to-line faults,note_02_line_to_line:0-364:98146f4d7fc6e2eb,"# Line-to-line faults
+
+A line-to-line (LL) fault connects two phase conductors without a ground connection. Only the positive- and negative-sequence networks take part, connected in parallel at the fault point, and no zero-sequence current flows. The voltages of the two faulted phases move toward each other. In this project the LL fault types are AB, BC and CA.
+",
+R-0002,test,paraphrase,yes,Which kind of fault joins two phases without any earth connection?,2,note_04_three_phase_fault,Three-phase faults,note_04_three_phase_fault:0-411:262e5819f5641109,"# Three-phase faults
+
+A three-phase fault involves all three phases and is balanced, so only the positive-sequence network is needed. All three phase voltages fall together near the fault. In this project the three-phase types are ABC (without ground) and ABCG (with ground). Three-phase faults are commonly reported as the least frequent fault type in practice, but this dataset contains all 11 types equally.
+",
+R-0002,test,paraphrase,yes,Which kind of fault joins two phases without any earth connection?,3,note_01_single_line_to_ground,Single line-to-ground faults,note_01_single_line_to_ground:0-524:badb0f4b302a304e,"# Single line-to-ground faults
+
+A single line-to-ground (LG) fault connects one phase conductor to ground through a fault impedance. In symmetrical components the positive-, negative- and zero-sequence networks are connected in series at the fault point, so the fault current has all three sequence components. At the fault the voltage of the faulted phase falls toward zero when the fault resistance is low, while the voltages of the other two phases change much less. In this project the LG fault types are AG, BG and CG.
+",
+R-0004,test,paraphrase,yes,Are all three phases hit equally by a symmetrical short circuit?,1,note_04_three_phase_fault,Three-phase faults,note_04_three_phase_fault:0-411:262e5819f5641109,"# Three-phase faults
+
+A three-phase fault involves all three phases and is balanced, so only the positive-sequence network is needed. All three phase voltages fall together near the fault. In this project the three-phase types are ABC (without ground) and ABCG (with ground). Three-phase faults are commonly reported as the least frequent fault type in practice, but this dataset contains all 11 types equally.
+",
+R-0004,test,paraphrase,yes,Are all three phases hit equally by a symmetrical short circuit?,2,note_01_single_line_to_ground,Single line-to-ground faults,note_01_single_line_to_ground:0-524:badb0f4b302a304e,"# Single line-to-ground faults
+
+A single line-to-ground (LG) fault connects one phase conductor to ground through a fault impedance. In symmetrical components the positive-, negative- and zero-sequence networks are connected in series at the fault point, so the fault current has all three sequence components. At the fault the voltage of the faulted phase falls toward zero when the fault resistance is low, while the voltages of the other two phases change much less. In this project the LG fault types are AG, BG and CG.
+",
+R-0004,test,paraphrase,yes,Are all three phases hit equally by a symmetrical short circuit?,3,feeder_fault_taxonomy,Fault types and fault resistances,feeder_fault_taxonomy:0-503:60bf3f4819740346,"# Fault types and fault resistances
+
+## Fault types
+There are 11 fault types:
+
+- line-to-ground (LG): AG, BG, CG
+- line-to-line (LL): AB, BC, CA
+- double line-to-ground (LLG): ABG, BCG, CAG
+- three-phase: ABC, ABCG
+
+The letters are the faulted phases; a trailing G means the fault includes ground (ABG, ABCG). ABC is a three-phase fault without ground.
+
+## Fault resistance
+Three fault resistances are simulated: 0.1, 1.0, 10.0 Ω. The 10 Ω faults draw the least current and are the hardest to localize.
+",
+R-0006,test,paraphrase,yes,Why do the sensors closest to the fault give the most information?,1,note_06_voltage_sag_propagation,How a voltage sag spreads along a feeder,note_06_voltage_sag_propagation:0-492:0398294f0565826e,"# How a voltage sag spreads along a feeder
+
+During a fault the voltage is lowest at the fault point and recovers with electrical distance from it. The depth of the sag at a sensor depends on the impedance between the sensor and the fault compared with the impedance between the fault and the source. Sensors close to the fault therefore carry the most information about its location. This is why losing the sensors nearest to a fault (targeted dropout) hurts more than losing random sensors.
+",
+R-0006,test,paraphrase,yes,Why do the sensors closest to the fault give the most information?,2,note_11_causes_of_sensor_dropout,Why sensors drop out,note_11_causes_of_sensor_dropout:0-375:7b5de1adf7de23e6,"# Why sensors drop out
+
+A μPMU can stop delivering usable data because of communication loss, loss of power, loss of its time reference, or a hardware failure. For the localization model the effect is the same in every case: some inputs are missing at the moment of the fault. This is different from permanently placing fewer sensors, which is known when the model is built.
+",
+R-0006,test,paraphrase,yes,Why do the sensors closest to the fault give the most information?,3,note_09_ambiguity_set,Ambiguity sets,note_09_ambiguity_set:0-687:48169c04ac75eedd,"# Ambiguity sets
+
+An ambiguity set is a group of candidate fault locations that produce nearly the same measurements at the available sensors, so the data cannot separate them. Which candidates are indistinguishable depends on which sensors are available. When the evidence is ambiguous a report should show the candidates and not a single bus. The current gate does not output a physical ambiguity set; for LOW_CONFIDENCE windows it outputs a conformal candidate set (about three to four classes).
+
+Two fault buses that are close to the same μPMUs give similar voltage patterns. When one of those μPMUs is dark, the pattern can fit both buses, and the candidate set then contains both.
+",
+R-0008,test,paraphrase,yes,Why can the model not see the fault directly at most of the candidate buses?,1,note_08_partial_observability,Partial observability on the feeder,note_08_partial_observability:0-667:9feab27431e235f9,"# Partial observability on the feeder
+
+Only 25 buses of the feeder carry a μPMU. There are 25 candidate fault buses, and only 6 of them (13, 18, 25, 35, 47, 97) are μPMU buses. The other 19 candidate fault buses are not measured directly, so the model infers their location from the voltage disturbance seen at other buses. Localization is therefore a classification over 25 fault buses plus a no-fault class, based on remote measurements.
+
+Half of the windows in the corpus are no-fault windows. A classifier that always answers no fault scores a 26-class macro-F1 of 0.0256, so a macro-F1 near this value means that the model has lost its ability to locate faults.
+",
+R-0008,test,paraphrase,yes,Why can the model not see the fault directly at most of the candidate buses?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0008,test,paraphrase,yes,Why can the model not see the fault directly at most of the candidate buses?,3,note_11_causes_of_sensor_dropout,Why sensors drop out,note_11_causes_of_sensor_dropout:0-375:7b5de1adf7de23e6,"# Why sensors drop out
+
+A μPMU can stop delivering usable data because of communication loss, loss of power, loss of its time reference, or a hardware failure. For the localization model the effect is the same in every case: some inputs are missing at the moment of the fault. This is different from permanently placing fewer sensors, which is known when the model is built.
+",
+R-0010,test,paraphrase,yes,Which window index is used for the report and why was it chosen?,1,note_10_window_semantics,Window semantics and the report window,note_10_window_semantics:0-556:af236d91011ac3d4,"# Window semantics and the report window
+
+A window has 20 time steps of 1 ms with stride 1. Windows w0000 to w0019 end before the fault and are labelled no fault. Window w0020 is labelled with the fault bus but holds no post-fault sample. A window w of 21 or more holds w minus 20 post-fault samples. The report window is index 25 (5 post-fault samples); it was chosen on the validation split as the earliest index within one percentage point of the best accuracy.
+
+Because window w0020 has no post-fault sample, no model can classify it from its content.
+",
+R-0010,test,paraphrase,yes,Which window index is used for the report and why was it chosen?,2,results_md,"RESULTS.md — current headline numbers > Appendix — historical diagnostics (SUPERSEDED, do not quote)",results_md:12456-12515:edf81ec6c44ed7c1,"| Metric | edges ON | edges OFF | ratio | depth 1 | depth 2 | delta |
+| per-window macro-F1 | 0.227 | 0.082 | 2.8× | — | — | — |",
+R-0010,test,paraphrase,yes,Which window index is used for the report and why was it chosen?,3,note_22_conformal_sets,Conformal candidate sets,note_22_conformal_sets:0-804:5ccd018810dbca5f,"# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names one bus, a REJECT report shows no bus and no set, and only a LOW_CONFIDENCE report shows a candidate set.
+",
+R-0012,test,paraphrase,yes,How does the model tell a missing sensor from a sensor that reads zero volts?,1,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0012,test,paraphrase,yes,How does the model tell a missing sensor from a sensor that reads zero volts?,2,note_12_missing_data_representation,How a dropped sensor is represented,note_12_missing_data_representation:0-466:0975ca378e4bebe9,"# How a dropped sensor is represented
+
+A dropped μPMU has its three voltage channels set to 0 and its three mask channels set to 0, giving the mask pattern (0,0,0). A voltage of 0 can be a valid reading, so the mask is the authoritative indicator of a missing sensor. The mask channels of a working node are static and encode how many phases the μPMU measures (1, 2 or 3 phases); 14 of the 25 nodes are three-phase. Standard training never sees the pattern (0,0,0).
+",
+R-0012,test,paraphrase,yes,How does the model tell a missing sensor from a sensor that reads zero volts?,3,note_06_voltage_sag_propagation,How a voltage sag spreads along a feeder,note_06_voltage_sag_propagation:0-492:0398294f0565826e,"# How a voltage sag spreads along a feeder
+
+During a fault the voltage is lowest at the fault point and recovers with electrical distance from it. The depth of the sag at a sensor depends on the impedance between the sensor and the fault compared with the impedance between the fault and the source. Sensors close to the fault therefore carry the most information about its location. This is why losing the sensors nearest to a fault (targeted dropout) hurts more than losing random sensors.
+",
+R-0015,test,dropout_observability,yes,How much accuracy is kept with ten sensors dark after the special training?,1,note_15_what_dropout_aware_training_recovers,What dropout-aware training recovers,note_15_what_dropout_aware_training_recovers:0-526:183a0b6939546bdc,"# What dropout-aware training recovers
+
+For RGSAGE-Max, dropout-aware training gives macro-F1 values of 0.839, 0.827, 0.815, 0.774 and 0.674 when 0, 1, 2, 5 and 10 sensors are dark. With 10 sensors dark it keeps 80.3 percent of the clean macro-F1, against 5.7 percent for standard training, and the area under the degradation curve rises from 0.402 to 0.913. The cost in clean accuracy for RGSAGE-Max is 0.008 and is not significant. These are averages over a test set; they do not describe the reliability of one prediction.
+",
+R-0015,test,dropout_observability,yes,How much accuracy is kept with ten sensors dark after the special training?,2,note_20_margin,The top-1 minus top-2 margin,note_20_margin:445-785:42202f50f05786a1,"threshold only at k = 2, and the kNN-agreement threshold at no k.
+
+The margin threshold is 0.1459 with 0 and 1 sensors dark, 0.1368 with 2, 0.1633 with 5 and 0.2518 with 10 dark. At this operating point the probability threshold is 0 with 0, 1, 5 and 10 sensors dark and 0.5424 with 2 dark, and the kNN-agreement threshold is 0 at every k.
+",
+R-0015,test,dropout_observability,yes,How much accuracy is kept with ten sensors dark after the special training?,3,note_14_standard_training_collapse,Why standard training fails when sensors are lost,note_14_standard_training_collapse:0-506:62200134ae416aed,"# Why standard training fails when sensors are lost
+
+A model trained with every sensor present meets an input at inference that it never saw in training when some sensors are dark. For the standard RGSAGE-Max model the macro-F1 falls from 0.846 with no sensor lost to 0.048 when 10 of the 25 sensors are dark; that is 5.7 percent of its clean macro-F1. The most accurate standard model was also the one that degraded fastest, but this ordering is only a trend at three seeds (RESULTS.md sections 2 and 8).
+",
+R-0017,test,dropout_observability,yes,Does training for missing sensors also protect against noisy measurements?,1,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0017,test,dropout_observability,yes,Does training for missing sensors also protect against noisy measurements?,2,note_11_causes_of_sensor_dropout,Why sensors drop out,note_11_causes_of_sensor_dropout:0-375:7b5de1adf7de23e6,"# Why sensors drop out
+
+A μPMU can stop delivering usable data because of communication loss, loss of power, loss of its time reference, or a hardware failure. For the localization model the effect is the same in every case: some inputs are missing at the moment of the fault. This is different from permanently placing fewer sensors, which is known when the model is built.
+",
+R-0017,test,dropout_observability,yes,Does training for missing sensors also protect against noisy measurements?,3,results_md,RESULTS.md — current headline numbers > 8. Reviewer-hardening findings (2026-08-17 pass; moved from CLAUDE.md 2026-10-16),results_md:9088-9514:b94f47cdef781f25,"**dropout-aware** model the policy is irrelevant (|Δ| ≤ 0.012). `dropout_study_correlated/` (`scripts/run_correlated_dropout_study.py`, 3 seeds, both arms).
+- **Measurement noise costs real accuracy, and dropout-aware training does NOT help against it.** Standard RGSAGE-Max at k=0: 0.846 → 0.786 (σ=5e-4 p.u.) → 0.579 (σ=2e-3) → 0.345 (σ=1e-2, the IEEE C37.118 1% TVE cap), i.e. ≈ **0.6 / 2.1 / 4.1 sensors' worth** of loss. ",
+R-0018,test,paraphrase,yes,What is added up to make the decision for one window?,1,note_18_soft_vote,The soft vote,note_18_soft_vote:0-319:0f6e3bb0f83ebec2,"# The soft vote
+
+The model classifies each of the 25 nodes separately. The decision for a window sums the 25 node softmax vectors and takes the class with the largest sum. The summed vector adds up to 25, not to 1. Dividing by 25 gives a vote share, but the vote share is not a calibrated probability of being correct.
+",
+R-0018,test,paraphrase,yes,What is added up to make the decision for one window?,2,results_md,RESULTS.md — current headline numbers > 6. Persistent (per-event) dropout — a null result,results_md:5073-5703:3c4a94e86d4f2766,"`dropout_study_persistent/persistent_curves_*.csv`.
+
+**Nothing moves.** No point on either curve shifts by more than **0.003** macro-F1 (standard AUDC 0.402 → 0.401; dropout-aware 0.913 → 0.913; Ret@10 5.7 % → 5.6 % and 80.3 % → 80.1 %); no difference survives Holm across the 12 paired comparisons (min p_Holm = 0.46). **Why:** the decision rule is per window — soft voting pools the 25 nodes of a *single* window, never the 40 windows of an event, and a window's mask has the same marginal distribution under both schemes. **This equivalence would not hold for an event-level rule**, which per-window resampling would flatter.
+
+",
+R-0018,test,paraphrase,yes,What is added up to make the decision for one window?,3,note_10_window_semantics,Window semantics and the report window,note_10_window_semantics:0-556:af236d91011ac3d4,"# Window semantics and the report window
+
+A window has 20 time steps of 1 ms with stride 1. Windows w0000 to w0019 end before the fault and are labelled no fault. Window w0020 is labelled with the fault bus but holds no post-fault sample. A window w of 21 or more holds w minus 20 post-fault samples. The report window is index 25 (5 post-fault samples); it was chosen on the validation split as the earliest index within one percentage point of the best accuracy.
+
+Because window w0020 has no post-fault sample, no model can classify it from its content.
+",
+R-0020,test,paraphrase,yes,Why is a separate calibration needed for each number of dark sensors?,1,note_19_calibration,Calibration and isotonic regression,note_19_calibration:0-719:802a4eb29f02ab79,"# Calibration and isotonic regression
+
+A confidence is calibrated when predictions made with confidence p are right about a fraction p of the time. Expected calibration error (ECE) measures the gap; this project uses 15 equal-mass bins. Isotonic regression fits a monotone map from the vote share to the probability of being correct. The map is fitted separately for each number of dark sensors, because the vote scale changes with dropout: a map fitted without dropout had ECE 0.007 at k = 0 but 0.048 at k = 10, while per-k maps give ECE of 0.006 to 0.009 on the test split.
+
+The values 0.007 and 0.048 are from the validation half cal-B (post-fault windows). On test the raw vote share has an ECE of 0.121 to 0.173.
+",
+R-0020,test,paraphrase,yes,Why is a separate calibration needed for each number of dark sensors?,2,note_14_standard_training_collapse,Why standard training fails when sensors are lost,note_14_standard_training_collapse:0-506:62200134ae416aed,"# Why standard training fails when sensors are lost
+
+A model trained with every sensor present meets an input at inference that it never saw in training when some sensors are dark. For the standard RGSAGE-Max model the macro-F1 falls from 0.846 with no sensor lost to 0.048 when 10 of the 25 sensors are dark; that is 5.7 percent of its clean macro-F1. The most accurate standard model was also the one that degraded fastest, but this ordering is only a trend at three seeds (RESULTS.md sections 2 and 8).
+",
+R-0020,test,paraphrase,yes,Why is a separate calibration needed for each number of dark sensors?,3,note_20_margin,The top-1 minus top-2 margin,note_20_margin:445-785:42202f50f05786a1,"threshold only at k = 2, and the kNN-agreement threshold at no k.
+
+The margin threshold is 0.1459 with 0 and 1 sensors dark, 0.1368 with 2, 0.1633 with 5 and 0.2518 with 10 dark. At this operating point the probability threshold is 0 with 0, 1, 5 and 10 sensors dark and 0.5424 with 2 dark, and the kNN-agreement threshold is 0 at every k.
+",
+R-0023,test,paraphrase,yes,Does a 90 percent prediction set really cover 90 percent of the uncertain cases?,1,note_22_conformal_sets,Conformal candidate sets,note_22_conformal_sets:0-804:5ccd018810dbca5f,"# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names one bus, a REJECT report shows no bus and no set, and only a LOW_CONFIDENCE report shows a candidate set.
+",
+R-0023,test,paraphrase,yes,Does a 90 percent prediction set really cover 90 percent of the uncertain cases?,2,note_30_aggregate_versus_individual,Aggregate metrics are not the confidence of one prediction,note_30_aggregate_versus_individual:0-517:1dc7ac85f61296d0,"# Aggregate metrics are not the confidence of one prediction
+
+Macro-F1, retention and the area under the degradation curve describe a model over a whole test set. They must not be quoted as the confidence of the current prediction. For example, a macro-F1 of 0.674 with 10 sensors dark does not mean that a prediction made with 10 sensors dark is 67.4 percent likely to be right. The confidence of one prediction comes from the gate: the calibrated probability, the margin and the neighbour agreement of that window.
+",
+R-0023,test,paraphrase,yes,Does a 90 percent prediction set really cover 90 percent of the uncertain cases?,3,note_23_similar_simulated_cases,Similar simulated cases (kNN evidence),note_23_similar_simulated_cases:0-598:ab367043ae84b9a6,"# Similar simulated cases (kNN evidence)
+
+The case store holds latent vectors of simulated training windows with their true fault bus. The nearest cases to a new window are shown as similar simulated cases. Because every scenario appears in both train and test, about 83 percent of the 20 nearest neighbours of a window come from its own scenario when nothing is held out. The held-out store removes the scenario of the query; its kNN vote is then 0.831 on the test split with no sensor lost, below the 0.876 of the model itself. Neighbours are precedents, not proof that a prediction is correct.
+
+",
+R-0025,test,paraphrase,yes,What does the gate do when the sensors fail in a pattern it was not fitted for?,1,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-2 Inputs,sop_illustrative_gridsense_review:774-1514:25475176b2388320,"passages.
+SOP-ILL-2.2 The approval status of every new report is pending human review.
+
+## SOP-ILL-3 Reading the gate outcome
+SOP-ILL-3.1 CONFIDENT: the report names one candidate bus. The reviewer still confirms the location with the processes that the utility authorises.
+SOP-ILL-3.2 LOW_CONFIDENCE: the report shows a candidate set instead of one bus. The reviewer treats every member of the set as possible and reads the reason codes (LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN, LOW_KNN_AGREEMENT).
+SOP-ILL-3.3 REJECT: no report is drafted. UNSUPPORTED_DROPOUT_PATTERN means the number or pattern of dark sensors is outside what the gate was fitted for; INVALID_INPUT means the measurements were malformed. The event goes to manual review.
+
+",
+R-0025,test,paraphrase,yes,What does the gate do when the sensors fail in a pattern it was not fitted for?,2,note_09_ambiguity_set,Ambiguity sets,note_09_ambiguity_set:0-687:48169c04ac75eedd,"# Ambiguity sets
+
+An ambiguity set is a group of candidate fault locations that produce nearly the same measurements at the available sensors, so the data cannot separate them. Which candidates are indistinguishable depends on which sensors are available. When the evidence is ambiguous a report should show the candidates and not a single bus. The current gate does not output a physical ambiguity set; for LOW_CONFIDENCE windows it outputs a conformal candidate set (about three to four classes).
+
+Two fault buses that are close to the same μPMUs give similar voltage patterns. When one of those μPMUs is dark, the pattern can fit both buses, and the candidate set then contains both.
+",
+R-0025,test,paraphrase,yes,What does the gate do when the sensors fail in a pattern it was not fitted for?,3,note_16_targeted_versus_random_dropout,Targeted dropout is harder than random dropout,note_16_targeted_versus_random_dropout:658-1158:946357e731a1ef33,"Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",
+R-0027,test,paraphrase,yes,Can a sentence written by the language model change the approval status?,1,note_26_gate_is_not_changed_by_text,Text cannot change a gate decision,note_26_gate_is_not_changed_by_text:0-365:e2f328f506ff1042,"# Text cannot change a gate decision
+
+The gate decision, the evidence score and the approval state are computed in code. Text produced by a language model, or text inside a retrieved document, cannot change them. A document cannot grant itself approval by saying that it is approved, and a report that contains the word approved does not change the approval state.
+",
+R-0027,test,paraphrase,yes,Can a sentence written by the language model change the approval status?,2,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-1 Purpose,sop_illustrative_gridsense_review:460-862:e56f26737f0863c4,"is decision support. A predicted fault bus is a candidate and is not a confirmed fault.
+
+## SOP-ILL-2 Inputs
+SOP-ILL-2.1 The reviewer receives the event identifier, the predicted fault bus, the gate outcome with its reason codes, the number and position of dark sensors, the similar simulated cases, and the cited passages.
+SOP-ILL-2.2 The approval status of every new report is pending human review.
+
+",
+R-0027,test,paraphrase,yes,Can a sentence written by the language model change the approval status?,3,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-2 Inputs,sop_illustrative_gridsense_review:774-1514:25475176b2388320,"passages.
+SOP-ILL-2.2 The approval status of every new report is pending human review.
+
+## SOP-ILL-3 Reading the gate outcome
+SOP-ILL-3.1 CONFIDENT: the report names one candidate bus. The reviewer still confirms the location with the processes that the utility authorises.
+SOP-ILL-3.2 LOW_CONFIDENCE: the report shows a candidate set instead of one bus. The reviewer treats every member of the set as possible and reads the reason codes (LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN, LOW_KNN_AGREEMENT).
+SOP-ILL-3.3 REJECT: no report is drafted. UNSUPPORTED_DROPOUT_PATTERN means the number or pattern of dark sensors is outside what the gate was fitted for; INVALID_INPUT means the measurements were malformed. The event goes to manual review.
+
+",
+R-0029,test,paraphrase,yes,Do these results show that the system is safe on a real grid?,1,note_28_simulation_limits,Limits of the simulated data,note_28_simulation_limits:0-479:bcd239597b4b29e5,"# Limits of the simulated data
+
+All data come from OpenDSS simulations of the IEEE 123-bus feeder; the corpus has no measurement noise unless noise is added in a separate study. The train, validation and test splits share all 825 scenarios and differ in their runs. Results therefore do not show safety on a real grid, and the documents in this corpus were curated for research and are not approved by a utility.
+
+Every report states that no utility-approved procedure was used.
+",
+R-0029,test,paraphrase,yes,Do these results show that the system is safe on a real grid?,2,note_23_similar_simulated_cases,Similar simulated cases (kNN evidence),note_23_similar_simulated_cases:509-1119:501722ee8455808e,"of the model itself. Neighbours are precedents, not proof that a prediction is correct.
+
+kNN agreement is the fraction of neighbours whose true bus equals the prediction; the neighbour error rate is the fraction of neighbours that the model itself got wrong. On test, kNN agreement detects wrong predictions with AUROC 0.748 to 0.826, lower than the margin. It stayed in the gate by a pre-registered rule with a small effect (AUROC +0.011 on validation), and at the 95 percent operating point its threshold is 0. Neighbours cannot show conditions outside the simulation or a wrong reading from a present μPMU.
+",
+R-0029,test,paraphrase,yes,Do these results show that the system is safe on a real grid?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0031,test,paraphrase,yes,Can I quote the macro-F1 as the confidence of this prediction?,1,note_30_aggregate_versus_individual,Aggregate metrics are not the confidence of one prediction,note_30_aggregate_versus_individual:0-517:1dc7ac85f61296d0,"# Aggregate metrics are not the confidence of one prediction
+
+Macro-F1, retention and the area under the degradation curve describe a model over a whole test set. They must not be quoted as the confidence of the current prediction. For example, a macro-F1 of 0.674 with 10 sensors dark does not mean that a prediction made with 10 sensors dark is 67.4 percent likely to be right. The confidence of one prediction comes from the gate: the calibrated probability, the margin and the neighbour agreement of that window.
+",
+R-0031,test,paraphrase,yes,Can I quote the macro-F1 as the confidence of this prediction?,2,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report > SOP-ILL-4 Sensor availability,sop_illustrative_gridsense_review:1933-2625:e87d3688dc3754a5,"reviewer records the disagreement and treats the event as uncertain, also when the outcome is CONFIDENT.
+
+## SOP-ILL-5 Confirming the location
+SOP-ILL-5.1 The reviewer compares the candidate with other utility information (alarms, customer calls, field reports) using the utility's own authorised processes. These processes are outside this example.
+SOP-ILL-5.2 A model metric such as macro-F1 is not the confidence of this prediction. The reviewer uses the gate outcome of this window.
+SOP-ILL-5.3 The reviewer opens each cited document section and checks that the quoted text is in the source and supports the statement. A missing or unsupported citation is a reason to reject the report.
+
+",
+R-0031,test,paraphrase,yes,Can I quote the macro-F1 as the confidence of this prediction?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0034,test,exact_identifier,yes,How many phases does the micro-PMU at bus 26 measure?,1,feeder_pmu_nodes,"μPMU nodes, phases and graph neighbours",feeder_pmu_nodes:0-284:1e3a01382cfb682c,"# μPMU nodes, phases and graph neighbours
+
+The 25 μPMU nodes form a tree with 24 edges. 14 nodes measure three phases, 2 measure two phases and 9 measure one phase. The mask channels of a working node are static and encode these phases; a dropped node has all six channels set to 0.
+
+",
+R-0034,test,exact_identifier,yes,How many phases does the micro-PMU at bus 26 measure?,2,feeder_pmu_nodes,"μPMU nodes, phases and graph neighbours",feeder_pmu_nodes:545-569:077d2922eb6fe6bb,"| node index | μPMU bus | phases | candidate fault bus (class) | neighbouring μPMU buses |
+| 5 | 26 | 2 | - | 25 |",
+R-0034,test,exact_identifier,yes,How many phases does the micro-PMU at bus 26 measure?,3,feeder_pmu_nodes,"μPMU nodes, phases and graph neighbours",feeder_pmu_nodes:517-545:2f5e54da8f3d6b3b,"| node index | μPMU bus | phases | candidate fault bus (class) | neighbouring μPMU buses |
+| 4 | 25 | 3 | 5 | 18, 26 |",
+R-0036,test,exact_identifier,yes,Which fault buses also carry a micro-PMU?,1,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0036,test,exact_identifier,yes,Which fault buses also carry a micro-PMU?,2,feeder_pmu_nodes,"μPMU nodes, phases and graph neighbours",feeder_pmu_nodes:1026-1053:ea472cd366bd6789,"| node index | μPMU bus | phases | candidate fault bus (class) | neighbouring μPMU buses |
+| 22 | 109 | 1 | - | 300 |",
+R-0036,test,exact_identifier,yes,Which fault buses also carry a micro-PMU?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0038,test,exact_identifier,yes,How many fault scenarios are there in total?,1,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0038,test,exact_identifier,yes,How many fault scenarios are there in total?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0038,test,exact_identifier,yes,How many fault scenarios are there in total?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0040,test,exact_identifier,yes,What do the parts of a run name such as 57_ABCG_10p0_0014 mean?,1,feeder_overview,"Feeder, sensors, classes and data windows > System",feeder_overview:394-1103:7b43f6bc9bcf11f6,"(13, 18, 25, 35, 47, 97) and 19 are not measured directly.
+
+## Classes
+The classifier has 26 classes. Class 0 means no fault. Class c from 1 to 25 is the fault bus listed at position c of the sorted fault-bus list: class 1 = bus 7, class 2 = bus 13, class 3 = bus 18, class 4 = bus 21, class 5 = bus 25, and so on (full table in the fault-bus document).
+
+## Scenarios and runs
+A scenario is one fault bus, one fault type and one fault resistance: 25 × 11 × 3 = 825 scenarios. Each run of a scenario uses a different load multiplier (range 0.5 to 1.3). The frozen corpus has 50 runs per scenario. A run is named <bus>_<type>_<resistance>_<run>, for example 57_ABCG_10p0_0014 (resistance 10.0 Ω written 10p0).
+
+",
+R-0040,test,exact_identifier,yes,What do the parts of a run name such as 57_ABCG_10p0_0014 mean?,2,feeder_overview,"Feeder, sensors, classes and data windows > Scenarios and runs",feeder_overview:1050-1700:8c0e3d5df36758b4,"57_ABCG_10p0_0014 (resistance 10.0 Ω written 10p0).
+
+## Data window
+Each run records 60 ms at 1 ms resolution: 40 ms before the fault and 20 ms of fault. A window has 20 time steps (stride 1) and holds, for each of the 25 nodes, 6 channels: 3 RMS phase voltages and 3 availability-mask channels. Shape: [25 nodes, 20 steps, 6 channels]. Each run keeps 40 windows, named w0000 to w0039.
+
+## Window labels
+Windows w0000 to w0019 end before the fault and have label 0. Windows from w0020 carry the fault-bus class. Window w0020 ends exactly at fault onset and holds no post-fault sample. A window w ≥ 21 holds w − 20 post-fault samples; w0025 holds 5.
+
+",
+R-0040,test,exact_identifier,yes,What do the parts of a run name such as 57_ABCG_10p0_0014 mean?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0041,test,dropout_observability,yes,What is the macro-F1 of the dropout-aware RGSAGE-Max with ten sensors lost?,1,note_15_what_dropout_aware_training_recovers,What dropout-aware training recovers,note_15_what_dropout_aware_training_recovers:0-526:183a0b6939546bdc,"# What dropout-aware training recovers
+
+For RGSAGE-Max, dropout-aware training gives macro-F1 values of 0.839, 0.827, 0.815, 0.774 and 0.674 when 0, 1, 2, 5 and 10 sensors are dark. With 10 sensors dark it keeps 80.3 percent of the clean macro-F1, against 5.7 percent for standard training, and the area under the degradation curve rises from 0.402 to 0.913. The cost in clean accuracy for RGSAGE-Max is 0.008 and is not significant. These are averages over a test set; they do not describe the reliability of one prediction.
+",
+R-0041,test,dropout_observability,yes,What is the macro-F1 of the dropout-aware RGSAGE-Max with ten sensors lost?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0041,test,dropout_observability,yes,What is the macro-F1 of the dropout-aware RGSAGE-Max with ten sensors lost?,3,note_14_standard_training_collapse,Why standard training fails when sensors are lost,note_14_standard_training_collapse:0-506:62200134ae416aed,"# Why standard training fails when sensors are lost
+
+A model trained with every sensor present meets an input at inference that it never saw in training when some sensors are dark. For the standard RGSAGE-Max model the macro-F1 falls from 0.846 with no sensor lost to 0.048 when 10 of the 25 sensors are dark; that is 5.7 percent of its clean macro-F1. The most accurate standard model was also the one that degraded fastest, but this ordering is only a trend at three seeds (RESULTS.md sections 2 and 8).
+",
+R-0043,test,dropout_observability,yes,Which architecture matched dropout-aware training without beating it?,1,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0043,test,dropout_observability,yes,Which architecture matched dropout-aware training without beating it?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0043,test,dropout_observability,yes,Which architecture matched dropout-aware training without beating it?,3,note_13_dropout_aware_training,Dropout-aware training,note_13_dropout_aware_training:0-433:2fd1dc2682727bb4,"# Dropout-aware training
+
+Dropout-aware training masks random μPMU nodes while the model is trained. For each training batch the number of masked nodes k is drawn from {0, 1, 2, 5}, and the model learns that the mask pattern (0,0,0) means a dark sensor. The architecture, the number of parameters (95,258) and the inference latency do not change; the training time per epoch rises by about 2.7 percent (RESULTS.md, runtime summary).
+",
+R-0045,test,dropout_observability,yes,Does noise change the availability mask?,1,note_17_noise_versus_dropout,Measurement noise is not sensor dropout,note_17_noise_versus_dropout:0-723:1a18a22517524ac0,"# Measurement noise is not sensor dropout
+
+Noise leaves the availability mask at 1, so the pattern that dropout-aware training learns to recognise never appears. Dropout-aware training therefore does not help against measurement noise. For the standard model at no dropout the macro-F1 falls from 0.846 to 0.786, 0.579 and 0.345 as the noise standard deviation grows from 0.0005 to 0.002 and 0.01 per unit. Noise and dropout together can push the result below the always-no-fault baseline of 0.0256.
+
+A wrong value from a present μPMU (a silent failure) also leaves the mask at 1. The GridSense gate has no silent-failure check (ablation step A3 is not run), so a report cannot exclude a wrong reading from a present μPMU.
+",
+R-0045,test,dropout_observability,yes,Does noise change the availability mask?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0045,test,dropout_observability,yes,Does noise change the availability mask?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0048,test,unanswerable,no,How do I operate the recloser to isolate the faulted section?,1,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report,sop_illustrative_gridsense_review:0-549:e19ffbef1a8006c8,"# ILLUSTRATIVE operator review procedure for a GridSense fault-location report
+
+**ILLUSTRATIVE ONLY. NOT APPROVED. NOT A UTILITY PROCEDURE.** This text is an example that shows how a report could be reviewed. It does not instruct anyone to operate equipment, and it must not be used as an operating procedure.
+
+## SOP-ILL-1 Purpose
+SOP-ILL-1.1 This example describes how a reviewer reads a GridSense draft report and records a decision.
+SOP-ILL-1.2 The report is decision support. A predicted fault bus is a candidate and is not a confirmed fault.
+
+",
+R-0048,test,unanswerable,no,How do I operate the recloser to isolate the faulted section?,2,note_02_line_to_line,Line-to-line faults,note_02_line_to_line:0-364:98146f4d7fc6e2eb,"# Line-to-line faults
+
+A line-to-line (LL) fault connects two phase conductors without a ground connection. Only the positive- and negative-sequence networks take part, connected in parallel at the fault point, and no zero-sequence current flows. The voltages of the two faulted phases move toward each other. In this project the LL fault types are AB, BC and CA.
+",
+R-0048,test,unanswerable,no,How do I operate the recloser to isolate the faulted section?,3,note_01_single_line_to_ground,Single line-to-ground faults,note_01_single_line_to_ground:0-524:badb0f4b302a304e,"# Single line-to-ground faults
+
+A single line-to-ground (LG) fault connects one phase conductor to ground through a fault impedance. In symmetrical components the positive-, negative- and zero-sequence networks are connected in series at the fault point, so the fault current has all three sequence components. At the fault the voltage of the faulted phase falls toward zero when the fault resistance is low, while the voltages of the other two phases change much less. In this project the LG fault types are AG, BG and CG.
+",
+R-0050,test,unanswerable,no,What is the weather forecast for the feeder area tomorrow?,1,feeder_overview,"Feeder, sensors, classes and data windows",feeder_overview:0-454:6ff86702566f8e9b,"# Feeder, sensors, classes and data windows
+
+## System
+The study feeder is the IEEE 123-bus distribution test feeder at 4.16 kV line-to-line and 60 Hz. It is simulated in OpenDSS.
+The measurement set has 25 μPMU buses (bus 300 is a load/auxiliary bus). The graph used by the model is a 25-node tree with 24 edges between μPMU buses.
+There are 25 candidate fault buses; 6 of them are μPMU buses (13, 18, 25, 35, 47, 97) and 19 are not measured directly.
+
+",
+R-0050,test,unanswerable,no,What is the weather forecast for the feeder area tomorrow?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0050,test,unanswerable,no,What is the weather forecast for the feeder area tomorrow?,3,note_15_what_dropout_aware_training_recovers,What dropout-aware training recovers,note_15_what_dropout_aware_training_recovers:0-526:183a0b6939546bdc,"# What dropout-aware training recovers
+
+For RGSAGE-Max, dropout-aware training gives macro-F1 values of 0.839, 0.827, 0.815, 0.774 and 0.674 when 0, 1, 2, 5 and 10 sensors are dark. With 10 sensors dark it keeps 80.3 percent of the clean macro-F1, against 5.7 percent for standard training, and the area under the degradation curve rises from 0.402 to 0.913. The cost in clean accuracy for RGSAGE-Max is 0.008 and is not significant. These are averages over a test set; they do not describe the reliability of one prediction.
+",
+R-0052,test,unanswerable,no,Which vendor supplies the micro-PMUs?,1,note_07_micro_pmu,What a μPMU measures,note_07_micro_pmu:0-421:3d9b4fc62b995096,"# What a μPMU measures
+
+A micro-phasor measurement unit (μPMU) measures voltage and current phasors at distribution level with precise time stamps from a common time reference, at a high reporting rate. IEEE Std C37.118.1 defines the synchrophasor measurement requirements. In this project each of the 25 μPMUs provides three RMS phase voltages per time step to the model, together with three availability-mask channels.
+",
+R-0052,test,unanswerable,no,Which vendor supplies the micro-PMUs?,2,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],
+R-0052,test,unanswerable,no,Which vendor supplies the micro-PMUs?,3,feeder_fault_buses,Fault buses and class indices > Nearest μPMUs on the operated feeder,feeder_fault_buses:2418-2494:fe03cfcfb67e8ddf,"| fault bus | nearest μPMU (km, hops) | 2nd nearest (km, hops) | 3rd nearest (km, hops) |
+| 57 | bus 54 (0.107 km, 1) | bus 60 (0.229 km, 1) | bus 13 (0.328 km, 5) |",
+R-0054,test,unanswerable,no,Which SCADA protocol does the utility use?,1,note_28_simulation_limits,Limits of the simulated data,note_28_simulation_limits:0-479:bcd239597b4b29e5,"# Limits of the simulated data
+
+All data come from OpenDSS simulations of the IEEE 123-bus feeder; the corpus has no measurement noise unless noise is added in a separate study. The train, validation and test splits share all 825 scenarios and differ in their runs. Results therefore do not show safety on a real grid, and the documents in this corpus were curated for research and are not approved by a utility.
+
+Every report states that no utility-approved procedure was used.
+",
+R-0054,test,unanswerable,no,Which SCADA protocol does the utility use?,2,sop_illustrative_gridsense_review,ILLUSTRATIVE operator review procedure for a GridSense fault-location report,sop_illustrative_gridsense_review:0-549:e19ffbef1a8006c8,"# ILLUSTRATIVE operator review procedure for a GridSense fault-location report
+
+**ILLUSTRATIVE ONLY. NOT APPROVED. NOT A UTILITY PROCEDURE.** This text is an example that shows how a report could be reviewed. It does not instruct anyone to operate equipment, and it must not be used as an operating procedure.
+
+## SOP-ILL-1 Purpose
+SOP-ILL-1.1 This example describes how a reviewer reads a GridSense draft report and records a decision.
+SOP-ILL-1.2 The report is decision support. A predicted fault bus is a candidate and is not a confirmed fault.
+
+",
+R-0054,test,unanswerable,no,Which SCADA protocol does the utility use?,3,paper1_rev1170,[withheld: unpublished source],[withheld: unpublished source],[withheld: unpublished source],

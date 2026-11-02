@@ -51,7 +51,8 @@ def retrieval_config(overrides: dict) -> RetrievalConfig:
                            dense_candidates=cfg["retrieval"]["dense_candidates"], lexical_candidates=cfg["retrieval"]["lexical_candidates"],
                            rrf_k=cfg["retrieval"]["rrf_k"], reranker=cfg["reranker"]["model"] if cfg["reranker"]["enabled"] else None,
                            reranker_revision=cfg["reranker"].get("revision"), rerank_top=cfg["reranker"]["rerank_top"],
-                           filters=cfg["retrieval"]["filters"], chunk_meter=cfg["chunking"].get("chunk_meter"))
+                           filters=cfg["retrieval"]["filters"], chunk_meter=cfg["chunking"].get("chunk_meter"),
+                           table_rows=bool(cfg["chunking"].get("table_rows", False)))
     types = {f.name: f.type for f in fields(RetrievalConfig)}
     for k, v in overrides.items():
         if k not in types:
@@ -144,17 +145,15 @@ def evaluate(rows: list[dict], docs, rc: RetrievalConfig, emb: Embedder, n_boot:
 
 def run(label: str, overrides: dict, embedder_name: str | None, preliminary: bool, allow_paid: bool = False, split: str | None = None) -> dict:
     cfg = load_config()
-    rows = G.load(ROOT / cfg["golden_sets"]["retrieval"]["path"])
-    drafts = sum(r["status"] == "draft" for r in rows)
-    if drafts and not preliminary:
-        raise SystemExit(f"{drafts} golden items are drafts: run with --preliminary (result is never reported) or review them first")
+    rows = G.load(ROOT / cfg["golden_sets"]["retrieval"]["path"], statuses=("draft", "reviewed") if preliminary else ("reviewed",))
+    drafts = sum(r["status"] == "draft" for r in rows)       # drafts are only loaded with --preliminary; a result with drafts is never reported
     docs = load_corpus()
     problems = G.validate(rows, docs)
     if problems:
         raise SystemExit("golden set invalid:\n" + "\n".join(problems))
     emb, rc = embedder_from_config(embedder_name), retrieval_config(overrides)
-    if emb.spec.backend == "openai" and not allow_paid:
-        raise SystemExit("the OpenAI embedder is paid: run rag-cost-check, get approval, then pass --allow-paid")
+    if emb.spec.backend == "openai":
+        raise SystemExit("author 2026-11-02: no API call and no paid embedder on this corpus again")
     if split:
         rows = [r for r in rows if r["split"] == split]
     out = evaluate(rows, docs, rc, emb, cfg["repeats"]["bootstrap_resamples"])

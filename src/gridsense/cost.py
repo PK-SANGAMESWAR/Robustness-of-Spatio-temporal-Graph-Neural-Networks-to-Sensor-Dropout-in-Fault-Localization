@@ -30,10 +30,14 @@ class Ledger:
         self.label = label
         self._reserved = 0.0
 
-    def price(self, model: str, input_tokens: int, output_tokens: int) -> float:
+    def price(self, model: str, input_tokens: int, output_tokens: int, batch: bool = False) -> float:
         p = self.prices.get(model)
         if not p or p.get("input_per_1m") is None or not p.get("date"):
             raise MissingPriceError(f"no dated price for {model!r} in configs/eval.yaml cost.prices; ask the author (O1)")
+        if batch:
+            if p.get("batch_input_per_1m") is None:
+                raise MissingPriceError(f"no Batch price for {model!r}: the call must use the standard price or the author must give the Batch price")
+            return input_tokens / 1e6 * float(p["batch_input_per_1m"]) + output_tokens / 1e6 * float(p.get("batch_output_per_1m") or 0.0)
         return input_tokens / 1e6 * float(p["input_per_1m"]) + output_tokens / 1e6 * float(p.get("output_per_1m") or 0.0)
 
     def spent(self) -> float:
@@ -41,20 +45,20 @@ class Ledger:
             return 0.0
         return sum(json.loads(line)["usd"] for line in self.path.read_text().splitlines() if line.strip())
 
-    def reserve(self, model: str, input_tokens: int, output_tokens: int, purpose: str) -> float:
-        usd = self.price(model, input_tokens, output_tokens)
+    def reserve(self, model: str, input_tokens: int, output_tokens: int, purpose: str, batch: bool = False) -> float:
+        usd = self.price(model, input_tokens, output_tokens, batch)
         if self.spent() + self._reserved + usd > self.limit:
             raise CostLimitError(f"{purpose}: {usd:.6f} USD would exceed the track limit {self.limit:.2f} USD "
                                  f"(spent {self.spent():.6f}); stop and ask the author")
         self._reserved += usd
         return usd
 
-    def commit(self, model: str, input_tokens: int, output_tokens: int, purpose: str) -> float:
-        usd = self.price(model, input_tokens, output_tokens)
+    def commit(self, model: str, input_tokens: int, output_tokens: int, purpose: str, batch: bool = False) -> float:
+        usd = self.price(model, input_tokens, output_tokens, batch)
         self._reserved = max(0.0, self._reserved - usd)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         row = {"utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "label": self.label, "purpose": purpose,
-               "model": model, "input_tokens": input_tokens, "output_tokens": output_tokens, "usd": usd,
+               "model": model, "input_tokens": input_tokens, "output_tokens": output_tokens, "usd": usd, "batch": batch,
                "price_date": str(self.prices[model]["date"])}
         with self.path.open("a") as f:
             f.write(json.dumps(row) + "\n")

@@ -1,0 +1,109 @@
+{
+ "winners": [
+  {
+   "axis": "chunker",
+   "recorded": "recursive",
+   "without_drafts": "recursive",
+   "same": true,
+   "n_queries": 24
+  },
+  {
+   "axis": "chunk_size",
+   "recorded": "size_200",
+   "without_drafts": "size_200",
+   "same": true,
+   "n_queries": 24
+  },
+  {
+   "axis": "overlap",
+   "recorded": "overlap_0.10",
+   "without_drafts": "overlap_0.10",
+   "same": true,
+   "n_queries": 24
+  },
+  {
+   "axis": "embedder",
+   "recorded": "minilm",
+   "without_drafts": "minilm",
+   "same": true,
+   "n_queries": 24
+  },
+  {
+   "axis": "retrieval_mode",
+   "recorded": "hybrid_k60",
+   "without_drafts": "hybrid_k60",
+   "same": true,
+   "n_queries": 24
+  },
+  {
+   "axis": "reranker",
+   "recorded": "rerank_off",
+   "without_drafts": "rerank_off",
+   "same": true,
+   "n_queries": 24
+  },
+  {
+   "axis": "candidates",
+   "recorded": "cand_20",
+   "without_drafts": "cand_20",
+   "same": true,
+   "n_queries": 24
+  }
+ ],
+ "headline": {
+  "n_test_answerable": 22,
+  "n_test_unanswerable": 4,
+  "tau_dev": {
+   "tau": 0.48953086137771606,
+   "balanced_accuracy_dev": 0.8958333333333333
+  },
+  "recall@1": {
+   "mean": 0.7727272727272727,
+   "ci_low": 0.5909090909090909,
+   "ci_high": 0.9090909090909091,
+   "n": 22
+  },
+  "recall@3": {
+   "mean": 0.8181818181818182,
+   "ci_low": 0.6363636363636364,
+   "ci_high": 0.9545454545454546,
+   "n": 22
+  },
+  "recall@5": {
+   "mean": 0.9545454545454546,
+   "ci_low": 0.8636363636363636,
+   "ci_high": 1.0,
+   "n": 22
+  },
+  "mrr@10": {
+   "mean": 0.8272727272727273,
+   "ci_low": 0.6795454545454546,
+   "ci_high": 0.9431818181818182,
+   "n": 22
+  },
+  "ndcg@5": {
+   "mean": 0.7878303207641509,
+   "ci_low": 0.6623614864401933,
+   "ci_high": 0.9024729725773333,
+   "n": 22
+  },
+  "precision@3": {
+   "mean": 0.303030303030303,
+   "ci_low": 0.22727272727272724,
+   "ci_high": 0.36363636363636365,
+   "n": 22
+  },
+  "precision@5": {
+   "mean": 0.21818181818181823,
+   "ci_low": 0.18181818181818185,
+   "ci_high": 0.25454545454545463,
+   "n": 22
+  },
+  "sufficiency_test": {
+   "unanswerable_flagged_insufficient": 1.0,
+   "answerable_flagged_insufficient": 0.22727272727272727,
+   "n_unanswerable": 4,
+   "n_answerable": 22
+  }
+ }
+}

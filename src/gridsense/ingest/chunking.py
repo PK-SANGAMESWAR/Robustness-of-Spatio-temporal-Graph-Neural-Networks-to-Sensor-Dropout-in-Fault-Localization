@@ -102,11 +102,58 @@ def _sentences(text: str, start: int, end: int) -> list[tuple[int, int]]:
     return [(a, b) for a, b in zip(cuts, cuts[1:]) if text[a:b].strip()]
 
 
+_SEPARATOR = re.compile(r"^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$")
+
+
+def markdown_tables(text: str) -> list[dict]:
+    """Markdown tables of a parsed document: a line that starts with '|' followed by a separator line (|---|---|), then rows while the lines start with '|'.
+    Each table: block span, header line, and the data rows with their character spans (offsets into `text`)."""
+    lines, pos = [], 0
+    for ln in text.splitlines(keepends=True):
+        lines.append((pos, pos + len(ln), ln.rstrip("\n")))
+        pos += len(ln)
+    tables, i = [], 0
+    while i < len(lines) - 1:
+        if lines[i][2].lstrip().startswith("|") and _SEPARATOR.match(lines[i + 1][2]) and "|" in lines[i + 1][2]:
+            j, rows = i + 2, []
+            while j < len(lines) and lines[j][2].lstrip().startswith("|"):
+                rows.append(lines[j])
+                j += 1
+            tables.append({"start": lines[i][0], "end": lines[j - 1][1] if rows else lines[i + 1][1], "header": lines[i][2], "rows": rows})
+            i = j
+        else:
+            i += 1
+    return tables
+
+
+def _chunk_with_tables(doc: Document, strategy: str, size: int, count: Counter, overlap: float) -> list[Chunk]:
+    """Plan section 5.4: every table row becomes its own chunk with the table header repeated; the text between tables is chunked as before.
+    `text` (what the retriever returns and what golden spans are matched against) = header line + row; `embed_text` also holds the document title and the section path."""
+    if strategy != "recursive":
+        raise NotImplementedError("table_rows is implemented for the recursive chunker (the frozen winner)")
+    t, out, cursor = doc.text, [], 0
+    segments = [(tb["start"], tb) for tb in markdown_tables(t)]
+    for tb_start, tb in segments + [(len(t), None)]:
+        if tb_start > cursor and t[cursor:tb_start].strip():
+            spans = _overlap(_recursive(t, cursor, tb_start, size, count), t, overlap, count, size)
+            out += [_chunk(doc, a, b, strategy) for a, b in spans if t[a:b].strip()]
+        if tb is not None:
+            path = doc.section_at(tb["start"])
+            prefix = f"{doc.title} > {' > '.join(path)}\n" if path else ""
+            for a, b, row in tb["rows"]:
+                body = tb["header"] + "\n" + row
+                out.append(Chunk(_cid(doc, a, b, "table_row"), doc.document_id, path, a, b, body, prefix + body, None))
+            cursor = tb["end"]
+    return out
+
+
 def chunk_document(doc: Document, strategy: str, size: int, count: Counter, overlap: float = 0.0, *,
                    parent_size: int | None = None, embed_fn: Callable[[list[str]], np.ndarray] | None = None,
-                   semantic_percentile: float = 20.0) -> list[Chunk]:
+                   semantic_percentile: float = 20.0, table_rows: bool = False) -> list[Chunk]:
     """Split one document. `size` is the embedded chunk length in tokens (child size for parent_child)."""
     t = doc.text
+    if table_rows:
+        return _chunk_with_tables(doc, strategy, size, count, overlap)
     if strategy == "fixed_token":
         spans, a = [], 0
         words = [m.start() for m in re.finditer(r"\S+", t)]
