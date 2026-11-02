@@ -4,6 +4,9 @@
 **Compute.** Mostly inference — minutes per model per condition. Plus ~1.5 h CPU and one ≈ 7 GPU-h
 retrain.
 
+> **[Replaced in part 2026-11-02 12:20 IST / 2026-11-02T06:50:48Z — Amendment G7 below; the line above is kept.]** The retrain costs **33.6 GPU-h**, not ≈ 7 GPU-h. A full
+> R5 scoring grid is 7.44 GPU-h per seed, not minutes (`stage_g_plan_draft.md` § 5).
+
 ## S6.1 — Master sweep
 
 Every model × every condition. Shared seeds throughout — mask seeds, corruption seeds, noise
@@ -24,6 +27,10 @@ baselines standard, all 5 dropout-aware, SDR-STGNN, R1–R7, B2ᵃ, G0–G3. `[C
 Only the new models need the existing conditions re-run; the Paper-1 numbers are reused as-is
 (same mask seeds).
 
+> **[Replaced in part 2026-11-02 12:20 IST / 2026-11-02T06:50:48Z — Amendments G1–G5 below; the Models paragraph is kept.]** "R1–R7": R7 is dropped; R3, R4, R5-γ0, R6ⁱ, R8 exist.
+> "G0–G3": not built, replaced by G-TF2. R6 (trained) is replaced by R6ⁱ. B2ᵃ settings: 14, Amendment 5. The OOD cells and the
+> pair are fixed in Amendments G2–G3.
+
 **Check.** Before opening the sealed OOD set, verify its hash against `data/ood_test.sha256`.
 Record the date it was opened in `14_PREREGISTRATION.md`.
 
@@ -38,6 +45,9 @@ If it is, that is an honest refinement that *strengthens* the paper: it says whe
 extrapolation works and where the axis itself is ambiguous. Discovering it in review instead
 would not. Register the split in `14_PREREGISTRATION.md` before the sealed set is opened, so it
 is a pre-planned stratification rather than a subgroup found after the fact.
+
+> **[Done 2026-11-02 12:20 IST / 2026-11-02T06:50:48Z — Amendment G4 below.]** The grounded / ungrounded split is registered in `14_PREREGISTRATION.md` (Amendment 4) before the
+> sealed set was opened. The paragraph above is kept unchanged.
 
 **Tables produced.** T5 (all models × k) · T6 (baseline ladder) · T8 (OOD) · T9 (silent failures)
 · T10 (structured + noise).
@@ -97,6 +107,9 @@ and R5.
 retraining. One retrain of R5 at ±5 % confirms the trained variant behaves the same way
 (≈ 7 GPU-h).
 
+> **[Replaced in part 2026-11-02 12:20 IST / 2026-11-02T06:50:48Z — Amendments G6 and G7 below.]** Order: an inference-only test with three tables first (Phase 1), then **one**
+> retrain (R5, impedance ±5 %), costing **33.6 GPU-h**. The fusion-only variant is on R0ⁿ. The operator R axis has 18 points and 84,167 solves.
+
 **Either outcome is publishable.** Graceful degradation → "the operator tolerates realistic
 feeder-model error", exactly what a power-systems reviewer wants to read. Collapse at ±2 % → a
 real limitation, found in a week rather than after submission.
@@ -113,6 +126,9 @@ real limitation, found in a week rather than after submission.
   `scripts/run_significance_tests.py` (paired t over seeds + Holm + event-level cluster bootstrap).
 - Report 95 % CIs, not just p-values.
 
+> **[Replaced in part 2026-11-02 12:20 IST / 2026-11-02T06:50:48Z — Amendments G1, G2, G5 below.]** The pairs are R5 vs R0ⁿ (for H3), R5 vs R6ⁱ, R5 vs R2. "G2 vs G0" is removed.
+> For H3 and Gate 6 the bootstrap is over the events of the sealed set (11,000 expected).
+
 **Interpretation.** With 6,175 test events the bootstrap resolves small differences easily. Seed
 variance, not significance, is the binding constraint. Report both and lead with the seed spread.
 
@@ -125,7 +141,57 @@ latency per window (including the residual and, for G2, the LOO pass and second 
 `scripts/run_runtime_benchmark.py` (already measures the Paper-1 models on synthetic
 `[B,25,20,6]` batches).
 
+> **[Replaced in part 2026-11-02 12:20 IST / 2026-11-02T06:50:48Z — Amendment G5 below.]** There is no LOO pass: the in-sample residual replaced it. The silent-failure row is G-TF2
+> (in-sample ρ plus the flatline score).
+
 **Why.** Reviewers in this area ask. It also lets you state plainly that the physics path adds
 three scalars and ≈ 1.3× forward cost for gate variants only.
 
 **Table produced.** T12 — computational cost.
+
+## Amendments
+
+All entries: **Amended 2026-11-02 12:20 IST / 2026-11-02T06:50:48Z, before the sealed set was opened.** `data/ood_test/` has not been opened, read, windowed or scored. The rules are
+stated in full in `14_PREREGISTRATION.md` (Amendments 1–8); this section gives the Stage G consequences. Old text above is kept and marked "Replaced". Line numbers cited in this section ("lines 30–40", "08:96-98") are those of commit `de00c24`, before these amendments shifted the file.
+
+### G1 — Gate 6
+Gate 6 passes if the H3 rule passes: the sign of F1(R5) − F1(R0ⁿ) is positive in all 3 seeds **and** the 95 % CI of the event-level paired cluster
+bootstrap over the sealed set's events excludes zero (14, Amendment 1, with the exact statistic). Stage G ends with Gate 6.
+
+### G2 — H3 pairing
+R5 against R0ⁿ. R0 is a descriptive row. The pair "R5 vs R0" of S6.3 is replaced for H3.
+
+### G3 — H3 measure and the OOD cells (S6.1, OOD row)
+Primary: macro-F1 pooled over R ∈ {3, 5, 20, 30} Ω, k = 0, at each σ ∈ {5e-4, 2e-3, 1e-2}; H3 passes only if the rule holds at all three σ. Descriptive:
+F1 for each R, at σ = 0, and k ∈ {5, 10} at σ = 0. Scored cells: k = 0 × σ ∈ {0, 5e-4, 2e-3, 1e-2} and k ∈ {5, 10} × σ = 0, 3 offsets each.
+
+### G4 — grounded / ungrounded split (lines 30–40)
+Registered in 14, Amendment 4: grounded = AG BG CG ABG BCG CAG ABCG; ungrounded = AB BC CA ABC; descriptive, no rule; pre-planned.
+
+### G5 — settings changed by Stages E and F
+R5 = λ₁ = 0, λ₂ = 0.1, γ = 1. In-sample residual replaces LOO (no LOO pass in S6.4). R6 → R6ⁱ (A1). R7 dropped (A3 not tested; answered by the parameter
+count, 95,259 vs 95,258). G0–G3 → G-TF2 (H5 and A5 not tested). Holm families {H1–H4}, {A1, A2}. B2ᵃ settings: 14, Amendment 5.
+
+### G6 — model-mismatch study (S6.2)
+Phase 1 first: inference only, R5 ×3 seeds, tables tap +1, tap −1, impedance ±5 %, 8 cells on validation; graceful if R5 > R0ⁿ in all 3 seeds in the 7 H2/H4
+cells. CPU pre-check of the true-class residual (320 validation windows, median reported). Then **one** retrain: R5 on the impedance ±5 % table, seed 42,
+epoch-3 collapse guard, after the pre-check and the author's GPU go-ahead. Full text: 14, Amendment 6.
+
+### G7 — corrections
+Retrain cost **33.6 GPU-h** (not ≈ 7). Retrain count **1**. Operator R axis **18 points**, 84,167 solves (not 15 points, 70 k solves).
+
+### G8 — operator grid check (R values of the sealed set against the operator R axis)
+Checked on 2026-11-02 against `operator/grid.json` and `physics/grids.py::R_GRID` (18 points: 0.05, 0.0790, 0.1, 0.1247, 0.1969, 0.3110, 0.4911, 0.7755, 1.0,
+1.2247, 1.9341, 3.0544, 4.8235, 7.6173, 10.0, 12.0294, 18.9969, 30.0 Ω). The four values come from `scripts/generate_ood_sets.py` (`SET_SPECS["test"]`), not from
+the sealed data.
+
+| R (Ω) | On the operator R axis? | Nearest grid point (Ω) | Distance |
+|---|---|---|---|
+| 3 | **no** | 3.0544 | +1.8 % |
+| 5 | **no** | 4.8235 | −3.5 % |
+| 20 | **no** | 18.9969 | −5.0 % |
+| 30 | **yes** (the upper end point of the axis) | 30.0 | 0 |
+
+**30 Ω: PSM evaluates this resistance exactly. The OOD test is out of distribution for the network only.** (The R axis is exact there; the load axis
+L stays on its 0.05 grid, so the residual is not zero at the true class.) For 3, 5 and 20 Ω the value is **between** grid points: PSM uses the nearest
+point, within 1.8–5.0 %, so it is approximate there, and the sentence above does not apply to them. 30 Ω is also the edge of the axis: no point lies above it.
