@@ -1,0 +1,37 @@
+{
+ "0": {
+  "confident_correct": 0.8321,
+  "high_conf_error": 0.0071,
+  "low_confidence": 0.1294,
+  "not_in_any_stratum_confident_wrong_p_below_0.9": 0.0314,
+  "runs": 6175
+ },
+ "1": {
+  "confident_correct": 0.8146,
+  "high_conf_error": 0.0086,
+  "low_confidence": 0.1488,
+  "not_in_any_stratum_confident_wrong_p_below_0.9": 0.028,
+  "runs": 6175
+ },
+ "2": {
+  "confident_correct": 0.7956,
+  "high_conf_error": 0.0068,
+  "low_confidence": 0.1691,
+  "not_in_any_stratum_confident_wrong_p_below_0.9": 0.0285,
+  "runs": 6175
+ },
+ "5": {
+  "confident_correct": 0.727,
+  "high_conf_error": 0.0076,
+  "low_confidence": 0.2369,
+  "not_in_any_stratum_confident_wrong_p_below_0.9": 0.0285,
+  "runs": 6175
+ },
+ "10": {
+  "confident_correct": 0.5192,
+  "high_conf_error": 0.0094,
+  "low_confidence": 0.4557,
+  "not_in_any_stratum_confident_wrong_p_below_0.9": 0.0157,
+  "runs": 6175
+ }
+}

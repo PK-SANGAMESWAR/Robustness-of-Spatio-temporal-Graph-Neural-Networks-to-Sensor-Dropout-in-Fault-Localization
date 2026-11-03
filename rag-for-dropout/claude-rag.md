@@ -142,6 +142,7 @@ Stage plan: `PLAN.md`. Build guide: `IMPLEMENTATION.md`. Evaluation design: `EVA
 5. Threads: 2 for every CPU job (`eval/threads.txt`, default 2).
 
 ## 10. Git workflow (O10)
+Author, 2026-11-03: commit all GridSense files to `gridsense-eval` at the end of each round (standing instruction; run the tests first).
 `main` stays checked out: other tracks have uncommitted work and a running GPU queue. Never `git switch` or
 `git checkout` for this track. Commit the GridSense paths to `gridsense-eval` with a temporary index:
 ```

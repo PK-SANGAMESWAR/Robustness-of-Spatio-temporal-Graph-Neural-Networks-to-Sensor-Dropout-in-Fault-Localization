@@ -107,7 +107,7 @@ def test_O36_statuses_follow_the_origin_and_the_truth_is_hidden_from_the_event_o
         assert not ({"true_bus", "true_label", "prediction_correct", "truth_in_candidate_set", "fault_type"} & set(i["event_object"]))
         kinds = {p["kind"] for p in i["reference_report_points"] if p["status"] == "reviewed"}
         assert {"location", "gate_outcome", "neighbour_locations", "dark_sensors"} <= kinds and ("candidate_set" in kinds) == (i["event_object"]["gate_outcome"] == "LOW_CONFIDENCE")
-        assert all((p["status"] == "reviewed") == (p["derived_from"] == "event_object") for p in i["reference_report_points"])
+        assert all((p["status"] == "reviewed") == (p["derived_from"] in ("event_object", "author_approved_fixed_statement")) for p in i["reference_report_points"])
         assert len(i["event_object"]["dropped_nodes"]) == i["k"]
         for c in i["golden_passages"]:
             assert len(G.locate(docs[c["document_id"]], c["span"])) == 1 and c["span_hash"] == G.span_hash(c["span"])
@@ -131,11 +131,25 @@ def test_O36_s4_selection_is_two_per_cell_seeded_and_not_by_hand(items):
     assert written["selected"] == sel["selected"]
 
 
-def test_O36_fixed_statements_are_three_texts_and_the_review_sheet_has_the_other_points(items):
+def test_O36_fixed_statements_are_approved_and_the_review_sheets_hold_the_other_points(items):
     import csv
-    pts = [p for i in items for p in i["reference_report_points"] if p["status"] == "draft"]
+    pts = [p for i in items for p in i["reference_report_points"]]
     fixed = [p for p in pts if p["kind"] in D.FIXED_KINDS]
-    assert len(fixed) == 180 and len({p["text"] for p in fixed}) == 3
+    assert len(fixed) == 180 and {p["text"] for p in fixed} == set(D.FIXED_STATEMENTS.values()) and all(p["status"] == "reviewed" for p in fixed)
+    assert D.FIXED_STATEMENTS["limits"] == "The report does not claim that the result shows safety or performance on a real grid."       # changed by the author 2026-11-03
+    draft = [p for p in pts if p["status"] == "draft"]
     with (TRACK / "reports" / "events" / "judgement_points_review.csv").open(encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
-    assert len(rows) == len(pts) - 180 == 67 and not {r["kind"] for r in rows} & set(D.FIXED_KINDS)
+    assert len(rows) == len(draft) == 67 and not {r["kind"] for r in rows} & set(D.FIXED_KINDS)
+    s4 = set(D.select_s4(items)["selected"])
+    with (TRACK / "reports" / "events" / "judgement_points_s4.csv").open(encoding="utf-8") as f:
+        rows4 = list(csv.DictReader(f))
+    assert len(rows4) == sum(p["status"] == "draft" for i in items if i["event_id"] in s4 for p in i["reference_report_points"]) == 33
+    assert {r["event_id"] for r in rows4} <= s4 and {r["point_id"] for r in rows4} <= {r["point_id"] for r in rows}
+
+
+def test_O36_stratum_shares_cover_the_pool():
+    sh = json.loads((TRACK / "reports" / "events" / "stratum_shares.json").read_text())
+    assert set(sh) == {"0", "1", "2", "5", "10"}
+    for v in sh.values():
+        assert abs(sum(x for k, x in v.items() if k != "runs") - 1.0) < 1e-3 and v["runs"] == 6175

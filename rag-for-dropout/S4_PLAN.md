@@ -28,6 +28,8 @@ Judge metrics per report: faithfulness, answer relevancy, contextual relevancy (
 ceiling 2.43 and 1.21 USD** (limit 5 USD, spent 0.0006). The Batch API is used for all calls (none needs an immediate answer); generation first, then judging (two batches in sequence). The response cache (key: model, prompt hash, input hash) means a rerun of an
 unchanged prompt costs nothing; no saving is assumed in the estimate. A 5-event pilot costs about 0.11 USD (0.05 with Batch).
 
+**Reporting rule (author, 2026-11-03; `EVAL.md` § 11):** the primary S4 result is the per-stratum table, CONFIDENT-wrong (`high_conf_error`) first; the weighted figure is secondary and is labelled "over the covered strata"; never an unweighted mean over the 30 events.
+
 ## 4. The evidence decision (your instruction)
 tau (the top-1 similarity threshold, fitted on dev only) is **one input**, not the decision. The generator must also return `evidence_status` ("sufficient" or "insufficient") and a reason in its structured output (`prompts/generator_v0.md`). The final decision is fail-closed:
 **insufficient evidence if tau flags it OR the generator says "insufficient"**; the report then states that the evidence is insufficient and gives no procedural statement.
@@ -41,7 +43,7 @@ The tau-only numbers (dev, tau 0.464 for v2: unanswerable 4 of 4 flagged, answer
 | id | what | needed for |
 |---|---|---|
 | O35 | **closed:** generator temperature 0 (fallback: model default, recorded) | – |
-| O36 | the golden events: 60 drafted (`reports/events/`); the 30 for S4 are selected by seed, 2 per k x stratum cell (`s4_selection.json`, E22); open: the author approves the 3 fixed judgement statements and reviews the 67 other points | any S4 run |
+| O36 | the golden events: 60 drafted (`reports/events/`); the 30 for S4 are selected by seed, 2 per k x stratum cell (`s4_selection.json`, E22); the 3 fixed statements are approved (2026-11-03); open: the author reviews the 67 other points, the 33 of the 30 S4 events first (`judgement_points_s4.csv`) | any S4 run |
 | O37 | **closed:** manuscript chunks allowed (section 2) | – |
 | O13 | human labels for the judge validation (about 50 reports; Cohen's kappa); not in the 30-event run set; without them every judge metric stays informational | claims about judge quality |
 | O38 | approve the five GEval rubrics (`status: draft`); their hashes enter the snapshots | the judge run |

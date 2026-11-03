@@ -41,7 +41,10 @@ LAT = TRACK / "eval" / "latents" / f"seed{SEED_MODEL}"
 OUT_JSONL = TRACK / "data" / "eval" / "golden_events.jsonl"
 OUT_DIR = TRACK / "reports" / "events"
 TODAY = "2026-11-02"
-FIXED_KINDS = ("not_confirmation", "aggregate", "limits")     # the same statement in every event; the author approves each once (2026-11-02)
+FIXED_KINDS = ("not_confirmation", "aggregate", "limits")     # the same statement in every event; the author approved each once (2026-11-03)
+FIXED_STATEMENTS = {"not_confirmation": "The report says that the result is a prediction and not a confirmation of a fault.",
+                    "aggregate": "The report does not present an aggregate accuracy as the confidence of this prediction.",
+                    "limits": "The report does not claim that the result shows safety or performance on a real grid."}     # statement 3 changed by the author, 2026-11-03
 S4_SEED_BASE = 360000                                          # cell seed = base + 10 * k + stratum index (author 2026-11-02: fixed seed inside each cell, no hand selection)
 S4_PER_CELL = 2
 STRATA = ("confident_correct", "high_conf_error", "low_confidence")
@@ -190,7 +193,10 @@ def build_item(i: int, ev: dict, docs: dict) -> dict:
     o = ev["event_object"]
     auto, judge, pts = [], [], []
     def A(kind, text): auto.append({"point_id": f"E-{i:04d}-A{len(auto) + 1}", "kind": kind, "text": text, "status": "reviewed", "derived_from": "event_object"})
-    def J(kind, text): judge.append({"point_id": f"E-{i:04d}-J{len(judge) + 1}", "kind": kind, "text": text, "status": "draft", "derived_from": "agent judgement"})
+    def J(kind, text):
+        ok = kind in FIXED_STATEMENTS            # the author approved these 3 statements once (2026-11-03); each copy is reviewed
+        judge.append({"point_id": f"E-{i:04d}-J{len(judge) + 1}", "kind": kind, "text": FIXED_STATEMENTS[kind] if ok else text, "status": "reviewed" if ok else "draft",
+                      "derived_from": "author_approved_fixed_statement" if ok else "agent judgement"})
     A("location", f"The report states the top-ranked fault location: bus {o['predicted_bus']} (class {o['predicted_class']})." if o["predicted_bus"] else "The report states that the top-ranked class is 'no fault' (class 0).")
     A("gate_outcome", f"The report states the gate outcome {o['gate_outcome']} with the reason code(s) {', '.join(o['reason_codes'])}.")
     if o["candidate_set_buses"] is not None:
@@ -283,7 +289,15 @@ def build(index: int | None = None) -> tuple[list[dict], dict]:
         it = build_item(n, ev, docs)
         it["replay"] = {"batch_idx": rp["batch_idx"], "position_in_batch": rp["position"], "max_vote_diff_vs_stored": round(rp["max_vote_diff"], 7)}
         items.append(it)
-    info = {"seed": SEED, "report_window_index": index, "pool_windows": int(len(rows)), "p_high": P_HIGH, "per_slot": PER_SLOT, "k_nn": K_NN,
+    shares = {}
+    for k in KS:
+        sm = slot_masks(cls[k])
+        conf_wrong_low_p = (cls[k]["outcome"] == 0) & ~cls[k]["correct"] & (cls[k]["p"] < P_HIGH)
+        share = {"confident_correct": float(sm["confident_correct"].mean()), "high_conf_error": float(sm["high_conf_error"].mean()),
+                 "low_confidence": float((sm["low_confidence_correct"] | sm["low_confidence_wrong"]).mean()), "not_in_any_stratum_confident_wrong_p_below_0.9": float(conf_wrong_low_p.mean())}
+        assert abs(sum(share.values()) - 1.0) < 1e-9, "the strata and the remainder must cover the pool"
+        shares[str(k)] = {**{a: round(b, 4) for a, b in share.items()}, "runs": int(len(y))}
+    info = {"seed": SEED, "stratum_shares": shares, "report_window_index": index, "pool_windows": int(len(rows)), "p_high": P_HIGH, "per_slot": PER_SLOT, "k_nn": K_NN,
             "max_vote_diff": max(i["replay"]["max_vote_diff_vs_stored"] for i in items)}
     return items, info
 
@@ -299,7 +313,8 @@ def validate(items: list[dict]) -> list[str]:
         if len(o["dropped_nodes"]) != o["k"]: bad.append(f"{i['event_id']}: dropped nodes != k")
         if i["replay"]["max_vote_diff_vs_stored"] > 1e-3: bad.append(f"{i['event_id']}: replayed votes differ from the stored votes")
         for p in i["reference_report_points"]:
-            if (p["derived_from"] == "event_object") != (p["status"] == "reviewed"): bad.append(f"{p['point_id']}: status does not follow the origin")
+            if (p["derived_from"] in ("event_object", "author_approved_fixed_statement")) != (p["status"] == "reviewed"): bad.append(f"{p['point_id']}: status does not follow the origin")
+            if p["kind"] in FIXED_STATEMENTS and p["text"] != FIXED_STATEMENTS[p["kind"]]: bad.append(f"{p['point_id']}: fixed statement text changed")
     return bad
 
 
@@ -311,16 +326,24 @@ def write(items: list[dict], info: dict) -> None:
         w.writerow(["event_id", "k", "stratum", "point_id", "kind", "text", "verdict (accept/edit/reject)", "edit"])
         for i in items:
             for p in i["reference_report_points"]:
-                if p["status"] == "draft" and p["kind"] not in FIXED_KINDS:
+                if p["status"] == "draft":
                     w.writerow([i["event_id"], i["k"], i["stratum"], p["point_id"], p["kind"], p["text"], "", ""])
-    fixed = {}
-    for i in items:
-        for p in i["reference_report_points"]:
-            if p["kind"] in FIXED_KINDS:
-                fixed.setdefault(p["kind"], {"text": p["text"], "ids": []})["ids"].append(p["point_id"])
-    (OUT_DIR / "fixed_statements.md").write_text("# The 3 fixed judgement statements (status draft until the author approves each once)\n\n"
-        "Each statement is the same text in all 60 events (180 copies). After approval the copies are set to `reviewed`. Passages for them: note_25 (not confirmation), note_30 (aggregate), note_28 (limits).\n\n"
-        + "\n".join(f"{n}. **{k}** ({len(v['ids'])} copies): \"{v['text']}\"" for n, (k, v) in enumerate(fixed.items(), 1)) + "\n", encoding="utf-8")
+    s4 = set(select_s4(items)["selected"])
+    with (OUT_DIR / "judgement_points_s4.csv").open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["event_id", "k", "stratum", "point_id", "kind", "text", "gate_outcome", "predicted_bus", "dropped_pmu_buses", "nearest_3_pmus_of_predicted_bus (operated feeder, sw7 and sw8 open)", "knn_agreement_of_10",
+                    "verdict (accept/edit/reject)", "edit"])
+        for i in items:
+            o = i["event_object"]
+            for p in i["reference_report_points"]:
+                if i["event_id"] in s4 and p["status"] == "draft":
+                    w.writerow([i["event_id"], i["k"], i["stratum"], p["point_id"], p["kind"], p["text"], o["gate_outcome"], o["predicted_bus"], " ".join(map(str, o["dropped_pmu_buses"])),
+                                " ".join(map(str, o["nearest_pmu_buses_of_predicted_bus"])), o["knn"]["agreement"], "", ""])
+    (OUT_DIR / "fixed_statements.md").write_text("# The 3 fixed judgement statements (approved by the author 2026-11-03)\n\n"
+        "Each statement is the same text in all 60 events (180 copies, status `reviewed`, `derived_from: author_approved_fixed_statement`). Statement 3 was changed by the author on 2026-11-03. "
+        "Passages for them: note_25 (not confirmation), note_30 (aggregate), note_28 (limits).\n\n"
+        + "\n".join(f"{n}. **{k}**: \"{t}\"" for n, (k, t) in enumerate(FIXED_STATEMENTS.items(), 1)) + "\n", encoding="utf-8")
+    (OUT_DIR / "stratum_shares.json").write_text(json.dumps(info["stratum_shares"], indent=1) + "\n")
     (OUT_DIR / "s4_selection.json").write_text(json.dumps(select_s4(items), indent=1, ensure_ascii=False) + "\n")
     (OUT_DIR / "EVENTS_SUMMARY.md").write_text(summary_md(items, info), encoding="utf-8")
     (OUT_DIR / "selection.json").write_text(json.dumps({**info, "events": [{"event_id": i["event_id"], "k": i["k"], "slot": i["slot"]} for i in items],
@@ -369,12 +392,19 @@ def summary_md(items: list[dict], info: dict) -> str:
           f"largest difference {info['max_vote_diff']:.1e}. So the dark nodes of each event are the ones the stored votes were made with.",
           "- Neighbours: held-out (own scenario removed), train windows only; the code asserts that no neighbour comes from a test run.",
           "- Each golden passage is a sentence that occurs exactly once in its note (checked at build time). Notes used: 24, 25, 23, 30, 28; with LOW_CONFIDENCE 22, 09; with dark μPMUs 12, and 16 and 06 when a nearest μPMU is dark.", "",
-          "## Status of the reference points (your instruction)", f"- {n_rev} points come from the event object (location, gate outcome and reason codes, candidate set, neighbour locations, dark μPMUs): status `reviewed`, `derived_from: event_object`.",
-          "- Judgement points by kind: " + ", ".join(f"{k} {n}" for k, n in Counter(p["kind"] for p in pts if p["status"] == "draft").most_common()) + f". The {sum(p['status'] == 'draft' and p['kind'] in FIXED_KINDS for p in pts)} points of the kinds {', '.join(FIXED_KINDS)} are 3 fixed statements (`fixed_statements.md`); the author approves each once. The other {sum(p['status'] == 'draft' and p['kind'] not in FIXED_KINDS for p in pts)} are in `judgement_points_review.csv`.",
-          f"- {n_dr} judgement points (not confirmation, aggregate metric, simulation limit, ambiguity, nearest μPMU dark, neighbour disagreement) and all golden passages: status `draft`. The events themselves stay `draft` until you review these.",
-          "- The truth (`true_bus`, `prediction_correct`, `truth_in_candidate_set`) is kept outside `event_object`; the generator never sees it.", "",
-          "## Open for you", "1. Review `judgement_points_review.csv` (accept, edit or reject each point) and the golden passages.", "2. Approve the 3 fixed statements; then their copies are set to `reviewed`.",
-          "3. \"High probability\" = calibrated p >= 0.9 (accepted by the author 2026-11-02).", "4. S4 selection: `s4_selection.json` (30 events, 2 per k x stratum cell, seeded per cell; no REJECT event exists, so the cell is k x stratum)."]
+          "## Status of the reference points (your instruction)",
+          f"- {sum(p['derived_from'] == 'event_object' for p in pts)} points come from the event object (location, gate outcome and reason codes, candidate set, neighbour locations, dark μPMUs): status `reviewed`.",
+          f"- {sum(p['derived_from'] == 'author_approved_fixed_statement' for p in pts)} points are copies of the 3 fixed statements approved on 2026-11-03 (`fixed_statements.md`): status `reviewed`.",
+          f"- {n_dr} judgement points by kind: " + ", ".join(f"{k} {n}" for k, n in Counter(p["kind"] for p in pts if p["status"] == "draft").most_common()) + ", and all golden passages: status `draft` "
+          "(`judgement_points_review.csv`; the 33 points of the 30 S4 events first: `judgement_points_s4.csv`). The events themselves stay `draft` until you review these.",
+          "- The truth (`true_bus`, `prediction_correct`, `truth_in_candidate_set`) is kept outside `event_object`; the generator never sees it.",
+          "- Nearest μPMUs of the predicted bus come from the operated feeder (sw7 and sw8 open); recomputed from the OpenDSS model for all 59 events with a predicted bus: no difference (2026-11-03).", "",
+          "## Stratum shares in the pool (runs at w = 25 per k; for weighting, `stratum_shares.json`)",
+          "| k | confident_correct | high_conf_error | low_confidence | not in any stratum (CONFIDENT, wrong, p < 0.9) |", "|---|---|---|---|---|"]
+    for k, v in info["stratum_shares"].items():
+        L.append(f"| {k} | {v['confident_correct']:.4f} | {v['high_conf_error']:.4f} | {v['low_confidence']:.4f} | {v['not_in_any_stratum_confident_wrong_p_below_0.9']:.4f} |")
+    L += ["", "## Open for you", "1. Review the 33 points in `judgement_points_s4.csv` first (they are part of the 67 in `judgement_points_review.csv`), then the other 34; and the golden passages.",
+          "2. \"High probability\" = calibrated p >= 0.9 (accepted 2026-11-02). S4 selection: `s4_selection.json` (approved 2026-11-03)."]
     return "\n".join(L) + "\n"
 
 

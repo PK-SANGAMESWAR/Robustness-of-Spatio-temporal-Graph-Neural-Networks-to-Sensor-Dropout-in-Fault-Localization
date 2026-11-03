@@ -32,13 +32,21 @@ kNN agreement (10 held-out neighbours; information only, because tau_k = 0 at th
 - Each golden passage is a sentence that occurs exactly once in its note (checked at build time). Notes used: 24, 25, 23, 30, 28; with LOW_CONFIDENCE 22, 09; with dark μPMUs 12, and 16 and 06 when a nearest μPMU is dark.
 
 ## Status of the reference points (your instruction)
-- 260 points come from the event object (location, gate outcome and reason codes, candidate set, neighbour locations, dark μPMUs): status `reviewed`, `derived_from: event_object`.
-- Judgement points by kind: not_confirmation 60, aggregate 60, limits 60, neighbour_disagreement 27, ambiguity 20, nearest_dark 20. The 180 points of the kinds not_confirmation, aggregate, limits are 3 fixed statements (`fixed_statements.md`); the author approves each once. The other 67 are in `judgement_points_review.csv`.
-- 247 judgement points (not confirmation, aggregate metric, simulation limit, ambiguity, nearest μPMU dark, neighbour disagreement) and all golden passages: status `draft`. The events themselves stay `draft` until you review these.
+- 260 points come from the event object (location, gate outcome and reason codes, candidate set, neighbour locations, dark μPMUs): status `reviewed`.
+- 180 points are copies of the 3 fixed statements approved on 2026-11-03 (`fixed_statements.md`): status `reviewed`.
+- 67 judgement points by kind: neighbour_disagreement 27, ambiguity 20, nearest_dark 20, and all golden passages: status `draft` (`judgement_points_review.csv`; the 33 points of the 30 S4 events first: `judgement_points_s4.csv`). The events themselves stay `draft` until you review these.
 - The truth (`true_bus`, `prediction_correct`, `truth_in_candidate_set`) is kept outside `event_object`; the generator never sees it.
+- Nearest μPMUs of the predicted bus come from the operated feeder (sw7 and sw8 open); recomputed from the OpenDSS model for all 59 events with a predicted bus: no difference (2026-11-03).
+
+## Stratum shares in the pool (runs at w = 25 per k; for weighting, `stratum_shares.json`)
+| k | confident_correct | high_conf_error | low_confidence | not in any stratum (CONFIDENT, wrong, p < 0.9) |
+|---|---|---|---|---|
+| 0 | 0.8321 | 0.0071 | 0.1294 | 0.0314 |
+| 1 | 0.8146 | 0.0086 | 0.1488 | 0.0280 |
+| 2 | 0.7956 | 0.0068 | 0.1691 | 0.0285 |
+| 5 | 0.7270 | 0.0076 | 0.2369 | 0.0285 |
+| 10 | 0.5192 | 0.0094 | 0.4557 | 0.0157 |
 
 ## Open for you
-1. Review `judgement_points_review.csv` (accept, edit or reject each point) and the golden passages.
-2. Approve the 3 fixed statements; then their copies are set to `reviewed`.
-3. "High probability" = calibrated p >= 0.9 (accepted by the author 2026-11-02).
-4. S4 selection: `s4_selection.json` (30 events, 2 per k x stratum cell, seeded per cell; no REJECT event exists, so the cell is k x stratum).
+1. Review the 33 points in `judgement_points_s4.csv` first (they are part of the 67 in `judgement_points_review.csv`), then the other 34; and the golden passages.
+2. "High probability" = calibrated p >= 0.9 (accepted 2026-11-02). S4 selection: `s4_selection.json` (approved 2026-11-03).

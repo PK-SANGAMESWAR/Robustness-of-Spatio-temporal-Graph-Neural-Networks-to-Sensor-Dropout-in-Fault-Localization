@@ -64,3 +64,16 @@ One entry per stage and per run. Append only.
   - k=10 low_confidence seed 360102: 35_AB_10p0_0035, 99_CAG_10p0_0021
 - The selection covers 11 of 11 fault types and 21 of 25 fault buses; 13 of 30 top-1 right; 33 of the 67 other judgement points belong to these 30 events. The events are still `draft`; S4 needs their judgement points reviewed.
 - S4 not started. No API call.
+
+## E23 — 2026-11-03 — Fixed statements approved; reporting rule; S4 judgement sheet (S4 not started)
+- The 3 fixed judgement statements were approved. Statement 3 was changed to "The report does not claim that the result shows safety or performance on a real grid." The 180 copies are `reviewed` (`derived_from: author_approved_fixed_statement`). `golden_events.jsonl` was regenerated (the code is deterministic; only these fields changed).
+- The S4 selection (k x stratum, 2 per cell, seed 360000 + 10 k + stratum index) was approved. The record in E22 and `s4_selection.json` is unchanged.
+- Reporting rule added to `EVAL.md` § 11: S4 results per stratum or weighted by the stratum share in the test split (`reports/events/stratum_shares.json`); never an unweighted mean over the 30 events as a system score.
+- Separate sheet for the 33 judgement points of the 30 S4 events: `reports/events/judgement_points_s4.csv` (with predicted bus, dark buses, nearest μPMUs, kNN agreement). The other 34 of the 67 stay in `judgement_points_review.csv`.
+- Check of the 20 "nearest μPMU dark" points: the nearest-μPMU lists come from `feeder_fault_buses`, which uses the operated feeder (sw7 and sw8 open). Recomputed from the OpenDSS model (`feeder_distances`, open switches sw7 and sw8, sort by km then bus) for the 59 events that have a predicted bus: 0 differences. The as-built paper graph (switches closed) is not used for these points.
+- S4 not started. No API call.
+
+## E24 — 2026-11-03 — Reporting order for S4; commit rule (S4 not started)
+- `EVAL.md` § 11 and `S4_PLAN.md`: the primary S4 result is the per-stratum table, with the CONFIDENT-wrong stratum (`high_conf_error`) first. The weighted figure is secondary and always labelled "over the covered strata". No unweighted mean over the 30 events.
+- Commit rule (author): commit all GridSense files to `gridsense-eval` at the end of each round.
+- No API call. S4 not started.

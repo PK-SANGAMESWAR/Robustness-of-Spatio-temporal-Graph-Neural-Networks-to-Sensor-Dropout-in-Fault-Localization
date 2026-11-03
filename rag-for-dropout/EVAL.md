@@ -110,6 +110,14 @@ A0 STGNN argmax → A1 + calibrated threshold → A2 + kNN agreement → A3 + si
 LLM drafts → `status: draft` → author review → `reviewed`. Version per set; version in every snapshot. Event
 candidates are chosen by a seeded stratified sampler (code), not by hand.
 
+**Reporting rule for the S4 event set (author, 2026-11-03).** The 30 S4 events are selected 2 per cell (k × stratum: `confident_correct`, `high_conf_error`, `low_confidence`; seeded per cell,
+`reports/events/s4_selection.json`). They over-sample wrong predictions, so:
+1. The **primary S4 result is the per-stratum table** (author, 2026-11-03). Order of the rows: `high_conf_error` (CONFIDENT-wrong) **first**, then `confident_correct`, then `low_confidence`. Per k where n allows. State n in every row. Two events per cell: no interval is claimed per cell.
+2. A **weighted figure is secondary**: weight each stratum by its share in the test split at the same k (`reports/events/stratum_shares.json`, runs at the report window w = 25). Its label is always "**over the covered strata**".
+   CONFIDENT-wrong windows with p < 0.9 belong to no stratum (1.6 to 3.1 % of the runs); state this share next to the figure. The weighted figure never appears before the per-stratum table.
+3. **Never report an unweighted mean over the 30 events as a system score.** Not in a table, a snapshot headline, a LangSmith experiment summary or the thesis. A snapshot that holds an unweighted mean stores it as `informational_unweighted`.
+4. The events are a test of report behaviour (faithfulness, safety wording, evidence use), not an estimate of how often the system is right. Accuracy-type claims come from Layer 0.
+
 ## 12. Registry, tolerance, comparison
 `configs/registry.yaml`: name, direction, role (`gate` / `guardrail` / `informational`), floor, tolerance,
 `tolerance_source`. Tolerance = 2 × std over 3–5 repeat runs (`measured`); before that `provisional`.
