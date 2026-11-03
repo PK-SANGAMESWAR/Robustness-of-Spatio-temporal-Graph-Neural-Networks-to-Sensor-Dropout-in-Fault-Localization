@@ -65,7 +65,7 @@ code in OpenDSS snapshot mode.
 |---|---|
 | f — candidate location | 25, plus the no-fault hypothesis f = 0 |
 | τ — fault type | 11 |
-| R — fault resistance | 15, log-spaced 0.05 → 30 Ω |
+| R — fault resistance | 15, log-spaced 0.05 → 30 Ω *[Cross-reference 2026-11-03 18:47 IST / 2026-11-03T13:17:11Z: the operator R axis has 18 points — see `14_PREREGISTRATION.md` Amendment 7; the number is kept]* |
 | L — load multiplier | linear 0.5 → 1.3 — **an explicit axis, because the corpus load is a scalar**. `[Corrected 2026-09-23]` The step is **decided by S1.2**, not defaulted: 0.05 (17 points) and 0.025 (33 points, ≈ 140 k solves) are both affordable on 24 cores, and with σ_ε ≈ 1e-3 p.u. against ≈ 2–5e-3 p.u. of voltage change per 0.05 of load, discretisation — not fidelity — is the likely dominant error. The chosen step is recorded in `operator/grid.json` |
 | i, p — sensor, phase | 25 × 3 = 75 channels, of which only the instrumented ones are ever used |
 
@@ -79,6 +79,7 @@ modulation) and store
 
 Cost at step 0.05: 25 × 11 × 15 × 17 = 70,125 solves + 17 for μ₀, ≈ 21 MB in float32; at step
 0.025, 136,125 + 33 solves and ≈ 41 MB. Wall-clock from the S0.5 solve rate.
+*[Cross-reference 2026-11-03 18:47 IST / 2026-11-03T13:17:11Z: with 18 R points the built table has 84,167 solves (`operator/grid.json`) — see `14_PREREGISTRATION.md` Amendment 7; the numbers above are kept.]*
 
 **Why L is profiled, not marginalised.** The only within-scenario randomness in the corpus is
 one scalar L; the 50 runs of a scenario lie on a 1-D curve μ(L). A diagonal "load std" is the

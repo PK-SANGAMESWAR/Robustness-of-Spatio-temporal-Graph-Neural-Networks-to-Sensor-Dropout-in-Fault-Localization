@@ -195,3 +195,15 @@ the sealed data.
 **30 Ω: PSM evaluates this resistance exactly. The OOD test is out of distribution for the network only.** (The R axis is exact there; the load axis
 L stays on its 0.05 grid, so the residual is not zero at the true class.) For 3, 5 and 20 Ω the value is **between** grid points: PSM uses the nearest
 point, within 1.8–5.0 %, so it is approximate there, and the sentence above does not apply to them. 30 Ω is also the edge of the axis: no point lies above it.
+
+### G9 — mismatch retrain: decision (approved by the author)
+**Amended 2026-11-03 18:47 IST / 2026-11-03T13:17:11Z, before the sealed set was opened.** The retrain of S6.2 is **R5 at impedance ±5 %**, one seed (42), approved by the author. Reason: the
+CPU pre-check of the true-class residual (`results/stage_g/mismatch_tables/precheck.json`; 320 validation fault windows, k = 0, σ = 0) shows a residual
+much smaller than the one that broke the shuffled-table training. For the ±5 % table the half-residual at the true class has median 422 and mean 670
+(nominal table: 28 and 73), and the shifted ρ at the true class has mean 5.5 (nominal 4.2). The R6 shuffled table gave a shifted ρ with median 1.14e4
+and mean 2.03e4 (`06_STAGE_E_pcstgnn.md`, R6 record). So the ±5 % residual is about 20 times smaller than the R6 residual or more: 27 times against the
+R6 median, and about 3,700 times on the shifted mean (different window samples; two forms of the residual). PSM accuracy on the 320 windows stays
+**0.903** (nominal 0.912). **The epoch-3 collapse guard stays** (network-only macro-F1 ≤ 0.10 or class-0 share > 0.95: stop, record as collapsed).
+The decision approves the retrain. The run starts only through the Stage G queue, which does not start without the file
+`results/stage_g/STAGE_G_APPROVED`.
+

@@ -218,3 +218,19 @@ Row text for the opening. The **date is left empty**; the pipeline (`scripts/run
 | Event | Date | By | Hash verified |
 |---|---|---|---|
 | `data/ood_test/` opened (Stage G, once) |  | `scripts/run_stage_g_ood.py` at git commit `<commit>`, with the author's go-ahead `<who, when, reference>`; all models of `config/stage_g/frozen_models.json` scored in that one run | sha256 `<computed>` = `2a61cff095b36caf254457d090610794ee53a48ab0451b4525afec8d0cd91bd7`: `<yes/no>` |
+
+### Amendment 9 — the Gate 6 statistic is approved
+**Amended 2026-11-03 18:47 IST / 2026-11-03T13:17:11Z, before the sealed set was opened.** The author approved the Gate 6 statistic defined in Amendment 1 (event-level paired cluster
+bootstrap over the sealed set's events, 10,000 resamples, `RandomState(20261102)`; mean over the 3 seeds of the per-seed ΔF1 between R5 and R0ⁿ,
+each F1 the mean over the 3 offsets; 95 % percentile CI; "excludes zero" = lower bound above 0). Amendment 1 is not changed.
+
+### Amendment 10 — H1, H2, H4, H6 re-paired to R0ⁿ
+**Amended 2026-11-03 18:47 IST / 2026-11-03T13:17:11Z, before the sealed set was opened.** H1, H2, H4 and H6 compare **R5 with R0ⁿ**. Gate 4 already used R0ⁿ for these hypotheses.
+This amendment records that practice. The "R5 vs R0" entries of the hypothesis table (§ 1) and of § 3 are replaced for these four rows; R0 is a
+descriptive row. (Amendment 2 did the same for H3.)
+
+### Amendment 11 — H3 for each resistance
+**Amended 2026-11-03 18:47 IST / 2026-11-03T13:17:11Z, before the sealed set was opened.** H3 is also reported for each resistance separately. 30 Ω is on the operator grid; 3, 5, and 20 Ω
+are not (`08_STAGE_G_eval.md`, G8). This reporting is descriptive: the primary measure and the pass rule stay as in Amendments 1 and 3. Each
+per-resistance row gives F1 of R5, R0ⁿ and R0, and ΔF1 (R5 − R0ⁿ) with its bootstrap interval.
+
