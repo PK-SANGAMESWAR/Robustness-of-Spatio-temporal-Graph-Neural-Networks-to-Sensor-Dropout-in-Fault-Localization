@@ -972,6 +972,52 @@ content is the inference-only arm R6ⁱ below. The fusion code was not changed.
 - Added 2026-11-02 11:40 IST / 2026-11-02T06:10:30Z, before any R6ⁱ result.
 
 
+### S4.4 — Arm R6ⁱ result `[Recorded 2026-11-03 18:49 IST / 2026-11-03T13:19:57Z]`
+
+R6ⁱ (the three R5 checkpoints scored with the shuffled signature table, `shuffle_seed` 6, no training) was scored on the full validation grid (248,000 windows; k ∈ {0,1,2,5,10} × σ ∈ {0,5e-4,2e-3,1e-2}, 3 offsets), seeds 42/43/44. Files: `results/s4_4/r6i/pcstgnn/seed_{00042,00043,00044}/scoring_full_grid.json`; summary with every per-seed value: `results/s4_4/r6i/summary.json` (`scripts/summarize_r6i.py`). Table checks passed at all three seeds (permutation not the identity, class 0 fixed, table equals the true table permuted, table differs). **Self-check passed:** the network-only F1 of R6ⁱ equals that of R5 exactly in all 60 seed-by-cell pairs.
+
+**Rule** (stated before the result): the model uses the correct physics content if R5 fused F1 > R6ⁱ fused F1 in all 3 seeds at the H2 and H4 conditions (k = 10 at four σ; k = 0 at σ ∈ {5e-4, 2e-3, 1e-2}; 21 comparisons). **Result: R5 is higher in 21 of 21. Passed.** R5 is also higher in 60 of 60 seed-by-cell pairs over the whole grid. Differences R5 − R6ⁱ at the 21 comparisons: +0.507 to +0.805.
+
+**Mean over the 3 seeds, all 20 cells** (macro-F1; R6ⁱ columns use the shuffled table, the R5 columns the correct one; R6ⁱ network-only = R5 network-only):
+
+| k | σ (p.u.) | R5 fused | R6ⁱ fused | network-only | R6ⁱ PSM-only | R5 PSM-only | seeds R5 > R6ⁱ |
+|---|---|---|---|---|---|---|---|
+| 0 | 0 | 0.898 | 0.085 | 0.812 | 0.027 | 0.772 | 3/3 |
+| 0 | 0.0005 | 0.897 | 0.093 | 0.811 | 0.027 | 0.770 | 3/3 |
+| 0 | 0.002 | 0.871 | 0.137 | 0.796 | 0.026 | 0.746 | 3/3 |
+| 0 | 0.01 | 0.748 | 0.220 | 0.710 | 0.008 | 0.496 | 3/3 |
+| 1 | 0 | 0.893 | 0.083 | 0.798 | 0.027 | 0.770 | 3/3 |
+| 1 | 0.0005 | 0.892 | 0.091 | 0.797 | 0.027 | 0.769 | 3/3 |
+| 1 | 0.002 | 0.865 | 0.132 | 0.783 | 0.026 | 0.743 | 3/3 |
+| 1 | 0.01 | 0.743 | 0.214 | 0.699 | 0.008 | 0.492 | 3/3 |
+| 2 | 0 | 0.889 | 0.082 | 0.782 | 0.027 | 0.769 | 3/3 |
+| 2 | 0.0005 | 0.888 | 0.089 | 0.781 | 0.027 | 0.767 | 3/3 |
+| 2 | 0.002 | 0.860 | 0.128 | 0.768 | 0.026 | 0.740 | 3/3 |
+| 2 | 0.01 | 0.736 | 0.208 | 0.688 | 0.008 | 0.489 | 3/3 |
+| 5 | 0 | 0.877 | 0.076 | 0.732 | 0.027 | 0.763 | 3/3 |
+| 5 | 0.0005 | 0.876 | 0.083 | 0.731 | 0.027 | 0.761 | 3/3 |
+| 5 | 0.002 | 0.842 | 0.116 | 0.720 | 0.025 | 0.730 | 3/3 |
+| 5 | 0.01 | 0.718 | 0.191 | 0.648 | 0.008 | 0.478 | 3/3 |
+| 10 | 0 | 0.857 | 0.067 | 0.615 | 0.027 | 0.750 | 3/3 |
+| 10 | 0.0005 | 0.854 | 0.073 | 0.614 | 0.027 | 0.747 | 3/3 |
+| 10 | 0.002 | 0.808 | 0.097 | 0.606 | 0.024 | 0.704 | 3/3 |
+| 10 | 0.01 | 0.679 | 0.162 | 0.547 | 0.007 | 0.457 | 3/3 |
+
+**Per seed, the 7 rule cells** (fused F1 R5 / R6ⁱ; in brackets the PSM-only F1 with the shuffled table; network-only is R5's):
+
+| Cell | seed 42 | seed 43 | seed 44 |
+|---|---|---|---|
+| k=10, σ=0 | 0.856 / 0.065 (0.027) | 0.856 / 0.071 (0.027) | 0.858 / 0.064 (0.027) |
+| k=10, σ=0.0005 | 0.853 / 0.071 (0.027) | 0.854 / 0.077 (0.027) | 0.854 / 0.070 (0.027) |
+| k=10, σ=0.002 | 0.802 / 0.097 (0.024) | 0.811 / 0.106 (0.024) | 0.811 / 0.089 (0.024) |
+| k=10, σ=0.01 | 0.673 / 0.166 (0.007) | 0.690 / 0.166 (0.007) | 0.674 / 0.153 (0.007) |
+| k=0, σ=0.0005 | 0.897 / 0.093 (0.027) | 0.899 / 0.095 (0.027) | 0.896 / 0.090 (0.027) |
+| k=0, σ=0.002 | 0.868 / 0.144 (0.026) | 0.874 / 0.138 (0.026) | 0.872 / 0.129 (0.026) |
+| k=0, σ=0.01 | 0.744 / 0.225 (0.008) | 0.758 / 0.227 (0.008) | 0.743 / 0.207 (0.008) |
+
+**What it shows.** With the signatures assigned to the wrong locations, the fused output of the trained models is far below the correct-table output in every seed and condition (mean fused F1 0.067 to 0.220, against 0.679 to 0.898 for R5). It is also far below the network branch alone (0.547 to 0.812), so the fusion does not fall back on the network when the table is wrong. The PSM-only F1 with the wrong table is 0.007 to 0.027, at or below the 0.0256 of a classifier that always predicts no fault. So the fused output of the trained model depends on the content of the table. **What it does not show:** that training needs the correct table (training with the shuffled table collapsed, see the R6 records above, so that question is open); that the gain over R0ⁿ comes from physics and not from some other property of the added fusion term; or any result on the test split or on unseen resistance. Sign rule over 3 seeds; no significance test is claimed.
+
+
 ### S4.4 — R5-γ0 result (seed 42) `[Recorded 2026-10-28 21:23 IST / 2026-10-28T15:53:52Z]`
 
 R5-γ0 = R5 with γ = 0 (no auxiliary network-only loss); λ₁ = 0, λ₂ = 0.1, fusion on, noise and dropout augmentation on, 30 epochs,
