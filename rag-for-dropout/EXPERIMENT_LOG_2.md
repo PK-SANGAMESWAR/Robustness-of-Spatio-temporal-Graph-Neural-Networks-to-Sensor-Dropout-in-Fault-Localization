@@ -93,3 +93,11 @@ One entry per stage and per run. Append only.
 - Evidence check, live, final settings (snapshot `...T065018Z_s4_evidence_check_live`): unanswerable queries flagged insufficient 6 of 6 dev, 4 of 4 test (reviewed), all 10 near-miss (draft); tau alone flags 4 of 6, 4 of 4 and 0 of 10. Answerable queries wrongly flagged: dev 0.20 (tau 0.20), test 0.30 (tau 0.22). Dev and test answerable rates are on queries that tau was fitted on (dev).
 - Pilot (5 events, one per k, seeded): 0 failures; see `reports/s4/PILOT_READING.md`. Defects fixed: judge context (adherence artefact), a too-strict check, a cache-key bug. First pilot snapshots kept (append-only; invalid for adherence).
 - Ledger total 0.28 USD of 5. Main run and noise runs not started: stopped for the author to read the pilot.
+
+## E27 — 2026-11-11 — S4 main run (30 events, live). Author said "approve" after the pilot
+- Snapshot `eval/snapshots/20261111T091213Z_s4_main_live.json`, items `eval/items/20261111T091213Z_s4_main_live.jsonl`, table `reports/s4/S4_main_live.md`. 30 items, 0 failures, 0.732 USD (330 calls). Ledger total 1.013 USD of 5. Events are `draft` (author-approved for S4).
+- Checker defect (mine, found after the run): `field_consistency` flagged "Dark uPMU buses: []" at k = 0 as a dark-sensor claim (5 reports; all 5 had this as their only error). Fixed in `checks.py` (empty list "[]" is not a claim) with a regression test. The table file still shows the old values (0.90 / 0.80 / 0.80); with the fix all 30 pass field_consistency. The fix was made after seeing the results; no re-call was needed.
+- Real finding: `evidence_consistency` fails for 2 of 10 CONFIDENT-wrong events (53_AB_10p0_0009, 57_BG_0p1_0035): the generator says "insufficient" and still fills `recommended_operator_review`.
+- Generator "insufficient" share: CONFIDENT-wrong 0.8, CONFIDENT-correct 0.6, LOW_CONFIDENCE 0.2. It follows the retrieved passages, not the gate state; it is not a measure of prediction risk.
+- In CONFIDENT-wrong events the neighbours often agree with the wrong bus (10 of 10 in 5 of 10 events). The reports state the count correctly.
+- Judge scores stay informational (O13). Noise runs not started.

@@ -61,3 +61,5 @@ The live run is refused until `s4_approval.json` exists and the rubrics are `rev
 
 ## 8. Live status 2026-11-11
 Approved (O38, O42, cost 2.43 USD per run, draft events allowed, single-query retrieval, SOP excluded). Done: evidence check on 68 golden queries, 5-event pilot (`reports/s4/PILOT_READING.md`). Not started: the main run (30 events) and the noise runs (10 events x 3); they wait for the author's reading of the pilot. Settings found by the pilot: `reasoning_effort` low (generator) and none (judge); luna ignores temperature 0 (default used).
+
+Main run done 2026-11-11 (E27): 30 events, 0 failures, 0.73 USD; snapshot `20261111T091213Z_s4_main_live`. Not started: the noise runs (10 events x 3, about 1 USD).

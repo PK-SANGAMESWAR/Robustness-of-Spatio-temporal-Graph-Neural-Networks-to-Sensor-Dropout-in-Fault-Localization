@@ -63,7 +63,7 @@ def field_consistency(r: dict, view: dict) -> dict:
     missing = [b for b in view["dark_uPMU_buses"] if not re.search(rf"\b{b}\b", cov)]
     if missing:
         errs.append(f"dark buses not named: {missing}")
-    if not view["dark_uPMU_buses"] and view["k"] == 0 and re.search(r"\b(dark|lost|missing)\b", cov, re.I) and not re.search(r"\b(no|none|zero|0)\b", cov, re.I):
+    if not view["dark_uPMU_buses"] and view["k"] == 0 and re.search(r"\b(dark|lost|missing)\b", cov, re.I) and not re.search(r"\b(no|none|zero|0)\b|\[\s*\]", cov, re.I):
         errs.append("dark sensors claimed at k = 0")
     return _ok(not errs, "; ".join(errs))
 

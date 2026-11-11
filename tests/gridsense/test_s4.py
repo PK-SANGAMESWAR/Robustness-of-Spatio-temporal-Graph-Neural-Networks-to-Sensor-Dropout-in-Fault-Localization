@@ -267,3 +267,14 @@ def test_S4_a_refused_temperature_is_remembered_so_the_cache_keys_do_not_change_
     c2.temperature_refused = c2._marker().exists()                  # what __init__ does
     c2.complete([{"role": "user", "content": "b"}], purpose="p")
     assert "temperature" not in calls2[-1] and len(calls2) == 1       # no refused request first
+
+
+def test_field_consistency_empty_dark_list_at_k0_is_not_a_claim():
+    """Regression (2026-11-11): 'Dark uPMU buses: []' at k = 0 was flagged as a dark-sensor claim (checker defect)."""
+    view = {"event_id": "event-001", "predicted_bus": 55, "gate": {"outcome": "CONFIDENT", "reason_codes": ["VERIFICATION_PASSED"]},
+            "candidate_set": None, "dark_uPMU_buses": [], "k": 0}
+    r = {"event_id": "event-001", "predicted_location": 55, "gate_outcome": "CONFIDENT", "gate_reason_codes": ["VERIFICATION_PASSED"],
+         "candidate_set": None, "sensor_coverage_summary": "25 of 25 sensors available; dark uPMU buses: []."}
+    assert CK.field_consistency(r, view)["pass"], CK.field_consistency(r, view)
+    r["sensor_coverage_summary"] = "2 of 25 uPMUs are dark."
+    assert not CK.field_consistency(r, view)["pass"]
