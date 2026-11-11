@@ -259,6 +259,36 @@ validation-only (T7), about 21.5 GPU-h saved on the full test grid (1.3 + 1.3 + 
 reused from Paper 1 if the metric-consistency check of `12:47-53` passes; otherwise add 4.0 h. (d) The B2ᵃ rate in S3 and S6 is
 the R5 rate, an upper bound. (e) Dates are GPU time only. The real critical path is the Stage G code and the amendments.
 
+### 5b. Update 2026-11-11 — corrected costs and the queue as built (`scripts/run_stage_g_queue.py`)
+
+The S4.4 queue ended 2026-11-04T20:22Z and the G-TF2 chain ended 2026-11-05T07:58Z, so the GPU was free from 2026-11-05. The Stage G queue
+started 2026-11-05 14:51 IST and was lost with a machine restart about 15:00 IST (after the patch step; no result written). Nothing in the
+estimates below is a measurement of Stage G itself; rates are those of § 5.
+
+**Corrections to § 5.** S6 (sealed OOD) has 6 cells (k = 0 at four σ, and k = 5, 10 at σ = 0) = 18 forwards, not 9, on 440,000 windows:
+R5 ×3 11.9, R0ⁿ ×3 2.1, R0 ×3 2.1, B2ᵃ ×1 4.0 = **20.1 GPU-h** (was 10.1). S5 (silent failures on the test split) is **blocked**: G-TF2 on the
+test split has no pre-registration (`stage_f_gtf2_preregistration.md` lists the test split as not in scope), so it is 0 h in the queue.
+
+**Queue order** (46 steps; the sealed set is not in it):
+
+| # | Step | GPU-h |
+|---|---|---|
+| 0 | apply B2ᵃ patch, unit tests | 0 |
+| 1 | Mismatch Phase 1: R5 ×3 seeds × 3 tables, validation, 8 cells (24 forwards) | 26.8 |
+| 2 | B2ᵃ: train 26.2 + validation scoring 7.4 (seed 42, epoch-3 guard) | 33.6 |
+| 3 | Mismatch retrain: R5 on impedance ±5 % table, train 26.2 + scoring 7.4 (seed 42, guard) | 33.6 |
+| 4 | Test split: S3 grid (R0ⁿ, R5, R2 ×3; R6ⁱ ×3 at 8 cells; B2ᵃ ×1) and S4 policies (R5, R0ⁿ × 3 policies × 3 seeds, 12 forwards each) | 62.3 |
+| 5 | S5 silent failures on test | blocked (0) |
+| | **Queue total (dry-run estimate 156.33)** | **156.3 h = 6.5 days** |
+| 6 | Sealed OOD, one run by `scripts/run_stage_g_ood.py` after the author's go-ahead | 20.1 |
+| | **Total** | **176.4 h = 7.4 days** |
+
+Not in the queue: the fusion-only R0ⁿ mismatch row (descriptive, +3 h per table) and the Gate 6 bootstrap (CPU, about 1 min per cell).
+
+**Dates (GPU time only; one T1000, no parallel run).** G-TF2 finished 2026-11-05. If the queue restarts on 2026-11-11, it ends about
+**2026-11-18** and the sealed run could follow about **2026-11-19**, after the model manifest is frozen and the author gives the go-ahead.
+A collapse of B2ᵃ or of the retrain stops the queue (no retry); a stop adds the time for the author's decision.
+
 ## 6. Decisions for the author
 1. Amend 14: pair with R0ⁿ; A1 via R6ⁱ; A3, H5, A5 not tested; Gate 6; H3 pooled or per-R; OOD σ; "collapses" for A4.
 2. Register the grounded / ungrounded split before the opening.
