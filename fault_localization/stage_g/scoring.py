@@ -46,12 +46,41 @@ FULL_GRID = [(k, s) for s in SIGMA_LEVELS for k in (0, 1, 2, 5, 10)]
 MISMATCH_GRID = [(k, s) for s in SIGMA_LEVELS for k in (0, 10)]
 #: Sealed OOD set: H3 cells (k = 0 at every sigma) plus the descriptive k = 5, 10 at sigma = 0.
 OOD_GRID = [(0, s) for s in SIGMA_LEVELS] + [(5, 0.0), (10, 0.0)]
-GRIDS = {"full": FULL_GRID, "mismatch": MISMATCH_GRID, "ood": OOD_GRID}
+#: S4 dropout policies (persistent / contiguous / targeted): k = 1, 2, 5, 10 at sigma = 0 (k = 0 is the random k = 0 cell).
+POLICY_GRID = [(k, 0.0) for k in (1, 2, 5, 10)]
+GRIDS = {"full": FULL_GRID, "mismatch": MISMATCH_GRID, "ood": OOD_GRID, "policy": POLICY_GRID}
+POLICIES = ("random", "persistent", "contiguous", "targeted")
 
 
 def is_grounded(fault_type: str) -> bool:
     """Fault types with a ground connection: AG BG CG ABG BCG CAG ABCG (7); ungrounded: AB BC CA ABC (4)."""
     return "G" in fault_type
+
+
+class _PolicyContext:
+    """Per-dataset objects the non-random dropout policies need (built once)."""
+
+    def __init__(self, policy: str, dataset):
+        self.policy = policy
+        self.cache: dict = {}
+        if policy == "contiguous":
+            from fault_localization.dropout.correlated import build_adjacency
+            self.adjacency = build_adjacency(dataset.edge_index)
+        if policy == "targeted":
+            from fault_localization.dropout.targeted import build_proximity_rank
+            self.rank = build_proximity_rank(Path(dataset.root) / "processed" / "node_mapping.json")
+
+    def apply(self, x, y, wids, k, off, batch_idx):
+        """Same seed rules as the Paper-1 studies: persistent keyed on the event, the others on (k, offset, batch)."""
+        if self.policy == "persistent":
+            from fault_localization.dropout.persistent import apply_persistent_dropout_batch
+            return apply_persistent_dropout_batch(x, wids, k, off, cache=self.cache)[0]
+        seed = dropout_seed(k, off, batch_idx)
+        if self.policy == "contiguous":
+            from fault_localization.dropout.correlated import apply_correlated_dropout_batch
+            return apply_correlated_dropout_batch(x, k, seed, self.adjacency)[0]
+        from fault_localization.dropout.targeted import apply_targeted_dropout_batch
+        return apply_targeted_dropout_batch(x, y, k, self.rank, seed)[0]
 
 
 def cell_key(k: int, sigma: float, off: int) -> str:
@@ -128,7 +157,7 @@ class ScoreResult:
 
 def score_dataset(model, dataset: WindowGraphDataset, cells, *, n_offsets: int = N_OFFSETS, device,
                   batch_size: int = BATCH_SIZE, max_windows: int | None = None,
-                  window_subset=None, progress_every: int = 0) -> ScoreResult:
+                  window_subset=None, progress_every: int = 0, policy: str = "random") -> ScoreResult:
     """Score ``model`` on ``dataset`` at every ``(k, sigma)`` cell and offset; keep every prediction.
 
     Noise and dropout draws are seeded per window from ``(level index, offset, global window index)``
@@ -137,7 +166,14 @@ def score_dataset(model, dataset: WindowGraphDataset, cells, *, n_offsets: int =
 
     ``max_windows`` keeps the first N windows of ``dataset.records``; ``window_subset`` keeps exactly
     the given window ids (both for tests and smoke runs only).  Seeds always use the *global* index.
+
+    ``policy``: how sensors are lost for k > 0 -- ``random`` (the S4.4 protocol, per window), or one of
+    the Paper-1 stress policies ``persistent`` (per event), ``contiguous`` (connected block), ``targeted``
+    (nearest the fault).  The policy changes only which sensors are zeroed.
     """
+    if policy not in POLICIES:
+        raise ValueError(f"unknown policy {policy!r}")
+    pctx = None if policy == "random" else _PolicyContext(policy, dataset)
     for _k, s in cells:
         if s not in SIGMA_LEVELS:
             raise ValueError(f"sigma {s} is not in the canonical grid {SIGMA_LEVELS}")
@@ -175,6 +211,7 @@ def score_dataset(model, dataset: WindowGraphDataset, cells, *, n_offsets: int =
             if not sel:
                 continue
             x_full = batch["x"][sel].to(device)
+            y_batch = batch["y"][sel].to(device)
             wids = [wids[i] for i in sel]
             gidx = [gidx_of[w] for w in wids]
             pos = [pos_of[g] for g in gidx]
@@ -191,7 +228,9 @@ def score_dataset(model, dataset: WindowGraphDataset, cells, *, n_offsets: int =
                     else:
                         x_noisy = x_full
                     for k in ks:
-                        if k > 0:
+                        if k > 0 and pctx is not None:
+                            x_eval = pctx.apply(x_noisy.clone(), y_batch, wids, k, off, bi)
+                        elif k > 0:
                             x_eval = x_noisy.clone()
                             for i in range(b):
                                 x_eval[i:i + 1], _, _ = apply_sensor_dropout_batch(

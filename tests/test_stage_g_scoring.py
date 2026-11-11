@@ -112,3 +112,36 @@ def test_test_split_is_refused_without_approval():
     r = subprocess.run([sys.executable, str(REPO / "scripts/score_stage_g.py"), "--arm", "r0n", "--seed", "42",
                         "--split", "test"], capture_output=True, text=True, cwd=REPO)
     assert r.returncode != 0 and "approved-test-split" in (r.stderr + r.stdout)
+
+
+# ----------------------------------------------------------------------------- S4 dropout policies
+@pytest.mark.parametrize("policy", ["persistent", "contiguous", "targeted"])
+def test_policy_zeroes_exactly_k_nodes_per_window_and_repeats(policy, mini_root):
+    from fault_localization.data.dataset import WindowGraphDataset, make_dataloader
+    ds = WindowGraphDataset(str(mini_root), "all")
+    batch = next(iter(make_dataloader(ds, 32, shuffle=False)))
+    ctx = S._PolicyContext(policy, ds)
+    x = batch["x"].clone()
+    out = ctx.apply(x.clone(), batch["y"], list(batch["window_id"]), 5, 1, 0)
+    dark = (out.abs().sum(dim=(2, 3)) == 0)                                  # a dropped node has all six channels zero
+    assert (dark.sum(dim=1) == 5).all()
+    again = S._PolicyContext(policy, ds).apply(x.clone(), batch["y"], list(batch["window_id"]), 5, 1, 0)
+    assert torch.equal(out, again)                                           # same seed, same loss pattern
+    if policy == "persistent":                                                # one event -> one dropped set
+        events = [w.rsplit("_w", 1)[0] for w in batch["window_id"]]
+        by_event = {}
+        for e, row in zip(events, dark):
+            by_event.setdefault(e, row)
+            assert torch.equal(by_event[e], row)
+
+
+def test_score_dataset_runs_each_policy_and_rejects_unknown(mini_root):
+    from fault_localization.data.dataset import WindowGraphDataset
+    ds = WindowGraphDataset(str(mini_root), "all")
+    model, _ = S.load_model(REPO / "results/s4_4/r0n/pcstgnn/seed_00042", ds.edge_index, torch.device("cpu"))
+    ids = [r[0] for r in ds.records[:40]]
+    for policy in ("persistent", "contiguous", "targeted"):
+        res = S.score_dataset(model, ds, [(2, 0.0)], device=torch.device("cpu"), window_subset=ids, policy=policy)
+        assert res.preds[S.cell_key(2, 0.0, 0)]["pf"].shape == (40,)
+    with pytest.raises(ValueError):
+        S.score_dataset(model, ds, [(2, 0.0)], device=torch.device("cpu"), window_subset=ids, policy="nope")

@@ -34,6 +34,8 @@ def main() -> int:
     ap.add_argument("--split", choices=["val", "test"], default="val")
     ap.add_argument("--approved-test-split", action="store_true")
     ap.add_argument("--grid", choices=sorted(S.GRIDS), default="full")
+    ap.add_argument("--policy", choices=list(S.POLICIES), default="random",
+                    help="how sensors are lost for k > 0 (use with --grid policy for the S4 stress policies)")
     ap.add_argument("--table-dir", default=None)
     ap.add_argument("--shuffle-seed", type=int, default=None)
     ap.add_argument("--out-name", default=None)
@@ -57,9 +59,9 @@ def main() -> int:
                               table_dir=Path(args.table_dir) if args.table_dir else None,
                               shuffle_seed=args.shuffle_seed)
     res = S.score_dataset(model, ds, S.GRIDS[args.grid], device=device, max_windows=args.max_windows,
-                          progress_every=args.progress_every)
+                          progress_every=args.progress_every, policy=args.policy)
     meta = {"arm": args.arm or str(run_dir), "seed": args.seed, "split": args.split, "grid": args.grid,
-            "table_dir": args.table_dir, "shuffle_seed": args.shuffle_seed, "max_windows": args.max_windows,
+            "policy": args.policy, "table_dir": args.table_dir, "shuffle_seed": args.shuffle_seed, "max_windows": args.max_windows,
             "checkpoint_sha256": S.sha256_file(run_dir / "checkpoint_best.pt"), "data_root": args.root,
             "resistances": [0.1, 1.0, 10.0]}
     out_dir = Path(args.out_root) / args.split / name
