@@ -19,10 +19,8 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 
 | O29 | **SUPERSEDED 2026-10-31 by O30** (session B wording, kept). Review the 30 draft notes (`corpus/v2/notes/`, each with a `source_ref` to verify) and the 54 draft golden queries (`data/eval/golden_retrieval.jsonl`); until then every Layer 1 number is PRELIMINARY and none may be reported. `rag-golden-review` prepares the table | before any reported Layer 1 number | Table of items with accept / edit / reject |
 | O36 | Golden events: 60 drafted; fixed statements approved 2026-11-03 (180 copies reviewed); S4 selection of 30 approved. Open: review the 67 judgement points, the 33 of the S4 events first (`reports/events/judgement_points_s4.csv`), and the golden passages | any S4 run | Review |
-| O38 | Approve the five GEval rubrics (`rubrics/*.md`, status draft); summary in `reports/s4/APPROVAL_SHEET.md`. Also decide there: SOP keep or exclude (O42), the cost, `draft_events_allowed`, `single` or `multi` retrieval | the S4 judge run | Approve or edit |
 | O39 | R-0055, R-0056 accepted; R-0059 (trap, expected "insufficient evidence") and R-0060 (new wording) accepted 2026-11-02 (golden v4). Open: review the 10 other near-miss queries R-0057, 58, 61 to 68 (draft; `reports/layer1/NEAR_MISS_CHECK.md`) | their use in a reported result | Accept, edit or reject each |
 | O40 | Label the 162 passages of `reports/layer1/labelling_table.csv` (relevant, partly relevant, not relevant) | graded precision@3 and nDCG@3 | Fill the `label` column |
-| O42 | Read the illustrative SOP (`corpus/sop_v1/`, draft) | reviewed status | Accept or edit |
 
 ## Closed (author answers 2026-10-28 to 2026-10-31)
 | ID | Answer |
@@ -30,6 +28,8 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 | O41 | 2026-11-02: keep v2 (it passed the rule fixed before the run). v1 or v2 is not chosen with test results. The test difference (Q −0.036, interval −0.106 to +0.014) and the R-0036 cause are a known limitation (`reports/sweeps/SUMMARY.md` § 2). A diversity limit for row chunks is future work, to be selected on dev only |
 | O37 | 2026-11-02: manuscript chunks (`paper1_rev1170`) are allowed in S4 prompts. The corpus is unchanged |
 | O35 | 2026-11-02: generator temperature 0. If `gpt-6-luna` does not accept a temperature, no value is sent and the model default is recorded in the snapshot |
+| O38 | 2026-11-11: five rubrics approved (status approved), with the S4 cost (budget 2.43 USD), draft events allowed, single-query retrieval |
+| O42 | 2026-11-11: the author chose to EXCLUDE the illustrative SOP from S4 retrieval; the SOP file stays draft |
 | O34 | 2026-11-02: the 11 notes accepted (status reviewed); the SOP stays draft until the author has read it (O42). R-0055 and R-0056 stay draft (O39) |
 | O30 | 2026-11-02: review applied; record `reports/layer1/O30_REVIEW_RECORD.md` (golden set v1, 19 notes reviewed, feeder documents accepted) |
 | O31 | 2026-11-01: approved. Run the OpenAI embedding (`text-embedding-3-small`, 0.02 USD / 1M input, about 0.0013 USD) after the O30 review, together with the sweeps. The cost ledger and the 5 USD limit apply |

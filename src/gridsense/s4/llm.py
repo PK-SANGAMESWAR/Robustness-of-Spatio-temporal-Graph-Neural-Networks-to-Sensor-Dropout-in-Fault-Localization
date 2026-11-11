@@ -79,8 +79,8 @@ def require_live_approval() -> dict:
     return a
 
 
-def _key(model: str, temperature, messages: list[dict], json_mode: bool, salt: str) -> str:
-    return hashlib.sha256(json.dumps([model, temperature, messages, json_mode, salt], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+def _key(model: str, temperature, messages: list[dict], json_mode: bool, salt: str, effort=None, max_tokens=None) -> str:
+    return hashlib.sha256(json.dumps([model, temperature, messages, json_mode, salt, effort, max_tokens], sort_keys=True, ensure_ascii=False).encode()).hexdigest()
 
 
 @dataclass
@@ -107,20 +107,24 @@ class MockClient:
 class OpenAIClient:
     """Live client: standard (synchronous) prices. The Batch API is not used: the DeepEval judge steps depend on each other (see S4_PLAN.md)."""
 
-    def __init__(self, model: str, temperature: float | None, ledger: Ledger, budget: Budget, label: str, cache: bool = True):
+    def __init__(self, model: str, temperature: float | None, ledger: Ledger, budget: Budget, label: str, cache: bool = True, reasoning_effort: str | None = None):
         require_live_approval()
         from openai import OpenAI
         self.model, self.temperature, self.ledger, self.budget, self.label, self.use_cache = model, temperature, ledger, budget, label, cache
+        self.effort = reasoning_effort      # the gpt-6 models reason before they answer; the reasoning tokens count as output tokens (and as max_completion_tokens)
         self.client = OpenAI(api_key=settings.secret("OPENAI_API_KEY"), max_retries=2)
-        self.temperature_refused = False
-        self.default_temperature_note = None
+        self.temperature_refused = self._marker().exists()          # a model that once refused a temperature is not asked again: the cache keys then stay the same from the first call on
+        self.default_temperature_note = "model refused an explicit temperature earlier; the model default is used (O35)" if self.temperature_refused else None
+
+    def _marker(self) -> Path:
+        return CACHE / self.model / "_temperature_refused"
 
     def _cache_path(self, key: str) -> Path:
         return CACHE / self.model / f"{key}.json"
 
     def complete(self, messages, *, purpose, json_mode=True, max_tokens=900, salt="main") -> Reply:
         temp = None if self.temperature_refused else self.temperature
-        key = _key(self.model, temp, messages, json_mode, salt)
+        key = _key(self.model, temp, messages, json_mode, salt, self.effort, max_tokens)
         p = self._cache_path(key)
         if self.use_cache and p.exists():
             d = json.loads(p.read_text())
@@ -135,11 +139,15 @@ class OpenAIClient:
             kw["response_format"] = {"type": "json_object"}
         if temp is not None:
             kw["temperature"] = temp
+        if self.effort:
+            kw["reasoning_effort"] = self.effort
         try:
             resp = self.client.chat.completions.create(**kw)
         except Exception as e:                                                   # a model that refuses a temperature: send none, record the default (O35)
             if temp is not None and "temperature" in str(e).lower():
                 self.temperature_refused = True
+                self._marker().parent.mkdir(parents=True, exist_ok=True)
+                self._marker().write_text("the model refused an explicit temperature\n")
                 self.default_temperature_note = "model refused an explicit temperature; the model default was used (O35)"
                 kw.pop("temperature")
                 resp = self.client.chat.completions.create(**kw)
@@ -151,7 +159,7 @@ class OpenAIClient:
         usd = self.ledger.commit(self.model, u.prompt_tokens, u.completion_tokens, f"{self.label}:{purpose}")
         self.budget.spent_usd += usd
         text = resp.choices[0].message.content or ""
-        if self.use_cache:
+        if self.use_cache and text.strip():                                       # an empty reply is never cached
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_text(json.dumps({"text": text, "input_tokens": u.prompt_tokens, "output_tokens": u.completion_tokens, "temperature_sent": temp}))
         return Reply(text, u.prompt_tokens, u.completion_tokens, usd, False, temp, self.model)
@@ -165,5 +173,5 @@ def make_clients(live: bool, label: str, mock_gen: Callable | None = None, mock_
     a = require_live_approval()
     led = Ledger(label=label)
     budget = Budget(min(float(a["cost_approved_usd"]), float(repeat_budget) if repeat_budget else 1e9))
-    return (OpenAIClient(cfg["generation"]["model"], cfg["generation"].get("temperature"), led, budget, label),
-            OpenAIClient(cfg["judge"]["model"], cfg["judge"].get("temperature"), led, budget, label))
+    return (OpenAIClient(cfg["generation"]["model"], cfg["generation"].get("temperature"), led, budget, label, reasoning_effort=cfg["generation"].get("reasoning_effort")),
+            OpenAIClient(cfg["judge"]["model"], cfg["judge"].get("temperature"), led, budget, label, reasoning_effort=cfg["judge"].get("reasoning_effort")))

@@ -34,6 +34,8 @@ EVENTS = TRACK / "data" / "eval" / "golden_events.jsonl"
 SELECTION = TRACK / "reports" / "events" / "s4_selection.json"
 OUT = TRACK / "reports" / "s4"
 PILOT_SEED, NOISE_SEED = 360777, 360888
+# Shown to the judge as part of the facts. The first live pilot (2026-11-11) scored geval_adherence 1 for all 5 reports because the judge read these two system fields as inventions (they were not in its context). Harness artefact, fixed.
+SYSTEM_FIELDS = ("SYSTEM-SET FIELDS (not chosen by the report writer)\nprediction_status: candidate_not_confirmed (the schema fixes it)\napproval_status: pending_human_review (the system sets it; the writer cannot approve)")
 
 
 def load_events() -> dict[str, dict]:
@@ -56,6 +58,20 @@ def select(kind: str) -> list[str]:
     return out
 
 
+def sop_decision() -> str:
+    """The author's choice for the illustrative SOP (O42): 'keep' or 'exclude'. Read from the approval file; a dry run without the file keeps it."""
+    try:
+        return load_approval()["sop_decision"]
+    except ApprovalMissing:
+        return "keep"
+
+
+def apply_sop_decision(retr, decision: str) -> None:
+    """`exclude`: the SOP (approval_status `illustrative`) is not retrieved. Only the query-time filter changes; the index and its fingerprint stay as frozen. The dense top-1 used for tau is then taken over the remaining documents."""
+    if decision == "exclude":
+        retr.cfg = replace(retr.cfg, filters={**(retr.cfg.filters or {}), "approval_status": ["curated_for_research"]})
+
+
 def retriever_and_tau():
     from gridsense.eval.layer1 import embedder_from_config, get_index, retrieval_config
     from gridsense.eval.sweep import latest_snapshot, load_winners
@@ -68,7 +84,10 @@ def retriever_and_tau():
     ix = get_index(rc, emb, docs, chunk_embedder=minilm, rebuild=False)
     snap = latest_snapshot("frozen_final_v2_test")
     tau = snap["metrics"].get("sufficiency.tau_dev.tau")
-    return Retriever(ix), tau, {"index_fingerprint": ix.fingerprint, "tau": tau, "tau_source": "dev split, snapshot " + snap["label"], "retrieval": st["retrieval"]}
+    retr = Retriever(ix)
+    sop = sop_decision()
+    apply_sop_decision(retr, sop)
+    return retr, tau, {"sop_decision": sop, "index_fingerprint": ix.fingerprint, "tau": tau, "tau_source": "dev split, snapshot " + snap["label"], "retrieval": st["retrieval"]}
 
 
 # ---- mock generator (dry run): a compliant report built from the prompt itself -----------------------------------------------------
@@ -115,7 +134,7 @@ def process(item: dict, index: int, retr, tau, gen, judge, salt: str, do_judge: 
         passages = r["passages"]
         rec |= {"passages": [{"chunk_id": p["chunk_id"], "document_id": p["document_id"], "section_path": p["section_path"], "score": p["score"]} for p in passages], "dense_top1": r["dense_top1"]}
         msgs = GEN.build_messages(item, index, passages)
-        reply = gen.complete(msgs, purpose="generator", json_mode=True, max_tokens=900, salt=salt)
+        reply = gen.complete(msgs, purpose="generator", json_mode=True, max_tokens=4000, salt=salt)
         rec["generation"] = {"input_tokens": reply.input_tokens, "output_tokens": reply.output_tokens, "usd": reply.usd, "cached": reply.cached, "temperature_sent": reply.temperature_sent}
         rep, err = GEN.parse_report(reply.text)
         if err:
@@ -127,7 +146,7 @@ def process(item: dict, index: int, retr, tau, gen, judge, salt: str, do_judge: 
         rec["evidence"] = final_evidence_status(flag, rep.get("evidence_status"))
         rec["checks"] = CK.run_checks(rep, view, item["event_object"]["knn"]["neighbours"], passages, rec["evidence"]["final"])
         if do_judge:
-            ctx = "EVENT FACTS\n" + json.dumps(view, indent=1) + "\n\nCASE NEIGHBOURS\n" + GEN.neighbours_table(item)
+            ctx = ("EVENT FACTS\n" + json.dumps(view, indent=1) + "\n\nCASE NEIGHBOURS\n" + GEN.neighbours_table(item) + "\n\n" + SYSTEM_FIELDS)
             question = f"Write a decision-support report for a fault-location prediction. {q}"
             rec["judge"] = run_judge(judge, GEN.report_text(rep), question, ctx, [GEN.format_passages([p]) for p in passages], salt=salt)
     except ApprovalMissing:
@@ -162,7 +181,8 @@ def run(kind: str, live: bool, repeats: int = 1, queries: str = "single") -> dic
     phash = {n: hashlib.sha256((TRACK / "prompts" / f"{n}.md").read_bytes()).hexdigest()[:16] for n in ("generator_v0", "evidence_check_v0")}
     rhash = {p.stem: hashlib.sha256(p.read_bytes()).hexdigest()[:16] for p in sorted((TRACK / "rubrics").glob("*.md"))}
     snap = write_snapshot(label, metrics, items, config_effective={"kind": kind, "live": live, "events": ids, "events_status": events_status, "retrieval": rinfo,
-                                                                  "generation_temperature": cfg["generation"].get("temperature"), "repeats": repeats, "queries": queries},
+                                                                  "generation_temperature_asked": cfg["generation"].get("temperature"), "judge_temperature_asked": cfg["judge"].get("temperature"), "reasoning_effort": {"generator": cfg["generation"].get("reasoning_effort"), "judge": cfg["judge"].get("reasoning_effort")},
+                                                                  "temperature_notes": {"generator": getattr(gen, "default_temperature_note", None), "judge": getattr(judge, "default_temperature_note", None)}, "repeats": repeats, "queries": queries},
                           prompt_hashes=phash, rubric_hashes=rhash, golden_versions={"events": cfg["golden_sets"]["events"]["version"]}, judge_model=cfg["judge"]["model"] + ("" if live else " (mock)"),
                           generation_model=cfg["generation"]["model"] + ("" if live else " (mock)"), index_fingerprint=rinfo["index_fingerprint"],
                           notes=f"S4 {kind} {'LIVE' if live else 'DRY RUN (mock models, no API call)'}; events_status={events_status}; {time.time() - t0:.0f} s")
@@ -199,7 +219,7 @@ def evidence_check(live: bool) -> dict:
         try:
             out = retr.retrieve(r["query"])
             msgs = [{"role": "system", "content": esys.replace("{{", "{").replace("}}", "}")}, {"role": "user", "content": euser.format(question=r["query"], passages=GEN.format_passages(out["passages"]))}]
-            reply = gen.complete(msgs, purpose="evidence_check", json_mode=True, max_tokens=120)
+            reply = gen.complete(msgs, purpose="evidence_check", json_mode=True, max_tokens=1500)
             try:
                 gs = json.loads(reply.text).get("evidence_status")
             except Exception:

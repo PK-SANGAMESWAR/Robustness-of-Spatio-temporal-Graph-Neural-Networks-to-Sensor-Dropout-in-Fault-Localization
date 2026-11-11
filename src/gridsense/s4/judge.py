@@ -60,7 +60,7 @@ def make_adapter(client, salt: str = "main"):
             return True
 
         def generate(self, prompt: str, schema=None, **kw):
-            r = self.client.complete([{"role": "user", "content": prompt}], purpose="judge", json_mode=True, max_tokens=500, salt=self.salt)
+            r = self.client.complete([{"role": "user", "content": prompt}], purpose="judge", json_mode=True, max_tokens=1500, salt=self.salt)
             self.usage["calls"] += 1; self.usage["input_tokens"] += r.input_tokens; self.usage["output_tokens"] += r.output_tokens; self.usage["usd"] += r.usd
             if schema is None:
                 return r.text

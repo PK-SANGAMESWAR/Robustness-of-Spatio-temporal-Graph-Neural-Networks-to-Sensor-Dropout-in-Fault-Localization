@@ -1,6 +1,8 @@
 ---
 rubric: no_aggregate_metric_as_confidence
-status: draft
+status: approved
+reviewed: '2026-11-11'
+review: approved by the author in chat on 2026-11-11 (O38)
 version: 0
 layer: 4 and 5
 source: author decision 2026-10-28 (claude-rag.md § 3, § 4 rule 2)

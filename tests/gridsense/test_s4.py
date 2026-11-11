@@ -78,7 +78,8 @@ def _client(tmp_path, monkeypatch, replies, budget=1.0, refuse_temperature=False
     c.client, calls = _fake_openai(replies, refuse_temperature)
     c.model, c.temperature, c.label, c.use_cache = "gpt-6-luna", 0, "t", True
     c.ledger, c.budget = Ledger(tmp_path / "ledger.jsonl", PRICES, limit_usd=5.0, label="t"), llm.Budget(budget)
-    c.temperature_refused, c.default_temperature_note = False, None
+    c.temperature_refused, c.default_temperature_note, c.effort = False, None, "low"
+    c._marker = lambda: tmp_path / "cache" / "gpt-6-luna" / "_temperature_refused"
     return c, calls
 
 
@@ -175,10 +176,11 @@ def test_S4_negated_confirmation_is_allowed_and_missing_keys_fail_the_schema():
 
 def test_S4_an_insufficient_decision_allows_no_procedural_statement():
     rep = _good(GEN.event_view(_item(), 1))
-    assert not _run(rep, "insufficient")["evidence_consistency"]["pass"]
-    quiet = rep | {"document_evidence": [], "recommended_operator_review": [], "evidence_status": "insufficient"}
-    assert _run(quiet, "insufficient")["evidence_consistency"]["pass"]
-    assert not _run(rep | {"document_evidence": [], "recommended_operator_review": []}, "insufficient")["evidence_consistency"]["pass"]    # must say so
+    assert not _run(rep, "insufficient")["evidence_consistency"]["pass"]                           # recommends a review although the evidence is insufficient
+    quiet = rep | {"recommended_operator_review": [], "evidence_status": "insufficient"}
+    r = _run(quiet, "insufficient")
+    assert r["evidence_consistency"]["pass"] and not r["cites_while_insufficient"]["pass"] and r["cites_while_insufficient"]["informational"]   # explanatory citations: flagged, not failed
+    assert not _run(rep | {"recommended_operator_review": []}, "insufficient")["evidence_consistency"]["pass"]    # must say so
 
 
 # ---- reporting rule (EVAL.md § 11) ----------------------------------------------------------------------------------------------------
@@ -226,4 +228,42 @@ def test_S4_dry_process_runs_judge_and_checks_end_to_end_with_mock_models():
     assert "error" not in rec and rec["evidence"]["final"] == "sufficient" and all(v["pass"] for k, v in rec["checks"].items()), rec.get("error") or rec["checks"]
     assert not rec["judge"]["failures"] and rec["generation"]["usd"] == 0.0 and len(judge.calls) >= 8
     low = R.process(_item() | {"stratum": "low_confidence", "prediction_correct": True}, 1, type("T", (), {"retrieve": lambda s, q, top_k=None: {"passages": PASSAGES, "dense_top1": 0.1}})(), 0.46, gen, judge, "main", do_judge=False)
-    assert low["evidence"]["final"] == "insufficient" and low["evidence"]["by"] == ["tau"] and not low["checks"]["evidence_consistency"]["pass"]   # the mock still cites: the check catches it
+    assert low["evidence"]["final"] == "insufficient" and low["evidence"]["by"] == ["tau"] and not low["checks"]["evidence_consistency"]["pass"]   # the mock still recommends a review: the check catches it
+
+
+def test_S4_sop_exclusion_changes_only_the_query_time_filter():
+    from dataclasses import dataclass, field
+    from gridsense.retrieval.retriever import RetrievalConfig
+    from gridsense.s4 import run as R
+    @dataclass
+    class T:
+        cfg: object = field(default_factory=lambda: RetrievalConfig())
+    t = T()
+    R.apply_sop_decision(t, "keep")
+    assert t.cfg.filters["approval_status"] == ["curated_for_research", "illustrative"]
+    R.apply_sop_decision(t, "exclude")
+    assert t.cfg.filters["approval_status"] == ["curated_for_research"]
+
+
+def test_S4_reasoning_effort_is_sent_empty_replies_are_not_cached_and_effort_is_part_of_the_cache_key(tmp_path, monkeypatch):
+    c, calls = _client(tmp_path, monkeypatch, ["", '{"a": 1}'])
+    m = [{"role": "user", "content": "hi"}]
+    e = c.complete(m, purpose="p")
+    assert calls[-1]["reasoning_effort"] == "low" and e.text == ""
+    assert c.complete(m, purpose="p").text == '{"a": 1}' and len(calls) == 2                    # the empty reply was not served from the cache
+    assert llm._key("m", 0, m, True, "main", "low", 900) != llm._key("m", 0, m, True, "main", "none", 900) != llm._key("m", 0, m, True, "main", "none", 4000)
+
+
+def test_S4_judge_context_names_the_system_set_fields():
+    from gridsense.s4 import run as R
+    assert "candidate_not_confirmed" in R.SYSTEM_FIELDS and "pending_human_review" in R.SYSTEM_FIELDS
+
+
+def test_S4_a_refused_temperature_is_remembered_so_the_cache_keys_do_not_change_between_runs(tmp_path, monkeypatch):
+    c, calls = _client(tmp_path, monkeypatch, ["{}"], refuse_temperature=True)
+    c.complete([{"role": "user", "content": "a"}], purpose="p")
+    assert c._marker().exists()
+    c2, calls2 = _client(tmp_path, monkeypatch, ["{}"], refuse_temperature=True)
+    c2.temperature_refused = c2._marker().exists()                  # what __init__ does
+    c2.complete([{"role": "user", "content": "b"}], purpose="p")
+    assert "temperature" not in calls2[-1] and len(calls2) == 1       # no refused request first

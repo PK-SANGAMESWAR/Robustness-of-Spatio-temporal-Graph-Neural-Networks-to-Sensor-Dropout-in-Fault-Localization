@@ -1,0 +1,11 @@
+{
+  "approved_by": "author",
+  "date": "2026-11-11",
+  "rubrics_approved": true,
+  "sop_decision": "exclude",
+  "cost_approved_usd": 2.43,
+  "draft_events_allowed": true,
+  "retrieval_queries": "single",
+  "recorded_by": "agent, from the author's chat messages of 2026-11-11 ('approved' to the approval sheet; SOP answered 'Exclude it')",
+  "note": "Budget = the standard-price ceiling of reports/s4/COST_ESTIMATE.md for the full run set. Prices re-read on developers.openai.com/api/docs/pricing on 2026-11-11: unchanged."
+}

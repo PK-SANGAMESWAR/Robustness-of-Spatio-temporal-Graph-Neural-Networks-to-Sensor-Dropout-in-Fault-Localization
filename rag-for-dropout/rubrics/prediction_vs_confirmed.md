@@ -1,6 +1,8 @@
 ---
 rubric: prediction_vs_confirmed
-status: draft
+status: approved
+reviewed: '2026-11-11'
+review: approved by the author in chat on 2026-11-11 (O38)
 version: 0
 layer: 4
 source: rag-eval.md §4 Layer 4; implementation-plan.md §10.2

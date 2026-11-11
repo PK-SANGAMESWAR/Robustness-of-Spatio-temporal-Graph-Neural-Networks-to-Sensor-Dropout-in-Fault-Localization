@@ -1,0 +1,75 @@
+{
+  "git_commit": "e209828",
+  "git_dirty": true,
+  "label": "s4_evidence_check_live",
+  "timestamp_utc": "2026-11-11T06:44:44Z",
+  "config_effective": {
+    "live": true,
+    "retrieval": {
+      "sop_decision": "exclude",
+      "index_fingerprint": "a31d45a23dfbb6daf5b649e1839b9968b58faa906f145c1448e86c1586adc1ea",
+      "tau": 0.46389949321746826,
+      "tau_source": "dev split, snapshot frozen_final_v2_test",
+      "retrieval": {
+        "chunker": "recursive",
+        "chunk_size": 200,
+        "overlap": 0.1,
+        "parent_size": null,
+        "store": "qdrant_local",
+        "mode": "hybrid",
+        "top_k": 3,
+        "dense_candidates": 20,
+        "lexical_candidates": 20,
+        "rrf_k": 60,
+        "reranker": null,
+        "reranker_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+        "rerank_top": 20,
+        "filters": {
+          "approval_status": [
+            "curated_for_research",
+            "illustrative"
+          ]
+        },
+        "semantic_percentile": 20.0,
+        "chunk_meter": "sentence-transformers/all-MiniLM-L6-v2",
+        "table_rows": true
+      }
+    }
+  },
+  "index_fingerprint": null,
+  "case_store_fingerprint": null,
+  "prompt_hashes": null,
+  "rubric_hashes": null,
+  "golden_versions": null,
+  "judge_model": null,
+  "generation_model": null,
+  "deepeval_version": null,
+  "metrics": {
+    "evidence_check.reviewed.dev.unanswerable.n": 6,
+    "evidence_check.reviewed.dev.unanswerable.final_insufficient": 1.0,
+    "evidence_check.reviewed.dev.unanswerable.tau_only": 0.6666666666666666,
+    "evidence_check.reviewed.dev.answerable.n": 25,
+    "evidence_check.reviewed.dev.answerable.final_insufficient": 0.24,
+    "evidence_check.reviewed.dev.answerable.tau_only": 0.2,
+    "evidence_check.reviewed.test.unanswerable.n": 4,
+    "evidence_check.reviewed.test.unanswerable.final_insufficient": 1.0,
+    "evidence_check.reviewed.test.unanswerable.tau_only": 1.0,
+    "evidence_check.reviewed.test.answerable.n": 23,
+    "evidence_check.reviewed.test.answerable.final_insufficient": 0.2608695652173913,
+    "evidence_check.reviewed.test.answerable.tau_only": 0.21739130434782608,
+    "evidence_check.draft.dev.unanswerable.n": 4,
+    "evidence_check.draft.dev.unanswerable.final_insufficient": 1.0,
+    "evidence_check.draft.dev.unanswerable.tau_only": 0.0,
+    "evidence_check.draft.test.unanswerable.n": 6,
+    "evidence_check.draft.test.unanswerable.final_insufficient": 1.0,
+    "evidence_check.draft.test.unanswerable.tau_only": 0.0
+  },
+  "n_items": 68,
+  "n_failures": 0,
+  "failure_causes": [],
+  "tokens": {},
+  "cost_usd": 0.0,
+  "langsmith_experiment_url": null,
+  "items_path": "rag-for-dropout/eval/items/20261111T064444Z_s4_evidence_check_live.jsonl",
+  "notes": "evidence-status check on every golden retrieval query; LIVE"
+}

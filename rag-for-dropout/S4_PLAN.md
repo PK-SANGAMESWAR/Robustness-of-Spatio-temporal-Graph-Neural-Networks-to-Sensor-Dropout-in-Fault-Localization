@@ -58,3 +58,6 @@ The tau-only numbers (dev, tau 0.464 for v2: unanswerable 4 of 4 flagged, answer
 ## 7. Built 2026-11-11 (code ready, nothing paid has run)
 Code: `src/gridsense/s4/` (`llm.py` live gate and ledger, `generate.py`, `checks.py`, `decision.py`, `judge.py`, `report.py`, `run.py`); tests `tests/gridsense/test_s4.py`. Dry runs with mock models only (`reports/s4/S4_*_dry.md`: plumbing, the numbers mean nothing).
 The live run is refused until `s4_approval.json` exists and the rubrics are `reviewed`. What you approve and three findings that need your decision: `reports/s4/APPROVAL_SHEET.md`.
+
+## 8. Live status 2026-11-11
+Approved (O38, O42, cost 2.43 USD per run, draft events allowed, single-query retrieval, SOP excluded). Done: evidence check on 68 golden queries, 5-event pilot (`reports/s4/PILOT_READING.md`). Not started: the main run (30 events) and the noise runs (10 events x 3); they wait for the author's reading of the pilot. Settings found by the pilot: `reasoning_effort` low (generator) and none (judge); luna ignores temperature 0 (default used).

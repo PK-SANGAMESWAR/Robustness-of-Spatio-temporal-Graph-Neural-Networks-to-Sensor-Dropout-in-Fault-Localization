@@ -1,7 +1,7 @@
 # S4: what you approve before the first paid call
 
 Written for: the author. The S4 code is built and tested with mock models (no API call, no cost). A live run is **refused by the code** until `rag-for-dropout/s4_approval.json` exists
-(template: `s4_approval.template.json`), every rubric file says `status: reviewed`, and the budget in that file is not exceeded. Source of the numbers: `reports/s4/COST_ESTIMATE.md`.
+(template: `s4_approval.template.json`), every rubric file says `status: approved` (or `reviewed`), and the budget in that file is not exceeded. Source of the numbers: `reports/s4/COST_ESTIMATE.md`.
 
 ## 1. The five rubrics (O38; files `rubrics/*.md`, now `status: draft`)
 | rubric | what the judge checks | scale |

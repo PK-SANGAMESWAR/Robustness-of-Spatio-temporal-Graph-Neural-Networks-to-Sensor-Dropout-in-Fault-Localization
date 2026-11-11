@@ -135,13 +135,15 @@ generation:
   model: gpt-6-luna               # author 2026-11-02 (O1); name and prices confirmed on the OpenAI pricing and model pages 2026-11-02; confirm again before the first call
   candidates: [gpt-6-luna]
   temperature: 0                  # author 2026-11-02 (O35). If gpt-6-luna does not accept a temperature, send none and record the model default in the snapshot
+  reasoning_effort: low           # 2026-11-11: the gpt-6 models refuse an explicit temperature (the model default runs) and reason before answering; with the default effort a report took ~1,600 reasoning tokens and 900 max tokens gave an empty reply. 'low' = ~450
   prompt_version: generator_v0    # draft: rag-for-dropout/prompts/generator_v0.md
 
 judge:
   provider: openai
   model: gpt-6.1-terra            # author 2026-11-02 (O1); differs from the generator; name and prices confirmed on the OpenAI pricing page 2026-11-02; confirm again before the first call
   candidates: [gpt-6.1-terra]
-  temperature: 0
+  temperature: 0                  # refused by the model in practice (see generation); the snapshot records the note
+  reasoning_effort: none          # 2026-11-11: reasoning tokens are billed as output (5 USD per 1M for the judge); the cost estimate assumes none. 'none' keeps the estimate valid
   kappa_bar: 0.6                  # (P)
   cache_dir: rag-for-dropout/eval/judge_cache
 
