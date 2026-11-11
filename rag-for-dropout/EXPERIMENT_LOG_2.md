@@ -77,3 +77,11 @@ One entry per stage and per run. Append only.
 - `EVAL.md` § 11 and `S4_PLAN.md`: the primary S4 result is the per-stratum table, with the CONFIDENT-wrong stratum (`high_conf_error`) first. The weighted figure is secondary and always labelled "over the covered strata". No unweighted mean over the 30 events.
 - Commit rule (author): commit all GridSense files to `gridsense-eval` at the end of each round.
 - No API call. S4 not started.
+
+## E25 — 2026-11-11 — S4 code built and tested with mock models (no API call, no cost)
+- Code `src/gridsense/s4/`; 36 tests (`test_s4.py`; all gridsense tests pass). The live client is refused in code without `s4_approval.json` from the author and `reviewed` rubrics; a fake OpenAI object tests pricing, cache, salt, temperature fallback (O35) and the budget.
+- The generator never sees the truth, the run ID or the window ID (anonymous `event-NNN`; tested). Deterministic checks: schema, field consistency, neighbour counts, citation validity, no confirmation, no control command, no approval claim, no injection echo, evidence consistency.
+- Dry runs (mock models): pilot (5), main (30), noise (10 x 2), evidence check (68 queries). Snapshots `*_s4_*_dry.json`; the dry numbers test plumbing only.
+- Findings (free): (1) no Batch API: standard price, 1.29 USD expected, 2.43 ceiling. (2) One query + top 3 retrieves only 4 documents for the 30 events; the draft SOP is 39 of 90 passages; no dropout or neighbour note. `--queries multi` is an option. (3) tau alone flags 0 of the 12 near-miss queries (all 8 older unanswerable ones are flagged).
+- DeepEval maps a 1-5 rubric to 0-1 as (score - 1) / 4: checked with mock scores 2 and 5.
+- Not done: the price re-check on the OpenAI pages; the approval file. S4 not started.

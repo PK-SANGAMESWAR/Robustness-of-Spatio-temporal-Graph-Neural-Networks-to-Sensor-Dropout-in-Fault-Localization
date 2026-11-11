@@ -1,0 +1,9 @@
+{
+  "approved_by": "author",
+  "date": "YYYY-MM-DD",
+  "rubrics_approved": false,
+  "sop_decision": "keep or exclude",
+  "cost_approved_usd": 0,
+  "draft_events_allowed": false,
+  "note": "Copy to s4_approval.json and fill in. The agent must not create s4_approval.json on its own."
+}

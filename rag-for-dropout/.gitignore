@@ -15,3 +15,4 @@ eval/case_store/*/*.npz
 eval/targeted_rank/*.npz
 eval/store_bench/
 eval/embedding_cache/
+eval/llm_cache/

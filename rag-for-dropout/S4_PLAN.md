@@ -25,7 +25,7 @@ The generator and the judge differ (rule 6.1 of `rag-eval.md`). Both are in `con
 | noise estimate: 3 repeat runs on 10 events | 30 generations, 480 judge calls | luna, terra |
 | evidence-status check on every golden retrieval query | 68 calls | luna |
 Judge metrics per report: faithfulness, answer relevancy, contextual relevancy (DeepEval) and the five GEval rubrics (`rubrics/*.md`; all draft until you approve them). **Expected cost 1.29 USD at standard rates, 0.65 USD with the Batch API;
-ceiling 2.43 and 1.21 USD** (limit 5 USD, spent 0.0006). The Batch API is used for all calls (none needs an immediate answer); generation first, then judging (two batches in sequence). The response cache (key: model, prompt hash, input hash) means a rerun of an
+ceiling 2.43 and 1.21 USD** (limit 5 USD, spent 0.0006). **Update 2026-11-11: the Batch API is not used.** The DeepEval judge steps depend on each other, so calls run one by one at the standard price (expected 1.29, ceiling 2.43 USD). Batch would need a staged judge; it is future work. The response cache (key: model, prompt hash, input hash) means a rerun of an
 unchanged prompt costs nothing; no saving is assumed in the estimate. A 5-event pilot costs about 0.11 USD (0.05 with Batch).
 
 **Reporting rule (author, 2026-11-03; `EVAL.md` § 11):** the primary S4 result is the per-stratum table, CONFIDENT-wrong (`high_conf_error`) first; the weighted figure is secondary and is labelled "over the covered strata"; never an unweighted mean over the 30 events.
@@ -54,3 +54,7 @@ The tau-only numbers (dev, tau 0.464 for v2: unanswerable 4 of 4 flagged, answer
 2. Pilot: 5 events, one run, Batch; look at the reports and the judge reasons together; stop.
 3. Main run (30 events) and noise runs (10 × 3); deterministic checks on all events; write snapshots and one log entry; compare the actual cost with the estimate.
 4. Judge validation against your labels if you give them (O13).
+
+## 7. Built 2026-11-11 (code ready, nothing paid has run)
+Code: `src/gridsense/s4/` (`llm.py` live gate and ledger, `generate.py`, `checks.py`, `decision.py`, `judge.py`, `report.py`, `run.py`); tests `tests/gridsense/test_s4.py`. Dry runs with mock models only (`reports/s4/S4_*_dry.md`: plumbing, the numbers mean nothing).
+The live run is refused until `s4_approval.json` exists and the rubrics are `reviewed`. What you approve and three findings that need your decision: `reports/s4/APPROVAL_SHEET.md`.

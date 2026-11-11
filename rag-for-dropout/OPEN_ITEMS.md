@@ -19,7 +19,7 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 
 | O29 | **SUPERSEDED 2026-10-31 by O30** (session B wording, kept). Review the 30 draft notes (`corpus/v2/notes/`, each with a `source_ref` to verify) and the 54 draft golden queries (`data/eval/golden_retrieval.jsonl`); until then every Layer 1 number is PRELIMINARY and none may be reported. `rag-golden-review` prepares the table | before any reported Layer 1 number | Table of items with accept / edit / reject |
 | O36 | Golden events: 60 drafted; fixed statements approved 2026-11-03 (180 copies reviewed); S4 selection of 30 approved. Open: review the 67 judgement points, the 33 of the S4 events first (`reports/events/judgement_points_s4.csv`), and the golden passages | any S4 run | Review |
-| O38 | Approve the five GEval rubrics (`rubrics/*.md`, status draft) | the S4 judge run | Approve or edit |
+| O38 | Approve the five GEval rubrics (`rubrics/*.md`, status draft); summary in `reports/s4/APPROVAL_SHEET.md`. Also decide there: SOP keep or exclude (O42), the cost, `draft_events_allowed`, `single` or `multi` retrieval | the S4 judge run | Approve or edit |
 | O39 | R-0055, R-0056 accepted; R-0059 (trap, expected "insufficient evidence") and R-0060 (new wording) accepted 2026-11-02 (golden v4). Open: review the 10 other near-miss queries R-0057, 58, 61 to 68 (draft; `reports/layer1/NEAR_MISS_CHECK.md`) | their use in a reported result | Accept, edit or reject each |
 | O40 | Label the 162 passages of `reports/layer1/labelling_table.csv` (relevant, partly relevant, not relevant) | graded precision@3 and nDCG@3 | Fill the `label` column |
 | O42 | Read the illustrative SOP (`corpus/sop_v1/`, draft) | reviewed status | Accept or edit |
