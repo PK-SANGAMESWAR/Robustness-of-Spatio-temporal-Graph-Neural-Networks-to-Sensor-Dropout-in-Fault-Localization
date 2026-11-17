@@ -101,3 +101,10 @@ One entry per stage and per run. Append only.
 - Generator "insufficient" share: CONFIDENT-wrong 0.8, CONFIDENT-correct 0.6, LOW_CONFIDENCE 0.2. It follows the retrieved passages, not the gate state; it is not a measure of prediction risk.
 - In CONFIDENT-wrong events the neighbours often agree with the wrong bus (10 of 10 in 5 of 10 events). The reports state the count correctly.
 - Judge scores stay informational (O13). Noise runs not started.
+
+## E28 — 2026-11-17 — S4 noise runs (10 events x 3 repeats, live). Author said "yes continue"
+- Snapshot `eval/snapshots/20261117T075743Z_s4_noise_live.json`, items `eval/items/20261117T075743Z_s4_noise_live.jsonl`, table `reports/s4/S4_noise_live.md`. 30 reports, 0 failures, 0.940 USD. Ledger total 1.953 USD of 5. Events are `draft`. n = 10 events only; stratum cells hold 2 to 4 events.
+- Generator variation (luna, default temperature, same prompt): the final evidence status changes between repeats for 5 of the 10 events. The predicted location never changes (3 of 3 repeats equal in all 10). All deterministic checks except `evidence_consistency` pass in all 30.
+- `evidence_consistency` fails in 4 of 30 reports: 3 of 6 CONFIDENT-wrong (93_ABG_10p0_0008 twice, 47_ABC_1p0_0040 once) and 1 of 12 LOW_CONFIDENCE (99_CAG_10p0_0021). The main-run finding (insufficient but operator review filled) is not limited to CONFIDENT-wrong.
+- A single generator run is therefore one draw. Per-event conclusions need repeats; the main-run table is a first look.
+- Evidence-check policy (empty `recommended_operator_review` when insufficient, enforced in code) is not changed: the author has not decided.
