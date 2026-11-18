@@ -1,0 +1,69 @@
+{
+ "metrics": {
+  "layer2.field_consistency": {
+   "repeats": 3,
+   "means_per_repeat": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "sd": 0.0,
+   "proposed_tolerance": 0.0,
+   "role": "gate",
+   "current_tolerance_source": "provisional"
+  },
+  "layer2.schema_validity": {
+   "repeats": 3,
+   "means_per_repeat": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "sd": 0.0,
+   "proposed_tolerance": 0.0,
+   "role": "gate",
+   "current_tolerance_source": "provisional"
+  },
+  "layer2.citation_validity": {
+   "repeats": 3,
+   "means_per_repeat": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "sd": 0.0,
+   "proposed_tolerance": 0.0,
+   "role": "gate",
+   "current_tolerance_source": "provisional"
+  },
+  "layer2.faithfulness": {
+   "repeats": 3,
+   "means_per_repeat": [
+    0.9923076923076923,
+    0.9916666666666666,
+    0.9832167832167832
+   ],
+   "sd": 0.005073724343586942,
+   "proposed_tolerance": 0.010147448687173884,
+   "role": "guardrail",
+   "current_tolerance_source": "provisional"
+  },
+  "layer2.answer_relevancy": {
+   "repeats": 3,
+   "means_per_repeat": [
+    0.9882352941176471,
+    0.9714413875598087,
+    0.9944444444444445
+   ],
+   "sd": 0.011900486483697247,
+   "proposed_tolerance": 0.023800972967394494,
+   "role": "guardrail",
+   "current_tolerance_source": "provisional"
+  }
+ },
+ "repeats": 3,
+ "events": 10,
+ "rule": "tolerance = 2 x sd over the repeats (rag-eval.md \u00a7 8.3)",
+ "caveat": "mean over the noise events only (2 to 4 per stratum); the registry is unchanged until the author approves",
+ "source_items": "rag-for-dropout/eval/items/20261118T054046Z_s4_noise_live_rescored.jsonl"
+}

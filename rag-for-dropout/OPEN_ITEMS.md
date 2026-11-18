@@ -21,6 +21,9 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 | O36 | Golden events: 60 drafted; fixed statements approved 2026-11-03 (180 copies reviewed); S4 selection of 30 approved. Open: review the 67 judgement points, the 33 of the S4 events first (`reports/events/judgement_points_s4.csv`), and the golden passages | any S4 run | Review |
 | O39 | R-0055, R-0056 accepted; R-0059 (trap, expected "insufficient evidence") and R-0060 (new wording) accepted 2026-11-02 (golden v4). Open: review the 10 other near-miss queries R-0057, 58, 61 to 68 (draft; `reports/layer1/NEAR_MISS_CHECK.md`) | their use in a reported result | Accept, edit or reject each |
 | O40 | Label the 162 passages of `reports/layer1/labelling_table.csv` (relevant, partly relevant, not relevant) | graded precision@3 and nDCG@3 | Fill the `label` column |
+| O43 | Review the 25 draft safety items (`data/eval/golden_safety.jsonl`; `reports/s7/S6_S7_REPORT.md`). Then say `draft_safety_items_allowed: true` for a live run (generator only, about 0.05 USD for 75 calls; the aggregate-metric GEval part adds judge calls) | author, before a live safety run |
+| O44 | Sensitive strings in verbatim excerpts: citation validity demands a verbatim excerpt, so a poisoned passage that holds an address or key leaks through the excerpt (the mock generator did exactly this). Choose: (a) an output validator in Python that blocks a report with a sensitive pattern, (b) redaction of the passage before generation, (c) accept: the curated corpus holds no such string | author |
+| O45 | The `out_of_scope` type is simulated by off-topic passages, because the generator prompt (v0) has no operator-question field. A real question variant needs a prompt change (new prompt version, one variable) | author |
 
 ## Closed (author answers 2026-10-28 to 2026-10-31)
 | ID | Answer |

@@ -13,8 +13,8 @@ entry to `EXPERIMENT_LOG.md`, update `DONE.md`, and wait for approval. Do not st
 | S3 | Corpus ingestion; retrieval golden drafts; free component sweeps (Layer 1, deterministic) | 0 (CPU) | **done 2026-11-02:** O30 review applied (golden v1), 8 sweep axes and the vector store run on dev, configuration frozen and run once on the golden test split (`reports/sweeps/SUMMARY.md`). Open: O34 (12 draft documents). Next stage S4 needs O1 (generator and judge models, prices). SUPERSEDED: session B baseline (E11) |
 | S4 | Cost estimate; judge-validation pilot; DeepEval contextual metrics on the top configs | paid | **built and run 2026-11-11 to 11-18:** evidence check, pilot, main (30 events), noise (10 x 3), rescore with E + A (`EXPERIMENT_LOG_2.md` E26–E29, `S4_PLAN.md` § 8). Open: author reviews (judgement points, O13 judge labels), generator choice. The generator, report schema and checks of S5 exist in `src/gridsense/s4/`; the LangGraph workflow does not |
 | S5 | Generator, LangGraph workflow, report schema; Layers 2 and 3 | paid | S4 |
-| S6 | Layers 4, 5, 6: application, safety, operations; ablation ladder A0–A4 | paid | S5 |
-| S7 | Registry, snapshots, compare command, regression tests, measured tolerances | small | S6 |
+| S6 | Layers 4, 5, 6: application, safety, operations; ablation ladder A0–A4 | paid | **safety set built 2026-11-18** (25 draft items, deterministic checks, dry run only; `reports/s7/S6_S7_REPORT.md`). Not done: live safety run (needs O43), Layer 4 and 6, ablation ladder |
+| S7 | Registry, snapshots, compare command, regression tests, measured tolerances | small | **built 2026-11-18:** `python -m gridsense compare`, `gridsense.eval.tolerances`, tests of `rag-eval.md` § 10.1 mapped. Open: the author approves the measured tolerances and the baseline |
 | S8 | LangSmith: datasets, experiments, tracing, online evaluators, replay stream | small | O8, S7 |
 | S9 | Validation report: actual results, limitations, decisions | 0 | S8 |
 

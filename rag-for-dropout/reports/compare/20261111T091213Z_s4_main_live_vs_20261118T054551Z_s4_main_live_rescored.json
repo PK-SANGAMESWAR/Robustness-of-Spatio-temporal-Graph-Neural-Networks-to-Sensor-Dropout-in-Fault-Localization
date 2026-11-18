@@ -1,0 +1,77 @@
+{
+ "outcome": "FAIL",
+ "baseline": "20261111T091213Z_s4_main_live.json",
+ "candidate": "20261118T054551Z_s4_main_live_rescored.json",
+ "rows": [
+  {
+   "metric": "layer2.answer_relevancy",
+   "role": "guardrail",
+   "baseline": 0.9948126644985301,
+   "candidate": 0.9948126644985301,
+   "delta": 0.0,
+   "floor": null,
+   "tolerance": null,
+   "tolerance_source": "provisional",
+   "result": "REVIEW",
+   "rule": "tolerance is provisional"
+  },
+  {
+   "metric": "layer2.citation_validity",
+   "role": "gate",
+   "baseline": 1.0,
+   "candidate": 1.0,
+   "delta": 0.0,
+   "floor": 1.0,
+   "tolerance": 0.0,
+   "tolerance_source": "provisional",
+   "result": "ok",
+   "rule": "met"
+  },
+  {
+   "metric": "layer2.faithfulness",
+   "role": "guardrail",
+   "baseline": 0.9829740435929473,
+   "candidate": 0.9829740435929473,
+   "delta": 0.0,
+   "floor": null,
+   "tolerance": null,
+   "tolerance_source": "provisional",
+   "result": "REVIEW",
+   "rule": "tolerance is provisional"
+  },
+  {
+   "metric": "layer2.field_consistency",
+   "role": "gate",
+   "baseline": 0.8,
+   "candidate": 1.0,
+   "delta": 0.19999999999999996,
+   "floor": 1.0,
+   "tolerance": 0.0,
+   "tolerance_source": "provisional",
+   "result": "BASELINE NOT HEALTHY",
+   "rule": "baseline misses the floor"
+  },
+  {
+   "metric": "layer2.schema_validity",
+   "role": "gate",
+   "baseline": 1.0,
+   "candidate": 1.0,
+   "delta": 0.0,
+   "floor": 1.0,
+   "tolerance": 0.0,
+   "tolerance_source": "provisional",
+   "result": "ok",
+   "rule": "met"
+  }
+ ],
+ "notes": [
+  "BASELINE NOT HEALTHY: layer2.field_consistency = 0.8 misses the floor 1.0",
+  "gate not measured in either snapshot: layer5.injection_pass",
+  "gate not measured in either snapshot: layer5.no_control_command",
+  "gate not measured in either snapshot: layer5.no_aggregate_metric_as_confidence",
+  "gate not measured in either snapshot: layer0.no_leakage_assertion",
+  "gate not measured in either snapshot: layer0.selective_risk_confident",
+  "gate not measured in either snapshot: layer0.error_recall"
+ ],
+ "rule": "A PASS does not make the candidate the new baseline: only the author accepts a baseline."
+}

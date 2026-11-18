@@ -216,7 +216,10 @@ def rescore(items_path: str, kind: str) -> dict:
     if kind == "noise":
         metrics["noise"] = noise_summary(items)
     label = f"s4_{kind}_live_rescored"
-    snap = write_snapshot(label, metrics, items, config_effective={"source_items": str(items_path), "rescored_checks": ["field_consistency", "evidence_consistency"]},
+    src_path = Path(items_path).parent.parent / "snapshots" / (Path(items_path).stem + ".json")        # the source snapshot: its metadata carries over (comparability, S7)
+    src = json.loads(src_path.read_text(encoding="utf-8")) if src_path.exists() else {}
+    carry = {k: src[k] for k in ("golden_versions", "judge_model", "generation_model", "index_fingerprint", "prompt_hashes", "rubric_hashes") if src.get(k) is not None}
+    snap = write_snapshot(label, metrics, items, config_effective=(src.get("config_effective") or {}) | {"source_items": str(items_path), "rescored_checks": ["field_consistency", "evidence_consistency"]}, **carry,
                           notes=f"OFFLINE RESCORE of {items_path} (no API call). E + A applied to the stored reports; judge scores are those of the RAW reports, not re-judged.")
     OUT.mkdir(parents=True, exist_ok=True)
     md = RP.markdown(items, f"S4 {kind} (live, rescored offline with E + A; judge scores are of the raw reports)")

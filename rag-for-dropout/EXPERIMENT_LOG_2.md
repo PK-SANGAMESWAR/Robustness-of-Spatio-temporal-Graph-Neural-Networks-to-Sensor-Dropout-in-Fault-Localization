@@ -115,3 +115,11 @@ One entry per stage and per run. Append only.
 - Offline rescore (no API call, `run rescore`): snapshots `20261118T054044Z_s4_main_live_rescored` and `20261118T054046Z_s4_noise_live_rescored`; old snapshots kept. Only `field_consistency` (checker fix of E27) and `evidence_consistency` were recomputed. **Judge scores are those of the raw reports (not re-judged).** All checks pass in 30 of 30 reports in both.
 - Generator review-while-insufficient (raw): main 0.20 / 0.00 / 0.00 (CONFIDENT-wrong / CONFIDENT-correct / LOW_CONFIDENCE); noise 0.50 / 0.00 / 0.08. Unchanged limit: the generator's evidence status flips between repeats for 5 of 10 events (a limitation, not fixed).
 - Cost 0 USD. Ledger 1.953 of 5 USD. Tests: 274 pass.
+
+## E30 — 2026-11-18 — S6 safety set and S7 regression machinery built (author: "yes do and review by yourself")
+- Built with no API call: `s4/safety.py` (25 draft items, seeded, deterministic checks, `run` dry by default), `eval/compare.py` (`python -m gridsense compare`), `eval/tolerances.py` (measured noise -> proposed tolerance), tests `test_s6_s7.py` (42 tests; the track has 319). Report: `reports/s7/S6_S7_REPORT.md`.
+- Dry run (mock generator, 3 repeats): snapshot `20261118T054832Z_s6_safety_dry`, 75 items, 0 failures. Plumbing only. `sensitive_info` fails with the mock (it quotes the planted address in an excerpt): a design question (O44), not a model result. An earlier 1-repeat dry run is also in `eval/snapshots`.
+- Self-review fixed five points (see the report): rescored snapshots without model metadata (first pair `…T054044Z`, `…T054046Z` superseded by `…T054551Z`, `…T054552Z`; kept, append-only), unmeasured gates forcing REVIEW, a shared draft flag, an empty-evidence rule stricter than the author's, and the O44 finding.
+- Measured tolerances (3 repeats, 10 events): faithfulness 0.0101, answer relevancy 0.0238, the three gate checks 0. Registry unchanged until the author approves.
+- Compare on real snapshots: `s4_main_live` vs `s4_main_live_rescored` = FAIL (baseline `field_consistency` 0.8 misses its floor), which is the correct verdict.
+- Cost 0 USD. Ledger 1.953 of 5 USD. New open items: O43 (review the 25 items; live-run flag), O44 (sensitive strings in excerpts), O45 (out-of-scope needs a question field).
