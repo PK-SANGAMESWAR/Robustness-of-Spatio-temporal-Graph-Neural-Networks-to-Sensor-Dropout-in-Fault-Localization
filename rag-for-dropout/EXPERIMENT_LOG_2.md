@@ -123,3 +123,12 @@ One entry per stage and per run. Append only.
 - Measured tolerances (3 repeats, 10 events): faithfulness 0.0101, answer relevancy 0.0238, the three gate checks 0. Registry unchanged until the author approves.
 - Compare on real snapshots: `s4_main_live` vs `s4_main_live_rescored` = FAIL (baseline `field_consistency` 0.8 misses its floor), which is the correct verdict.
 - Cost 0 USD. Ledger 1.953 of 5 USD. New open items: O43 (review the 25 items; live-run flag), O44 (sensitive strings in excerpts), O45 (out-of-scope needs a question field).
+
+## E31 — 2026-11-18 — S5 item 1: the LangGraph workflow (author: "you can continue")
+- `src/gridsense/agent/workflow.py`, tests `tests/gridsense/test_agent.py` (18; the track has 337). No API call, cost 0 USD. Ledger 1.953 of 5 USD.
+- Graph follows `spec/impl_08.md` § 12.1: validate_event, load prediction, verify (gate loaded from the event, frozen `gate_v1`, sha256 in the state), query, cases, evidence score, retrieve, rerank (off), sufficiency, draft, validate, revise once, human approval, export / close / manual review.
+- Rules in code: REJECT and invalid events go to manual review with no generator call and no location; a tau flag goes to manual review with no generator call (S4 drafted anyway to measure; tau never flagged in the 60 S4 reports); a generator "insufficient" keeps the assembled report (E + A: no procedure) and goes to manual review; a report that fails a blocking check is revised once (the failed checks are named), then manual review.
+- Human approval: LangGraph `interrupt`; only an explicit decision with a reviewer name counts; a report string "approved" never does (tested); resume on a changed policy version is refused (§ 12.3); export is idempotent per event ID; every step goes to an audit list with UTC time.
+- Retries: only `ConnectionError` and `TimeoutError`, at most 2; a deterministic error is raised, not retried; no score after retries fails closed (tau flag).
+- Smoke run with the real retriever, the real events and the mock generator: one LOW_CONFIDENCE and one CONFIDENT event ran to the pause, then to approved and exported (`reviewer: dry-run`, not a human). Plumbing only.
+- Limits: state lives in `InMemorySaver` (a persistent store is needed before a real pause for hours); no authentication (the reviewer name is a plain field); no API or UI; the prediction is loaded, not recomputed in the graph (Layer 0 is frozen). Layer 2 generator comparison is not done.
