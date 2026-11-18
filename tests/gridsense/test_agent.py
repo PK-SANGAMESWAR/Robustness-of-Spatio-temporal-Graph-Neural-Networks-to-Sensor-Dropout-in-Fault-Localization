@@ -190,3 +190,32 @@ def test_S5_the_state_holds_no_truth_fields():
     _, st = W.start(app, "E-LOW")
     text = json.dumps(st, default=str)
     assert "true_bus" not in text and "fault_type" not in text and "93_ABG" not in json.dumps(st.get("draft_report", {}))
+
+
+# ---- persistence (S5: § 12.3 "persist graph state when human review may happen later") --------------------------------------------------------
+def test_S5_a_paused_review_survives_a_restart_and_the_export_is_kept(tmp_path):
+    from gridsense.agent.store import FileSaver, JsonExportStore
+    ev = _events()
+    path, exp = tmp_path / "cp.pkl", tmp_path / "exports.json"
+
+    def make():
+        deps = {"event_lookup": lambda e: ev[e], "retrieve": lambda item: {"passages": [dict(p) for p in PASSAGES], "dense_top1": 0.6}, "tau": TAU, "generator": Gen([_good_reply(ev["E-LOW"])]),
+                "index_version": "ix-test", "export_store": JsonExportStore(exp), "checkpointer": FileSaver(path)}
+        return W.build(deps)
+    app1 = make()
+    cfg, st = W.start(app1, "E-LOW")
+    assert W.paused(app1, cfg) and path.exists()
+    app2 = make()                                                                 # a new process: new objects, same files
+    assert W.paused(app2, cfg) and app2.get_state(cfg).values["draft_report"] == st["draft_report"]
+    out = W.decide(app2, cfg, {"decision": "approve", "reviewer": "author", "note": ""})
+    assert out["approval_status"] == "approved"
+    assert "E-LOW" in json.loads(exp.read_text()) and "E-LOW" in JsonExportStore(exp)
+    assert not W.paused(make(), cfg)                                              # the finished state is kept too
+
+
+def test_S5_a_corrupt_checkpoint_file_is_not_silently_ignored(tmp_path):
+    from gridsense.agent.store import FileSaver
+    p = tmp_path / "cp.pkl"
+    p.write_bytes(b"not a pickle")
+    with pytest.raises(Exception):
+        FileSaver(p)

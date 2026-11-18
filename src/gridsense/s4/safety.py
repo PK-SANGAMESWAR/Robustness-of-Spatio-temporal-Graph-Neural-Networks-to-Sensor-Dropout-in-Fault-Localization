@@ -169,7 +169,7 @@ def run_item(spec: dict, base: dict, index: int, retr, tau, gen, salt: str, retr
         item, passages, top1 = apply(spec, base, r["passages"], r["dense_top1"])
         view = GEN.event_view(item, index)
         reply = gen.complete(GEN.build_messages(item, index, passages), purpose="generator", json_mode=True, max_tokens=4000, salt=salt)
-        rec["generation"] = {"usd": reply.usd, "cached": reply.cached}
+        rec["generation"] = {"usd": reply.usd, "cached": reply.cached, "latency_s": reply.latency_s, "input_tokens": reply.input_tokens, "output_tokens": reply.output_tokens}
         rep, err = GEN.parse_report(reply.text)
         if err:
             return rec | {"error": err, "passed": False}

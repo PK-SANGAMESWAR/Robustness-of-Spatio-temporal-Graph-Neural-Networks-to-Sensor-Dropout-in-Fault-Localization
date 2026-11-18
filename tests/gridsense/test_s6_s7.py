@@ -331,3 +331,30 @@ def test_S7_every_item_of_eval_md_10_1_maps_to_an_existing_test():
         for n in names:
             f, t = n.split("::")
             assert f"def {t.split('[')[0]}(" in (here / f).read_text(encoding="utf-8"), f"item {item}: {n} not found"
+
+
+# ---- Layer 6 (operations) --------------------------------------------------------------------------------------------------------------
+def test_S7_layer6_percentiles_and_generator_cost_by_hand():
+    from gridsense.eval import layer6 as L6
+    t = L6.timing([1.0, 2.0, 3.0, 4.0, 5.0])
+    assert t["p50_s"] == 3.0 and t["p95_s"] == pytest.approx(4.8) and t["max_s"] == 5.0 and t["n"] == 5
+    assert L6.timing([]) == {"n": 0, "p50_s": None, "p95_s": None, "max_s": None}
+    items = [{"generation": {"usd": 0.001, "cached": False, "input_tokens": 1000, "output_tokens": 500, "latency_s": 4.0}},
+             {"generation": {"usd": 0.003, "cached": False, "input_tokens": 2000, "output_tokens": 700}},
+             {"generation": {"usd": 0.0, "cached": True, "input_tokens": 9, "output_tokens": 9}},            # a cached reply: no cost, no latency, left out
+             {"error": "boom"}]
+    g = L6.generator_cost(items)
+    assert g["billed_calls"] == 2 and g["cost_per_report_usd"] == pytest.approx(0.002) and g["input_tokens_per_report"] == 1500 and g["output_tokens_per_report"] == 600
+    assert g["failure_rate"] == 0.25 and g["generation_latency"]["n"] == 1 and g["generation_latency"]["p50_s"] == 4.0
+    assert "NOT MEASURED" in L6.generator_cost([{"generation": {"usd": 0.1, "cached": False, "input_tokens": 1, "output_tokens": 1}}])["generation_latency"]
+
+
+def test_S7_judge_cost_is_reported_apart_from_the_system_cost():
+    from gridsense.eval import layer6 as L6
+    j = L6.judge_cost([{"judge": {"usage": {"usd": 0.02}}}, {"judge": {"usage": {"usd": 0.04}}}, {"error": "x"}])
+    assert j["judge_cost_per_report_usd"] == pytest.approx(0.03) and "not a cost of the deployed system" in j["note"]
+
+
+def test_S7_reply_records_latency_and_a_mock_or_cached_reply_has_none():
+    assert llm.Reply("x", 1, 1).latency_s == 0.0
+    assert llm.MockClient(lambda m, p: "{}").complete([{"role": "user", "content": "q"}], purpose="generator").latency_s == 0.0

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Protocol
@@ -38,6 +39,7 @@ class Reply:
     cached: bool = False
     temperature_sent: float | None = None
     model: str = ""
+    latency_s: float = 0.0           # wall time of the live API call(s); 0 for a cached or mock reply (Layer 6 excludes those)
 
 
 class LLMClient(Protocol):
@@ -141,6 +143,7 @@ class OpenAIClient:
             kw["temperature"] = temp
         if self.effort:
             kw["reasoning_effort"] = self.effort
+        t0 = time.perf_counter()
         try:
             resp = self.client.chat.completions.create(**kw)
         except Exception as e:                                                   # a model that refuses a temperature: send none, record the default (O35)
@@ -155,6 +158,7 @@ class OpenAIClient:
             else:
                 self.ledger._reserved = max(0.0, self.ledger._reserved - est)
                 raise
+        latency = time.perf_counter() - t0
         u = resp.usage
         usd = self.ledger.commit(self.model, u.prompt_tokens, u.completion_tokens, f"{self.label}:{purpose}")
         self.budget.spent_usd += usd
@@ -162,7 +166,7 @@ class OpenAIClient:
         if self.use_cache and text.strip():                                       # an empty reply is never cached
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_text(json.dumps({"text": text, "input_tokens": u.prompt_tokens, "output_tokens": u.completion_tokens, "temperature_sent": temp}))
-        return Reply(text, u.prompt_tokens, u.completion_tokens, usd, False, temp, self.model)
+        return Reply(text, u.prompt_tokens, u.completion_tokens, usd, False, temp, self.model, latency)
 
 
 def make_clients(live: bool, label: str, mock_gen: Callable | None = None, mock_judge: Callable | None = None, repeat_budget: float | None = None):

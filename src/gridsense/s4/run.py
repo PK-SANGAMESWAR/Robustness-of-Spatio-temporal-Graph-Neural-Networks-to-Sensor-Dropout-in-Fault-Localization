@@ -136,7 +136,7 @@ def process(item: dict, index: int, retr, tau, gen, judge, salt: str, do_judge: 
         rec |= {"passages": [{"chunk_id": p["chunk_id"], "document_id": p["document_id"], "section_path": p["section_path"], "score": p["score"]} for p in passages], "dense_top1": r["dense_top1"]}
         msgs = GEN.build_messages(item, index, passages)
         reply = gen.complete(msgs, purpose="generator", json_mode=True, max_tokens=4000, salt=salt)
-        rec["generation"] = {"input_tokens": reply.input_tokens, "output_tokens": reply.output_tokens, "usd": reply.usd, "cached": reply.cached, "temperature_sent": reply.temperature_sent}
+        rec["generation"] = {"input_tokens": reply.input_tokens, "output_tokens": reply.output_tokens, "usd": reply.usd, "cached": reply.cached, "temperature_sent": reply.temperature_sent, "latency_s": reply.latency_s}
         rep, err = GEN.parse_report(reply.text)
         if err:
             rec["error"] = err
