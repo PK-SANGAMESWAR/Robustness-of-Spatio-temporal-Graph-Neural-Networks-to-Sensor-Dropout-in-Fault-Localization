@@ -228,7 +228,9 @@ def test_S4_dry_process_runs_judge_and_checks_end_to_end_with_mock_models():
     assert "error" not in rec and rec["evidence"]["final"] == "sufficient" and all(v["pass"] for k, v in rec["checks"].items()), rec.get("error") or rec["checks"]
     assert not rec["judge"]["failures"] and rec["generation"]["usd"] == 0.0 and len(judge.calls) >= 8
     low = R.process(_item() | {"stratum": "low_confidence", "prediction_correct": True}, 1, type("T", (), {"retrieve": lambda s, q, top_k=None: {"passages": PASSAGES, "dense_top1": 0.1}})(), 0.46, gen, judge, "main", do_judge=False)
-    assert low["evidence"]["final"] == "insufficient" and low["evidence"]["by"] == ["tau"] and not low["checks"]["evidence_consistency"]["pass"]   # the mock still recommends a review: the check catches it
+    assert low["evidence"]["final"] == "insufficient" and low["evidence"]["by"] == ["tau"] and low["checks"]["evidence_consistency"]["pass"]   # E + A: the system empties the review and sets the status
+    assert low["evidence"]["evidence_status_overridden_by_system"] and low["report"]["evidence_status"] == "insufficient" and low["report"]["recommended_operator_review"] == []
+    assert low["report_raw"]["evidence_status"] == "sufficient" and low["report_raw"]["recommended_operator_review"]   # the raw generator output is kept
 
 
 def test_S4_sop_exclusion_changes_only_the_query_time_filter():
@@ -278,3 +280,18 @@ def test_field_consistency_empty_dark_list_at_k0_is_not_a_claim():
     assert CK.field_consistency(r, view)["pass"], CK.field_consistency(r, view)
     r["sensor_coverage_summary"] = "2 of 25 uPMUs are dark."
     assert not CK.field_consistency(r, view)["pass"]
+
+
+def test_S4_assemble_E_and_A_author_2026_11_18():
+    """E: every report gets the fixed human-review field. A: insufficient -> review emptied, counted in `info`; the generator never decides the state."""
+    from gridsense.s4.decision import HUMAN_REVIEW_STATEMENT, assemble
+    rep = {"evidence_status": "insufficient", "evidence_status_reason": "x", "recommended_operator_review": ["Treat with more care.", "Keep pending review."]}
+    out, info = assemble(rep, "insufficient")
+    assert out["recommended_operator_review"] == [] and out["human_review_required"] == HUMAN_REVIEW_STATEMENT
+    assert info == {"generator_review_while_insufficient": True, "generator_review_items_removed": 2, "evidence_status_overridden_by_system": False}
+    assert rep["recommended_operator_review"], "the input must not be changed"
+    out, info = assemble(rep | {"evidence_status": "sufficient"}, "insufficient")          # tau-only flag
+    assert out["evidence_status"] == "insufficient" and info["evidence_status_overridden_by_system"] and "Set by the system" in out["evidence_status_reason"]
+    out, info = assemble(rep | {"evidence_status": "sufficient"}, "sufficient")             # sufficient: the generator's review stays
+    assert out["recommended_operator_review"] == rep["recommended_operator_review"] and not info["generator_review_while_insufficient"]
+    assert "Human review (system-set)" in GEN.report_text(out)

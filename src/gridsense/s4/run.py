@@ -14,6 +14,7 @@ import argparse
 import hashlib
 import json
 import time
+from pathlib import Path
 from collections import Counter
 from dataclasses import replace
 
@@ -26,7 +27,7 @@ from gridsense.eval.snapshot import write_snapshot
 from gridsense.s4 import checks as CK
 from gridsense.s4 import generate as GEN
 from gridsense.s4 import report as RP
-from gridsense.s4.decision import final_evidence_status, tau_flag
+from gridsense.s4.decision import assemble, final_evidence_status, tau_flag
 from gridsense.s4.judge import MockJudgeResponder, run_judge
 from gridsense.s4.llm import ApprovalMissing, MockClient, load_approval, make_clients
 
@@ -35,7 +36,7 @@ SELECTION = TRACK / "reports" / "events" / "s4_selection.json"
 OUT = TRACK / "reports" / "s4"
 PILOT_SEED, NOISE_SEED = 360777, 360888
 # Shown to the judge as part of the facts. The first live pilot (2026-11-11) scored geval_adherence 1 for all 5 reports because the judge read these two system fields as inventions (they were not in its context). Harness artefact, fixed.
-SYSTEM_FIELDS = ("SYSTEM-SET FIELDS (not chosen by the report writer)\nprediction_status: candidate_not_confirmed (the schema fixes it)\napproval_status: pending_human_review (the system sets it; the writer cannot approve)")
+SYSTEM_FIELDS = ("SYSTEM-SET FIELDS (not chosen by the report writer)\nprediction_status: candidate_not_confirmed (the schema fixes it)\napproval_status: pending_human_review (the system sets it; the writer cannot approve)\nhuman_review_required: a fixed sentence the system adds to every report; when the evidence is insufficient the system also empties recommended_operator_review")
 
 
 def load_events() -> dict[str, dict]:
@@ -141,9 +142,12 @@ def process(item: dict, index: int, retr, tau, gen, judge, salt: str, do_judge: 
             rec["error"] = err
             rec["raw_reply_head"] = reply.text[:200]
             return rec
-        rec["report"] = rep
         flag = tau_flag(r["dense_top1"], tau)
         rec["evidence"] = final_evidence_status(flag, rep.get("evidence_status"))
+        rec["report_raw"] = rep                                  # exactly what the generator wrote
+        rep, info = assemble(rep, rec["evidence"]["final"])     # E + A (author 2026-11-18)
+        rec["evidence"] |= info
+        rec["report"] = rep
         rec["checks"] = CK.run_checks(rep, view, item["event_object"]["knn"]["neighbours"], passages, rec["evidence"]["final"])
         if do_judge:
             ctx = ("EVENT FACTS\n" + json.dumps(view, indent=1) + "\n\nCASE NEIGHBOURS\n" + GEN.neighbours_table(item) + "\n\n" + SYSTEM_FIELDS)
@@ -191,6 +195,33 @@ def run(kind: str, live: bool, repeats: int = 1, queries: str = "single") -> dic
     (OUT / f"S4_{kind}_{'live' if live else 'dry'}.md").write_text(md, encoding="utf-8")
     fails = [i for i in items if i.get("error")]
     return {"snapshot": str(snap.relative_to(ROOT)), "items": len(items), "failures": len(fails), "causes": sorted({i["error"] for i in fails})[:5], "usd": usd, "events_status": events_status}
+
+
+def rescore(items_path: str, kind: str) -> dict:
+    """Offline, no API call. Re-assembles stored reports (E + A, 2026-11-18) and recomputes the two checks that changed: `field_consistency` (checker fix of 2026-11-11)
+    and `evidence_consistency`. All other checks read text the assembly cannot add to. Judge scores are NOT recomputed: they were given to the raw report."""
+    ev = load_events()
+    order = sorted(ev)
+    items = [json.loads(line) for line in Path(items_path).read_text(encoding="utf-8").splitlines() if line.strip()]
+    for it in items:
+        if it.get("error") or "report" not in it:
+            continue
+        view = GEN.event_view(ev[it["event_id"]], order.index(it["event_id"]))
+        raw = it.get("report_raw") or it["report"]
+        rep, info = assemble(raw, it["evidence"]["final"])
+        it["report_raw"], it["report"], it["evidence"] = raw, rep, it["evidence"] | info
+        it["checks"]["field_consistency"] = CK.field_consistency(rep, view)
+        it["checks"]["evidence_consistency"] = CK.evidence_consistency(rep, it["evidence"]["final"])
+    metrics = {"per_stratum": RP.per_stratum(items), "weighted_over_the_covered_strata": RP.weighted_over_covered(items), "informational_unweighted": RP.informational_unweighted(items)}
+    if kind == "noise":
+        metrics["noise"] = noise_summary(items)
+    label = f"s4_{kind}_live_rescored"
+    snap = write_snapshot(label, metrics, items, config_effective={"source_items": str(items_path), "rescored_checks": ["field_consistency", "evidence_consistency"]},
+                          notes=f"OFFLINE RESCORE of {items_path} (no API call). E + A applied to the stored reports; judge scores are those of the RAW reports, not re-judged.")
+    OUT.mkdir(parents=True, exist_ok=True)
+    md = RP.markdown(items, f"S4 {kind} (live, rescored offline with E + A; judge scores are of the raw reports)")
+    (OUT / f"S4_{kind}_live_rescored.md").write_text(md, encoding="utf-8")
+    return {"snapshot": str(snap.relative_to(ROOT)), "items": len(items)}
 
 
 def noise_summary(items: list[dict]) -> dict:
@@ -246,13 +277,15 @@ def evidence_check(live: bool) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("kind", choices=["pilot", "main", "noise", "evidence-check"])
+    ap.add_argument("kind", choices=["pilot", "main", "noise", "evidence-check", "rescore"])
+    ap.add_argument("--items", help="rescore only: the items .jsonl to re-assemble")
+    ap.add_argument("--of", choices=["main", "noise"], default="main", help="rescore only: the kind of the items")
     ap.add_argument("--live", action="store_true", help="real API calls; needs rag-for-dropout/s4_approval.json and approved rubrics")
     ap.add_argument("--repeats", type=int, default=3)
     ap.add_argument("--queries", choices=["single", "multi"], default="single", help="single = the plan (one query, top 3); multi = gate, dropout and neighbour queries, top 2 each")
     a = ap.parse_args()
     try:
-        out = evidence_check(a.live) if a.kind == "evidence-check" else run(a.kind, a.live, a.repeats if a.kind == "noise" else 1, a.queries)
+        out = rescore(a.items, a.of) if a.kind == "rescore" else evidence_check(a.live) if a.kind == "evidence-check" else run(a.kind, a.live, a.repeats if a.kind == "noise" else 1, a.queries)
     except ApprovalMissing as e:
         raise SystemExit(f"REFUSED: {e}")
     print(json.dumps(out, indent=1, default=str))

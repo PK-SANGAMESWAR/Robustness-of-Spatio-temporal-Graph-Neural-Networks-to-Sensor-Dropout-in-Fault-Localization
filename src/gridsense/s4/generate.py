@@ -108,5 +108,7 @@ def report_text(r: dict) -> str:
         if isinstance(d, dict):
             L.append(f"Document evidence: {d.get('claim')} ({d.get('document_id')}, \"{d.get('section')}\": \"{d.get('excerpt')}\")")
     L += [f"Limitation: {x}" for x in r.get("limitations") or []] + [f"Recommended operator review: {x}" for x in r.get("recommended_operator_review") or []]
+    if r.get("human_review_required"):
+        L.append(f"Human review (system-set): {r['human_review_required']}")
     L.append(f"Evidence status: {r.get('evidence_status')} ({r.get('evidence_status_reason')}). Approval status: pending_human_review.")
     return "\n".join(map(str, L))

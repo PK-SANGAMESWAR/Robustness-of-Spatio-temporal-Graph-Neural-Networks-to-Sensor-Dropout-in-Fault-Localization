@@ -32,6 +32,7 @@ def metric_values(item: dict) -> dict[str, float | None]:
         v = j.get(k)
         out[f"judge.{k}"] = None if v is None else (v["raw_1_to_5"] if "raw_1_to_5" in v else v["score"])
     out["evidence.final_insufficient"] = None if "evidence" not in item else (1.0 if item["evidence"]["final"] == "insufficient" else 0.0)
+    out["evidence.generator_review_while_insufficient"] = None if "evidence" not in item or "generator_review_while_insufficient" not in item["evidence"] else float(item["evidence"]["generator_review_while_insufficient"])
     return out
 
 
@@ -86,7 +87,7 @@ def informational_unweighted(items: list[dict]) -> dict:
 
 def markdown(items: list[dict], title: str) -> str:
     ps, w = per_stratum(items), weighted_over_covered(items)
-    names = [k for k in (*(f"check.{c}" for c in CHECK_KEYS), *(f"judge.{j}" for j in JUDGE_KEYS), "evidence.final_insufficient") if any(k in ps["all_k"][s]["metrics"] for s in STRATA)]
+    names = [k for k in (*(f"check.{c}" for c in CHECK_KEYS), *(f"judge.{j}" for j in JUDGE_KEYS), "evidence.final_insufficient", "evidence.generator_review_while_insufficient") if any(k in ps["all_k"][s]["metrics"] for s in STRATA)]
     L = [f"# {title}", "", "Primary result: per stratum, CONFIDENT-wrong (`high_conf_error`) first. Checks: share of events that pass (1 = all pass). Judge: GEval rubrics on a 1 to 5 scale, DeepEval metrics 0 to 1. "
          "n counts the events measured for that metric (a failed metric is left out, never scored 0).", "",
          "| metric | " + " | ".join(f"{s} (n={ps['all_k'][s]['n']})" for s in STRATA) + " |", "|---|" + "---|" * len(STRATA)]
