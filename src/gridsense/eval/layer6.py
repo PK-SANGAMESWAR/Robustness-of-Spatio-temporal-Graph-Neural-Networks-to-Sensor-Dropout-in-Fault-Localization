@@ -91,28 +91,107 @@ def profile(n_events: int, repeats: int) -> dict:
             "ram_mb": {"process_peak_before_load": rss0, "after_load_retriever": rss_loaded, "process_peak_end": rss_end}, "events": len(ids), "repeats": repeats, "index_fingerprint": rinfo["index_fingerprint"]}
 
 
+def profile_inference_and_cases(n_events: int = 10, repeats: int = 5, threads: int = 2) -> dict:
+    """Local CPU stages that need the checkpoint and the full case store: inference (one window, batch 1), case retrieval (exact FAISS over 1.155 M vectors), gate decision, and the load times.
+    Windows: the report window w0025 of the first golden events (test split, already in use as events; only latency is measured, no accuracy). RAM is shared with the GPU queue: 2 threads, nice 19."""
+    import torch
+    from fault_localization.data.dataset import make_dataloader  # noqa: F401  (import check: the paper's code is on the path)
+    from fault_localization.dropout.masking import apply_sensor_dropout_batch
+    from fault_localization.models.voting import soft_vote
+
+    from gridsense.cases.store import CaseStore
+    from gridsense.data.splits import DATA_ROOT
+    from gridsense.model.latent_repr import represent
+    from gridsense.model.predictor import LatentCapture, checkpoint_sha256, lean_dataset, load_model
+    from gridsense.s4 import run as R
+    from gridsense.verification.gate import Gate
+
+    torch.set_num_threads(threads)
+    ev = R.load_events()
+    wanted = {ev[e]["window_id"]: e for e in sorted(ev)[:n_events]}
+    runs = {w.rsplit("_w", 1)[0] for w in wanted}
+    t0 = time.perf_counter()
+    ds = lean_dataset("test", DATA_ROOT, keep_events=runs)
+    t_data = time.perf_counter() - t0
+    t0 = time.perf_counter()
+    model, _ = load_model(42, ds.edge_index, "cpu")
+    cap = LatentCapture(model)
+    t_model = time.perf_counter() - t0
+    store_dir = TRACK / "eval" / "case_store" / "seed42_full"
+    fp = json.loads((store_dir / "store_manifest.json").read_text())["fingerprint"]
+    rss_before = rss_mb()
+    t0 = time.perf_counter()
+    store = CaseStore.load(store_dir, fp)
+    t_store = time.perf_counter() - t0
+    gate = Gate.load(TRACK / "configs" / "gate_v1.json")
+    sha = checkpoint_sha256(42)
+    xs = {}
+    for i in range(len(ds)):
+        s = ds[i]
+        if s["window_id"] in wanted:
+            xs[s["window_id"]] = torch.as_tensor(np.asarray(s["x"]), dtype=torch.float32).unsqueeze(0)       # one window: [1, 25, 20, 6]
+    inference, case_search, gate_t, e2e = {0: [], 10: []}, {0: [], 10: []}, {0: [], 10: []}, {0: [], 10: []}
+    edge_index = getattr(model, "edge_index", None)
+    with torch.no_grad():
+        for rep in range(repeats):
+            for w, x in xs.items():
+                for k in (0, 10):
+                    t_all = time.perf_counter()
+                    xd = x if k == 0 else apply_sensor_dropout_batch(x, k=k, seed=7, policy="zero_messages", edge_index=edge_index)[0]
+                    t0 = time.perf_counter()
+                    scores, _ = soft_vote(model(xd))
+                    h = cap.h.numpy()
+                    inference[k].append(time.perf_counter() - t0)
+                    q = represent(h, "b_mean_max")
+                    t0 = time.perf_counter()
+                    sim, idx = store.search(q, 10, query_checkpoint_sha256=sha)
+                    case_search[k].append(time.perf_counter() - t0)
+                    top = int(scores.numpy().argmax(1)[0])
+                    agree = np.array([float((store.labels[idx[0]] == top).mean())])
+                    t0 = time.perf_counter()
+                    gate.decide(k, scores.numpy(), agree)
+                    gate_t[k].append(time.perf_counter() - t0)
+                    e2e[k].append(time.perf_counter() - t_all)
+    return {"windows": len(xs), "repeats": repeats, "threads": threads, "load_seconds": {"dataset_subset": t_data, "model": t_model, "case_store_1.155M_vectors": t_store},
+            "ram_mb": {"before_store": rss_before, "peak_after": rss_mb()}, "per_window_batch1": {f"k{k}": {"inference_with_soft_vote": timing(inference[k]), "case_search_exact": timing(case_search[k]),
+                                                                                                          "gate_decision": timing(gate_t[k]), "inference_to_gate": timing(e2e[k])} for k in (0, 10)}}
+
+
 def run(n_events: int = 60, repeats: int = 3) -> dict:
     prof = profile(n_events, repeats)
     live = []
     for label in ("s4_main_live", "s4_noise_live"):
         for p in sorted((TRACK / "eval" / "items").glob(f"*_{label}.jsonl")):
             live += [json.loads(x) for x in p.read_text(encoding="utf-8").splitlines() if x.strip()]
+    safety = []
+    for p in sorted((TRACK / "eval" / "items").glob("*_s6_safety_live.jsonl")):
+        safety += [json.loads(x) for x in p.read_text(encoding="utf-8").splitlines() if x.strip()]
     gen_c, jud_c = generator_cost(live), judge_cost(live)
-    metrics = {"layer6_partial": {"profile": prof, "generator": gen_c, "judge_evaluation": jud_c,
-                                  "not_measured": ["inference latency", "case-retrieval latency", "VRAM (NVML broken)", "generation latency of the S4 live runs", "per-stage latency of a live generation"]}}
+    gen_safety = generator_cost(safety) if safety else None
+    metrics = {"layer6_partial": {"profile": prof, "generator": gen_c, "generator_safety_live_runs": gen_safety, "judge_evaluation": jud_c,
+                                  "not_measured": ["VRAM (NVML broken)", "generation latency of the S4 live runs (before 2026-11-18 not recorded; the safety live runs have it)", "end-to-end latency with a live generator (stages are measured apart: sums of p95 are not a p95)"],
+                                  "see_also": "snapshot s7_layer6_inference_cases for inference, case search and gate"}}
     if gen_c["cost_per_report_usd"] is not None:
         metrics["layer6"] = {"cost_per_event_usd": gen_c["cost_per_report_usd"], "tokens_per_event": gen_c["input_tokens_per_report"] + gen_c["output_tokens_per_report"]}   # generator only; registry names
     snap = write_snapshot("s7_layer6_partial", metrics, [], config_effective={"threads": 2, "nice": 19, "events": n_events, "repeats": repeats, "live_items": len(live)},
-                          index_fingerprint=prof["index_fingerprint"], notes="Layer 6 partial profile: local stages with a mock generator (no API call) + generator cost from the S4 live items. Latency of generation, inference and case retrieval NOT measured.")
+                          index_fingerprint=prof["index_fingerprint"], notes="Layer 6 partial profile: local stages with a mock generator (no API call) + generator cost from the S4 live items + generation latency from the safety live runs. VRAM and end-to-end live latency NOT measured.")
     return {"snapshot": str(snap.relative_to(ROOT)), "profile": prof, "generator": gen_c, "judge": jud_c}
+
+
+def run_heavy(n_events: int = 10, repeats: int = 5) -> dict:
+    prof = profile_inference_and_cases(n_events, repeats)
+    snap = write_snapshot("s7_layer6_inference_cases", {"layer6_partial": {"inference_and_cases": prof}}, [], config_effective={"threads": 2, "nice": 19, "events": n_events, "repeats": repeats},
+                          notes="Layer 6: inference, exact case search over 1.155 M vectors and gate decision, batch 1, CPU 2 threads, seed-42 checkpoint. Latency only; no accuracy is measured. VRAM not measured (NVML broken).")
+    return {"snapshot": str(snap.relative_to(ROOT)), "profile": prof}
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--events", type=int, default=60)
     ap.add_argument("--repeats", type=int, default=3)
+    ap.add_argument("--heavy", action="store_true", help="inference + case search + gate on the CPU (needs the checkpoint and the full case store, about 1.3 GB RAM)")
     a = ap.parse_args()
-    print(json.dumps(run(a.events, a.repeats), indent=1, default=str))
+    print(json.dumps(run_heavy(min(a.events, 10), a.repeats) if a.heavy else run(a.events, a.repeats), indent=1, default=str))
 
 
 if __name__ == "__main__":

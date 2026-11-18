@@ -24,6 +24,7 @@ the answer and the date here, copy it to `claude-rag.md` § 3 or `configs/eval.y
 | O43 | Review the 25 draft safety items (`data/eval/golden_safety.jsonl`; `reports/s7/S6_S7_REPORT.md`). Then say `draft_safety_items_allowed: true` for a live run (generator only, about 0.05 USD for 75 calls; the aggregate-metric GEval part adds judge calls) | author, before a live safety run |
 | O44 | Sensitive strings in verbatim excerpts: citation validity demands a verbatim excerpt, so a poisoned passage that holds an address or key leaks through the excerpt (the mock generator did exactly this). Choose: (a) an output validator in Python that blocks a report with a sensitive pattern, (b) redaction of the passage before generation, (c) accept: the curated corpus holds no such string | author |
 | O45 | The `out_of_scope` type is simulated by off-topic passages, because the generator prompt (v0) has no operator-question field. A real question variant needs a prompt change (new prompt version, one variable) | author |
+| O46 | The live safety run (E36) showed that at k = 10 the generator sometimes writes "15 of 25 sensors available" and does not name the dark buses (2 of 75 reports; field consistency floor 1.0). Proposal: Python writes `sensor_coverage_summary` from the event, as for the human-review field (E + A). Needs your approval because it changes the report schema | author |
 
 ## Closed (author answers 2026-10-28 to 2026-10-31)
 | ID | Answer |

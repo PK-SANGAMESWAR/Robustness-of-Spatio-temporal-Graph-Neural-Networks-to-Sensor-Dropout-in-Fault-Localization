@@ -295,3 +295,18 @@ def test_S4_assemble_E_and_A_author_2026_11_18():
     out, info = assemble(rep | {"evidence_status": "sufficient"}, "sufficient")             # sufficient: the generator's review stays
     assert out["recommended_operator_review"] == rep["recommended_operator_review"] and not info["generator_review_while_insufficient"]
     assert "Human review (system-set)" in GEN.report_text(out)
+
+
+@pytest.mark.parametrize("sentence,ok", [
+    ("The prediction is a candidate, not a confirmed fault.", True),
+    ("A confident gate outcome does not make this prediction a confirmed fault.", True),
+    ("The passage does not establish that this candidate is a confirmed fault.", True),
+    ("Nothing here confirms the fault is at bus 55; it stays a candidate.", False),     # no negation word in the clause
+    ("The fault is confirmed.", False),
+    ("This is not clear, but the fault is confirmed.", False),                            # the negation belongs to another clause
+    ("The fault is at bus 55.", False),
+    ("The data do not say the fault is at bus 55.", True),
+])
+def test_S4_no_confirmation_uses_clause_level_negation_E36(sentence, ok):
+    rep = _good(GEN.event_view(_item(), 1)) | {"limitations": [sentence]}
+    assert CK.no_confirmation(rep)["pass"] is ok, sentence
