@@ -194,13 +194,13 @@ def test_S5_the_state_holds_no_truth_fields():
 
 # ---- persistence (S5: § 12.3 "persist graph state when human review may happen later") --------------------------------------------------------
 def test_S5_a_paused_review_survives_a_restart_and_the_export_is_kept(tmp_path):
-    from gridsense.agent.store import FileSaver, JsonExportStore
+    from gridsense.agent.store import JsonExportStore, sqlite_saver
     ev = _events()
-    path, exp = tmp_path / "cp.pkl", tmp_path / "exports.json"
+    path, exp = tmp_path / "cp.sqlite", tmp_path / "exports.json"
 
     def make():
         deps = {"event_lookup": lambda e: ev[e], "retrieve": lambda item: {"passages": [dict(p) for p in PASSAGES], "dense_top1": 0.6}, "tau": TAU, "generator": Gen([_good_reply(ev["E-LOW"])]),
-                "index_version": "ix-test", "export_store": JsonExportStore(exp), "checkpointer": FileSaver(path)}
+                "index_version": "ix-test", "export_store": JsonExportStore(exp), "checkpointer": sqlite_saver(path)}
         return W.build(deps)
     app1 = make()
     cfg, st = W.start(app1, "E-LOW")
@@ -213,9 +213,11 @@ def test_S5_a_paused_review_survives_a_restart_and_the_export_is_kept(tmp_path):
     assert not W.paused(make(), cfg)                                              # the finished state is kept too
 
 
-def test_S5_a_corrupt_checkpoint_file_is_not_silently_ignored(tmp_path):
-    from gridsense.agent.store import FileSaver
-    p = tmp_path / "cp.pkl"
-    p.write_bytes(b"not a pickle")
-    with pytest.raises(Exception):
-        FileSaver(p)
+def test_S5_a_file_that_is_not_a_database_is_not_silently_ignored(tmp_path):
+    import sqlite3
+
+    from gridsense.agent.store import sqlite_saver
+    p = tmp_path / "cp.sqlite"
+    p.write_bytes(b"this is not a sqlite database, it is just a long enough text to fail the header check " * 4)
+    with pytest.raises(sqlite3.DatabaseError):
+        sqlite_saver(p)

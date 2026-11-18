@@ -14,7 +14,7 @@ import argparse
 import json
 
 from gridsense.agent import workflow as W
-from gridsense.agent.store import FileSaver, JsonExportStore
+from gridsense.agent.store import JsonExportStore, sqlite_saver
 from gridsense.config import TRACK
 from gridsense.s4 import generate as GEN
 from gridsense.s4.llm import ApprovalMissing
@@ -32,7 +32,7 @@ def _app(live: bool):
     retr, tau, rinfo = R.retriever_and_tau()
     store = JsonExportStore(DIR / "exports.json")
     deps = {"event_lookup": lambda e: ev[e], "retrieve": lambda item: R.retrieve_all(retr, item, "single"), "tau": tau, "generator": gen, "index_version": rinfo["index_fingerprint"],
-            "export_store": store, "anon_index": lambda e: order.index(e), "checkpointer": FileSaver(DIR / "checkpoints.pkl")}
+            "export_store": store, "anon_index": lambda e: order.index(e), "checkpointer": sqlite_saver(DIR / "checkpoints.sqlite")}
     return W.build(deps), store
 
 
