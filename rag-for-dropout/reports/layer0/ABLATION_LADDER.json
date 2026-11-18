@@ -1,0 +1,278 @@
+{
+ "val": {
+  "0": {
+   "A0": {
+    "coverage": 1.0,
+    "selective_risk": 0.11932088285229203,
+    "false_acceptance": 0.11932088285229203,
+    "error_recall": 0.0,
+    "accuracy_confident": 0.880679117147708
+   },
+   "A1": {
+    "coverage": 0.800169779286927,
+    "selective_risk": 0.03812858052196055,
+    "false_acceptance": 0.030509337860780986,
+    "error_recall": 0.7443084803642572,
+    "accuracy_confident": 0.9618714194780394,
+    "feasible": true
+   },
+   "A2": {
+    "coverage": 0.8391850594227505,
+    "selective_risk": 0.04970866715222144,
+    "false_acceptance": 0.041714770797962646,
+    "error_recall": 0.650398406374502,
+    "accuracy_confident": 0.9502913328477786,
+    "feasible": true
+   },
+   "p+margin": {
+    "coverage": 0.8536842105263158,
+    "selective_risk": 0.04981902072312161,
+    "false_acceptance": 0.04252971137521223,
+    "error_recall": 0.6435685828116107,
+    "accuracy_confident": 0.9501809792768784,
+    "feasible": true
+   },
+   "gate3 (p+margin+agreement)": {
+    "coverage": 0.8532937181663837,
+    "selective_risk": 0.049782128573986784,
+    "false_acceptance": 0.042478777589134126,
+    "error_recall": 0.6439954467842914,
+    "accuracy_confident": 0.9502178714260132,
+    "feasible": true
+   }
+  },
+  "1": {
+   "A0": {
+    "coverage": 1.0,
+    "selective_risk": 0.1317657045840408,
+    "false_acceptance": 0.1317657045840408,
+    "error_recall": 0.0,
+    "accuracy_confident": 0.8682342954159592
+   },
+   "A1": {
+    "coverage": 0.7780645161290323,
+    "selective_risk": 0.03783713013877976,
+    "false_acceptance": 0.029439728353140918,
+    "error_recall": 0.7765751836103595,
+    "accuracy_confident": 0.9621628698612202,
+    "feasible": true
+   },
+   "A2": {
+    "coverage": 0.824516129032258,
+    "selective_risk": 0.04981055926200473,
+    "false_acceptance": 0.04106960950764007,
+    "error_recall": 0.6883133616801959,
+    "accuracy_confident": 0.9501894407379953,
+    "feasible": true
+   },
+   "p+margin": {
+    "coverage": 0.8320882852292021,
+    "selective_risk": 0.049867374005305054,
+    "false_acceptance": 0.04149405772495755,
+    "error_recall": 0.6850921273031826,
+    "accuracy_confident": 0.950132625994695,
+    "feasible": true
+   },
+   "gate3 (p+margin+agreement)": {
+    "coverage": 0.8315449915110357,
+    "selective_risk": 0.049879537751643555,
+    "false_acceptance": 0.04147707979626485,
+    "error_recall": 0.6852209766782631,
+    "accuracy_confident": 0.9501204622483564,
+    "feasible": true
+   }
+  },
+  "2": {
+   "A0": {
+    "coverage": 1.0,
+    "selective_risk": 0.14623089983022075,
+    "false_acceptance": 0.14623089983022075,
+    "error_recall": 0.0,
+    "accuracy_confident": 0.8537691001697792
+   },
+   "A1": {
+    "coverage": 0.7587436332767402,
+    "selective_risk": 0.0374804206757664,
+    "false_acceptance": 0.028438030560271648,
+    "error_recall": 0.8055265296644607,
+    "accuracy_confident": 0.9625195793242336,
+    "feasible": true
+   },
+   "A2": {
+    "coverage": 0.8032597623089983,
+    "selective_risk": 0.049881636794048,
+    "false_acceptance": 0.040067911714770796,
+    "error_recall": 0.7259955880645536,
+    "accuracy_confident": 0.950118363205952,
+    "feasible": true
+   },
+   "p+margin": {
+    "coverage": 0.8100339558573854,
+    "selective_risk": 0.049988472260065864,
+    "false_acceptance": 0.04049235993208829,
+    "error_recall": 0.7230929989550678,
+    "accuracy_confident": 0.9500115277399341,
+    "feasible": true
+   },
+   "gate3 (p+margin+agreement)": {
+    "coverage": 0.8122071307300509,
+    "selective_risk": 0.04956207278580238,
+    "false_acceptance": 0.040254668930390494,
+    "error_recall": 0.7247184488563798,
+    "accuracy_confident": 0.9504379272141976,
+    "feasible": true
+   }
+  },
+  "5": {
+   "A0": {
+    "coverage": 1.0,
+    "selective_risk": 0.1883361629881154,
+    "false_acceptance": 0.1883361629881154,
+    "error_recall": 0.0,
+    "accuracy_confident": 0.8116638370118846
+   },
+   "A1": {
+    "coverage": 0.6833276740237691,
+    "selective_risk": 0.03962929835022855,
+    "false_acceptance": 0.02707979626485569,
+    "error_recall": 0.8562156314793112,
+    "accuracy_confident": 0.9603707016497715,
+    "feasible": true
+   },
+   "A2": {
+    "coverage": 0.7244312393887946,
+    "selective_risk": 0.04991914504675521,
+    "false_acceptance": 0.036162988115449914,
+    "error_recall": 0.8079870188407103,
+    "accuracy_confident": 0.9500808549532448,
+    "feasible": true
+   },
+   "p+margin": {
+    "coverage": 0.74,
+    "selective_risk": 0.049626026705822945,
+    "false_acceptance": 0.036723259762308995,
+    "error_recall": 0.805012169836834,
+    "accuracy_confident": 0.950373973294177,
+    "feasible": true
+   },
+   "gate3 (p+margin+agreement)": {
+    "coverage": 0.74,
+    "selective_risk": 0.049626026705822945,
+    "false_acceptance": 0.036723259762308995,
+    "error_recall": 0.805012169836834,
+    "accuracy_confident": 0.950373973294177,
+    "feasible": true
+   }
+  },
+  "10": {
+   "A0": {
+    "coverage": 1.0,
+    "selective_risk": 0.29894736842105263,
+    "false_acceptance": 0.29894736842105263,
+    "error_recall": 0.0,
+    "accuracy_confident": 0.7010526315789474
+   },
+   "A1": {
+    "coverage": 0.482597623089983,
+    "selective_risk": 0.04837291116974496,
+    "false_acceptance": 0.0233446519524618,
+    "error_recall": 0.9219104952294411,
+    "accuracy_confident": 0.951627088830255,
+    "feasible": true
+   },
+   "A2": {
+    "coverage": 0.5014601018675722,
+    "selective_risk": 0.04939734561213438,
+    "false_acceptance": 0.024770797962648555,
+    "error_recall": 0.9171399363925489,
+    "accuracy_confident": 0.9506026543878656,
+    "feasible": true
+   },
+   "p+margin": {
+    "coverage": 0.52,
+    "selective_risk": 0.049725741151887215,
+    "false_acceptance": 0.025857385398981324,
+    "error_recall": 0.9135052248977737,
+    "accuracy_confident": 0.9502742588481128,
+    "feasible": true
+   },
+   "gate3 (p+margin+agreement)": {
+    "coverage": 0.52,
+    "selective_risk": 0.049725741151887215,
+    "false_acceptance": 0.025857385398981324,
+    "error_recall": 0.9135052248977737,
+    "accuracy_confident": 0.9502742588481128,
+    "feasible": true
+   }
+  }
+ },
+ "test_frozen_gate": {
+  "0": {
+   "A0 (argmax) accuracy": 0.8760196036650331,
+   "gate_v1 coverage": 0.8449350095887492,
+   "gate_v1 selective_risk": 0.05070007666545617,
+   "gate_v1 error_recall": 0.6544754571703562,
+   "gate_v1 false_acceptance": 0.04283826976347752,
+   "aurc_isotonic": 0.022266025070528293
+  },
+  "1": {
+   "A0 (argmax) accuracy": 0.8632005113999573,
+   "gate_v1 coverage": 0.8247261879394844,
+   "gate_v1 selective_risk": 0.051270656566178574,
+   "gate_v1 error_recall": 0.6909034267912773,
+   "gate_v1 false_acceptance": 0.04228425314297891,
+   "aurc_isotonic": 0.025171002504652724
+  },
+  "2": {
+   "A0 (argmax) accuracy": 0.8497165991902834,
+   "gate_v1 coverage": 0.8008267632644364,
+   "gate_v1 selective_risk": 0.04983130581010464,
+   "gate_v1 error_recall": 0.7344600725952812,
+   "gate_v1 false_acceptance": 0.03990624334114639,
+   "aurc_isotonic": 0.028608068426758212
+  },
+  "5": {
+   "A0 (argmax) accuracy": 0.8022927764756019,
+   "gate_v1 coverage": 0.7310206690816109,
+   "gate_v1 selective_risk": 0.05089370037426988,
+   "gate_v1 error_recall": 0.811821003621314,
+   "gate_v1 false_acceptance": 0.03720434689963776,
+   "aurc_isotonic": 0.04235298338219485
+  },
+  "10": {
+   "A0 (argmax) accuracy": 0.6942851054762412,
+   "gate_v1 coverage": 0.512644363946303,
+   "gate_v1 selective_risk": 0.05120872543477539,
+   "gate_v1 error_recall": 0.9141295862607338,
+   "gate_v1 false_acceptance": 0.026251864479011292,
+   "aurc_isotonic": 0.09444973544860502
+  }
+ },
+ "aurc_val": {
+  "0": {
+   "probability (isotonic)": 0.021594263214516553,
+   "raw vote share": 0.020742526826308692,
+   "margin": 0.01990447203924645
+  },
+  "1": {
+   "probability (isotonic)": 0.024421669224081066,
+   "raw vote share": 0.023426383520430864,
+   "margin": 0.022624634879759385
+  },
+  "2": {
+   "probability (isotonic)": 0.027368044512392227,
+   "raw vote share": 0.026238113637414046,
+   "margin": 0.02537810283209701
+  },
+  "5": {
+   "probability (isotonic)": 0.0409956494609373,
+   "raw vote share": 0.039260895941237196,
+   "margin": 0.03822535457352045
+  },
+  "10": {
+   "probability (isotonic)": 0.09378971092947125,
+   "raw vote share": 0.08900832726747737,
+   "margin": 0.08734395225159765
+  }
+ }
+}
