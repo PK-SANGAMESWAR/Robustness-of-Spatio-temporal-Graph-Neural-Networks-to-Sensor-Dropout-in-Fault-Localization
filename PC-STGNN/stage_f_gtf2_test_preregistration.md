@@ -1,6 +1,6 @@
 # G-TF2 on the test split — pre-registration
 
-**Status.** Registered 2026-11-19 12:10 IST / 2026-11-19T06:40Z, **before any test-split G-TF2 result.** The author approved the draft and the GPU run on 2026-11-19 (answer to the
+**Status.** Registered on 2026-11-19 by the git commit that first added this file (adca737; the commit time in git is authoritative), **before any test-split G-TF2 result.** `[Wording fix, same day: the first version gave a clock time written before the commit was made; the design below is unchanged.]` The author approved the draft and the GPU run on 2026-11-19 (answer to the
 question "approve the draft pre-registration, commit it, and run the GPU scoring"; this file is the registration). No test-split G-TF2 number has been viewed. Two smoke runs
 (2026-11-19, 3 and 2 loader batches, GPU, output in a scratch folder outside `results/`, deleted) only tested that the code runs; their F1 values were not read.
 It does not change `stage_f_gtf2_preregistration.md` or `14_PREREGISTRATION.md`. The sealed OOD set is not used.
