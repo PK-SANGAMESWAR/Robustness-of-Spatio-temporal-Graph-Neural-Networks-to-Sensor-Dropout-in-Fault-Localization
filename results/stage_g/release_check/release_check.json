@@ -1,0 +1,16 @@
+{
+  "check": "PSM macro-F1, validation, k=0, from operator/ alone",
+  "recomputed": 0.7719449188703239,
+  "stored": 0.7719449188703239,
+  "abs_diff": 0.0,
+  "match_1e-9": true,
+  "sigma_eps": 0.0007255549105131452,
+  "device": "cpu",
+  "operator_sha256": {
+    "mu.npy": "177c3d74d88289fad5789a91b99d8eba730dc8dfad5b0e39dc0fae2408b2aba2",
+    "mu0.npy": "137eebe36548943ec5f8952d4dc353df311e3adcc4d53bf84f4657fbdc9d2b54",
+    "grid.json": "be8a1d259272afac00fe991edd1690da93834ed2742335b7c91030b0e0c280b9",
+    "mask.npy": "ed4d269efa95be48b60f83d1d99c241e6ad462abdff78fb8cd3e08b0db7da1e0"
+  },
+  "seconds": 301.5322241783142
+}

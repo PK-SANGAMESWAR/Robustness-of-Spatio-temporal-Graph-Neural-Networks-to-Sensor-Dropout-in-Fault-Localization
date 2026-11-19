@@ -1,0 +1,6 @@
+{
+  "reason": "stop",
+  "detail": "unit tests failed after the B2a patch (patch reverted):\n",
+  "step": "patch",
+  "utc": "2026-11-05T09:18:25Z"
+}

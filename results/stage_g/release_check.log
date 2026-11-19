@@ -1,0 +1,62 @@
+  [val k=0 ms=0] batch 0/775
+  [val k=0 ms=0] batch 15/775
+  [val k=0 ms=0] batch 30/775
+  [val k=0 ms=0] batch 45/775
+  [val k=0 ms=0] batch 60/775
+  [val k=0 ms=0] batch 75/775
+  [val k=0 ms=0] batch 90/775
+  [val k=0 ms=0] batch 105/775
+  [val k=0 ms=0] batch 120/775
+  [val k=0 ms=0] batch 135/775
+  [val k=0 ms=0] batch 150/775
+  [val k=0 ms=0] batch 165/775
+  [val k=0 ms=0] batch 180/775
+  [val k=0 ms=0] batch 195/775
+  [val k=0 ms=0] batch 210/775
+  [val k=0 ms=0] batch 225/775
+  [val k=0 ms=0] batch 240/775
+  [val k=0 ms=0] batch 255/775
+  [val k=0 ms=0] batch 270/775
+  [val k=0 ms=0] batch 285/775
+  [val k=0 ms=0] batch 300/775
+  [val k=0 ms=0] batch 315/775
+  [val k=0 ms=0] batch 330/775
+  [val k=0 ms=0] batch 345/775
+  [val k=0 ms=0] batch 360/775
+  [val k=0 ms=0] batch 375/775
+  [val k=0 ms=0] batch 390/775
+  [val k=0 ms=0] batch 405/775
+  [val k=0 ms=0] batch 420/775
+  [val k=0 ms=0] batch 435/775
+  [val k=0 ms=0] batch 450/775
+  [val k=0 ms=0] batch 465/775
+  [val k=0 ms=0] batch 480/775
+  [val k=0 ms=0] batch 495/775
+  [val k=0 ms=0] batch 510/775
+  [val k=0 ms=0] batch 525/775
+  [val k=0 ms=0] batch 540/775
+  [val k=0 ms=0] batch 555/775
+  [val k=0 ms=0] batch 570/775
+  [val k=0 ms=0] batch 585/775
+  [val k=0 ms=0] batch 600/775
+  [val k=0 ms=0] batch 615/775
+  [val k=0 ms=0] batch 630/775
+  [val k=0 ms=0] batch 645/775
+  [val k=0 ms=0] batch 660/775
+  [val k=0 ms=0] batch 675/775
+  [val k=0 ms=0] batch 690/775
+  [val k=0 ms=0] batch 705/775
+  [val k=0 ms=0] batch 720/775
+  [val k=0 ms=0] batch 735/775
+  [val k=0 ms=0] batch 750/775
+  [val k=0 ms=0] batch 765/775
+[val k=0] macro-F1=0.7719 top3=0.7885 mean_rank=2.576
+/home/ubuntu/Fault-Localization/scripts/run_psm_full_eval.py:60: RuntimeWarning: invalid value encountered in scalar divide
+  return float(np.trapezoid(vals, karr) / (karr[-1] - karr[0]))
+{
+ "recomputed": 0.7719449188703239,
+ "stored": 0.7719449188703239,
+ "abs_diff": 0.0,
+ "match_1e-9": true,
+ "seconds": 301.5322241783142
+}

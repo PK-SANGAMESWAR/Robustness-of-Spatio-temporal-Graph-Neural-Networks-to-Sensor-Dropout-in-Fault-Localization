@@ -1,0 +1,464 @@
+[
+  {
+    "pid": 4099742,
+    "stage": "queue_started",
+    "steps": [
+      "gtf_core:None",
+      "r5_gamma0:42",
+      "r4:42",
+      "r4:43",
+      "r4:44",
+      "r3:42",
+      "r6_lam2_0:42",
+      "r6_lam2_0:43",
+      "r6_lam2_0:44",
+      "r1:42",
+      "r2:42",
+      "r2:43",
+      "r2:44"
+    ],
+    "utc": "2026-10-25T10:15:52Z"
+  },
+  {
+    "arm": "gtf_core",
+    "position": 1,
+    "stage": "gtf_started",
+    "utc": "2026-10-25T10:15:52Z"
+  },
+  {
+    "arm": "gtf_core",
+    "position": 1,
+    "stage": "gtf_split_done",
+    "utc": "2026-10-25T10:15:56Z"
+  },
+  {
+    "arm": "gtf_core",
+    "position": 1,
+    "sigma0": 0.01,
+    "stage": "gtf_thresholds_done",
+    "utc": "2026-10-25T10:23:28Z"
+  },
+  {
+    "arm": "gtf_core",
+    "position": 1,
+    "seed": 42,
+    "stage": "gtf_seed_done",
+    "utc": "2026-10-25T13:11:14Z"
+  },
+  {
+    "arm": "gtf_core",
+    "position": 1,
+    "seed": 43,
+    "stage": "gtf_seed_done",
+    "utc": "2026-10-25T15:58:18Z"
+  },
+  {
+    "arm": "gtf_core",
+    "position": 1,
+    "seed": 44,
+    "stage": "gtf_seed_done",
+    "utc": "2026-10-25T18:45:09Z"
+  },
+  {
+    "arm": "gtf_core",
+    "decision_rule": {
+      "G-TF useful (better than no gate in all 3 seeds at every s)": true,
+      "per_s": {
+        "bias_2pct_s1": true,
+        "bias_2pct_s2": true,
+        "bias_2pct_s3": true
+      }
+    },
+    "position": 1,
+    "seconds": 30556.80115714227,
+    "stage": "gtf_core_done",
+    "utc": "2026-10-25T18:45:09Z"
+  },
+  {
+    "arm": "r5_gamma0",
+    "position": 2,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-10-25T18:45:09Z"
+  },
+  {
+    "arm": "r5_gamma0",
+    "best_validation_graph_f1": 0.8818603232422269,
+    "collapsed": false,
+    "position": 2,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": 93152.9635963072
+  },
+  {
+    "arm": "r5_gamma0",
+    "position": 2,
+    "seed": 42,
+    "stage": "scoring_started",
+    "utc": "2026-10-26T20:37:42Z"
+  },
+  {
+    "arm": "r5_gamma0",
+    "position": 2,
+    "scoring_seconds": 26639.211816270836,
+    "seed": 42,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r4",
+    "position": 3,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-10-27T04:01:41Z"
+  },
+  {
+    "arm": "r4",
+    "best_validation_graph_f1": 0.7949629243898431,
+    "collapsed": false,
+    "position": 3,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": 82416.3379011848
+  },
+  {
+    "arm": "r4",
+    "position": 3,
+    "seed": 42,
+    "stage": "scoring_started",
+    "utc": "2026-10-28T02:55:18Z"
+  },
+  {
+    "arm": "r4",
+    "position": 3,
+    "scoring_seconds": 27258.987305229064,
+    "seed": 42,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r4",
+    "position": 4,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_started",
+    "utc": "2026-10-28T10:29:37Z"
+  },
+  {
+    "arm": "r4",
+    "best_validation_graph_f1": 0.8016698777321645,
+    "collapsed": false,
+    "position": 4,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_done",
+    "train_seconds": 82887.79527425487
+  },
+  {
+    "arm": "r4",
+    "position": 4,
+    "seed": 43,
+    "stage": "scoring_started",
+    "utc": "2026-10-29T09:31:05Z"
+  },
+  {
+    "arm": "r4",
+    "position": 4,
+    "scoring_seconds": 26855.111635864247,
+    "seed": 43,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r4",
+    "position": 5,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_started",
+    "utc": "2026-10-29T16:58:40Z"
+  },
+  {
+    "arm": "r4",
+    "best_validation_graph_f1": 0.786848922363056,
+    "collapsed": false,
+    "position": 5,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_done",
+    "train_seconds": 83496.43661386892
+  },
+  {
+    "arm": "r4",
+    "position": 5,
+    "seed": 44,
+    "stage": "scoring_started",
+    "utc": "2026-10-30T16:10:16Z"
+  },
+  {
+    "arm": "r4",
+    "position": 5,
+    "scoring_seconds": 26793.612542240415,
+    "seed": 44,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r3",
+    "position": 6,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-10-30T23:36:50Z"
+  },
+  {
+    "arm": "r3",
+    "best_validation_graph_f1": 0.7274938443940162,
+    "collapsed": false,
+    "position": 6,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": 82633.54132989328
+  },
+  {
+    "arm": "r3",
+    "position": 6,
+    "seed": 42,
+    "stage": "scoring_started",
+    "utc": "2026-10-31T22:34:03Z"
+  },
+  {
+    "arm": "r3",
+    "position": 6,
+    "scoring_seconds": 26745.32363696443,
+    "seed": 42,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r6_lam2_0",
+    "position": 7,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-11-01T05:59:49Z"
+  },
+  {
+    "arm": "r6_lam2_0",
+    "best_validation_graph_f1": 0.040451352494579776,
+    "collapsed": true,
+    "position": 7,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": 9400.488392042927
+  },
+  {
+    "pid": 3376717,
+    "stage": "queue_started",
+    "steps": [
+      "r6i:42",
+      "r6i:43",
+      "r6i:44",
+      "r1:42",
+      "r2:42",
+      "r2:43",
+      "r2:44"
+    ],
+    "utc": "2026-11-02T06:14:11Z"
+  },
+  {
+    "arm": "r6i",
+    "position": 1,
+    "seed": 42,
+    "stage": "scoring_started",
+    "utc": "2026-11-02T06:14:11Z"
+  },
+  {
+    "arm": "r6i",
+    "position": 1,
+    "scoring_seconds": 25503.602658073884,
+    "seed": 42,
+    "stage": "scoring_done",
+    "table_check": {
+      "class0_fixed": true,
+      "permutation_is_not_identity": true,
+      "table_differs_from_true_table": true,
+      "table_equals_true_table_permuted": true
+    },
+    "utc": "2026-11-02T13:19:14Z"
+  },
+  {
+    "arm": "r6i",
+    "position": 2,
+    "seed": 43,
+    "stage": "scoring_started",
+    "utc": "2026-11-02T13:19:14Z"
+  },
+  {
+    "arm": "r6i",
+    "position": 2,
+    "scoring_seconds": 25451.934832307044,
+    "seed": 43,
+    "stage": "scoring_done",
+    "table_check": {
+      "class0_fixed": true,
+      "permutation_is_not_identity": true,
+      "table_differs_from_true_table": true,
+      "table_equals_true_table_permuted": true
+    },
+    "utc": "2026-11-02T20:23:26Z"
+  },
+  {
+    "arm": "r6i",
+    "position": 3,
+    "seed": 44,
+    "stage": "scoring_started",
+    "utc": "2026-11-02T20:23:26Z"
+  },
+  {
+    "arm": "r6i",
+    "position": 3,
+    "scoring_seconds": 25362.267778207082,
+    "seed": 44,
+    "stage": "scoring_done",
+    "table_check": {
+      "class0_fixed": true,
+      "permutation_is_not_identity": true,
+      "table_differs_from_true_table": true,
+      "table_equals_true_table_permuted": true
+    },
+    "utc": "2026-11-03T03:26:09Z"
+  },
+  {
+    "arm": "r1",
+    "position": 4,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-11-03T03:26:09Z"
+  },
+  {
+    "arm": "r1",
+    "best_validation_graph_f1": 0.6744144341496512,
+    "collapsed": false,
+    "position": 4,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": 32073.25696309982
+  },
+  {
+    "arm": "r1",
+    "position": 4,
+    "seed": 42,
+    "stage": "scoring_started",
+    "utc": "2026-11-03T12:20:42Z"
+  },
+  {
+    "arm": "r1",
+    "position": 4,
+    "scoring_seconds": 4854.4179294919595,
+    "seed": 42,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r2",
+    "position": 5,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_started",
+    "utc": "2026-11-03T13:41:36Z"
+  },
+  {
+    "arm": "r2",
+    "best_validation_graph_f1": 0.8544856845221864,
+    "collapsed": false,
+    "position": 5,
+    "seed": 42,
+    "seed_label": 1,
+    "stage": "training_done",
+    "train_seconds": 32221.33781573735
+  },
+  {
+    "arm": "r2",
+    "position": 5,
+    "seed": 42,
+    "stage": "scoring_started",
+    "utc": "2026-11-03T22:38:38Z"
+  },
+  {
+    "arm": "r2",
+    "position": 5,
+    "scoring_seconds": 4791.209851894993,
+    "seed": 42,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r2",
+    "position": 6,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_started",
+    "utc": "2026-11-03T23:58:29Z"
+  },
+  {
+    "arm": "r2",
+    "best_validation_graph_f1": 0.8550297103988709,
+    "collapsed": false,
+    "position": 6,
+    "seed": 43,
+    "seed_label": 2,
+    "stage": "training_done",
+    "train_seconds": 31952.153227651957
+  },
+  {
+    "arm": "r2",
+    "position": 6,
+    "seed": 43,
+    "stage": "scoring_started",
+    "utc": "2026-11-04T08:51:01Z"
+  },
+  {
+    "arm": "r2",
+    "position": 6,
+    "scoring_seconds": 4760.172300992999,
+    "seed": 43,
+    "stage": "scoring_done"
+  },
+  {
+    "arm": "r2",
+    "position": 7,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_started",
+    "utc": "2026-11-04T10:10:21Z"
+  },
+  {
+    "arm": "r2",
+    "best_validation_graph_f1": 0.8580031220230562,
+    "collapsed": false,
+    "position": 7,
+    "seed": 44,
+    "seed_label": 3,
+    "stage": "training_done",
+    "train_seconds": 31960.31281460356
+  },
+  {
+    "arm": "r2",
+    "position": 7,
+    "seed": 44,
+    "stage": "scoring_started",
+    "utc": "2026-11-04T19:03:02Z"
+  },
+  {
+    "arm": "r2",
+    "position": 7,
+    "scoring_seconds": 4758.081423451658,
+    "seed": 44,
+    "stage": "scoring_done"
+  },
+  {
+    "stage": "queue_complete",
+    "utc": "2026-11-04T20:22:20Z"
+  }
+]

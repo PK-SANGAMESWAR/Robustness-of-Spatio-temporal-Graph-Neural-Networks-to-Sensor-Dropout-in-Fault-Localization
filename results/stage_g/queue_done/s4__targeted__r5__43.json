@@ -1,0 +1,9 @@
+{
+  "spec_hash": "f4f732e4adb4c83e5656385057581fe3793c5491e58408fae2bb1c2e6151a21e",
+  "utc": "2026-11-16T13:05:51Z",
+  "seconds": 5050.103474194999,
+  "result": {
+    "summary": "results/stage_g/test/r5_targeted/seed_00043_scoring.json",
+    "seconds": 5048.395919970004
+  }
+}

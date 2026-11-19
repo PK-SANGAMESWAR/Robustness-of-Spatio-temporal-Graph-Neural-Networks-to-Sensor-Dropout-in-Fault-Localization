@@ -1,0 +1,292 @@
+{
+  "host": "local",
+  "torch": "2.5.1+cu121",
+  "models": {
+    "R0\u207f": {
+      "label": "R0\u207f",
+      "run_dirs": [
+        "results/s4_4/r0n/pcstgnn/seed_00042",
+        "results/s4_4/r0n/pcstgnn/seed_00043",
+        "results/s4_4/r0n/pcstgnn/seed_00044"
+      ],
+      "n_seeds": 3,
+      "params": 95258,
+      "flops_backbone": 53587200,
+      "flops_residual": 0,
+      "flops_per_window": 53587200,
+      "train_hours": [
+        7.168289786246702,
+        7.17921279863933,
+        7.157595521100448
+      ],
+      "best_epoch": [
+        30,
+        29,
+        27
+      ],
+      "epochs": [
+        30,
+        30,
+        30
+      ],
+      "scoring_ms_per_window_forward": [
+        0.3251596075863598,
+        0.3254751101276876,
+        0.3232107477581976
+      ],
+      "latency": {
+        "b1": {
+          "batch_size": 1,
+          "ms_mean": 0.6351972371339798,
+          "ms_std": 0.009065541148980324,
+          "ms_p95": 0.6488533923402429,
+          "windows_per_s": 1574.31415242298,
+          "repeats": 50
+        },
+        "b32": {
+          "batch_size": 32,
+          "ms_mean": 5.553764151409268,
+          "ms_std": 0.6295567303013181,
+          "ms_p95": 5.901086318772284,
+          "windows_per_s": 5761.857926912507,
+          "repeats": 50
+        }
+      },
+      "latency_device": "cuda"
+    },
+    "R5 (PC-STGNN)": {
+      "label": "R5 (PC-STGNN)",
+      "run_dirs": [
+        "results/s4_4/r5/pcstgnn/seed_00042",
+        "results/s4_4/r5/pcstgnn/seed_00043",
+        "results/s4_4/r5/pcstgnn/seed_00044"
+      ],
+      "n_seeds": 3,
+      "params": 95259,
+      "flops_backbone": 53587200,
+      "flops_residual": 26254800,
+      "flops_per_window": 79842000,
+      "train_hours": [
+        21.489275329323426,
+        21.52537696802025,
+        21.514138185074422
+      ],
+      "best_epoch": [
+        19,
+        29,
+        17
+      ],
+      "epochs": [
+        30,
+        30,
+        30
+      ],
+      "scoring_ms_per_window_forward": [
+        1.8016939618981191,
+        1.7995019659897882,
+        1.79725898224657
+      ],
+      "latency": {
+        "b1": {
+          "batch_size": 1,
+          "ms_mean": 2.586382646113634,
+          "ms_std": 0.008925035541739184,
+          "ms_p95": 2.598731662146747,
+          "windows_per_s": 386.6403919399266,
+          "repeats": 50
+        },
+        "b32": {
+          "batch_size": 32,
+          "ms_mean": 50.20954403094947,
+          "ms_std": 0.12009014089812216,
+          "ms_p95": 50.41263507446274,
+          "windows_per_s": 637.3290301197518,
+          "repeats": 50
+        }
+      },
+      "latency_device": "cuda"
+    },
+    "R2 (learned decoder)": {
+      "label": "R2 (learned decoder)",
+      "run_dirs": [
+        "results/s4_4/r2/pcstgnn/seed_00042",
+        "results/s4_4/r2/pcstgnn/seed_00043",
+        "results/s4_4/r2/pcstgnn/seed_00044"
+      ],
+      "n_seeds": 3,
+      "params": 99613,
+      "flops_backbone": 53587200,
+      "flops_residual": 0,
+      "flops_per_window": 53587200,
+      "train_hours": [
+        7.315519652016487,
+        7.2639545968110255,
+        7.264990366243162
+      ],
+      "best_epoch": [
+        29,
+        28,
+        22
+      ],
+      "epochs": [
+        30,
+        30,
+        30
+      ],
+      "scoring_ms_per_window_forward": [
+        0.32146612291452126,
+        0.319397365728422,
+        0.31929316041773304
+      ],
+      "latency": {
+        "b1": {
+          "batch_size": 1,
+          "ms_mean": 0.6284161284565926,
+          "ms_std": 0.005398157261189535,
+          "ms_p95": 0.6378606776706874,
+          "windows_per_s": 1591.3022513537767,
+          "repeats": 50
+        },
+        "b32": {
+          "batch_size": 32,
+          "ms_mean": 5.316238142549992,
+          "ms_std": 0.015122394555473827,
+          "ms_p95": 5.341803096234798,
+          "windows_per_s": 6019.293933407364,
+          "repeats": 50
+        }
+      },
+      "latency_device": "cuda"
+    },
+    "R8 (no noise aug.)": {
+      "label": "R8 (no noise aug.)",
+      "run_dirs": [
+        "results/s4_4/r8/pcstgnn/seed_00042"
+      ],
+      "n_seeds": 1,
+      "params": 95259,
+      "flops_backbone": 53587200,
+      "flops_residual": 26254800,
+      "flops_per_window": 79842000,
+      "train_hours": [
+        21.29714807449646
+      ],
+      "best_epoch": [
+        24
+      ],
+      "epochs": [
+        30
+      ],
+      "scoring_ms_per_window_forward": [
+        1.8136845877536938
+      ],
+      "latency": {
+        "b1": {
+          "batch_size": 1,
+          "ms_mean": 2.5877519976347685,
+          "ms_std": 0.008746371015142435,
+          "ms_p95": 2.6013969676569104,
+          "windows_per_s": 386.4357948188274,
+          "repeats": 50
+        },
+        "b32": {
+          "batch_size": 32,
+          "ms_mean": 50.205087177455425,
+          "ms_std": 0.10696107839419337,
+          "ms_p95": 50.42395249474794,
+          "windows_per_s": 637.385607695341,
+          "repeats": 50
+        }
+      },
+      "latency_device": "cuda"
+    },
+    "B2\u1d43 (regressed R\u0302)": {
+      "label": "B2\u1d43 (regressed R\u0302)",
+      "run_dirs": [
+        "results/stage_g/train/b2a/pcstgnn/seed_00042"
+      ],
+      "n_seeds": 1,
+      "params": 95324,
+      "flops_backbone": 53587200,
+      "flops_residual": 26254800,
+      "flops_per_window": 79842000,
+      "train_hours": [
+        8.949372930791966
+      ],
+      "best_epoch": [
+        1
+      ],
+      "epochs": [
+        30
+      ],
+      "scoring_ms_per_window_forward": [],
+      "latency": {
+        "b1": {
+          "batch_size": 1,
+          "ms_mean": 2.3849599855020642,
+          "ms_std": 0.00967255042548026,
+          "ms_p95": 2.403446228709072,
+          "windows_per_s": 419.29424647746754,
+          "repeats": 50
+        },
+        "b32": {
+          "batch_size": 32,
+          "ms_mean": 14.934213380329311,
+          "ms_std": 0.10730351524163095,
+          "ms_p95": 15.014608565252274,
+          "windows_per_s": 2142.7308680448473,
+          "repeats": 50
+        }
+      },
+      "latency_device": "cuda"
+    },
+    "R0 (Paper 1)": {
+      "label": "R0 (Paper 1)",
+      "run_dirs": [
+        "results/dropout_aware/rgsage_max/seed_00042",
+        "results/dropout_aware/rgsage_max/seed_00043",
+        "results/dropout_aware/rgsage_max/seed_00044"
+      ],
+      "n_seeds": 3,
+      "params": 95258,
+      "flops_backbone": 53587200,
+      "flops_residual": 0,
+      "flops_per_window": 53587200,
+      "train_hours": [
+        6.850138700778544,
+        6.874818506114987,
+        6.876444245671543
+      ],
+      "best_epoch": [
+        28,
+        27,
+        29
+      ],
+      "epochs": [
+        30,
+        30,
+        30
+      ],
+      "scoring_ms_per_window_forward": [],
+      "latency": {
+        "b1": {
+          "batch_size": 1,
+          "ms_mean": 0.6258063204586506,
+          "ms_std": 0.0057906862924161475,
+          "ms_p95": 0.634659721981734,
+          "windows_per_s": 1597.9384792200638,
+          "repeats": 50
+        },
+        "b32": {
+          "batch_size": 32,
+          "ms_mean": 5.351157216355205,
+          "ms_std": 0.026715994023518277,
+          "ms_p95": 5.397747876122594,
+          "windows_per_s": 5980.014921295086,
+          "repeats": 50
+        }
+      },
+      "latency_device": "cuda"
+    }
+  }
+}

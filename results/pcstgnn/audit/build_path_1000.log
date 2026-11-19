@@ -1,0 +1,7 @@
+[modes]
+  reuse_never_recompile  median 4.97e-09  p95 1.32e-02  max 1.53e-02  >1e-3  43.5%  2.8 ms/solve
+  reuse_limit_1          median 1.04e-10  p95 6.22e-09  max 7.33e-03  >1e-3   1.8%  7.3 ms/solve
+  daily                  median 1.04e-10  p95 6.22e-09  max 7.33e-03  >1e-3   1.8%  7.6 ms/solve
+  snapshot               median 1.04e-10  p95 6.22e-09  max 7.33e-03  >1e-3   1.8%  7.4 ms/solve
+
+wrote results/pcstgnn/audit/build_path_1000/build_path.json

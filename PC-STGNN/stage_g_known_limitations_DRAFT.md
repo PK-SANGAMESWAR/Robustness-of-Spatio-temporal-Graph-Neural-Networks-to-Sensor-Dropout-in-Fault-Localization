@@ -1,0 +1,16 @@
+# Known limitations and decisions still open — DRAFT for the author `[Drafted 2026-11-19]`
+
+Status: **L1, L2 and L5 accepted by the author on 2026-11-19; L3 accepted (no B2ᵃ retrain); L4 is being addressed by `stage_f_gtf2_test_preregistration.md` (registered 2026-11-19); the other items are not yet reviewed.** Nothing here changes a pre-registered file or the spec. Each item names what is true on disk now and the wording to use if
+the author accepts the limit instead of doing more work. Numbers are in `stage_g_gate6_record.md`, `results/stage_g/tables/` and the audit JSON files.
+
+| # | Item | What is true now | If accepted as a limitation, say |
+|---|---|---|---|
+| L1 | R0 has no sealed OOD row | R0 is not in `config/stage_g/frozen_models.json`; the sealed set was opened once (14 § 6). Gate 6 pairs R5 with R0ⁿ. | "The sealed set was scored for R0ⁿ, R5, R2 and B2ᵃ. R0 (no noise augmentation) was not scored there." |
+| L2 | A4 is undefined | 14 Amendment 5 does not say what "collapses on OOD R" means. | "A4 was not evaluated, because its criterion was never defined." |
+| L3 | B2ᵃ is an unstable epoch-1 checkpoint | Best validation F1 0.709 at epoch 1; later epochs 0.46 to 0.67; one seed. Retrain with a stable R-loss weight: 33.6 GPU-h, not started. | "B2ᵃ is reported for one seed as an epoch-1 checkpoint of an unstable run; it is not a tuned arm." |
+| L4 | Silent-failure results are validation-only | G-TF2 has no test-split pre-registration; T9 is built from validation files. | "Silent-failure detection and gating were studied on the validation split only." |
+| L5 | S5.2 has no explicit author sign-off | S5.2 failed its check (in-sample ≥ LOO in 15 of 15 conditions at σ₀ ≤ 2e-3). The `01_SPEC.md` § 7 amendment (2026-10-25, in-sample score) is already on disk, and the in-sample detector is used everywhere. `07_STAGE_F_gate.md` says the author has not recorded a decision. | Say the LOO design was replaced by the in-sample score after S5.2, citing the § 7 amendment. Author: sign off in 07 or reject. |
+| L6 | Build-path audit sizes | `build_path.json` has 400 events; the 1,000-event run is now at `build_path_1000/build_path.json` (median 1.04e-10, 1.8 % above 1e-3, max 7.3e-3). The two papers still quote the 400-event numbers. | When the papers are next edited, switch the macros to the 1,000-event file (the checklist § B item uses it). |
+| L7 | Trained rows are not retrained from scratch for the release check | The three training-free rungs were recomputed on CPU from the release files and equal the stored values: PSM (difference 0.0), B1 (all five k, difference 0.0; `v_nominal` recomputed, difference 0.0) and B1ᵃ (τ and 5 curve cells, difference 0.0); `results/stage_g/release_check/`. R0ⁿ, R2, R5 and the other trained rows are reproduced from stored checkpoints and scoring files only; no retrain. | "Training-free baselines were reproduced from the release files. Trained models are released as checkpoints and scoring files." |
+| L8 | Stage F gate (PCRG) not trained | `gradient_audit.json` marks α, c as not implemented; checklist § C gate item and F-F4 do not apply. | "The learned gate was not built." |
+| L9 | Sealed set pooled over R | R5 is below PSM alone at every σ, and the network branch alone scores 0.090 there (descriptive). | See `stage_g_gate6_record.md` "Claims for the papers". |

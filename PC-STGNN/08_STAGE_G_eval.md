@@ -207,3 +207,9 @@ R6 median, and about 3,700 times on the shifted mean (different window samples; 
 The decision approves the retrain. The run starts only through the Stage G queue, which does not start without the file
 `results/stage_g/STAGE_G_APPROVED`.
 
+
+### G10 — Gate 6 result (sealed OOD set opened once, 2026-11-18)
+**Recorded 2026-11-19.** The sealed set was opened once (2026-11-18 10:51 IST, hash verified) and 10 frozen models were scored. **Gate 6 passed**: at each σ ∈ {5e-4, 2e-3, 1e-2} (k = 0, pooled over
+R ∈ {3, 5, 20, 30} Ω) F1(R5) − F1(R0ⁿ) is positive in all 3 seeds and the event-bootstrap CI lower bound is above 0 (Δ +0.424, +0.226, +0.026). H3 passes as written. R0ⁿ is near chance on the set
+(0.065 to 0.086). Descriptively, R5 is below the physics-only predictor PSM at every σ, and its network branch alone scores 0.090; the ungrounded stratum is not lower than the grounded one.
+R0 was not in the frozen model list and has no sealed row. Numbers, sources and the descriptive rows: `stage_g_gate6_record.md`; tables: `results/stage_g/tables/T8_ood.md`.

@@ -1,0 +1,163 @@
+[load] val windows=248000 scoring=248000 table=(26, 3366, 75)
+  batch 0 windows 320/248000  0.3 min  eta 237.0 min
+  batch 10 windows 3520/248000  2.8 min  eta 192.9 min
+  batch 20 windows 6720/248000  5.2 min  eta 187.4 min
+  batch 30 windows 9920/248000  7.7 min  eta 184.4 min
+  batch 40 windows 13120/248000  10.2 min  eta 183.3 min
+  batch 50 windows 16320/248000  12.8 min  eta 181.9 min
+  batch 60 windows 19520/248000  15.3 min  eta 179.7 min
+  batch 70 windows 22720/248000  17.9 min  eta 177.9 min
+  batch 80 windows 25920/248000  20.5 min  eta 175.4 min
+  batch 90 windows 29120/248000  22.9 min  eta 172.4 min
+  batch 100 windows 32320/248000  25.5 min  eta 170.2 min
+  batch 110 windows 35520/248000  28.1 min  eta 168.2 min
+  batch 120 windows 38720/248000  30.7 min  eta 165.7 min
+  batch 130 windows 41920/248000  33.2 min  eta 163.3 min
+  batch 140 windows 45120/248000  35.9 min  eta 161.5 min
+  batch 150 windows 48320/248000  38.6 min  eta 159.6 min
+  batch 160 windows 51520/248000  41.2 min  eta 157.2 min
+  batch 170 windows 54720/248000  43.9 min  eta 155.0 min
+  batch 180 windows 57920/248000  46.6 min  eta 153.0 min
+  batch 190 windows 61120/248000  49.2 min  eta 150.5 min
+  batch 200 windows 64320/248000  51.8 min  eta 147.9 min
+  batch 210 windows 67520/248000  54.4 min  eta 145.3 min
+  batch 220 windows 70720/248000  56.9 min  eta 142.6 min
+  batch 230 windows 73920/248000  59.4 min  eta 139.9 min
+  batch 240 windows 77120/248000  61.9 min  eta 137.2 min
+  batch 250 windows 80320/248000  64.5 min  eta 134.6 min
+  batch 260 windows 83520/248000  66.9 min  eta 131.8 min
+  batch 270 windows 86720/248000  69.4 min  eta 129.0 min
+  batch 280 windows 89920/248000  71.8 min  eta 126.2 min
+  batch 290 windows 93120/248000  74.2 min  eta 123.4 min
+  batch 300 windows 96320/248000  76.6 min  eta 120.6 min
+  batch 310 windows 99520/248000  79.0 min  eta 117.9 min
+  batch 320 windows 102720/248000  81.5 min  eta 115.3 min
+  batch 330 windows 105920/248000  84.0 min  eta 112.6 min
+  batch 340 windows 109120/248000  86.4 min  eta 110.0 min
+  batch 350 windows 112320/248000  88.9 min  eta 107.4 min
+  batch 360 windows 115520/248000  91.3 min  eta 104.7 min
+  batch 370 windows 118720/248000  93.8 min  eta 102.1 min
+  batch 380 windows 121920/248000  96.3 min  eta 99.5 min
+  batch 390 windows 125120/248000  98.7 min  eta 96.9 min
+  batch 400 windows 128320/248000  101.2 min  eta 94.3 min
+  batch 410 windows 131520/248000  103.6 min  eta 91.8 min
+  batch 420 windows 134720/248000  106.0 min  eta 89.2 min
+  batch 430 windows 137920/248000  108.5 min  eta 86.6 min
+  batch 440 windows 141120/248000  110.9 min  eta 84.0 min
+  batch 450 windows 144320/248000  113.4 min  eta 81.5 min
+  batch 460 windows 147520/248000  115.9 min  eta 79.0 min
+  batch 470 windows 150720/248000  118.4 min  eta 76.4 min
+  batch 480 windows 153920/248000  121.0 min  eta 73.9 min
+  batch 490 windows 157120/248000  123.5 min  eta 71.4 min
+  batch 500 windows 160320/248000  126.0 min  eta 68.9 min
+  batch 510 windows 163520/248000  128.5 min  eta 66.4 min
+  batch 520 windows 166720/248000  131.0 min  eta 63.9 min
+  batch 530 windows 169920/248000  133.5 min  eta 61.3 min
+  batch 540 windows 173120/248000  135.9 min  eta 58.8 min
+  batch 550 windows 176320/248000  138.3 min  eta 56.2 min
+  batch 560 windows 179520/248000  140.8 min  eta 53.7 min
+  batch 570 windows 182720/248000  143.3 min  eta 51.2 min
+  batch 580 windows 185920/248000  145.7 min  eta 48.7 min
+  batch 590 windows 189120/248000  148.2 min  eta 46.2 min
+  batch 600 windows 192320/248000  150.8 min  eta 43.7 min
+  batch 610 windows 195520/248000  153.3 min  eta 41.1 min
+  batch 620 windows 198720/248000  155.8 min  eta 38.6 min
+  batch 630 windows 201920/248000  158.2 min  eta 36.1 min
+  batch 640 windows 205120/248000  160.6 min  eta 33.6 min
+  batch 650 windows 208320/248000  163.1 min  eta 31.1 min
+  batch 660 windows 211520/248000  165.6 min  eta 28.6 min
+  batch 670 windows 214720/248000  168.1 min  eta 26.1 min
+  batch 680 windows 217920/248000  170.7 min  eta 23.6 min
+  batch 690 windows 221120/248000  173.2 min  eta 21.1 min
+  batch 700 windows 224320/248000  175.7 min  eta 18.6 min
+  batch 710 windows 227520/248000  178.2 min  eta 16.0 min
+  batch 720 windows 230720/248000  180.7 min  eta 13.5 min
+  batch 730 windows 233920/248000  183.2 min  eta 11.0 min
+  batch 740 windows 237120/248000  185.7 min  eta 8.5 min
+  batch 750 windows 240320/248000  188.1 min  eta 6.0 min
+  batch 760 windows 243520/248000  190.5 min  eta 3.5 min
+  batch 770 windows 246720/248000  192.9 min  eta 1.0 min
+[summary] stuck_s1 done
+[summary] stuck_s2 done
+[summary] stuck_s3 done
+[summary] bias_2pct_s1 done
+[summary] bias_2pct_s2 done
+[summary] bias_2pct_s3 done
+[summary] bias_5pct_s1 done
+[summary] bias_5pct_s2 done
+[summary] bias_5pct_s3 done
+[summary] gauss_0.02_s1 done
+[summary] gauss_0.02_s2 done
+[summary] gauss_0.02_s3 done
+[summary] swap_s1 done
+[summary] swap_s2 done
+[summary] swap_s3 done
+{
+  "gate_s5_1": {
+    "bias_2pct_s1": 0.9991342501971416,
+    "bias_2pct_s2": 0.9980918528103864,
+    "bias_2pct_s3": 0.9970605648296094
+  },
+  "s5_2": {
+    "stuck_s1": {
+      "loo": 0.6440274815950318,
+      "ins": 0.6451866866457194
+    },
+    "stuck_s2": {
+      "loo": 0.6102725910658339,
+      "ins": 0.6111770513920267
+    },
+    "stuck_s3": {
+      "loo": 0.5899544137833854,
+      "ins": 0.5906315372882868
+    },
+    "bias_2pct_s1": {
+      "loo": 0.9991342501971416,
+      "ins": 0.9993114681064104
+    },
+    "bias_2pct_s2": {
+      "loo": 0.9980918528103864,
+      "ins": 0.9985187458954595
+    },
+    "bias_2pct_s3": {
+      "loo": 0.9970605648296094,
+      "ins": 0.9976897207243727
+    },
+    "bias_5pct_s1": {
+      "loo": 0.9995548882894473,
+      "ins": 0.9997104556861478
+    },
+    "bias_5pct_s2": {
+      "loo": 0.9990082898761621,
+      "ins": 0.9992879755945532
+    },
+    "bias_5pct_s3": {
+      "loo": 0.9984032703639133,
+      "ins": 0.9988194335842655
+    },
+    "gauss_0.02_s1": {
+      "loo": 0.9753209430399514,
+      "ins": 0.9760588629967157
+    },
+    "gauss_0.02_s2": {
+      "loo": 0.9666760826381388,
+      "ins": 0.9676981852265529
+    },
+    "gauss_0.02_s3": {
+      "loo": 0.9600552193813952,
+      "ins": 0.9612346327722217
+    },
+    "swap_s1": {
+      "loo": 0.99690061010124,
+      "ins": 0.9972706037635765
+    },
+    "swap_s2": {
+      "loo": 0.9908216776936388,
+      "ins": 0.991284708377928
+    },
+    "swap_s3": {
+      "loo": 0.978797259761006,
+      "ins": 0.9792955369594093
+    }
+  }
+}

@@ -1,0 +1,140 @@
+[
+  {
+    "stage": "watcher_started",
+    "pid": 98685,
+    "queue_state": "running",
+    "utc": "2026-10-26T04:03:52Z"
+  },
+  {
+    "stage": "not_started",
+    "queue_state": "stopped",
+    "utc": "2026-11-01T08:36:55Z"
+  },
+  {
+    "stage": "watcher_started",
+    "pid": 3377445,
+    "queue_state": "running",
+    "utc": "2026-11-02T06:14:55Z"
+  },
+  {
+    "stage": "step_started",
+    "step": "gtf2_thresholds",
+    "gpu": false,
+    "utc": "2026-11-04T20:22:59Z"
+  },
+  {
+    "stage": "step_done",
+    "step": "gtf2_thresholds",
+    "returncode": 0,
+    "seconds": 569.7496101856232,
+    "utc": "2026-11-04T20:32:29Z"
+  },
+  {
+    "stage": "step_started",
+    "step": "gtf2_score_42",
+    "gpu": true,
+    "utc": "2026-11-04T20:32:29Z"
+  },
+  {
+    "stage": "step_done",
+    "step": "gtf2_score_42",
+    "returncode": 0,
+    "seconds": 10095.015980482101,
+    "utc": "2026-11-04T23:20:44Z"
+  },
+  {
+    "stage": "step_started",
+    "step": "gtf2_score_43",
+    "gpu": true,
+    "utc": "2026-11-04T23:20:44Z"
+  },
+  {
+    "stage": "step_done",
+    "step": "gtf2_score_43",
+    "returncode": 0,
+    "seconds": 10093.98865556717,
+    "utc": "2026-11-05T02:08:58Z"
+  },
+  {
+    "stage": "step_started",
+    "step": "gtf2_score_44",
+    "gpu": true,
+    "utc": "2026-11-05T02:08:58Z"
+  },
+  {
+    "stage": "step_done",
+    "step": "gtf2_score_44",
+    "returncode": 0,
+    "seconds": 10059.367916345596,
+    "utc": "2026-11-05T04:56:37Z"
+  },
+  {
+    "stage": "step_started",
+    "step": "gtf2_summarize",
+    "gpu": false,
+    "utc": "2026-11-05T04:56:37Z"
+  },
+  {
+    "stage": "step_done",
+    "step": "gtf2_summarize",
+    "returncode": 0,
+    "seconds": 0.5818326473236084,
+    "utc": "2026-11-05T04:56:38Z"
+  },
+  {
+    "stage": "step_started",
+    "step": "gtf2r_score_42",
+    "gpu": true,
+    "utc": "2026-11-05T04:56:38Z"
+  },
+  {
+    "stage": "step_done",
+    "step": "gtf2r_score_42",
+    "returncode": 0,
+    "seconds": 3633.2549891471863,
+    "utc": "2026-11-05T05:57:11Z"
+  },
+  {
+    "stage": "step_started",
+    "step": "gtf2r_score_43",
+    "gpu": true,
+    "utc": "2026-11-05T05:57:11Z"
+  },
+  {
+    "stage": "step_done",
+    "step": "gtf2r_score_43",
+    "returncode": 0,
+    "seconds": 3642.519097805023,
+    "utc": "2026-11-05T06:57:53Z"
+  },
+  {
+    "stage": "step_started",
+    "step": "gtf2r_score_44",
+    "gpu": true,
+    "utc": "2026-11-05T06:57:53Z"
+  },
+  {
+    "stage": "step_done",
+    "step": "gtf2r_score_44",
+    "returncode": 0,
+    "seconds": 3652.069627761841,
+    "utc": "2026-11-05T07:58:45Z"
+  },
+  {
+    "stage": "step_started",
+    "step": "gtf2r_summarize",
+    "gpu": false,
+    "utc": "2026-11-05T07:58:45Z"
+  },
+  {
+    "stage": "step_done",
+    "step": "gtf2r_summarize",
+    "returncode": 0,
+    "seconds": 0.11007118225097656,
+    "utc": "2026-11-05T07:58:46Z"
+  },
+  {
+    "stage": "chain_complete",
+    "utc": "2026-11-05T07:58:46Z"
+  }
+]

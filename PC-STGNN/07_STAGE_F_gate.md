@@ -245,8 +245,8 @@ false-positive rate of **0.5 %**; scoring is on half B only. The flatline detect
 
 - [x] **S5.1 passed** (hard gate: AUROC ≥ 0.75 for bias ±2 %). Measured: LOO AUROC 0.8482 to 0.8537 at sigma0 = 1e-2, and 0.9946 to
   0.9991 at lower noise (S5.2 measurement-noise rerun below); in-sample 0.8446 to 0.8491 at sigma0 = 1e-2. Passed at every sigma0.
-- [ ] **G-TF2 primary rule passed:** G-TF2 is better than no gate in all 3 seeds at each s = 1, 2, 3, for stuck
-  (`stage_f_gtf2_preregistration.md` § 4). Not run.
+- [x] **G-TF2 primary rule passed:** G-TF2 is better than no gate in all 3 seeds at each s = 1, 2, 3, for stuck
+  (`stage_f_gtf2_preregistration.md` § 4). *[Ticked 2026-11-18: 9 of 9 seed-by-s pairs positive. See "G-TF2 core result" at the end of this file. The old text "Not run" was replaced.]*
 
 The question G2 > G0 is not tested. The trained gate input was the physics residual only, which does not detect stuck sensors. A
 training-free gate addresses this failure.
@@ -381,3 +381,22 @@ Rerun of S5.1/S5.2 at sigma0 ∈ {5e-4, 2e-3, 1e-2} p.u. (`scripts/run_silent_de
   is used. Decision file: `results/stage_f/gtf/detector_decision.json`.
 - The Gate 5 checkboxes above are not ticked; what S5.2 means for the LOO design in `01_SPEC.md` §7 is recorded
   in the amendment note there.
+
+#### G-TF2 core result `[Recorded 2026-11-18, from files written 2026-11-05]`
+
+Source: `results/stage_f/gtf2/core/summary.json` (key `decision_rule_gtf2_sigma1e-2`) and `results/stage_f/gtf2r/core/summary.json`.
+Scope: core arm, sigma0 = 1e-2, validation half B, seeds 42/43/44, as in `stage_f_gtf2_preregistration.md`. Nothing was re-run for this record.
+
+- **Primary rule (stuck): passed.** G-TF2 minus no gate is positive in all 3 seeds at s = 1, 2, 3. The F1 gains are small:
+  +0.006 to +0.008 (s=1), +0.010 to +0.013 (s=2), +0.010 to +0.020 (s=3). Paired t over seeds, Holm over s: 0.0196, 0.0196, 0.0487.
+  The gate recovers about 6 to 10 % of the gap to the oracle gate (`rec`, mean over seeds, denominator ≥ 0.01).
+- **Cost on clean sensors.** The realized false-positive rate on the clean sensors of corrupted windows is 0.053 / 0.099 / 0.136 at s = 1/2/3 (stuck).
+- **Secondary rules.** Sign rule met for bias ±2 %, bias ±5 % and swap. Holm over s: bias ±2 % 0.104 / 0.104 / 0.055 (not significant);
+  bias ±5 % 0.042 / 0.042 / 0.041; swap 0.0083 at every s. Gaussian 0.02 p.u. (reported only): not useful, one seed negative at each s.
+- **Clean-window arm (no threshold).** F1(G-TF2) − F1(no gate) = −0.0006 / −0.0010 / −0.0011 (seeds 42/43/44). The false-positive rate on clean windows is 0.0101.
+- **Claim limit.** n = 3, one noise level. The sign rule passed. The stuck gain is real in sign but small in size. Do not call it a large gain.
+- **Not done:** G-TF2 on the test split. It is outside the pre-registration (`stage_f_gtf2_preregistration.md` lists the test split as not in scope). Stage G step 46 was skipped for this reason.
+- The S5.2 question (LOO vs in-sample) is unchanged: the in-sample detector stays in use. The author has not recorded a decision on `01_SPEC.md` §7.
+
+### Author sign-off on S5.2 `[Recorded 2026-11-19]`
+The author accepted (2026-11-19) that the in-sample residual replaces the LOO residual for the detector, as amended in `01_SPEC.md` § 7 on 2026-10-25 after S5.2 (in-sample AUROC higher in all 15 conditions at sigma0 ≤ 2e-3). No result changed. The line above, "The author has not recorded a decision on `01_SPEC.md` § 7", is superseded by this entry.

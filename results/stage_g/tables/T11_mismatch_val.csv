@@ -1,0 +1,6 @@
+table,R5 > R0ⁿ (of 21),graceful (rule),k10_sigma0.0: R5 table / R5 nominal / R0ⁿ,k0_sigma0.01: R5 table / R5 nominal / R0ⁿ,source,retrain / nominal weights on ±5 % / nominal on nominal / R0ⁿ
+tap +1 step (all regulators),15/21,no,0.676 / 0.857 / 0.655,0.748 / 0.748 / 0.724,results/stage_g/analysis/summary.json (mismatch_phase1_val),
+tap −1 step (all regulators),18/21,no,0.710 / 0.857 / 0.655,0.748 / 0.748 / 0.724,results/stage_g/analysis/summary.json (mismatch_phase1_val),
+line impedance ±5 % (per line),21/21,yes,0.837 / 0.857 / 0.655,0.747 / 0.748 / 0.724,results/stage_g/analysis/summary.json (mismatch_phase1_val),
+"retrain on ±5 % table, seed 42, k0_sigma0.0",1 seed: no rule,—,,,results/stage_g/analysis/summary.json (retrain_imp5_val_seed42),0.894 / 0.888 / 0.895 / 0.846
+"retrain on ±5 % table, seed 42, k10_sigma0.0",1 seed: no rule,—,,,results/stage_g/analysis/summary.json (retrain_imp5_val_seed42),0.839 / 0.837 / 0.856 / 0.669

@@ -1,0 +1,57 @@
+{
+  "eval_root": {
+    "fault_types": [
+      "AB",
+      "ABC",
+      "ABCG",
+      "ABG",
+      "AG",
+      "BC",
+      "BCG",
+      "BG",
+      "CA",
+      "CAG",
+      "CG"
+    ],
+    "n_events": 11000,
+    "n_no_fault": 220000,
+    "n_windows": 440000,
+    "resistances": [
+      3.0,
+      5.0,
+      20.0,
+      30.0
+    ]
+  },
+  "git_head": "e209828",
+  "n_models": 10,
+  "outputs": {
+    "STARTED.json": "c57f3cd2dded5b8b9fccb0959e311209b7aa61f6f7f1267bdc973c7215bd1a21",
+    "b2a_seed00042_predictions.npz": "e06008e1faf8e54af30a2493790b5ff2125a126694651d495fe5c715b620802a",
+    "b2a_seed00042_scoring.json": "42352129b6ca5a61357d6d9b4efa2a083f3563d9ef976657652bf559b047abf5",
+    "eval_root_stats.json": "5a7ed69de9c124043aed6ad798751a338481c40e312e68211fa27e9cf1d11164",
+    "log_row.md": "c132edcbf84a099646ce5c8aaad4d821a9d8c7f687442c2d2e3f19c2b0c10af2",
+    "r0n_seed00042_predictions.npz": "4789c2174b9f7a0a9d62b740ca534f7b7aa4f0365afedabb0254c89af367db70",
+    "r0n_seed00042_scoring.json": "be04043aa4682b5689c3287956369bf5ace7d1f39e5eef2fe76a387ca734604b",
+    "r0n_seed00043_predictions.npz": "4d00ca50fcc9120f16ce2268b741e28923715f8e65e09179a1b8ce933eb40d8d",
+    "r0n_seed00043_scoring.json": "0b5f54ef2d07cafcb8cbbf3442eeeefc96b82d118a12404d09b6e865015601ef",
+    "r0n_seed00044_predictions.npz": "2694c7ccf4e8c78c776061e092eec10a422b6640986a2a13f8077be8168ec6e0",
+    "r0n_seed00044_scoring.json": "f352032a70fae23a450d2bc279d36ab0b11eda03c11b188b972dbef493e47356",
+    "r2_seed00042_predictions.npz": "35b2c88bc73976bfcceafaf2ffdd37ccd4a9e97109c544890add29eb77a14583",
+    "r2_seed00042_scoring.json": "654c41b6e0fe0467ecd120b8866e41c842ac7772b7168a55b7537169cbad06de",
+    "r2_seed00043_predictions.npz": "1ff40dd08f1958e733068755b82ac82c06ef5ad71e65c98b7c9e416f905cf0dc",
+    "r2_seed00043_scoring.json": "8b8872c99fd42316e22008cf7fa9be2e96d4685bf12de4eccc862256e9de795c",
+    "r2_seed00044_predictions.npz": "32427e356f62406d3ba0f836d0f2974837ba3eb83f43e962b5817d72c86727dd",
+    "r2_seed00044_scoring.json": "dc082e4e452511f878ef05198e8a13bfc6a6939a3e8709901dd749d9fede02fb",
+    "r5_seed00042_predictions.npz": "680dda0d63eaa979601cc47f255db09c5cdc108cbf8765648f521496c2bb457b",
+    "r5_seed00042_scoring.json": "0fb59f43dfbc3cc2293cd1e08859729816f5a93e757b55d34d582306465b4b99",
+    "r5_seed00043_predictions.npz": "571ae01813030f39cea1ecd6582dc1396214530f7afa0efd82be925af78e0c44",
+    "r5_seed00043_scoring.json": "a955252cc9ee6b76eb6ea0962dca9a20cf0f10a74178655c820d9ba30f7cee3e",
+    "r5_seed00044_predictions.npz": "64ac81b56384ad5f7dbe5943ad6871bfb2b75770b96039eefe9b2121c2d948b6",
+    "r5_seed00044_scoring.json": "d7764463d270478343ba335c277035b0da472c817312fe16facec9bc4f863c27"
+  },
+  "when": {
+    "ist": "2026-11-19 02:22 IST",
+    "utc": "2026-11-18T20:52:55Z"
+  }
+}

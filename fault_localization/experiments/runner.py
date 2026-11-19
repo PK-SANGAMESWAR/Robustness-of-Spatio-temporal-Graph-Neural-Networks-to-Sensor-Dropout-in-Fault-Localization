@@ -110,7 +110,12 @@ def _model(config, edge):
         if needs_norm_stats:
             from fault_localization.physics.observation import load_norm_stats
             norm_stats = load_norm_stats(config["data_root"])
-        return PCSTGNN(
+        _cls, _extra = PCSTGNN, {}
+        if m.get("use_rhat_head", False):
+            # B2a (learned R-hat head instead of profiling over R): models/pc_stgnn_rhat.py
+            from fault_localization.models.pc_stgnn_rhat import PCSTGNNRHat
+            _cls, _extra = PCSTGNNRHat, {"use_rhat_head": True}
+        return _cls(
             edge, table, norm_stats,
             use_fusion=use_fusion,
             beta_init=m.get("beta_init", 0.0),
@@ -124,6 +129,7 @@ def _model(config, edge):
             aggregator=m.get("aggregator", "max"),
             gnn_hidden_dim=m.get("gnn_hidden_dim", 64),
             num_layers=config.get("gnn_layers", 1),
+            **_extra,
             **common,
         )
     if name == "pignn":
@@ -264,6 +270,10 @@ def run(config, resume=False):
     # use_type_head/use_decoder is unaffected.
     pc_type_loss_weight = float(pc_cfg.get("type_loss_weight", 0.0))
     pc_recon_loss_weight = float(pc_cfg.get("recon_loss_weight", 0.0))
+    # B2a (stage_g/b2a_train.py): weight of MSE(log10 R-hat, log10 R). 0 = off, so every other arm is unaffected.
+    pc_rhat_loss_weight = float(pc_cfg.get("rhat_loss_weight", 0.0))
+    if pc_rhat_loss_weight and pc_cfg.get("rho_k0_cache_path"):
+        raise ValueError("B2a must not use the profiled k = 0 rho cache (pc_loss.rho_k0_cache_path)")
     # k=0 rho(A) cache (2026-09-30): at k=0 rho(A) is a fixed function of the window
     # alone, so it is looked up from the offline grid (physics/cache.py, S3.4) instead
     # of recomputed live -- verified equivalent before use, see
@@ -352,7 +362,12 @@ def run(config, resume=False):
             val_ds, config["training"]["batch_size"], shuffle=False, num_workers=num_workers,
         )
 
-        if pc_enabled:
+        if pc_enabled and pc_rhat_loss_weight:
+            from fault_localization.stage_g.b2a_train import b2a_train_epoch
+            tr = b2a_train_epoch(model, train_loader, opt, device, grad_clip_norm=grad_clip_norm,
+                                 lam1=pc_lam1, lam2=pc_lam2, aux_net_loss_weight=pc_aux,
+                                 rhat_loss_weight=pc_rhat_loss_weight)
+        elif pc_enabled:
             tr = pc_train_epoch(model, train_loader, opt, device,
                                 grad_clip_norm=grad_clip_norm, lam1=pc_lam1, lam2=pc_lam2,
                                 rho_k0_cache=pc_rho_k0_cache, aux_net_loss_weight=pc_aux,
@@ -382,6 +397,8 @@ def run(config, resume=False):
             row["train_aux"] = tr["aux"]
         if "type_ce" in tr:
             row["train_type_ce"] = tr["type_ce"]
+        if "rhat_mse" in tr:
+            row["train_rhat_mse"] = tr["rhat_mse"]
         if "recon_mse" in tr:
             row["train_recon_mse"] = tr["recon_mse"]
         if pc_enabled and getattr(model, "use_fusion", False):

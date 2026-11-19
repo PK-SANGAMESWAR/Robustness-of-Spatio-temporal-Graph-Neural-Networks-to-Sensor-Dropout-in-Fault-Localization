@@ -1,0 +1,143 @@
+{
+  "seed": 44,
+  "sigma0": 0.01,
+  "scope": "core",
+  "detector": "ins",
+  "half": "B",
+  "split_seed": 7,
+  "n_windows": 124000,
+  "fpr_target": 0.005,
+  "gate": "gtf2r",
+  "partial_run": false,
+  "conditions": {
+    "stuck_s1": {
+      "f1": {
+        "resid05": 0.6688416889826905
+      },
+      "tpr": 0.2882016129032258,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.04787668010752688,
+      "flagged_per_window": 1.437241935483871
+    },
+    "stuck_s2": {
+      "f1": {
+        "resid05": 0.58089670993495
+      },
+      "tpr": 0.28548790322580647,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.09444284712482469,
+      "flagged_per_window": 2.743161290322581
+    },
+    "stuck_s3": {
+      "f1": {
+        "resid05": 0.4992863688066122
+      },
+      "tpr": 0.2824327956989247,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.13092375366568915,
+      "flagged_per_window": 3.7276209677419354
+    },
+    "bias_2pct_s1": {
+      "f1": {
+        "resid05": 0.735689221218891
+      },
+      "tpr": 0.32863709677419356,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.005481854838709678,
+      "flagged_per_window": 0.4602016129032258
+    },
+    "bias_2pct_s2": {
+      "f1": {
+        "resid05": 0.7264705598545074
+      },
+      "tpr": 0.3334314516129032,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.005946002805049089,
+      "flagged_per_window": 0.8036209677419355
+    },
+    "bias_2pct_s3": {
+      "f1": {
+        "resid05": 0.7155910021494153
+      },
+      "tpr": 0.33621236559139783,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.006282991202346041,
+      "flagged_per_window": 1.1468629032258064
+    },
+    "bias_5pct_s1": {
+      "f1": {
+        "resid05": 0.7379410641709748
+      },
+      "tpr": 0.9642177419354838,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.00868279569892473,
+      "flagged_per_window": 1.1726048387096775
+    },
+    "bias_5pct_s2": {
+      "f1": {
+        "resid05": 0.7298450179481655
+      },
+      "tpr": 0.9622379032258065,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.01270687237026648,
+      "flagged_per_window": 2.216733870967742
+    },
+    "bias_5pct_s3": {
+      "f1": {
+        "resid05": 0.7208455954783972
+      },
+      "tpr": 0.959983870967742,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.017089076246334312,
+      "flagged_per_window": 3.255911290322581
+    },
+    "gauss_0.02_s1": {
+      "f1": {
+        "resid05": 0.7397461944682534
+      },
+      "tpr": 0.32856451612903226,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.00541633064516129,
+      "flagged_per_window": 0.4585564516129032
+    },
+    "gauss_0.02_s2": {
+      "f1": {
+        "resid05": 0.734888494553387
+      },
+      "tpr": 0.3311008064516129,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.005791023842917251,
+      "flagged_per_window": 0.7953951612903226
+    },
+    "gauss_0.02_s3": {
+      "f1": {
+        "resid05": 0.7298290943222607
+      },
+      "tpr": 0.3335,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.006096041055718475,
+      "flagged_per_window": 1.1346129032258065
+    },
+    "swap_s1": {
+      "f1": {
+        "resid05": 0.6477454940005204
+      },
+      "tpr": 0.9967983870967742,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.10276881720430107,
+      "flagged_per_window": 3.46325
+    },
+    "swap_s2": {
+      "f1": {
+        "resid05": 0.5406685306106068
+      },
+      "tpr": 0.9970766129032258,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.2103295932678822,
+      "flagged_per_window": 6.831733870967742
+    },
+    "swap_s3": {
+      "f1": {
+        "resid05": 0.446091649633226
+      },
+      "tpr": 0.9971747311827956,
+      "realized_fpr_clean_sensors_of_corrupted_windows": 0.31061436950146626,
+      "flagged_per_window": 9.825040322580644
+    },
+    "clean": {
+      "f1": {
+        "resid05": 0.7448793831093833
+      },
+      "realized_fpr_clean_windows": 0.005077741935483871,
+      "flagged_per_window": 0.12694354838709676
+    }
+  },
+  "device": "cuda",
+  "scoring_seconds": 3592.205086708069
+}

@@ -1,0 +1,13 @@
+block,rung,model,split,n_seeds,learned parameters,k=0,k=10,AUDC abs,protocol,source
+validation,B1ᵃ,Rank-1 sag-template matched filter,val,1,0,0.162,0.165,—,"26-class window macro-F1, validation split, zero_messages, 1 mask seed for B1/B1ᵃ/PSM (the audit scripts)",results/physics_baseline/matched_filter.json
+validation,B1,ΔV nearest signature (no profiling),val,1,0,0.649,0.601,0.626,"26-class window macro-F1, validation split, zero_messages, 1 mask seed for B1/B1ᵃ/PSM (the audit scripts)",results/pcstgnn/audit/s2_3_b1/b1_full_eval.json
+validation,B2,"PSM (profiled τ, R, L; argmin ρ)",val,1,0,0.772,0.749,—,"26-class window macro-F1, validation split, zero_messages, 1 mask seed for B1/B1ᵃ/PSM (the audit scripts)",results/pcstgnn/audit/s2_4_psm/psm_full_eval.json
+validation,B3′,"R0ⁿ (noise-aug., no physics)",val,3,"95,258",0.839 ± 0.008,0.655 ± 0.012,—,"26-class window macro-F1, validation, Gate-4 scorer, 3 offsets, σ=0",results/s4_4/r0n/pcstgnn/seed_*/scoring_full_grid.json
+validation,B5,R5 (PC-STGNN),val,3,"95,259",0.898 ± 0.003,0.857 ± 0.001,—,"26-class window macro-F1, validation, Gate-4 scorer, 3 offsets, σ=0",results/s4_4/r5/pcstgnn/seed_*/scoring_full_grid.json
+test,B2ᵇ,Logistic regression (summary features),test,1,n/a (classical),0.713,0.039,0.106,"26-class window macro-F1, test split, zero_messages, 1 fit, 3 mask seeds",results/classical_baseline/classical_curves.csv
+test,B2ᵇ,Random forest (summary features),test,1,n/a (classical),0.633,0.227,0.470,"26-class window macro-F1, test split, zero_messages, 1 fit, 3 mask seeds",results/classical_baseline/classical_curves.csv
+test,B2,"PSM (profiled τ, R, L; argmin ρ)",test,1,0,0.767,0.746,0.757,"26-class window macro-F1, test, Stage G scorer, σ=0 (read from the R5 scorer files; identical in all 3)",results/stage_g/test/r5/seed_*_scoring.json (f1_psm_mean)
+test,B3,"RGSAGE-Max, standard (Paper 1)",test,3,"95,258",0.846 ± 0.007,0.048 ± 0.015,0.340,"26-class window macro-F1, test split, zero_messages, Paper-1 evaluator",results/dropout_study/degradation_curves.csv
+test,B4 = R0,"RGSAGE-Max, dropout-aware (Paper 1)",test,3,"95,258",0.839 ± 0.011,0.674 ± 0.017,0.766,"26-class window macro-F1, test split, zero_messages, Paper-1 evaluator",results/dropout_study_aware/degradation_curves.csv
+test,B3′,"R0ⁿ (noise-aug., no physics)",test,3,"95,258",0.833 ± 0.010,0.647 ± 0.011,0.749,"26-class window macro-F1, test split, zero_messages, Stage G scorer, 3 offsets, σ=0",results/stage_g/test/r0n/seed_*_scoring.json
+test,B5,R5 (PC-STGNN),test,3,"95,259",0.894 ± 0.002,0.851 ± 0.001,0.871,"26-class window macro-F1, test split, zero_messages, Stage G scorer, 3 offsets, σ=0",results/stage_g/test/r5/seed_*_scoring.json

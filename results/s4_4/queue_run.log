@@ -1,0 +1,174 @@
+  [thr sigma=0.01] batch 0 windows 320/248000 0.0 min
+  [thr sigma=0.01] batch 20 windows 6720/248000 0.2 min
+  [thr sigma=0.01] batch 40 windows 13120/248000 0.4 min
+  [thr sigma=0.01] batch 60 windows 19520/248000 0.6 min
+  [thr sigma=0.01] batch 80 windows 25920/248000 0.8 min
+  [thr sigma=0.01] batch 100 windows 32320/248000 1.0 min
+  [thr sigma=0.01] batch 120 windows 38720/248000 1.2 min
+  [thr sigma=0.01] batch 140 windows 45120/248000 1.4 min
+  [thr sigma=0.01] batch 160 windows 51520/248000 1.6 min
+  [thr sigma=0.01] batch 180 windows 57920/248000 1.8 min
+  [thr sigma=0.01] batch 200 windows 64320/248000 1.9 min
+  [thr sigma=0.01] batch 220 windows 70720/248000 2.1 min
+  [thr sigma=0.01] batch 240 windows 77120/248000 2.3 min
+  [thr sigma=0.01] batch 260 windows 83520/248000 2.5 min
+  [thr sigma=0.01] batch 280 windows 89920/248000 2.7 min
+  [thr sigma=0.01] batch 300 windows 96320/248000 2.9 min
+  [thr sigma=0.01] batch 320 windows 102720/248000 3.1 min
+  [thr sigma=0.01] batch 340 windows 109120/248000 3.3 min
+  [thr sigma=0.01] batch 360 windows 115520/248000 3.5 min
+  [thr sigma=0.01] batch 380 windows 121920/248000 3.7 min
+  [thr sigma=0.01] batch 400 windows 128320/248000 3.9 min
+  [thr sigma=0.01] batch 420 windows 134720/248000 4.1 min
+  [thr sigma=0.01] batch 440 windows 141120/248000 4.3 min
+  [thr sigma=0.01] batch 460 windows 147520/248000 4.4 min
+  [thr sigma=0.01] batch 480 windows 153920/248000 4.6 min
+  [thr sigma=0.01] batch 500 windows 160320/248000 4.8 min
+  [thr sigma=0.01] batch 520 windows 166720/248000 5.0 min
+  [thr sigma=0.01] batch 540 windows 173120/248000 5.2 min
+  [thr sigma=0.01] batch 560 windows 179520/248000 5.4 min
+  [thr sigma=0.01] batch 580 windows 185920/248000 5.6 min
+  [thr sigma=0.01] batch 600 windows 192320/248000 5.8 min
+  [thr sigma=0.01] batch 620 windows 198720/248000 6.0 min
+  [thr sigma=0.01] batch 640 windows 205120/248000 6.2 min
+  [thr sigma=0.01] batch 660 windows 211520/248000 6.4 min
+  [thr sigma=0.01] batch 680 windows 217920/248000 6.5 min
+  [thr sigma=0.01] batch 700 windows 224320/248000 6.7 min
+  [thr sigma=0.01] batch 720 windows 230720/248000 6.9 min
+  [thr sigma=0.01] batch 740 windows 237120/248000 7.1 min
+  [thr sigma=0.01] batch 760 windows 243520/248000 7.3 min
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+  [score seed=42 sigma=0.01] batch 0 0.2 min
+  [score seed=42 sigma=0.01] batch 20 4.6 min
+  [score seed=42 sigma=0.01] batch 40 8.7 min
+  [score seed=42 sigma=0.01] batch 60 12.5 min
+  [score seed=42 sigma=0.01] batch 80 17.1 min
+  [score seed=42 sigma=0.01] batch 100 21.6 min
+  [score seed=42 sigma=0.01] batch 120 25.9 min
+  [score seed=42 sigma=0.01] batch 140 30.8 min
+  [score seed=42 sigma=0.01] batch 160 35.2 min
+  [score seed=42 sigma=0.01] batch 180 39.5 min
+  [score seed=42 sigma=0.01] batch 200 44.1 min
+  [score seed=42 sigma=0.01] batch 220 48.8 min
+  [score seed=42 sigma=0.01] batch 240 53.5 min
+  [score seed=42 sigma=0.01] batch 260 57.5 min
+  [score seed=42 sigma=0.01] batch 280 62.1 min
+  [score seed=42 sigma=0.01] batch 300 66.3 min
+  [score seed=42 sigma=0.01] batch 320 70.6 min
+  [score seed=42 sigma=0.01] batch 340 74.5 min
+  [score seed=42 sigma=0.01] batch 360 78.6 min
+  [score seed=42 sigma=0.01] batch 380 82.9 min
+  [score seed=42 sigma=0.01] batch 400 86.7 min
+  [score seed=42 sigma=0.01] batch 420 90.8 min
+  [score seed=42 sigma=0.01] batch 440 94.9 min
+  [score seed=42 sigma=0.01] batch 460 99.8 min
+  [score seed=42 sigma=0.01] batch 480 104.2 min
+  [score seed=42 sigma=0.01] batch 500 108.5 min
+  [score seed=42 sigma=0.01] batch 520 112.5 min
+  [score seed=42 sigma=0.01] batch 540 115.9 min
+  [score seed=42 sigma=0.01] batch 560 120.7 min
+  [score seed=42 sigma=0.01] batch 580 125.5 min
+  [score seed=42 sigma=0.01] batch 600 129.7 min
+  [score seed=42 sigma=0.01] batch 620 133.7 min
+  [score seed=42 sigma=0.01] batch 640 137.8 min
+  [score seed=42 sigma=0.01] batch 660 141.9 min
+  [score seed=42 sigma=0.01] batch 680 146.4 min
+  [score seed=42 sigma=0.01] batch 700 151.1 min
+  [score seed=42 sigma=0.01] batch 720 155.2 min
+  [score seed=42 sigma=0.01] batch 740 159.3 min
+  [score seed=42 sigma=0.01] batch 760 163.9 min
+  [score seed=43 sigma=0.01] batch 0 0.2 min
+  [score seed=43 sigma=0.01] batch 20 4.6 min
+  [score seed=43 sigma=0.01] batch 40 8.6 min
+  [score seed=43 sigma=0.01] batch 60 12.4 min
+  [score seed=43 sigma=0.01] batch 80 17.0 min
+  [score seed=43 sigma=0.01] batch 100 21.5 min
+  [score seed=43 sigma=0.01] batch 120 25.8 min
+  [score seed=43 sigma=0.01] batch 140 30.6 min
+  [score seed=43 sigma=0.01] batch 160 35.0 min
+  [score seed=43 sigma=0.01] batch 180 39.3 min
+  [score seed=43 sigma=0.01] batch 200 43.9 min
+  [score seed=43 sigma=0.01] batch 220 48.5 min
+  [score seed=43 sigma=0.01] batch 240 53.2 min
+  [score seed=43 sigma=0.01] batch 260 57.2 min
+  [score seed=43 sigma=0.01] batch 280 61.7 min
+  [score seed=43 sigma=0.01] batch 300 66.0 min
+  [score seed=43 sigma=0.01] batch 320 70.2 min
+  [score seed=43 sigma=0.01] batch 340 74.1 min
+  [score seed=43 sigma=0.01] batch 360 78.2 min
+  [score seed=43 sigma=0.01] batch 380 82.5 min
+  [score seed=43 sigma=0.01] batch 400 86.3 min
+  [score seed=43 sigma=0.01] batch 420 90.3 min
+  [score seed=43 sigma=0.01] batch 440 94.4 min
+  [score seed=43 sigma=0.01] batch 460 99.2 min
+  [score seed=43 sigma=0.01] batch 480 103.6 min
+  [score seed=43 sigma=0.01] batch 500 107.9 min
+  [score seed=43 sigma=0.01] batch 520 111.9 min
+  [score seed=43 sigma=0.01] batch 540 115.3 min
+  [score seed=43 sigma=0.01] batch 560 120.1 min
+  [score seed=43 sigma=0.01] batch 580 124.9 min
+  [score seed=43 sigma=0.01] batch 600 129.1 min
+  [score seed=43 sigma=0.01] batch 620 133.0 min
+  [score seed=43 sigma=0.01] batch 640 137.2 min
+  [score seed=43 sigma=0.01] batch 660 141.3 min
+  [score seed=43 sigma=0.01] batch 680 145.8 min
+  [score seed=43 sigma=0.01] batch 700 150.4 min
+  [score seed=43 sigma=0.01] batch 720 154.5 min
+  [score seed=43 sigma=0.01] batch 740 158.6 min
+  [score seed=43 sigma=0.01] batch 760 163.2 min
+  [score seed=44 sigma=0.01] batch 0 0.2 min
+  [score seed=44 sigma=0.01] batch 20 4.6 min
+  [score seed=44 sigma=0.01] batch 40 8.6 min
+  [score seed=44 sigma=0.01] batch 60 12.4 min
+  [score seed=44 sigma=0.01] batch 80 17.0 min
+  [score seed=44 sigma=0.01] batch 100 21.5 min
+  [score seed=44 sigma=0.01] batch 120 25.8 min
+  [score seed=44 sigma=0.01] batch 140 30.6 min
+  [score seed=44 sigma=0.01] batch 160 35.0 min
+  [score seed=44 sigma=0.01] batch 180 39.2 min
+  [score seed=44 sigma=0.01] batch 200 43.8 min
+  [score seed=44 sigma=0.01] batch 220 48.5 min
+  [score seed=44 sigma=0.01] batch 240 53.2 min
+  [score seed=44 sigma=0.01] batch 260 57.1 min
+  [score seed=44 sigma=0.01] batch 280 61.7 min
+  [score seed=44 sigma=0.01] batch 300 65.9 min
+  [score seed=44 sigma=0.01] batch 320 70.1 min
+  [score seed=44 sigma=0.01] batch 340 74.0 min
+  [score seed=44 sigma=0.01] batch 360 78.1 min
+  [score seed=44 sigma=0.01] batch 380 82.4 min
+  [score seed=44 sigma=0.01] batch 400 86.2 min
+  [score seed=44 sigma=0.01] batch 420 90.2 min
+  [score seed=44 sigma=0.01] batch 440 94.3 min
+  [score seed=44 sigma=0.01] batch 460 99.1 min
+  [score seed=44 sigma=0.01] batch 480 103.5 min
+  [score seed=44 sigma=0.01] batch 500 107.8 min
+  [score seed=44 sigma=0.01] batch 520 111.8 min
+  [score seed=44 sigma=0.01] batch 540 115.2 min
+  [score seed=44 sigma=0.01] batch 560 120.0 min
+  [score seed=44 sigma=0.01] batch 580 124.8 min
+  [score seed=44 sigma=0.01] batch 600 129.0 min
+  [score seed=44 sigma=0.01] batch 620 132.9 min
+  [score seed=44 sigma=0.01] batch 640 137.1 min
+  [score seed=44 sigma=0.01] batch 660 141.2 min
+  [score seed=44 sigma=0.01] batch 680 145.6 min
+  [score seed=44 sigma=0.01] batch 700 150.3 min
+  [score seed=44 sigma=0.01] batch 720 154.4 min
+  [score seed=44 sigma=0.01] batch 740 158.4 min
+  [score seed=44 sigma=0.01] batch 760 163.0 min
+[2/13] r5_gamma0 seed1 (seed=42) done.
+[3/13] r4 seed1 (seed=42) done.
+[4/13] r4 seed2 (seed=43) done.
+[5/13] r4 seed3 (seed=44) done.
+[6/13] r3 seed1 (seed=42) done.
+QUEUE STOPPED at position 7 (r6_lam2_0 seed 42): collapsed at epoch 3. {'epoch': 3, 'max_class0_frac': 0.95, 'min_net_f1': 0.1, 'triggered': True}
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+[1/7] r6i seed (seed=42) done.
+[2/7] r6i seed (seed=43) done.
+[3/7] r6i seed (seed=44) done.
+[4/7] r1 seed1 (seed=42) done.
+[5/7] r2 seed1 (seed=42) done.
+[6/7] r2 seed2 (seed=43) done.
+[7/7] r2 seed3 (seed=44) done.
+Queue complete: R6^i x3, R1, R2 x3.

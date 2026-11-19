@@ -1,0 +1,14 @@
+[2026-10-26T04:03:52Z] watcher started (pid 98685); queue state: running
+[2026-11-01T08:36:55Z] queue state 'stopped': G-TF2 is NOT started. The author decides what happens next.
+[2026-11-02T06:14:55Z] watcher started (pid 3377445); queue state: running
+[2026-11-04T20:22:56Z] queue_complete seen and the queue process has exited
+[2026-11-04T20:22:59Z] step gtf2_thresholds: start
+[2026-11-04T20:32:29Z] step gtf2_score_42: start
+[2026-11-04T23:20:44Z] step gtf2_score_43: start
+[2026-11-05T02:08:58Z] step gtf2_score_44: start
+[2026-11-05T04:56:37Z] step gtf2_summarize: start
+[2026-11-05T04:56:38Z] step gtf2r_score_42: start
+[2026-11-05T05:57:11Z] step gtf2r_score_43: start
+[2026-11-05T06:57:53Z] step gtf2r_score_44: start
+[2026-11-05T07:58:45Z] step gtf2r_summarize: start
+[2026-11-05T07:58:46Z] chain complete

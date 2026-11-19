@@ -1,0 +1,12 @@
+{
+  "n_nodes": 278,
+  "y_symmetry_max_abs_diff": 0.0,
+  "y_v_vs_ycurrents_rel_err": 6.011278962914653e-14,
+  "pass_criterion": "rel err < 1e-3 (0.1 %)",
+  "pass": true,
+  "n_nan_pairs": 0,
+  "ratio_min": 0.06734932853094433,
+  "ratio_max": 1.0460587723769372,
+  "definition": "mean over phases present at both buses of |Z[p.ph, f.ph]| / |Z[f.ph, f.ph]|; Z = inv(SystemY) after one solve",
+  "note": "check is I = Y\u00b7V against OpenDSS YCurrents at all nodes, not one branch current"
+}

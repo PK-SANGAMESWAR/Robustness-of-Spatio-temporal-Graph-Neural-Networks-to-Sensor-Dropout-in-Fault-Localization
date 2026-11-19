@@ -1,0 +1,9 @@
+{
+  "spec_hash": "30f14eaa052a989484019294003f8187cd2501ea870a1df81e442583ad918412",
+  "utc": "2026-11-14T06:47:30Z",
+  "seconds": 26801.066659219912,
+  "result": {
+    "summary": "results/stage_g/val/retrain_imp5/seed_00042_scoring.json",
+    "seconds": 26793.413782597985
+  }
+}

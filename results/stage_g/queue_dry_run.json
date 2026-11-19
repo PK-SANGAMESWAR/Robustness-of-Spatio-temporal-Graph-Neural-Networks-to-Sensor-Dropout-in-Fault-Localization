@@ -1,0 +1,91 @@
+{
+  "utc": "2026-11-11T05:39:17Z",
+  "n_steps": 46,
+  "estimated_gpu_hours": 156.33,
+  "checks": {
+    "preconditions_a_real_run_would_report": [],
+    "patch_state": "applied",
+    "order": [
+      "patch",
+      "mismatch_p1/tap_p1/42",
+      "mismatch_p1/tap_p1/43",
+      "mismatch_p1/tap_p1/44",
+      "mismatch_p1/tap_m1/42",
+      "mismatch_p1/tap_m1/43",
+      "mismatch_p1/tap_m1/44",
+      "mismatch_p1/imp5/42",
+      "mismatch_p1/imp5/43",
+      "mismatch_p1/imp5/44",
+      "b2a/train",
+      "b2a/score_val",
+      "retrain_imp5/train",
+      "retrain_imp5/score_val",
+      "s3/r0n/42",
+      "s3/r0n/43",
+      "s3/r0n/44",
+      "s3/r5/42",
+      "s3/r5/43",
+      "s3/r5/44",
+      "s3/r2/42",
+      "s3/r2/43",
+      "s3/r2/44",
+      "s3/r6i/42",
+      "s3/r6i/43",
+      "s3/r6i/44",
+      "s3/b2a/42",
+      "s4/persistent/r5/42",
+      "s4/persistent/r0n/42",
+      "s4/persistent/r5/43",
+      "s4/persistent/r0n/43",
+      "s4/persistent/r5/44",
+      "s4/persistent/r0n/44",
+      "s4/contiguous/r5/42",
+      "s4/contiguous/r0n/42",
+      "s4/contiguous/r5/43",
+      "s4/contiguous/r0n/43",
+      "s4/contiguous/r5/44",
+      "s4/contiguous/r0n/44",
+      "s4/targeted/r5/42",
+      "s4/targeted/r0n/42",
+      "s4/targeted/r5/43",
+      "s4/targeted/r0n/43",
+      "s4/targeted/r5/44",
+      "s4/targeted/r0n/44",
+      "s5/silent_failures"
+    ],
+    "sealed_set_in_queue": false,
+    "blocked_steps": [
+      "s5/silent_failures"
+    ],
+    "missing_inputs": {},
+    "spec_hashes_computed": true,
+    "configs_validate": true,
+    "mismatch_tables": {
+      "tap_p1": {
+        "shape_matches_nominal": true,
+        "complete": true,
+        "n_nan": 0,
+        "n_non_converged": 0
+      },
+      "tap_m1": {
+        "shape_matches_nominal": true,
+        "complete": true,
+        "n_nan": 0,
+        "n_non_converged": 0
+      },
+      "imp5": {
+        "shape_matches_nominal": true,
+        "complete": true,
+        "n_nan": 0,
+        "n_non_converged": 0
+      }
+    },
+    "b2a_cpu_forward_backward": {
+      "loss_finite": true,
+      "n_parameters": 95324,
+      "head_has_grad": true
+    },
+    "approval_file_created_by_dry_run": true,
+    "cuda_visible_devices": ""
+  }
+}

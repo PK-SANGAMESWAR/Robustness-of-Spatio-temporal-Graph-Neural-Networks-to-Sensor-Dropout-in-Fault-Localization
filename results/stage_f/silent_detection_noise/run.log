@@ -1,0 +1,495 @@
+[sigma=0.0005] val windows=248000 scoring=248000
+  [sigma=0.0005] batch 0 windows 320/248000  0.3 min  eta 253.0 min
+  [sigma=0.0005] batch 10 windows 3520/248000  3.1 min  eta 214.6 min
+  [sigma=0.0005] batch 20 windows 6720/248000  5.9 min  eta 210.8 min
+  [sigma=0.0005] batch 30 windows 9920/248000  8.6 min  eta 206.8 min
+  [sigma=0.0005] batch 40 windows 13120/248000  11.4 min  eta 203.9 min
+  [sigma=0.0005] batch 50 windows 16320/248000  14.2 min  eta 201.2 min
+  [sigma=0.0005] batch 60 windows 19520/248000  16.9 min  eta 197.9 min
+  [sigma=0.0005] batch 70 windows 22720/248000  19.7 min  eta 195.4 min
+  [sigma=0.0005] batch 80 windows 25920/248000  22.5 min  eta 192.8 min
+  [sigma=0.0005] batch 90 windows 29120/248000  25.3 min  eta 190.2 min
+  [sigma=0.0005] batch 100 windows 32320/248000  28.1 min  eta 187.3 min
+  [sigma=0.0005] batch 110 windows 35520/248000  30.8 min  eta 184.5 min
+  [sigma=0.0005] batch 120 windows 38720/248000  33.6 min  eta 181.8 min
+  [sigma=0.0005] batch 130 windows 41920/248000  36.4 min  eta 179.1 min
+  [sigma=0.0005] batch 140 windows 45120/248000  39.2 min  eta 176.5 min
+  [sigma=0.0005] batch 150 windows 48320/248000  42.0 min  eta 173.7 min
+  [sigma=0.0005] batch 160 windows 51520/248000  44.8 min  eta 170.7 min
+  [sigma=0.0005] batch 170 windows 54720/248000  47.5 min  eta 167.8 min
+  [sigma=0.0005] batch 180 windows 57920/248000  50.3 min  eta 164.9 min
+  [sigma=0.0005] batch 190 windows 61120/248000  53.0 min  eta 162.0 min
+  [sigma=0.0005] batch 200 windows 64320/248000  55.7 min  eta 159.2 min
+  [sigma=0.0005] batch 210 windows 67520/248000  58.5 min  eta 156.3 min
+  [sigma=0.0005] batch 220 windows 70720/248000  61.2 min  eta 153.5 min
+  [sigma=0.0005] batch 230 windows 73920/248000  64.0 min  eta 150.7 min
+  [sigma=0.0005] batch 240 windows 77120/248000  66.8 min  eta 148.0 min
+  [sigma=0.0005] batch 250 windows 80320/248000  69.6 min  eta 145.3 min
+  [sigma=0.0005] batch 260 windows 83520/248000  72.3 min  eta 142.4 min
+  [sigma=0.0005] batch 270 windows 86720/248000  75.0 min  eta 139.5 min
+  [sigma=0.0005] batch 280 windows 89920/248000  77.7 min  eta 136.7 min
+  [sigma=0.0005] batch 290 windows 93120/248000  80.4 min  eta 133.7 min
+  [sigma=0.0005] batch 300 windows 96320/248000  83.1 min  eta 130.9 min
+  [sigma=0.0005] batch 310 windows 99520/248000  85.8 min  eta 128.0 min
+  [sigma=0.0005] batch 320 windows 102720/248000  88.6 min  eta 125.3 min
+  [sigma=0.0005] batch 330 windows 105920/248000  91.4 min  eta 122.6 min
+  [sigma=0.0005] batch 340 windows 109120/248000  94.2 min  eta 119.9 min
+  [sigma=0.0005] batch 350 windows 112320/248000  96.9 min  eta 117.1 min
+  [sigma=0.0005] batch 360 windows 115520/248000  99.7 min  eta 114.3 min
+  [sigma=0.0005] batch 370 windows 118720/248000  102.4 min  eta 111.5 min
+  [sigma=0.0005] batch 380 windows 121920/248000  105.2 min  eta 108.8 min
+  [sigma=0.0005] batch 390 windows 125120/248000  108.0 min  eta 106.0 min
+  [sigma=0.0005] batch 400 windows 128320/248000  110.7 min  eta 103.3 min
+  [sigma=0.0005] batch 410 windows 131520/248000  113.4 min  eta 100.5 min
+  [sigma=0.0005] batch 420 windows 134720/248000  116.2 min  eta 97.7 min
+  [sigma=0.0005] batch 430 windows 137920/248000  118.9 min  eta 94.9 min
+  [sigma=0.0005] batch 440 windows 141120/248000  121.6 min  eta 92.1 min
+  [sigma=0.0005] batch 450 windows 144320/248000  124.3 min  eta 89.3 min
+  [sigma=0.0005] batch 460 windows 147520/248000  127.1 min  eta 86.5 min
+  [sigma=0.0005] batch 470 windows 150720/248000  129.8 min  eta 83.8 min
+  [sigma=0.0005] batch 480 windows 153920/248000  132.5 min  eta 81.0 min
+  [sigma=0.0005] batch 490 windows 157120/248000  135.2 min  eta 78.2 min
+  [sigma=0.0005] batch 500 windows 160320/248000  138.0 min  eta 75.4 min
+  [sigma=0.0005] batch 510 windows 163520/248000  140.7 min  eta 72.7 min
+  [sigma=0.0005] batch 520 windows 166720/248000  143.4 min  eta 69.9 min
+  [sigma=0.0005] batch 530 windows 169920/248000  146.0 min  eta 67.1 min
+  [sigma=0.0005] batch 540 windows 173120/248000  148.6 min  eta 64.3 min
+  [sigma=0.0005] batch 550 windows 176320/248000  151.2 min  eta 61.5 min
+  [sigma=0.0005] batch 560 windows 179520/248000  153.9 min  eta 58.7 min
+  [sigma=0.0005] batch 570 windows 182720/248000  156.5 min  eta 55.9 min
+  [sigma=0.0005] batch 580 windows 185920/248000  159.1 min  eta 53.1 min
+  [sigma=0.0005] batch 590 windows 189120/248000  161.8 min  eta 50.4 min
+  [sigma=0.0005] batch 600 windows 192320/248000  164.5 min  eta 47.6 min
+  [sigma=0.0005] batch 610 windows 195520/248000  167.2 min  eta 44.9 min
+  [sigma=0.0005] batch 620 windows 198720/248000  169.8 min  eta 42.1 min
+  [sigma=0.0005] batch 630 windows 201920/248000  172.3 min  eta 39.3 min
+  [sigma=0.0005] batch 640 windows 205120/248000  174.9 min  eta 36.6 min
+  [sigma=0.0005] batch 650 windows 208320/248000  177.4 min  eta 33.8 min
+  [sigma=0.0005] batch 660 windows 211520/248000  180.1 min  eta 31.1 min
+  [sigma=0.0005] batch 670 windows 214720/248000  182.9 min  eta 28.3 min
+  [sigma=0.0005] batch 680 windows 217920/248000  185.7 min  eta 25.6 min
+  [sigma=0.0005] batch 690 windows 221120/248000  188.5 min  eta 22.9 min
+  [sigma=0.0005] batch 700 windows 224320/248000  191.2 min  eta 20.2 min
+  [sigma=0.0005] batch 710 windows 227520/248000  194.0 min  eta 17.5 min
+  [sigma=0.0005] batch 720 windows 230720/248000  196.7 min  eta 14.7 min
+  [sigma=0.0005] batch 730 windows 233920/248000  199.5 min  eta 12.0 min
+  [sigma=0.0005] batch 740 windows 237120/248000  202.3 min  eta 9.3 min
+  [sigma=0.0005] batch 750 windows 240320/248000  205.0 min  eta 6.6 min
+  [sigma=0.0005] batch 760 windows 243520/248000  207.7 min  eta 3.8 min
+  [sigma=0.0005] batch 770 windows 246720/248000  210.5 min  eta 1.1 min
+[summary sigma=0.0005] stuck_s1 done
+[summary sigma=0.0005] stuck_s2 done
+[summary sigma=0.0005] stuck_s3 done
+[summary sigma=0.0005] bias_2pct_s1 done
+[summary sigma=0.0005] bias_2pct_s2 done
+[summary sigma=0.0005] bias_2pct_s3 done
+[summary sigma=0.0005] bias_5pct_s1 done
+[summary sigma=0.0005] bias_5pct_s2 done
+[summary sigma=0.0005] bias_5pct_s3 done
+[summary sigma=0.0005] gauss_0.02_s1 done
+[summary sigma=0.0005] gauss_0.02_s2 done
+[summary sigma=0.0005] gauss_0.02_s3 done
+[summary sigma=0.0005] swap_s1 done
+[summary sigma=0.0005] swap_s2 done
+[summary sigma=0.0005] swap_s3 done
+{
+  "sigma": 0.0005,
+  "gate_s5_1": {
+    "bias_2pct_s1": 0.9990438293474815,
+    "bias_2pct_s2": 0.9979840133047198,
+    "bias_2pct_s3": 0.9969387083709016
+  },
+  "gate_passed": true,
+  "s5_2": {
+    "stuck_s1": {
+      "loo": 0.6424272437368572,
+      "ins": 0.6435713983355418
+    },
+    "stuck_s2": {
+      "loo": 0.6092053510717225,
+      "ins": 0.610058088366469
+    },
+    "stuck_s3": {
+      "loo": 0.5892626930570418,
+      "ins": 0.5899290513376316
+    },
+    "bias_2pct_s1": {
+      "loo": 0.9990438293474815,
+      "ins": 0.9992280125245918
+    },
+    "bias_2pct_s2": {
+      "loo": 0.9979840133047198,
+      "ins": 0.9984137826081654
+    },
+    "bias_2pct_s3": {
+      "loo": 0.9969387083709016,
+      "ins": 0.9975733676441099
+    },
+    "bias_5pct_s1": {
+      "loo": 0.9995427003836471,
+      "ins": 0.999700252767774
+    },
+    "bias_5pct_s2": {
+      "loo": 0.9989941463904433,
+      "ins": 0.9992747502859481
+    },
+    "bias_5pct_s3": {
+      "loo": 0.9983844275591585,
+      "ins": 0.9988017274083429
+    },
+    "gauss_0.02_s1": {
+      "loo": 0.972503140425826,
+      "ins": 0.9732369931471259
+    },
+    "gauss_0.02_s2": {
+      "loo": 0.9642369251600461,
+      "ins": 0.9652327820958269
+    },
+    "gauss_0.02_s3": {
+      "loo": 0.9579654805798538,
+      "ins": 0.9591258535006593
+    },
+    "swap_s1": {
+      "loo": 0.9968990711616995,
+      "ins": 0.9972713045137308
+    },
+    "swap_s2": {
+      "loo": 0.9908221732950208,
+      "ins": 0.9912880338505732
+    },
+    "swap_s3": {
+      "loo": 0.9787874182330836,
+      "ins": 0.9792849304949123
+    }
+  }
+}
+[sigma=0.002] val windows=248000 scoring=248000
+  [sigma=0.002] batch 0 windows 320/248000  0.3 min  eta 249.6 min
+  [sigma=0.002] batch 10 windows 3520/248000  3.0 min  eta 209.8 min
+  [sigma=0.002] batch 20 windows 6720/248000  5.7 min  eta 205.1 min
+  [sigma=0.002] batch 30 windows 9920/248000  8.4 min  eta 201.7 min
+  [sigma=0.002] batch 40 windows 13120/248000  11.1 min  eta 199.2 min
+  [sigma=0.002] batch 50 windows 16320/248000  13.9 min  eta 196.9 min
+  [sigma=0.002] batch 60 windows 19520/248000  16.7 min  eta 195.2 min
+  [sigma=0.002] batch 70 windows 22720/248000  19.6 min  eta 194.4 min
+  [sigma=0.002] batch 80 windows 25920/248000  22.4 min  eta 192.0 min
+  [sigma=0.002] batch 90 windows 29120/248000  25.2 min  eta 189.6 min
+  [sigma=0.002] batch 100 windows 32320/248000  28.0 min  eta 187.0 min
+  [sigma=0.002] batch 110 windows 35520/248000  30.9 min  eta 184.9 min
+  [sigma=0.002] batch 120 windows 38720/248000  33.9 min  eta 183.4 min
+  [sigma=0.002] batch 130 windows 41920/248000  36.9 min  eta 181.2 min
+  [sigma=0.002] batch 140 windows 45120/248000  39.8 min  eta 179.1 min
+  [sigma=0.002] batch 150 windows 48320/248000  42.8 min  eta 177.0 min
+  [sigma=0.002] batch 160 windows 51520/248000  45.6 min  eta 174.0 min
+  [sigma=0.002] batch 170 windows 54720/248000  48.4 min  eta 171.0 min
+  [sigma=0.002] batch 180 windows 57920/248000  51.2 min  eta 168.1 min
+  [sigma=0.002] batch 190 windows 61120/248000  54.0 min  eta 165.2 min
+  [sigma=0.002] batch 200 windows 64320/248000  57.0 min  eta 162.8 min
+  [sigma=0.002] batch 210 windows 67520/248000  60.0 min  eta 160.4 min
+  [sigma=0.002] batch 220 windows 70720/248000  63.1 min  eta 158.1 min
+  [sigma=0.002] batch 230 windows 73920/248000  66.2 min  eta 155.8 min
+  [sigma=0.002] batch 240 windows 77120/248000  69.2 min  eta 153.4 min
+  [sigma=0.002] batch 250 windows 80320/248000  72.7 min  eta 151.7 min
+  [sigma=0.002] batch 260 windows 83520/248000  76.0 min  eta 149.6 min
+  [sigma=0.002] batch 270 windows 86720/248000  78.9 min  eta 146.7 min
+  [sigma=0.002] batch 280 windows 89920/248000  81.7 min  eta 143.7 min
+  [sigma=0.002] batch 290 windows 93120/248000  84.5 min  eta 140.6 min
+  [sigma=0.002] batch 300 windows 96320/248000  87.3 min  eta 137.5 min
+  [sigma=0.002] batch 310 windows 99520/248000  90.1 min  eta 134.4 min
+  [sigma=0.002] batch 320 windows 102720/248000  93.0 min  eta 131.5 min
+  [sigma=0.002] batch 330 windows 105920/248000  95.8 min  eta 128.5 min
+  [sigma=0.002] batch 340 windows 109120/248000  98.6 min  eta 125.5 min
+  [sigma=0.002] batch 350 windows 112320/248000  101.4 min  eta 122.5 min
+  [sigma=0.002] batch 360 windows 115520/248000  104.2 min  eta 119.5 min
+  [sigma=0.002] batch 370 windows 118720/248000  106.9 min  eta 116.5 min
+  [sigma=0.002] batch 380 windows 121920/248000  109.8 min  eta 113.5 min
+  [sigma=0.002] batch 390 windows 125120/248000  112.5 min  eta 110.5 min
+  [sigma=0.002] batch 400 windows 128320/248000  115.3 min  eta 107.6 min
+  [sigma=0.002] batch 410 windows 131520/248000  118.1 min  eta 104.6 min
+  [sigma=0.002] batch 420 windows 134720/248000  120.9 min  eta 101.7 min
+  [sigma=0.002] batch 430 windows 137920/248000  123.6 min  eta 98.7 min
+  [sigma=0.002] batch 440 windows 141120/248000  126.6 min  eta 95.9 min
+  [sigma=0.002] batch 450 windows 144320/248000  129.4 min  eta 92.9 min
+  [sigma=0.002] batch 460 windows 147520/248000  132.2 min  eta 90.0 min
+  [sigma=0.002] batch 470 windows 150720/248000  134.9 min  eta 87.1 min
+  [sigma=0.002] batch 480 windows 153920/248000  137.7 min  eta 84.2 min
+  [sigma=0.002] batch 490 windows 157120/248000  140.5 min  eta 81.3 min
+  [sigma=0.002] batch 500 windows 160320/248000  143.3 min  eta 78.3 min
+  [sigma=0.002] batch 510 windows 163520/248000  146.0 min  eta 75.4 min
+  [sigma=0.002] batch 520 windows 166720/248000  148.8 min  eta 72.5 min
+  [sigma=0.002] batch 530 windows 169920/248000  151.5 min  eta 69.6 min
+  [sigma=0.002] batch 540 windows 173120/248000  154.1 min  eta 66.7 min
+  [sigma=0.002] batch 550 windows 176320/248000  156.8 min  eta 63.7 min
+  [sigma=0.002] batch 560 windows 179520/248000  159.4 min  eta 60.8 min
+  [sigma=0.002] batch 570 windows 182720/248000  162.1 min  eta 57.9 min
+  [sigma=0.002] batch 580 windows 185920/248000  164.8 min  eta 55.0 min
+  [sigma=0.002] batch 590 windows 189120/248000  167.5 min  eta 52.2 min
+  [sigma=0.002] batch 600 windows 192320/248000  170.2 min  eta 49.3 min
+  [sigma=0.002] batch 610 windows 195520/248000  172.9 min  eta 46.4 min
+  [sigma=0.002] batch 620 windows 198720/248000  175.6 min  eta 43.5 min
+  [sigma=0.002] batch 630 windows 201920/248000  178.1 min  eta 40.6 min
+  [sigma=0.002] batch 640 windows 205120/248000  180.7 min  eta 37.8 min
+  [sigma=0.002] batch 650 windows 208320/248000  183.2 min  eta 34.9 min
+  [sigma=0.002] batch 660 windows 211520/248000  185.9 min  eta 32.1 min
+  [sigma=0.002] batch 670 windows 214720/248000  188.6 min  eta 29.2 min
+  [sigma=0.002] batch 680 windows 217920/248000  191.3 min  eta 26.4 min
+  [sigma=0.002] batch 690 windows 221120/248000  193.9 min  eta 23.6 min
+  [sigma=0.002] batch 700 windows 224320/248000  196.6 min  eta 20.8 min
+  [sigma=0.002] batch 710 windows 227520/248000  199.2 min  eta 17.9 min
+  [sigma=0.002] batch 720 windows 230720/248000  201.8 min  eta 15.1 min
+  [sigma=0.002] batch 730 windows 233920/248000  204.5 min  eta 12.3 min
+  [sigma=0.002] batch 740 windows 237120/248000  207.2 min  eta 9.5 min
+  [sigma=0.002] batch 750 windows 240320/248000  209.8 min  eta 6.7 min
+  [sigma=0.002] batch 760 windows 243520/248000  212.5 min  eta 3.9 min
+  [sigma=0.002] batch 770 windows 246720/248000  215.1 min  eta 1.1 min
+[summary sigma=0.002] stuck_s1 done
+[summary sigma=0.002] stuck_s2 done
+[summary sigma=0.002] stuck_s3 done
+[summary sigma=0.002] bias_2pct_s1 done
+[summary sigma=0.002] bias_2pct_s2 done
+[summary sigma=0.002] bias_2pct_s3 done
+[summary sigma=0.002] bias_5pct_s1 done
+[summary sigma=0.002] bias_5pct_s2 done
+[summary sigma=0.002] bias_5pct_s3 done
+[summary sigma=0.002] gauss_0.02_s1 done
+[summary sigma=0.002] gauss_0.02_s2 done
+[summary sigma=0.002] gauss_0.02_s3 done
+[summary sigma=0.002] swap_s1 done
+[summary sigma=0.002] swap_s2 done
+[summary sigma=0.002] swap_s3 done
+{
+  "sigma": 0.002,
+  "gate_s5_1": {
+    "bias_2pct_s1": 0.9971338060702015,
+    "bias_2pct_s2": 0.995883887671675,
+    "bias_2pct_s3": 0.9945988408451629
+  },
+  "gate_passed": true,
+  "s5_2": {
+    "stuck_s1": {
+      "loo": 0.6391247885757431,
+      "ins": 0.6402613300235892
+    },
+    "stuck_s2": {
+      "loo": 0.6072654830679094,
+      "ins": 0.6081199662059802
+    },
+    "stuck_s3": {
+      "loo": 0.5877885732393853,
+      "ins": 0.5884918104331228
+    },
+    "bias_2pct_s1": {
+      "loo": 0.9971338060702015,
+      "ins": 0.9973886159294518
+    },
+    "bias_2pct_s2": {
+      "loo": 0.995883887671675,
+      "ins": 0.9963647855164246
+    },
+    "bias_2pct_s3": {
+      "loo": 0.9945988408451629,
+      "ins": 0.9952670281143331
+    },
+    "bias_5pct_s1": {
+      "loo": 0.9993533399111575,
+      "ins": 0.9995302272653676
+    },
+    "bias_5pct_s2": {
+      "loo": 0.9987386622483727,
+      "ins": 0.9990406623752643
+    },
+    "bias_5pct_s3": {
+      "loo": 0.998077069717811,
+      "ins": 0.9985112396059975
+    },
+    "gauss_0.02_s1": {
+      "loo": 0.9512128941640652,
+      "ins": 0.9520610758822596
+    },
+    "gauss_0.02_s2": {
+      "loo": 0.9443990670060696,
+      "ins": 0.9452433556688076
+    },
+    "gauss_0.02_s3": {
+      "loo": 0.9399407800405444,
+      "ins": 0.9408832769050005
+    },
+    "swap_s1": {
+      "loo": 0.9968499936243984,
+      "ins": 0.997234385157876
+    },
+    "swap_s2": {
+      "loo": 0.9907497797490372,
+      "ins": 0.9912232269771072
+    },
+    "swap_s3": {
+      "loo": 0.9787083338358875,
+      "ins": 0.9792044271742366
+    }
+  }
+}
+[sigma=0.01] val windows=248000 scoring=248000
+  [sigma=0.01] batch 0 windows 320/248000  0.3 min  eta 252.8 min
+  [sigma=0.01] batch 10 windows 3520/248000  3.0 min  eta 209.1 min
+  [sigma=0.01] batch 20 windows 6720/248000  5.6 min  eta 202.4 min
+  [sigma=0.01] batch 30 windows 9920/248000  8.3 min  eta 198.9 min
+  [sigma=0.01] batch 40 windows 13120/248000  11.0 min  eta 196.1 min
+  [sigma=0.01] batch 50 windows 16320/248000  13.6 min  eta 193.7 min
+  [sigma=0.01] batch 60 windows 19520/248000  16.3 min  eta 190.5 min
+  [sigma=0.01] batch 70 windows 22720/248000  19.0 min  eta 188.0 min
+  [sigma=0.01] batch 80 windows 25920/248000  21.6 min  eta 185.4 min
+  [sigma=0.01] batch 90 windows 29120/248000  24.3 min  eta 182.9 min
+  [sigma=0.01] batch 100 windows 32320/248000  27.0 min  eta 180.5 min
+  [sigma=0.01] batch 110 windows 35520/248000  29.8 min  eta 178.1 min
+  [sigma=0.01] batch 120 windows 38720/248000  32.5 min  eta 175.7 min
+  [sigma=0.01] batch 130 windows 41920/248000  35.3 min  eta 173.3 min
+  [sigma=0.01] batch 140 windows 45120/248000  38.0 min  eta 170.8 min
+  [sigma=0.01] batch 150 windows 48320/248000  40.7 min  eta 168.3 min
+  [sigma=0.01] batch 160 windows 51520/248000  43.4 min  eta 165.6 min
+  [sigma=0.01] batch 170 windows 54720/248000  46.1 min  eta 162.8 min
+  [sigma=0.01] batch 180 windows 57920/248000  48.8 min  eta 160.2 min
+  [sigma=0.01] batch 190 windows 61120/248000  51.5 min  eta 157.4 min
+  [sigma=0.01] batch 200 windows 64320/248000  54.2 min  eta 154.9 min
+  [sigma=0.01] batch 210 windows 67520/248000  57.0 min  eta 152.2 min
+  [sigma=0.01] batch 220 windows 70720/248000  59.7 min  eta 149.7 min
+  [sigma=0.01] batch 230 windows 73920/248000  62.5 min  eta 147.1 min
+  [sigma=0.01] batch 240 windows 77120/248000  65.2 min  eta 144.5 min
+  [sigma=0.01] batch 250 windows 80320/248000  68.0 min  eta 142.0 min
+  [sigma=0.01] batch 260 windows 83520/248000  70.7 min  eta 139.3 min
+  [sigma=0.01] batch 270 windows 86720/248000  73.4 min  eta 136.5 min
+  [sigma=0.01] batch 280 windows 89920/248000  76.1 min  eta 133.8 min
+  [sigma=0.01] batch 290 windows 93120/248000  78.8 min  eta 131.0 min
+  [sigma=0.01] batch 300 windows 96320/248000  81.5 min  eta 128.3 min
+  [sigma=0.01] batch 310 windows 99520/248000  84.1 min  eta 125.5 min
+  [sigma=0.01] batch 320 windows 102720/248000  86.9 min  eta 122.9 min
+  [sigma=0.01] batch 330 windows 105920/248000  89.7 min  eta 120.3 min
+  [sigma=0.01] batch 340 windows 109120/248000  92.4 min  eta 117.6 min
+  [sigma=0.01] batch 350 windows 112320/248000  95.2 min  eta 114.9 min
+  [sigma=0.01] batch 360 windows 115520/248000  97.9 min  eta 112.3 min
+  [sigma=0.01] batch 370 windows 118720/248000  100.6 min  eta 109.6 min
+  [sigma=0.01] batch 380 windows 121920/248000  103.4 min  eta 106.9 min
+  [sigma=0.01] batch 390 windows 125120/248000  106.2 min  eta 104.3 min
+  [sigma=0.01] batch 400 windows 128320/248000  108.9 min  eta 101.6 min
+  [sigma=0.01] batch 410 windows 131520/248000  111.7 min  eta 98.9 min
+  [sigma=0.01] batch 420 windows 134720/248000  114.4 min  eta 96.2 min
+  [sigma=0.01] batch 430 windows 137920/248000  117.1 min  eta 93.5 min
+  [sigma=0.01] batch 440 windows 141120/248000  119.9 min  eta 90.8 min
+  [sigma=0.01] batch 450 windows 144320/248000  122.6 min  eta 88.1 min
+  [sigma=0.01] batch 460 windows 147520/248000  125.4 min  eta 85.4 min
+  [sigma=0.01] batch 470 windows 150720/248000  128.2 min  eta 82.7 min
+  [sigma=0.01] batch 480 windows 153920/248000  131.0 min  eta 80.1 min
+  [sigma=0.01] batch 490 windows 157120/248000  133.7 min  eta 77.4 min
+  [sigma=0.01] batch 500 windows 160320/248000  136.5 min  eta 74.7 min
+  [sigma=0.01] batch 510 windows 163520/248000  139.3 min  eta 72.0 min
+  [sigma=0.01] batch 520 windows 166720/248000  142.0 min  eta 69.2 min
+  [sigma=0.01] batch 530 windows 169920/248000  144.8 min  eta 66.5 min
+  [sigma=0.01] batch 540 windows 173120/248000  147.4 min  eta 63.8 min
+  [sigma=0.01] batch 550 windows 176320/248000  150.1 min  eta 61.0 min
+  [sigma=0.01] batch 560 windows 179520/248000  152.8 min  eta 58.3 min
+  [sigma=0.01] batch 570 windows 182720/248000  155.5 min  eta 55.6 min
+  [sigma=0.01] batch 580 windows 185920/248000  158.3 min  eta 52.9 min
+  [sigma=0.01] batch 590 windows 189120/248000  161.1 min  eta 50.1 min
+  [sigma=0.01] batch 600 windows 192320/248000  163.9 min  eta 47.4 min
+  [sigma=0.01] batch 610 windows 195520/248000  166.6 min  eta 44.7 min
+  [sigma=0.01] batch 620 windows 198720/248000  169.4 min  eta 42.0 min
+  [sigma=0.01] batch 630 windows 201920/248000  172.1 min  eta 39.3 min
+  [sigma=0.01] batch 640 windows 205120/248000  174.7 min  eta 36.5 min
+  [sigma=0.01] batch 650 windows 208320/248000  177.4 min  eta 33.8 min
+  [sigma=0.01] batch 660 windows 211520/248000  180.2 min  eta 31.1 min
+  [sigma=0.01] batch 670 windows 214720/248000  183.0 min  eta 28.4 min
+  [sigma=0.01] batch 680 windows 217920/248000  185.8 min  eta 25.6 min
+  [sigma=0.01] batch 690 windows 221120/248000  188.6 min  eta 22.9 min
+  [sigma=0.01] batch 700 windows 224320/248000  191.4 min  eta 20.2 min
+  [sigma=0.01] batch 710 windows 227520/248000  194.2 min  eta 17.5 min
+  [sigma=0.01] batch 720 windows 230720/248000  197.0 min  eta 14.8 min
+  [sigma=0.01] batch 730 windows 233920/248000  199.8 min  eta 12.0 min
+  [sigma=0.01] batch 740 windows 237120/248000  202.6 min  eta 9.3 min
+  [sigma=0.01] batch 750 windows 240320/248000  205.3 min  eta 6.6 min
+  [sigma=0.01] batch 760 windows 243520/248000  208.0 min  eta 3.8 min
+  [sigma=0.01] batch 770 windows 246720/248000  210.7 min  eta 1.1 min
+[summary sigma=0.01] stuck_s1 done
+[summary sigma=0.01] stuck_s2 done
+[summary sigma=0.01] stuck_s3 done
+[summary sigma=0.01] bias_2pct_s1 done
+[summary sigma=0.01] bias_2pct_s2 done
+[summary sigma=0.01] bias_2pct_s3 done
+[summary sigma=0.01] bias_5pct_s1 done
+[summary sigma=0.01] bias_5pct_s2 done
+[summary sigma=0.01] bias_5pct_s3 done
+[summary sigma=0.01] gauss_0.02_s1 done
+[summary sigma=0.01] gauss_0.02_s2 done
+[summary sigma=0.01] gauss_0.02_s3 done
+[summary sigma=0.01] swap_s1 done
+[summary sigma=0.01] swap_s2 done
+[summary sigma=0.01] swap_s3 done
+{
+  "sigma": 0.01,
+  "gate_s5_1": {
+    "bias_2pct_s1": 0.8537240598877037,
+    "bias_2pct_s2": 0.850441464196567,
+    "bias_2pct_s3": 0.8482096781428851
+  },
+  "gate_passed": true,
+  "s5_2": {
+    "stuck_s1": {
+      "loo": 0.6234908003249789,
+      "ins": 0.6226762162996173
+    },
+    "stuck_s2": {
+      "loo": 0.6002133203004825,
+      "ins": 0.5997726213682107
+    },
+    "stuck_s3": {
+      "loo": 0.582312489338215,
+      "ins": 0.5819677528915341
+    },
+    "bias_2pct_s1": {
+      "loo": 0.8537240598877037,
+      "ins": 0.8490775073088064
+    },
+    "bias_2pct_s2": {
+      "loo": 0.850441464196567,
+      "ins": 0.8463505819508381
+    },
+    "bias_2pct_s3": {
+      "loo": 0.8482096781428851,
+      "ins": 0.8445607281092089
+    },
+    "bias_5pct_s1": {
+      "loo": 0.990780524186435,
+      "ins": 0.9910571170116984
+    },
+    "bias_5pct_s2": {
+      "loo": 0.9891854198671772,
+      "ins": 0.9895799569656833
+    },
+    "bias_5pct_s3": {
+      "loo": 0.987814857453839,
+      "ins": 0.9882795610273192
+    },
+    "gauss_0.02_s1": {
+      "loo": 0.7832892940144137,
+      "ins": 0.7828515466145156
+    },
+    "gauss_0.02_s2": {
+      "loo": 0.7812412836635935,
+      "ins": 0.7809136989525955
+    },
+    "gauss_0.02_s3": {
+      "loo": 0.780195610928853,
+      "ins": 0.7801251792706757
+    },
+    "swap_s1": {
+      "loo": 0.9958828489529137,
+      "ins": 0.996297138629195
+    },
+    "swap_s2": {
+      "loo": 0.9894059527694204,
+      "ins": 0.9899811432109047
+    },
+    "swap_s3": {
+      "loo": 0.9770971792615607,
+      "ins": 0.9776734786448973
+    }
+  }
+}

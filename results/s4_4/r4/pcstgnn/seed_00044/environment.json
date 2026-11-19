@@ -1,0 +1,8 @@
+{
+  "cuda_available": true,
+  "deterministic_algorithms": true,
+  "device": "cuda",
+  "python": "3.12.3",
+  "seed": 44,
+  "torch": "2.5.1+cu121"
+}

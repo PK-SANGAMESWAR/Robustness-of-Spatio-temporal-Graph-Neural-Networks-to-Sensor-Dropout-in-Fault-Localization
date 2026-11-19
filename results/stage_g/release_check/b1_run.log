@@ -1,0 +1,314 @@
+[v_nominal] computed, shape=(75,), mean=0.7465 (10.8s)
+[table] delta_table (26, 198, 75)  device=cpu
+  [B1 k=0 ms=0] batch 0/771
+  [B1 k=0 ms=0] batch 15/771
+  [B1 k=0 ms=0] batch 30/771
+  [B1 k=0 ms=0] batch 45/771
+  [B1 k=0 ms=0] batch 60/771
+  [B1 k=0 ms=0] batch 75/771
+  [B1 k=0 ms=0] batch 90/771
+  [B1 k=0 ms=0] batch 105/771
+  [B1 k=0 ms=0] batch 120/771
+  [B1 k=0 ms=0] batch 135/771
+  [B1 k=0 ms=0] batch 150/771
+  [B1 k=0 ms=0] batch 165/771
+  [B1 k=0 ms=0] batch 180/771
+  [B1 k=0 ms=0] batch 195/771
+  [B1 k=0 ms=0] batch 210/771
+  [B1 k=0 ms=0] batch 225/771
+  [B1 k=0 ms=0] batch 240/771
+  [B1 k=0 ms=0] batch 255/771
+  [B1 k=0 ms=0] batch 270/771
+  [B1 k=0 ms=0] batch 285/771
+  [B1 k=0 ms=0] batch 300/771
+  [B1 k=0 ms=0] batch 315/771
+  [B1 k=0 ms=0] batch 330/771
+  [B1 k=0 ms=0] batch 345/771
+  [B1 k=0 ms=0] batch 360/771
+  [B1 k=0 ms=0] batch 375/771
+  [B1 k=0 ms=0] batch 390/771
+  [B1 k=0 ms=0] batch 405/771
+  [B1 k=0 ms=0] batch 420/771
+  [B1 k=0 ms=0] batch 435/771
+  [B1 k=0 ms=0] batch 450/771
+  [B1 k=0 ms=0] batch 465/771
+  [B1 k=0 ms=0] batch 480/771
+  [B1 k=0 ms=0] batch 495/771
+  [B1 k=0 ms=0] batch 510/771
+  [B1 k=0 ms=0] batch 525/771
+  [B1 k=0 ms=0] batch 540/771
+  [B1 k=0 ms=0] batch 555/771
+  [B1 k=0 ms=0] batch 570/771
+  [B1 k=0 ms=0] batch 585/771
+  [B1 k=0 ms=0] batch 600/771
+  [B1 k=0 ms=0] batch 615/771
+  [B1 k=0 ms=0] batch 630/771
+  [B1 k=0 ms=0] batch 645/771
+  [B1 k=0 ms=0] batch 660/771
+  [B1 k=0 ms=0] batch 675/771
+  [B1 k=0 ms=0] batch 690/771
+  [B1 k=0 ms=0] batch 705/771
+  [B1 k=0 ms=0] batch 720/771
+  [B1 k=0 ms=0] batch 735/771
+  [B1 k=0 ms=0] batch 750/771
+  [B1 k=0 ms=0] batch 765/771
+[B1 k=0] macro-F1=0.6495
+  [B1 k=1 ms=0] batch 0/771
+  [B1 k=1 ms=0] batch 15/771
+  [B1 k=1 ms=0] batch 30/771
+  [B1 k=1 ms=0] batch 45/771
+  [B1 k=1 ms=0] batch 60/771
+  [B1 k=1 ms=0] batch 75/771
+  [B1 k=1 ms=0] batch 90/771
+  [B1 k=1 ms=0] batch 105/771
+  [B1 k=1 ms=0] batch 120/771
+  [B1 k=1 ms=0] batch 135/771
+  [B1 k=1 ms=0] batch 150/771
+  [B1 k=1 ms=0] batch 165/771
+  [B1 k=1 ms=0] batch 180/771
+  [B1 k=1 ms=0] batch 195/771
+  [B1 k=1 ms=0] batch 210/771
+  [B1 k=1 ms=0] batch 225/771
+  [B1 k=1 ms=0] batch 240/771
+  [B1 k=1 ms=0] batch 255/771
+  [B1 k=1 ms=0] batch 270/771
+  [B1 k=1 ms=0] batch 285/771
+  [B1 k=1 ms=0] batch 300/771
+  [B1 k=1 ms=0] batch 315/771
+  [B1 k=1 ms=0] batch 330/771
+  [B1 k=1 ms=0] batch 345/771
+  [B1 k=1 ms=0] batch 360/771
+  [B1 k=1 ms=0] batch 375/771
+  [B1 k=1 ms=0] batch 390/771
+  [B1 k=1 ms=0] batch 405/771
+  [B1 k=1 ms=0] batch 420/771
+  [B1 k=1 ms=0] batch 435/771
+  [B1 k=1 ms=0] batch 450/771
+  [B1 k=1 ms=0] batch 465/771
+  [B1 k=1 ms=0] batch 480/771
+  [B1 k=1 ms=0] batch 495/771
+  [B1 k=1 ms=0] batch 510/771
+  [B1 k=1 ms=0] batch 525/771
+  [B1 k=1 ms=0] batch 540/771
+  [B1 k=1 ms=0] batch 555/771
+  [B1 k=1 ms=0] batch 570/771
+  [B1 k=1 ms=0] batch 585/771
+  [B1 k=1 ms=0] batch 600/771
+  [B1 k=1 ms=0] batch 615/771
+  [B1 k=1 ms=0] batch 630/771
+  [B1 k=1 ms=0] batch 645/771
+  [B1 k=1 ms=0] batch 660/771
+  [B1 k=1 ms=0] batch 675/771
+  [B1 k=1 ms=0] batch 690/771
+  [B1 k=1 ms=0] batch 705/771
+  [B1 k=1 ms=0] batch 720/771
+  [B1 k=1 ms=0] batch 735/771
+  [B1 k=1 ms=0] batch 750/771
+  [B1 k=1 ms=0] batch 765/771
+[B1 k=1] macro-F1=0.6436
+  [B1 k=2 ms=0] batch 0/771
+  [B1 k=2 ms=0] batch 15/771
+  [B1 k=2 ms=0] batch 30/771
+  [B1 k=2 ms=0] batch 45/771
+  [B1 k=2 ms=0] batch 60/771
+  [B1 k=2 ms=0] batch 75/771
+  [B1 k=2 ms=0] batch 90/771
+  [B1 k=2 ms=0] batch 105/771
+  [B1 k=2 ms=0] batch 120/771
+  [B1 k=2 ms=0] batch 135/771
+  [B1 k=2 ms=0] batch 150/771
+  [B1 k=2 ms=0] batch 165/771
+  [B1 k=2 ms=0] batch 180/771
+  [B1 k=2 ms=0] batch 195/771
+  [B1 k=2 ms=0] batch 210/771
+  [B1 k=2 ms=0] batch 225/771
+  [B1 k=2 ms=0] batch 240/771
+  [B1 k=2 ms=0] batch 255/771
+  [B1 k=2 ms=0] batch 270/771
+  [B1 k=2 ms=0] batch 285/771
+  [B1 k=2 ms=0] batch 300/771
+  [B1 k=2 ms=0] batch 315/771
+  [B1 k=2 ms=0] batch 330/771
+  [B1 k=2 ms=0] batch 345/771
+  [B1 k=2 ms=0] batch 360/771
+  [B1 k=2 ms=0] batch 375/771
+  [B1 k=2 ms=0] batch 390/771
+  [B1 k=2 ms=0] batch 405/771
+  [B1 k=2 ms=0] batch 420/771
+  [B1 k=2 ms=0] batch 435/771
+  [B1 k=2 ms=0] batch 450/771
+  [B1 k=2 ms=0] batch 465/771
+  [B1 k=2 ms=0] batch 480/771
+  [B1 k=2 ms=0] batch 495/771
+  [B1 k=2 ms=0] batch 510/771
+  [B1 k=2 ms=0] batch 525/771
+  [B1 k=2 ms=0] batch 540/771
+  [B1 k=2 ms=0] batch 555/771
+  [B1 k=2 ms=0] batch 570/771
+  [B1 k=2 ms=0] batch 585/771
+  [B1 k=2 ms=0] batch 600/771
+  [B1 k=2 ms=0] batch 615/771
+  [B1 k=2 ms=0] batch 630/771
+  [B1 k=2 ms=0] batch 645/771
+  [B1 k=2 ms=0] batch 660/771
+  [B1 k=2 ms=0] batch 675/771
+  [B1 k=2 ms=0] batch 690/771
+  [B1 k=2 ms=0] batch 705/771
+  [B1 k=2 ms=0] batch 720/771
+  [B1 k=2 ms=0] batch 735/771
+  [B1 k=2 ms=0] batch 750/771
+  [B1 k=2 ms=0] batch 765/771
+[B1 k=2] macro-F1=0.6399
+  [B1 k=5 ms=0] batch 0/771
+  [B1 k=5 ms=0] batch 15/771
+  [B1 k=5 ms=0] batch 30/771
+  [B1 k=5 ms=0] batch 45/771
+  [B1 k=5 ms=0] batch 60/771
+  [B1 k=5 ms=0] batch 75/771
+  [B1 k=5 ms=0] batch 90/771
+  [B1 k=5 ms=0] batch 105/771
+  [B1 k=5 ms=0] batch 120/771
+  [B1 k=5 ms=0] batch 135/771
+  [B1 k=5 ms=0] batch 150/771
+  [B1 k=5 ms=0] batch 165/771
+  [B1 k=5 ms=0] batch 180/771
+  [B1 k=5 ms=0] batch 195/771
+  [B1 k=5 ms=0] batch 210/771
+  [B1 k=5 ms=0] batch 225/771
+  [B1 k=5 ms=0] batch 240/771
+  [B1 k=5 ms=0] batch 255/771
+  [B1 k=5 ms=0] batch 270/771
+  [B1 k=5 ms=0] batch 285/771
+  [B1 k=5 ms=0] batch 300/771
+  [B1 k=5 ms=0] batch 315/771
+  [B1 k=5 ms=0] batch 330/771
+  [B1 k=5 ms=0] batch 345/771
+  [B1 k=5 ms=0] batch 360/771
+  [B1 k=5 ms=0] batch 375/771
+  [B1 k=5 ms=0] batch 390/771
+  [B1 k=5 ms=0] batch 405/771
+  [B1 k=5 ms=0] batch 420/771
+  [B1 k=5 ms=0] batch 435/771
+  [B1 k=5 ms=0] batch 450/771
+  [B1 k=5 ms=0] batch 465/771
+  [B1 k=5 ms=0] batch 480/771
+  [B1 k=5 ms=0] batch 495/771
+  [B1 k=5 ms=0] batch 510/771
+  [B1 k=5 ms=0] batch 525/771
+  [B1 k=5 ms=0] batch 540/771
+  [B1 k=5 ms=0] batch 555/771
+  [B1 k=5 ms=0] batch 570/771
+  [B1 k=5 ms=0] batch 585/771
+  [B1 k=5 ms=0] batch 600/771
+  [B1 k=5 ms=0] batch 615/771
+  [B1 k=5 ms=0] batch 630/771
+  [B1 k=5 ms=0] batch 645/771
+  [B1 k=5 ms=0] batch 660/771
+  [B1 k=5 ms=0] batch 675/771
+  [B1 k=5 ms=0] batch 690/771
+  [B1 k=5 ms=0] batch 705/771
+  [B1 k=5 ms=0] batch 720/771
+  [B1 k=5 ms=0] batch 735/771
+  [B1 k=5 ms=0] batch 750/771
+  [B1 k=5 ms=0] batch 765/771
+[B1 k=5] macro-F1=0.6278
+  [B1 k=10 ms=0] batch 0/771
+  [B1 k=10 ms=0] batch 15/771
+  [B1 k=10 ms=0] batch 30/771
+  [B1 k=10 ms=0] batch 45/771
+  [B1 k=10 ms=0] batch 60/771
+  [B1 k=10 ms=0] batch 75/771
+  [B1 k=10 ms=0] batch 90/771
+  [B1 k=10 ms=0] batch 105/771
+  [B1 k=10 ms=0] batch 120/771
+  [B1 k=10 ms=0] batch 135/771
+  [B1 k=10 ms=0] batch 150/771
+  [B1 k=10 ms=0] batch 165/771
+  [B1 k=10 ms=0] batch 180/771
+  [B1 k=10 ms=0] batch 195/771
+  [B1 k=10 ms=0] batch 210/771
+  [B1 k=10 ms=0] batch 225/771
+  [B1 k=10 ms=0] batch 240/771
+  [B1 k=10 ms=0] batch 255/771
+  [B1 k=10 ms=0] batch 270/771
+  [B1 k=10 ms=0] batch 285/771
+  [B1 k=10 ms=0] batch 300/771
+  [B1 k=10 ms=0] batch 315/771
+  [B1 k=10 ms=0] batch 330/771
+  [B1 k=10 ms=0] batch 345/771
+  [B1 k=10 ms=0] batch 360/771
+  [B1 k=10 ms=0] batch 375/771
+  [B1 k=10 ms=0] batch 390/771
+  [B1 k=10 ms=0] batch 405/771
+  [B1 k=10 ms=0] batch 420/771
+  [B1 k=10 ms=0] batch 435/771
+  [B1 k=10 ms=0] batch 450/771
+  [B1 k=10 ms=0] batch 465/771
+  [B1 k=10 ms=0] batch 480/771
+  [B1 k=10 ms=0] batch 495/771
+  [B1 k=10 ms=0] batch 510/771
+  [B1 k=10 ms=0] batch 525/771
+  [B1 k=10 ms=0] batch 540/771
+  [B1 k=10 ms=0] batch 555/771
+  [B1 k=10 ms=0] batch 570/771
+  [B1 k=10 ms=0] batch 585/771
+  [B1 k=10 ms=0] batch 600/771
+  [B1 k=10 ms=0] batch 615/771
+  [B1 k=10 ms=0] batch 630/771
+  [B1 k=10 ms=0] batch 645/771
+  [B1 k=10 ms=0] batch 660/771
+  [B1 k=10 ms=0] batch 675/771
+  [B1 k=10 ms=0] batch 690/771
+  [B1 k=10 ms=0] batch 705/771
+  [B1 k=10 ms=0] batch 720/771
+  [B1 k=10 ms=0] batch 735/771
+  [B1 k=10 ms=0] batch 750/771
+  [B1 k=10 ms=0] batch 765/771
+[B1 k=10] macro-F1=0.6009
+
+wrote /home/ubuntu/Fault-Localization/results/stage_g/release_check/b1/b1_full_eval.json (41.6s)
+{
+ "B1": {
+  "f1_by_k": {
+   "0": {
+    "new": 0.6494595390704816,
+    "stored": 0.6494595390704816,
+    "abs_diff": 0.0
+   },
+   "1": {
+    "new": 0.6436171624195297,
+    "stored": 0.6436171624195297,
+    "abs_diff": 0.0
+   },
+   "2": {
+    "new": 0.6398762990141763,
+    "stored": 0.6398762990141763,
+    "abs_diff": 0.0
+   },
+   "5": {
+    "new": 0.6277903559946825,
+    "stored": 0.6277903559946825,
+    "abs_diff": 0.0
+   },
+   "10": {
+    "new": 0.6008513419889602,
+    "stored": 0.6008513419889602,
+    "abs_diff": 0.0
+   }
+  },
+  "v_nominal_max_abs_diff": 0.0
+ },
+ "B1a": {
+  "tau": {
+   "new": 0.06163778528571129,
+   "stored": 0.06163778528571129
+  },
+  "val_f1_k0": {
+   "new": 0.1620344731429914,
+   "stored": 0.1620344731429914
+  },
+  "curve_max_abs_diff": 0.0,
+  "n_cells_compared": 5
+ }
+}
+done

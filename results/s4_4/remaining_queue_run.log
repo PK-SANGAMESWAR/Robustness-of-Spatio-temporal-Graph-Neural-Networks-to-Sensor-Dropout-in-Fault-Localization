@@ -1,0 +1,6 @@
+[watcher] waiting for R8 completion: 2026-10-24T09:53:33Z
+[watcher] R8 complete, detected at 2026-10-24T14:15:33Z
+[watcher] launching scripts/run_s4_4_remaining_queue.py at 2026-10-24T14:15:33Z
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+QUEUE STOPPED at position 1 (r6 seed1): run collapsed at epoch 3. {'epoch': 3, 'max_class0_frac': 0.95, 'min_net_f1': 0.1, 'triggered': True}

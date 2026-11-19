@@ -1,0 +1,655 @@
+[
+ {
+  "stage": "queue_started",
+  "pid": 5,
+  "n_steps": 46,
+  "approval": "Approved by the user in this conversation on 2026-11-05: start the Stage G queue using the frozen plan in PC-STGNN/08_STAGE_G_eval.md and scripts/run_stage_g_queue.py.\n",
+  "utc": "2026-11-05T09:18:24Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "patch",
+  "position": 1,
+  "utc": "2026-11-05T09:18:24Z"
+ },
+ {
+  "stage": "queue_stopped",
+  "reason": "stop",
+  "step": "patch",
+  "utc": "2026-11-05T09:18:25Z"
+ },
+ {
+  "stage": "queue_started",
+  "pid": 5,
+  "n_steps": 46,
+  "approval": "Approved by the user in this conversation on 2026-11-05: start the Stage G queue using the frozen plan in PC-STGNN/08_STAGE_G_eval.md and scripts/run_stage_g_queue.py.\n",
+  "utc": "2026-11-05T09:21:45Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "patch",
+  "position": 1,
+  "utc": "2026-11-05T09:21:45Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "patch",
+  "position": 1,
+  "seconds": 9.131134296767414,
+  "patch": "applied now",
+  "tests": "90 passed, 3 deselected, 23 warnings in 8.33s",
+  "utc": "2026-11-05T09:21:54Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/tap_p1/42",
+  "position": 2,
+  "utc": "2026-11-05T09:21:54Z"
+ },
+ {
+  "stage": "queue_started",
+  "pid": 118317,
+  "n_steps": 46,
+  "approval": "Approved by the user in this conversation on 2026-11-05: start the Stage G queue using the frozen plan in PC-STGNN/08_STAGE_G_eval.md and scripts/run_stage_g_queue.py.\n",
+  "utc": "2026-11-11T05:39:36Z"
+ },
+ {
+  "stage": "skipped_done",
+  "step": "patch",
+  "position": 1,
+  "utc": "2026-11-11T05:39:36Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/tap_p1/42",
+  "position": 2,
+  "utc": "2026-11-11T05:39:36Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "mismatch_p1/tap_p1/42",
+  "position": 2,
+  "seconds": 10212.956579546037,
+  "utc": "2026-11-11T08:29:49Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/tap_p1/43",
+  "position": 3,
+  "utc": "2026-11-11T08:29:49Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "mismatch_p1/tap_p1/43",
+  "position": 3,
+  "seconds": 10203.547787861025,
+  "utc": "2026-11-11T11:19:52Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/tap_p1/44",
+  "position": 4,
+  "utc": "2026-11-11T11:19:52Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "mismatch_p1/tap_p1/44",
+  "position": 4,
+  "seconds": 10176.977296978002,
+  "utc": "2026-11-11T14:09:29Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/tap_m1/42",
+  "position": 5,
+  "utc": "2026-11-11T14:09:29Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "mismatch_p1/tap_m1/42",
+  "position": 5,
+  "seconds": 10167.919718855992,
+  "utc": "2026-11-11T16:58:57Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/tap_m1/43",
+  "position": 6,
+  "utc": "2026-11-11T16:58:57Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "mismatch_p1/tap_m1/43",
+  "position": 6,
+  "seconds": 10158.74220341898,
+  "utc": "2026-11-11T19:48:16Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/tap_m1/44",
+  "position": 7,
+  "utc": "2026-11-11T19:48:16Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "mismatch_p1/tap_m1/44",
+  "position": 7,
+  "seconds": 10150.859839751036,
+  "utc": "2026-11-11T22:37:27Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/imp5/42",
+  "position": 8,
+  "utc": "2026-11-11T22:37:27Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "mismatch_p1/imp5/42",
+  "position": 8,
+  "seconds": 10139.592140372959,
+  "utc": "2026-11-12T01:26:27Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/imp5/43",
+  "position": 9,
+  "utc": "2026-11-12T01:26:27Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "mismatch_p1/imp5/43",
+  "position": 9,
+  "seconds": 10129.719254494063,
+  "utc": "2026-11-12T04:15:16Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "mismatch_p1/imp5/44",
+  "position": 10,
+  "utc": "2026-11-12T04:15:16Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "mismatch_p1/imp5/44",
+  "position": 10,
+  "seconds": 10141.01121190004,
+  "utc": "2026-11-12T07:04:17Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "b2a/train",
+  "position": 11,
+  "utc": "2026-11-12T07:04:17Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "b2a/train",
+  "position": 11,
+  "seconds": 40823.603581678006,
+  "note": "trained",
+  "utc": "2026-11-12T18:24:41Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "b2a/score_val",
+  "position": 12,
+  "utc": "2026-11-12T18:24:41Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "b2a/score_val",
+  "position": 12,
+  "seconds": 10347.268638500012,
+  "utc": "2026-11-12T21:17:08Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "retrain_imp5/train",
+  "position": 13,
+  "utc": "2026-11-12T21:17:08Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "retrain_imp5/train",
+  "position": 13,
+  "seconds": 93820.65836579003,
+  "note": "trained",
+  "utc": "2026-11-13T23:20:49Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "retrain_imp5/score_val",
+  "position": 14,
+  "utc": "2026-11-13T23:20:49Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "retrain_imp5/score_val",
+  "position": 14,
+  "seconds": 26801.066659219912,
+  "utc": "2026-11-14T06:47:30Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r0n/42",
+  "position": 15,
+  "utc": "2026-11-14T06:47:30Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r0n/42",
+  "position": 15,
+  "seconds": 4984.536834531929,
+  "utc": "2026-11-14T08:10:34Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r0n/43",
+  "position": 16,
+  "utc": "2026-11-14T08:10:34Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r0n/43",
+  "position": 16,
+  "seconds": 4800.474617936998,
+  "utc": "2026-11-14T09:30:35Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r0n/44",
+  "position": 17,
+  "utc": "2026-11-14T09:30:35Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r0n/44",
+  "position": 17,
+  "seconds": 4791.882887513959,
+  "utc": "2026-11-14T10:50:27Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r5/42",
+  "position": 18,
+  "utc": "2026-11-14T10:50:27Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r5/42",
+  "position": 18,
+  "seconds": 26643.535831687972,
+  "utc": "2026-11-14T18:14:30Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r5/43",
+  "position": 19,
+  "utc": "2026-11-14T18:14:30Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r5/43",
+  "position": 19,
+  "seconds": 26570.37756529404,
+  "utc": "2026-11-15T01:37:21Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r5/44",
+  "position": 20,
+  "utc": "2026-11-15T01:37:21Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r5/44",
+  "position": 20,
+  "seconds": 26560.43361897499,
+  "utc": "2026-11-15T09:00:01Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r2/42",
+  "position": 21,
+  "utc": "2026-11-15T09:00:01Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r2/42",
+  "position": 21,
+  "seconds": 4754.1471054609865,
+  "utc": "2026-11-15T10:19:15Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r2/43",
+  "position": 22,
+  "utc": "2026-11-15T10:19:15Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r2/43",
+  "position": 22,
+  "seconds": 4839.149230531999,
+  "utc": "2026-11-15T11:39:55Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r2/44",
+  "position": 23,
+  "utc": "2026-11-15T11:39:55Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r2/44",
+  "position": 23,
+  "seconds": 4859.609187321039,
+  "utc": "2026-11-15T13:00:54Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r6i/42",
+  "position": 24,
+  "utc": "2026-11-15T13:00:54Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r6i/42",
+  "position": 24,
+  "seconds": 10506.724608054035,
+  "utc": "2026-11-15T15:56:01Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r6i/43",
+  "position": 25,
+  "utc": "2026-11-15T15:56:01Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r6i/43",
+  "position": 25,
+  "seconds": 10478.51535698399,
+  "utc": "2026-11-15T18:50:39Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/r6i/44",
+  "position": 26,
+  "utc": "2026-11-15T18:50:39Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/r6i/44",
+  "position": 26,
+  "seconds": 10462.8132095841,
+  "utc": "2026-11-15T21:45:02Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s3/b2a/42",
+  "position": 27,
+  "utc": "2026-11-15T21:45:02Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s3/b2a/42",
+  "position": 27,
+  "seconds": 10171.000307418988,
+  "utc": "2026-11-16T00:34:33Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/persistent/r5/42",
+  "position": 28,
+  "utc": "2026-11-16T00:34:33Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/persistent/r5/42",
+  "position": 28,
+  "seconds": 5010.698905191035,
+  "utc": "2026-11-16T01:58:04Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/persistent/r0n/42",
+  "position": 29,
+  "utc": "2026-11-16T01:58:04Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/persistent/r0n/42",
+  "position": 29,
+  "seconds": 667.6835356919328,
+  "utc": "2026-11-16T02:09:12Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/persistent/r5/43",
+  "position": 30,
+  "utc": "2026-11-16T02:09:12Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/persistent/r5/43",
+  "position": 30,
+  "seconds": 5021.595101034967,
+  "utc": "2026-11-16T03:32:53Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/persistent/r0n/43",
+  "position": 31,
+  "utc": "2026-11-16T03:32:53Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/persistent/r0n/43",
+  "position": 31,
+  "seconds": 673.5719321110519,
+  "utc": "2026-11-16T03:44:07Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/persistent/r5/44",
+  "position": 32,
+  "utc": "2026-11-16T03:44:07Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/persistent/r5/44",
+  "position": 32,
+  "seconds": 5037.590936113964,
+  "utc": "2026-11-16T05:08:04Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/persistent/r0n/44",
+  "position": 33,
+  "utc": "2026-11-16T05:08:04Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/persistent/r0n/44",
+  "position": 33,
+  "seconds": 678.5916983919451,
+  "utc": "2026-11-16T05:19:23Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/contiguous/r5/42",
+  "position": 34,
+  "utc": "2026-11-16T05:19:23Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/contiguous/r5/42",
+  "position": 34,
+  "seconds": 5046.372363219038,
+  "utc": "2026-11-16T06:43:29Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/contiguous/r0n/42",
+  "position": 35,
+  "utc": "2026-11-16T06:43:29Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/contiguous/r0n/42",
+  "position": 35,
+  "seconds": 681.515901944018,
+  "utc": "2026-11-16T06:54:51Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/contiguous/r5/43",
+  "position": 36,
+  "utc": "2026-11-16T06:54:51Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/contiguous/r5/43",
+  "position": 36,
+  "seconds": 5053.230913668987,
+  "utc": "2026-11-16T08:19:04Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/contiguous/r0n/43",
+  "position": 37,
+  "utc": "2026-11-16T08:19:04Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/contiguous/r0n/43",
+  "position": 37,
+  "seconds": 683.9136233560275,
+  "utc": "2026-11-16T08:30:28Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/contiguous/r5/44",
+  "position": 38,
+  "utc": "2026-11-16T08:30:28Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/contiguous/r5/44",
+  "position": 38,
+  "seconds": 5049.766037582071,
+  "utc": "2026-11-16T09:54:38Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/contiguous/r0n/44",
+  "position": 39,
+  "utc": "2026-11-16T09:54:38Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/contiguous/r0n/44",
+  "position": 39,
+  "seconds": 692.9684889439959,
+  "utc": "2026-11-16T10:06:11Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/targeted/r5/42",
+  "position": 40,
+  "utc": "2026-11-16T10:06:11Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/targeted/r5/42",
+  "position": 40,
+  "seconds": 5046.735099081066,
+  "utc": "2026-11-16T11:30:17Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/targeted/r0n/42",
+  "position": 41,
+  "utc": "2026-11-16T11:30:17Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/targeted/r0n/42",
+  "position": 41,
+  "seconds": 683.1639163910877,
+  "utc": "2026-11-16T11:41:41Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/targeted/r5/43",
+  "position": 42,
+  "utc": "2026-11-16T11:41:41Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/targeted/r5/43",
+  "position": 42,
+  "seconds": 5050.103474194999,
+  "utc": "2026-11-16T13:05:51Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/targeted/r0n/43",
+  "position": 43,
+  "utc": "2026-11-16T13:05:51Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/targeted/r0n/43",
+  "position": 43,
+  "seconds": 682.5391419780208,
+  "utc": "2026-11-16T13:17:13Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/targeted/r5/44",
+  "position": 44,
+  "utc": "2026-11-16T13:17:13Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/targeted/r5/44",
+  "position": 44,
+  "seconds": 5045.369861488929,
+  "utc": "2026-11-16T14:41:19Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s4/targeted/r0n/44",
+  "position": 45,
+  "utc": "2026-11-16T14:41:19Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s4/targeted/r0n/44",
+  "position": 45,
+  "seconds": 679.73391046701,
+  "utc": "2026-11-16T14:52:38Z"
+ },
+ {
+  "stage": "step_started",
+  "step": "s5/silent_failures",
+  "position": 46,
+  "utc": "2026-11-16T14:52:38Z"
+ },
+ {
+  "stage": "step_done",
+  "step": "s5/silent_failures",
+  "position": 46,
+  "seconds": 1.167994923889637e-06,
+  "status": "skipped_blocked",
+  "reason": "G-TF2 on the test split is outside its pre-registration (stage_f_gtf2_preregistration.md lists the test split as 'not in scope') and scripts/run_gtf.py scores validation half B only. It needs its own pre-registration and code before it can run.",
+  "utc": "2026-11-16T14:52:38Z"
+ },
+ {
+  "stage": "queue_complete",
+  "utc": "2026-11-16T14:52:38Z"
+ }
+]

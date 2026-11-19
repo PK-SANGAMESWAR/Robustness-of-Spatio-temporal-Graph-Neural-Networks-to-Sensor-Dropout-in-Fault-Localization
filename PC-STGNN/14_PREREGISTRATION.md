@@ -121,7 +121,7 @@ sealed set is opened, with the date:
 |---|---|---|---|
 | `data/ood_pilot/` generated (throwaway, not sealed — 1,100 events, R ∈ {5,20} Ω, seeds `deterministic_seed_ood(...,"pilot")`, run_ids 1000-1001) | 2026-09-25 | `scripts/generate_ood_sets.py --set pilot` | n/a (not sealed) |
 | `data/ood_test/` generated and sealed | 2026-09-25 | `scripts/generate_ood_sets.py --set test --seal` | sha256 `2a61cff095b36caf254457d090610794ee53a48ab0451b4525afec8d0cd91bd7` recorded at `data/ood_test.sha256`; 11,000 events, R ∈ {3,5,20,30} Ω, run_ids 2000-2009, write-protected (`chmod a-w`). Verified 0 seeds shared with `data/ood_pilot/` |
-| `data/ood_test/` opened (Stage G, once) | | | |
+| `data/ood_test/` opened (Stage G, once) | 2026-11-18 10:51 IST / 2026-11-18T05:21:12Z | author, 2026-11-18, chat instruction 'you can start the OOD run gate 6'; model list config/stage_g/frozen_models.json sha256 ff96ba3f3d7b; `scripts/run_stage_g_ood.py` at commit `e209828` | sha256 `2a61cff095b36caf254457d090610794ee53a48ab0451b4525afec8d0cd91bd7` = `2a61cff095b36caf254457d090610794ee53a48ab0451b4525afec8d0cd91bd7`: yes |
 
 > **[Text for the opening row added 2026-11-02 12:20 IST / 2026-11-02T06:50:48Z — Amendment 8 below.]** The empty row above is kept; it is
 > filled in by the row text of Amendment 8 at the opening.

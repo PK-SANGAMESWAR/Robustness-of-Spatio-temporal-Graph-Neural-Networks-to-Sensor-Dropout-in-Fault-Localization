@@ -1,0 +1,14 @@
+# T3 Signature table configuration
+
+| Item | Value |
+|---|---|
+| Axes (μ[f,τ,R,L,i,p]) | 25 × 11 × 18 × 17 × 25 × 3 |
+| Fault buses / types | 25 / 11 |
+| R grid | 18 points, 0.05 to 30.0 Ω |
+| L grid | 17 points, step 0.05, 0.5 to 1.3 |
+| Solves (OpenDSS) | 84,167; non-converged 0; NaN 0 |
+| Solve mode / reuse | daily / 1 |
+| Table file size | 25.2 MB (float32 mu.npy) |
+| Build cost (estimate) | 2.91 min serial, 0.15 min on 20 workers |
+
+Sources: operator/grid.json, results/pcstgnn/audit/timing.json. Build cost is the audit's estimate from per-solve timing, not a stopwatch of the real build.

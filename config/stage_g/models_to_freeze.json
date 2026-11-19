@@ -1,0 +1,54 @@
+{
+  "entries": [
+    {
+      "name": "r0n",
+      "seed": 42,
+      "run_dir": "results/s4_4/r0n/pcstgnn/seed_00042"
+    },
+    {
+      "name": "r0n",
+      "seed": 43,
+      "run_dir": "results/s4_4/r0n/pcstgnn/seed_00043"
+    },
+    {
+      "name": "r0n",
+      "seed": 44,
+      "run_dir": "results/s4_4/r0n/pcstgnn/seed_00044"
+    },
+    {
+      "name": "r5",
+      "seed": 42,
+      "run_dir": "results/s4_4/r5/pcstgnn/seed_00042"
+    },
+    {
+      "name": "r5",
+      "seed": 43,
+      "run_dir": "results/s4_4/r5/pcstgnn/seed_00043"
+    },
+    {
+      "name": "r5",
+      "seed": 44,
+      "run_dir": "results/s4_4/r5/pcstgnn/seed_00044"
+    },
+    {
+      "name": "r2",
+      "seed": 42,
+      "run_dir": "results/s4_4/r2/pcstgnn/seed_00042"
+    },
+    {
+      "name": "r2",
+      "seed": 43,
+      "run_dir": "results/s4_4/r2/pcstgnn/seed_00043"
+    },
+    {
+      "name": "r2",
+      "seed": 44,
+      "run_dir": "results/s4_4/r2/pcstgnn/seed_00044"
+    },
+    {
+      "name": "b2a",
+      "seed": 42,
+      "run_dir": "results/stage_g/train/b2a/pcstgnn/seed_00042"
+    }
+  ]
+}

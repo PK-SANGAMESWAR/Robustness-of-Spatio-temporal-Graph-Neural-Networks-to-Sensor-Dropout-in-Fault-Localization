@@ -1,0 +1,13 @@
+{
+ "source": "results/stage_g/analysis/error_attribution.json",
+ "heatmaps": {
+  "R5_k0_seed42": {
+   "errors_total": 10026.0,
+   "errors_in_D_lt_1": 5420.0
+  },
+  "R5_k10_seed42": {
+   "errors_total": 15758.0,
+   "errors_in_D_lt_1": 5490.0
+  }
+ }
+}

@@ -1,0 +1,2143 @@
+[2026-11-02T06:14:55Z] watcher started (pid 3377445); queue state: running
+[2026-11-04T20:22:56Z] queue_complete seen and the queue process has exited
+[2026-11-04T20:22:59Z] step gtf2_thresholds: start
+  [thr sigma=0.01] batch 0 windows 320/248000 0.0 min
+  [thr sigma=0.01] batch 20 windows 6720/248000 0.3 min
+  [thr sigma=0.01] batch 40 windows 13120/248000 0.5 min
+  [thr sigma=0.01] batch 60 windows 19520/248000 0.7 min
+  [thr sigma=0.01] batch 80 windows 25920/248000 1.0 min
+  [thr sigma=0.01] batch 100 windows 32320/248000 1.2 min
+  [thr sigma=0.01] batch 120 windows 38720/248000 1.5 min
+  [thr sigma=0.01] batch 140 windows 45120/248000 1.7 min
+  [thr sigma=0.01] batch 160 windows 51520/248000 1.9 min
+  [thr sigma=0.01] batch 180 windows 57920/248000 2.2 min
+  [thr sigma=0.01] batch 200 windows 64320/248000 2.4 min
+  [thr sigma=0.01] batch 220 windows 70720/248000 2.7 min
+  [thr sigma=0.01] batch 240 windows 77120/248000 2.9 min
+  [thr sigma=0.01] batch 260 windows 83520/248000 3.1 min
+  [thr sigma=0.01] batch 280 windows 89920/248000 3.4 min
+  [thr sigma=0.01] batch 300 windows 96320/248000 3.6 min
+  [thr sigma=0.01] batch 320 windows 102720/248000 3.9 min
+  [thr sigma=0.01] batch 340 windows 109120/248000 4.1 min
+  [thr sigma=0.01] batch 360 windows 115520/248000 4.3 min
+  [thr sigma=0.01] batch 380 windows 121920/248000 4.6 min
+  [thr sigma=0.01] batch 400 windows 128320/248000 4.8 min
+  [thr sigma=0.01] batch 420 windows 134720/248000 5.1 min
+  [thr sigma=0.01] batch 440 windows 141120/248000 5.3 min
+  [thr sigma=0.01] batch 460 windows 147520/248000 5.6 min
+  [thr sigma=0.01] batch 480 windows 153920/248000 5.8 min
+  [thr sigma=0.01] batch 500 windows 160320/248000 6.1 min
+  [thr sigma=0.01] batch 520 windows 166720/248000 6.3 min
+  [thr sigma=0.01] batch 540 windows 173120/248000 6.5 min
+  [thr sigma=0.01] batch 560 windows 179520/248000 6.8 min
+  [thr sigma=0.01] batch 580 windows 185920/248000 7.0 min
+  [thr sigma=0.01] batch 600 windows 192320/248000 7.3 min
+  [thr sigma=0.01] batch 620 windows 198720/248000 7.5 min
+  [thr sigma=0.01] batch 640 windows 205120/248000 7.8 min
+  [thr sigma=0.01] batch 660 windows 211520/248000 8.0 min
+  [thr sigma=0.01] batch 680 windows 217920/248000 8.3 min
+  [thr sigma=0.01] batch 700 windows 224320/248000 8.5 min
+  [thr sigma=0.01] batch 720 windows 230720/248000 8.7 min
+  [thr sigma=0.01] batch 740 windows 237120/248000 9.0 min
+  [thr sigma=0.01] batch 760 windows 243520/248000 9.2 min
+/home/ubuntu/Fault-Localization/results/stage_f/gtf2/core/thresholds_gtf2_sigma_0.01.npz
+[2026-11-04T20:32:29Z] step gtf2_score_42: start
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+  [score seed=42 sigma=0.01] batch 0 0.2 min
+  [score seed=42 sigma=0.01] batch 20 4.6 min
+  [score seed=42 sigma=0.01] batch 40 8.6 min
+  [score seed=42 sigma=0.01] batch 60 12.4 min
+  [score seed=42 sigma=0.01] batch 80 17.1 min
+  [score seed=42 sigma=0.01] batch 100 21.6 min
+  [score seed=42 sigma=0.01] batch 120 25.9 min
+  [score seed=42 sigma=0.01] batch 140 30.8 min
+  [score seed=42 sigma=0.01] batch 160 35.2 min
+  [score seed=42 sigma=0.01] batch 180 39.5 min
+  [score seed=42 sigma=0.01] batch 200 44.1 min
+  [score seed=42 sigma=0.01] batch 220 48.8 min
+  [score seed=42 sigma=0.01] batch 240 53.5 min
+  [score seed=42 sigma=0.01] batch 260 57.5 min
+  [score seed=42 sigma=0.01] batch 280 62.1 min
+  [score seed=42 sigma=0.01] batch 300 66.4 min
+  [score seed=42 sigma=0.01] batch 320 70.6 min
+  [score seed=42 sigma=0.01] batch 340 74.5 min
+  [score seed=42 sigma=0.01] batch 360 78.6 min
+  [score seed=42 sigma=0.01] batch 380 82.9 min
+  [score seed=42 sigma=0.01] batch 400 86.8 min
+  [score seed=42 sigma=0.01] batch 420 90.8 min
+  [score seed=42 sigma=0.01] batch 440 94.9 min
+  [score seed=42 sigma=0.01] batch 460 99.8 min
+  [score seed=42 sigma=0.01] batch 480 104.3 min
+  [score seed=42 sigma=0.01] batch 500 108.6 min
+  [score seed=42 sigma=0.01] batch 520 112.6 min
+  [score seed=42 sigma=0.01] batch 540 116.1 min
+  [score seed=42 sigma=0.01] batch 560 120.9 min
+  [score seed=42 sigma=0.01] batch 580 125.7 min
+  [score seed=42 sigma=0.01] batch 600 130.0 min
+  [score seed=42 sigma=0.01] batch 620 133.9 min
+  [score seed=42 sigma=0.01] batch 640 138.1 min
+  [score seed=42 sigma=0.01] batch 660 142.2 min
+  [score seed=42 sigma=0.01] batch 680 146.7 min
+  [score seed=42 sigma=0.01] batch 700 151.4 min
+  [score seed=42 sigma=0.01] batch 720 155.5 min
+  [score seed=42 sigma=0.01] batch 740 159.6 min
+  [score seed=42 sigma=0.01] batch 760 164.3 min
+[2026-11-04T23:20:44Z] step gtf2_score_43: start
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+  [score seed=43 sigma=0.01] batch 0 0.2 min
+  [score seed=43 sigma=0.01] batch 20 4.7 min
+  [score seed=43 sigma=0.01] batch 40 8.7 min
+  [score seed=43 sigma=0.01] batch 60 12.5 min
+  [score seed=43 sigma=0.01] batch 80 17.1 min
+  [score seed=43 sigma=0.01] batch 100 21.6 min
+  [score seed=43 sigma=0.01] batch 120 26.0 min
+  [score seed=43 sigma=0.01] batch 140 30.8 min
+  [score seed=43 sigma=0.01] batch 160 35.3 min
+  [score seed=43 sigma=0.01] batch 180 39.5 min
+  [score seed=43 sigma=0.01] batch 200 44.2 min
+  [score seed=43 sigma=0.01] batch 220 48.8 min
+  [score seed=43 sigma=0.01] batch 240 53.6 min
+  [score seed=43 sigma=0.01] batch 260 57.6 min
+  [score seed=43 sigma=0.01] batch 280 62.1 min
+  [score seed=43 sigma=0.01] batch 300 66.4 min
+  [score seed=43 sigma=0.01] batch 320 70.7 min
+  [score seed=43 sigma=0.01] batch 340 74.6 min
+  [score seed=43 sigma=0.01] batch 360 78.7 min
+  [score seed=43 sigma=0.01] batch 380 83.0 min
+  [score seed=43 sigma=0.01] batch 400 86.8 min
+  [score seed=43 sigma=0.01] batch 420 90.9 min
+  [score seed=43 sigma=0.01] batch 440 95.0 min
+  [score seed=43 sigma=0.01] batch 460 99.9 min
+  [score seed=43 sigma=0.01] batch 480 104.3 min
+  [score seed=43 sigma=0.01] batch 500 108.6 min
+  [score seed=43 sigma=0.01] batch 520 112.6 min
+  [score seed=43 sigma=0.01] batch 540 116.1 min
+  [score seed=43 sigma=0.01] batch 560 120.9 min
+  [score seed=43 sigma=0.01] batch 580 125.7 min
+  [score seed=43 sigma=0.01] batch 600 129.9 min
+  [score seed=43 sigma=0.01] batch 620 133.9 min
+  [score seed=43 sigma=0.01] batch 640 138.1 min
+  [score seed=43 sigma=0.01] batch 660 142.2 min
+  [score seed=43 sigma=0.01] batch 680 146.7 min
+  [score seed=43 sigma=0.01] batch 700 151.4 min
+  [score seed=43 sigma=0.01] batch 720 155.5 min
+  [score seed=43 sigma=0.01] batch 740 159.6 min
+  [score seed=43 sigma=0.01] batch 760 164.2 min
+[2026-11-05T02:08:58Z] step gtf2_score_44: start
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+  [score seed=44 sigma=0.01] batch 0 0.2 min
+  [score seed=44 sigma=0.01] batch 20 4.7 min
+  [score seed=44 sigma=0.01] batch 40 8.7 min
+  [score seed=44 sigma=0.01] batch 60 12.4 min
+  [score seed=44 sigma=0.01] batch 80 17.1 min
+  [score seed=44 sigma=0.01] batch 100 21.6 min
+  [score seed=44 sigma=0.01] batch 120 25.9 min
+  [score seed=44 sigma=0.01] batch 140 30.8 min
+  [score seed=44 sigma=0.01] batch 160 35.2 min
+  [score seed=44 sigma=0.01] batch 180 39.4 min
+  [score seed=44 sigma=0.01] batch 200 44.1 min
+  [score seed=44 sigma=0.01] batch 220 48.7 min
+  [score seed=44 sigma=0.01] batch 240 53.5 min
+  [score seed=44 sigma=0.01] batch 260 57.4 min
+  [score seed=44 sigma=0.01] batch 280 62.0 min
+  [score seed=44 sigma=0.01] batch 300 66.3 min
+  [score seed=44 sigma=0.01] batch 320 70.5 min
+  [score seed=44 sigma=0.01] batch 340 74.4 min
+  [score seed=44 sigma=0.01] batch 360 78.5 min
+  [score seed=44 sigma=0.01] batch 380 82.8 min
+  [score seed=44 sigma=0.01] batch 400 86.6 min
+  [score seed=44 sigma=0.01] batch 420 90.7 min
+  [score seed=44 sigma=0.01] batch 440 94.8 min
+  [score seed=44 sigma=0.01] batch 460 99.7 min
+  [score seed=44 sigma=0.01] batch 480 104.1 min
+  [score seed=44 sigma=0.01] batch 500 108.4 min
+  [score seed=44 sigma=0.01] batch 520 112.4 min
+  [score seed=44 sigma=0.01] batch 540 115.9 min
+  [score seed=44 sigma=0.01] batch 560 120.7 min
+  [score seed=44 sigma=0.01] batch 580 125.5 min
+  [score seed=44 sigma=0.01] batch 600 129.7 min
+  [score seed=44 sigma=0.01] batch 620 133.6 min
+  [score seed=44 sigma=0.01] batch 640 137.8 min
+  [score seed=44 sigma=0.01] batch 660 141.9 min
+  [score seed=44 sigma=0.01] batch 680 146.3 min
+  [score seed=44 sigma=0.01] batch 700 151.0 min
+  [score seed=44 sigma=0.01] batch 720 155.0 min
+  [score seed=44 sigma=0.01] batch 740 159.1 min
+  [score seed=44 sigma=0.01] batch 760 163.7 min
+[2026-11-05T04:56:37Z] step gtf2_summarize: start
+{
+  "scope": "core",
+  "arm": "gtf2",
+  "sigma": {
+    "0.01": {
+      "conditions": {
+        "stuck_s1": {
+          "nogate": [
+            0.6660011858167991,
+            0.6876743294025457,
+            0.6636663885871411
+          ],
+          "gtf2": [
+            0.6740711247918802,
+            0.6938437985529505,
+            0.6714911007496099
+          ],
+          "oracle": [
+            0.7392182317245344,
+            0.7538102295897234,
+            0.7401701075027716
+          ],
+          "gtf2_minus_nogate": [
+            0.008069938975081126,
+            0.006169469150404838,
+            0.007824712162468828
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.006520924835184338,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.07321704590773526,
+              "recovered": 0.11021940143898308
+            },
+            {
+              "denominator": 0.06613590018717774,
+              "recovered": 0.09328472331886334
+            },
+            {
+              "denominator": 0.07650371891563046,
+              "recovered": 0.10227884700739905
+            }
+          ],
+          "recovered_mean_over_seeds": 0.10192765725508181,
+          "corruption_loss": [
+            0.08001490643786302,
+            0.0719436515824895,
+            0.0821637180209448
+          ],
+          "tpr": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.05289079301075269,
+            0.05289079301075269,
+            0.05289079301075269
+          ],
+          "paired_t_p_holm_over_s": 0.019562774505553014
+        },
+        "stuck_s2": {
+          "nogate": [
+            0.575935434027105,
+            0.6006132121104508,
+            0.5715106789494794
+          ],
+          "gtf2": [
+            0.5881273642655365,
+            0.6105116705258833,
+            0.5847050732190934
+          ],
+          "oracle": [
+            0.7330844403247814,
+            0.7476729065837946,
+            0.7339382594131413
+          ],
+          "gtf2_minus_nogate": [
+            0.012191930238431459,
+            0.009898458415432465,
+            0.013194394269613996
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.006808512903170727,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.15714900629767636,
+              "recovered": 0.07758197474909347
+            },
+            {
+              "denominator": 0.14705969447334377,
+              "recovered": 0.0673091185921556
+            },
+            {
+              "denominator": 0.1624275804636619,
+              "recovered": 0.08123247438612083
+            }
+          ],
+          "recovered_mean_over_seeds": 0.07537452257578996,
+          "corruption_loss": [
+            0.17008065822755714,
+            0.15900476887458437,
+            0.17431942765860653
+          ],
+          "tpr": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.09944670406732117,
+            0.09944670406732117,
+            0.09944670406732117
+          ],
+          "paired_t_p_holm_over_s": 0.019562774505553014
+        },
+        "stuck_s3": {
+          "nogate": [
+            0.49443647840242516,
+            0.5151874278122531,
+            0.49287360025858223
+          ],
+          "gtf2": [
+            0.5046618775763647,
+            0.5355420373807113,
+            0.5042440120983102
+          ],
+          "oracle": [
+            0.7278588789321812,
+            0.7423784381314678,
+            0.7277815820257685
+          ],
+          "gtf2_minus_nogate": [
+            0.010225399173939553,
+            0.020354609568458137,
+            0.011370411839727923
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.048659047329305746,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.233422400529756,
+              "recovered": 0.043806417681991276
+            },
+            {
+              "denominator": 0.22719101031921463,
+              "recovered": 0.08959249549468926
+            },
+            {
+              "denominator": 0.23490798176718625,
+              "recovered": 0.04840368451590958
+            }
+          ],
+          "recovered_mean_over_seeds": 0.06060086589753003,
+          "corruption_loss": [
+            0.251579613852237,
+            0.24443055317278206,
+            0.2529565063495037
+          ],
+          "tpr": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.1359325513196481,
+            0.1359325513196481,
+            0.1359325513196481
+          ],
+          "paired_t_p_holm_over_s": 0.048659047329305746
+        },
+        "bias_2pct_s1": {
+          "nogate": [
+            0.7264869244694631,
+            0.7463708152448282,
+            0.7337307894283153
+          ],
+          "gtf2": [
+            0.7310032499948943,
+            0.7495425555627419,
+            0.7356021076952396
+          ],
+          "oracle": [
+            0.7392182317245344,
+            0.7538102295897234,
+            0.7401701075027716
+          ],
+          "gtf2_minus_nogate": [
+            0.004516325525431242,
+            0.003171740317913674,
+            0.0018713182669243267
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.052908229766625174,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.012731307255071322,
+              "recovered": 0.354741695801288
+            },
+            {
+              "denominator": 0.0074394143448952565,
+              "recovered": null
+            },
+            {
+              "denominator": 0.006439318074456302,
+              "recovered": null
+            }
+          ],
+          "recovered_mean_over_seeds": null,
+          "corruption_loss": [
+            0.019529167785199086,
+            0.013247165740207012,
+            0.012099317179770641
+          ],
+          "tpr": [
+            0.33276612903225805,
+            0.33276612903225805,
+            0.33276612903225805
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.01049529569892473,
+            0.01049529569892473,
+            0.01049529569892473
+          ],
+          "paired_t_p_holm_family_bias2pct": 0.10355146403389309,
+          "paired_t_p_holm_over_s": 0.10355146403389309
+        },
+        "bias_2pct_s2": {
+          "nogate": [
+            0.7072109656430184,
+            0.7335050652848244,
+            0.7204107781837469
+          ],
+          "gtf2": [
+            0.7173880545963265,
+            0.7380603466634637,
+            0.7267167310517977
+          ],
+          "oracle": [
+            0.7330844403247814,
+            0.7476729065837946,
+            0.7339382594131413
+          ],
+          "gtf2_minus_nogate": [
+            0.010177088953308044,
+            0.004555281378639253,
+            0.0063059528680508015
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.051775732016946546,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.02587347468176293,
+              "recovered": 0.39334063470344105
+            },
+            {
+              "denominator": 0.014167841298970196,
+              "recovered": 0.3215226146675117
+            },
+            {
+              "denominator": 0.0135274812293944,
+              "recovered": 0.4661586855022461
+            }
+          ],
+          "recovered_mean_over_seeds": 0.3936739782910663,
+          "corruption_loss": [
+            0.0388051266116437,
+            0.026112915700210793,
+            0.025419328424339027
+          ],
+          "tpr": [
+            0.3375443548387097,
+            0.3375443548387097,
+            0.3375443548387097
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.010950210378681626,
+            0.010950210378681626,
+            0.010950210378681626
+          ],
+          "paired_t_p_holm_family_bias2pct": 0.10355146403389309,
+          "paired_t_p_holm_over_s": 0.10355146403389309
+        },
+        "bias_2pct_s3": {
+          "nogate": [
+            0.689272619478233,
+            0.7182505251059002,
+            0.7048135523359998
+          ],
+          "gtf2": [
+            0.7038497108375802,
+            0.7274405708506599,
+            0.7157735118619168
+          ],
+          "oracle": [
+            0.7278588789321812,
+            0.7423784381314678,
+            0.7277815820257685
+          ],
+          "gtf2_minus_nogate": [
+            0.01457709135934715,
+            0.00919004574475979,
+            0.010959959525916996
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.018243546720298133,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.03858625945394811,
+              "recovered": 0.3777793329966228
+            },
+            {
+              "denominator": 0.024127913025567604,
+              "recovered": 0.38088854742726325
+            },
+            {
+              "denominator": 0.022968029689768632,
+              "recovered": 0.47718327057018883
+            }
+          ],
+          "recovered_mean_over_seeds": 0.4119503836646916,
+          "corruption_loss": [
+            0.056743472776429105,
+            0.04136745587913504,
+            0.04101655427208606
+          ],
+          "tpr": [
+            0.3403333333333333,
+            0.3403333333333333,
+            0.3403333333333333
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.011292521994134897,
+            0.011292521994134897,
+            0.011292521994134897
+          ],
+          "paired_t_p_holm_family_bias2pct": 0.0547306401608944,
+          "paired_t_p_holm_over_s": 0.0547306401608944
+        },
+        "bias_5pct_s1": {
+          "nogate": [
+            0.7191191469015374,
+            0.7106735916011977,
+            0.7039683137187478
+          ],
+          "gtf2": [
+            0.7369619147535296,
+            0.7499262690378935,
+            0.738019203286351
+          ],
+          "oracle": [
+            0.7392182317245344,
+            0.7538102295897234,
+            0.7401701075027716
+          ],
+          "gtf2_minus_nogate": [
+            0.017842767851992125,
+            0.039252677436695804,
+            0.03405088956760316
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.04219789093714558,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.020099084822996938,
+              "recovered": 0.8877403130105116
+            },
+            {
+              "denominator": 0.04313663798852574,
+              "recovered": 0.9099614450049849
+            },
+            {
+              "denominator": 0.03620179378402377,
+              "recovered": 0.9405857005525006
+            }
+          ],
+          "recovered_mean_over_seeds": 0.9127624861893323,
+          "corruption_loss": [
+            0.0268969453531247,
+            0.048944389383837494,
+            0.04186179288933811
+          ],
+          "tpr": [
+            0.9643387096774193,
+            0.9643387096774193,
+            0.9643387096774193
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.013686491935483871,
+            0.013686491935483871,
+            0.013686491935483871
+          ],
+          "paired_t_p_holm_over_s": 0.04219789093714558
+        },
+        "bias_5pct_s2": {
+          "nogate": [
+            0.68665675397458,
+            0.6686305981510745,
+            0.6691351926796696
+          ],
+          "gtf2": [
+            0.7292868767795402,
+            0.7407710704404185,
+            0.7299796699448672
+          ],
+          "oracle": [
+            0.7330844403247814,
+            0.7476729065837946,
+            0.7339382594131413
+          ],
+          "gtf2_minus_nogate": [
+            0.04263012280496015,
+            0.07214047228934395,
+            0.060844477265197594
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.02089258472851989,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.046427686350201336,
+              "recovered": 0.9182047643598609
+            },
+            {
+              "denominator": 0.07904230843272009,
+              "recovered": 0.9126817487972165
+            },
+            {
+              "denominator": 0.06480306673347169,
+              "recovered": 0.9389135473394281
+            }
+          ],
+          "recovered_mean_over_seeds": 0.9232666868321685,
+          "corruption_loss": [
+            0.05935933828008211,
+            0.09098738283396068,
+            0.07669491392841632
+          ],
+          "tpr": [
+            0.9623911290322581,
+            0.9623911290322581,
+            0.9623911290322581
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.01768969144460028,
+            0.01768969144460028,
+            0.01768969144460028
+          ],
+          "paired_t_p_holm_over_s": 0.04178516945703978
+        },
+        "bias_5pct_s3": {
+          "nogate": [
+            0.6537623293546488,
+            0.629371760671334,
+            0.6394304728610692
+          ],
+          "gtf2": [
+            0.7225064168403968,
+            0.7322979054522373,
+            0.7208212465522364
+          ],
+          "oracle": [
+            0.7278588789321812,
+            0.7423784381314678,
+            0.7277815820257685
+          ],
+          "gtf2_minus_nogate": [
+            0.068744087485748,
+            0.10292614478090323,
+            0.0813907736911672
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.013705261209854502,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.07409654957753231,
+              "recovered": 0.9277636796544263
+            },
+            {
+              "denominator": 0.11300667746013371,
+              "recovered": 0.9107970174347735
+            },
+            {
+              "denominator": 0.08835110916469924,
+              "recovered": 0.9212196027946071
+            }
+          ],
+          "recovered_mean_over_seeds": 0.9199267666279356,
+          "corruption_loss": [
+            0.0922537629000133,
+            0.13024622031370114,
+            0.10639963374701666
+          ],
+          "tpr": [
+            0.9601586021505376,
+            0.9601586021505376,
+            0.9601586021505376
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.022066715542521993,
+            0.022066715542521993,
+            0.022066715542521993
+          ],
+          "paired_t_p_holm_over_s": 0.0411157836295635
+        },
+        "gauss_0.02_s1": {
+          "nogate": [
+            0.7384695981522065,
+            0.7522203288829548,
+            0.7407078640363122
+          ],
+          "gtf2": [
+            0.7387942094132449,
+            0.7522894752052113,
+            0.7396634122085847
+          ],
+          "oracle": [
+            0.7392182317245344,
+            0.7538102295897234,
+            0.7401701075027716
+          ],
+          "gtf2_minus_nogate": [
+            0.0003246112610384433,
+            6.914632225651918e-05,
+            -0.0010444518277274994
+          ],
+          "sign_consistent_positive": false,
+          "paired_t_p": 0.6572015791813214,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.0007486335723279058,
+              "recovered": null
+            },
+            {
+              "denominator": 0.0015899007067686766,
+              "recovered": null
+            },
+            {
+              "denominator": -0.0005377565335406009,
+              "recovered": null
+            }
+          ],
+          "recovered_mean_over_seeds": null,
+          "corruption_loss": [
+            0.00754649410245567,
+            0.007397652102080432,
+            0.0051222425717737385
+          ],
+          "tpr": [
+            0.32856451612903226,
+            0.32856451612903226,
+            0.32856451612903226
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.010430443548387097,
+            0.010430443548387097,
+            0.010430443548387097
+          ],
+          "paired_t_p_holm_over_s": 1.0
+        },
+        "gauss_0.02_s2": {
+          "nogate": [
+            0.7304533166803757,
+            0.7465399211124902,
+            0.7355466333220428
+          ],
+          "gtf2": [
+            0.7319743519332255,
+            0.7465497347338304,
+            0.7348634251847704
+          ],
+          "oracle": [
+            0.7330844403247814,
+            0.7476729065837946,
+            0.7339382594131413
+          ],
+          "gtf2_minus_nogate": [
+            0.001521035252849745,
+            9.813621340115652e-06,
+            -0.0006832081372724064
+          ],
+          "sign_consistent_positive": false,
+          "paired_t_p": 0.7065080764513963,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.002631123644405653,
+              "recovered": null
+            },
+            {
+              "denominator": 0.0011329854713043597,
+              "recovered": null
+            },
+            {
+              "denominator": -0.0016083739089015614,
+              "recovered": null
+            }
+          ],
+          "recovered_mean_over_seeds": null,
+          "corruption_loss": [
+            0.015562775574286425,
+            0.013078059872544956,
+            0.010283473286043066
+          ],
+          "tpr": [
+            0.3311008064516129,
+            0.3311008064516129,
+            0.3311008064516129
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.010794880785413744,
+            0.010794880785413744,
+            0.010794880785413744
+          ],
+          "paired_t_p_holm_over_s": 1.0
+        },
+        "gauss_0.02_s3": {
+          "nogate": [
+            0.7228483977671674,
+            0.7381160601798394,
+            0.7303009065111309
+          ],
+          "gtf2": [
+            0.7255327512460705,
+            0.7407557160775078,
+            0.7298822518483461
+          ],
+          "oracle": [
+            0.7278588789321812,
+            0.7423784381314678,
+            0.7277815820257685
+          ],
+          "gtf2_minus_nogate": [
+            0.0026843534789031676,
+            0.002639655897668347,
+            -0.0004186546627847898
+          ],
+          "sign_consistent_positive": false,
+          "paired_t_p": 0.25234392071809403,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.0050104811650137915,
+              "recovered": null
+            },
+            {
+              "denominator": 0.0042623779516283156,
+              "recovered": null
+            },
+            {
+              "denominator": -0.0025193244853624064,
+              "recovered": null
+            }
+          ],
+          "recovered_mean_over_seeds": null,
+          "corruption_loss": [
+            0.023167694487494783,
+            0.02150192080519575,
+            0.01552920009695502
+          ],
+          "tpr": [
+            0.3335,
+            0.3335,
+            0.3335
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.011104472140762463,
+            0.011104472140762463,
+            0.011104472140762463
+          ],
+          "paired_t_p_holm_over_s": 0.7570317621542821
+        },
+        "swap_s1": {
+          "nogate": [
+            0.5670101623756352,
+            0.5748057597498137,
+            0.5495233677361813
+          ],
+          "gtf2": [
+            0.6467389185897955,
+            0.6632741575233168,
+            0.6475416086642108
+          ],
+          "oracle": [
+            0.7371529533479791,
+            0.7513007222694791,
+            0.7365987639374436
+          ],
+          "gtf2_minus_nogate": [
+            0.07972875621416031,
+            0.08846839777350302,
+            0.09801824092802958
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.003523560530575047,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.17014279097234397,
+              "recovered": 0.4685990852655044
+            },
+            {
+              "denominator": 0.17649496251966534,
+              "recovered": 0.5012516873598912
+            },
+            {
+              "denominator": 0.18707539620126235,
+              "recovered": 0.5239504655255578
+            }
+          ],
+          "recovered_mean_over_seeds": 0.49793374605031787,
+          "corruption_loss": [
+            0.17900592987902697,
+            0.18481222123522145,
+            0.19630673887190464
+          ],
+          "tpr": [
+            0.9967983870967742,
+            0.9967983870967742,
+            0.9967983870967742
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.10749798387096775,
+            0.10749798387096775,
+            0.10749798387096775
+          ],
+          "paired_t_p_holm_over_s": 0.008299596087838394
+        },
+        "swap_s2": {
+          "nogate": [
+            0.42046677874185556,
+            0.41875420019284715,
+            0.4116137595175285
+          ],
+          "gtf2": [
+            0.5386822674842827,
+            0.5606502582758099,
+            0.5408814421862413
+          ],
+          "oracle": [
+            0.7267885826945737,
+            0.740930523385008,
+            0.7287345038471034
+          ],
+          "gtf2_minus_nogate": [
+            0.11821548874242715,
+            0.1418960580829628,
+            0.12926768266871286
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.0027665320292794646,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.30632180395271813,
+              "recovered": 0.38591927579753393
+            },
+            {
+              "denominator": 0.32217632319216083,
+              "recovered": 0.4404298139510688
+            },
+            {
+              "denominator": 0.3171207443295749,
+              "recovered": 0.40762922319067374
+            }
+          ],
+          "recovered_mean_over_seeds": 0.4113261043130922,
+          "corruption_loss": [
+            0.3255493135128066,
+            0.34086378079218804,
+            0.3342163470905574
+          ],
+          "tpr": [
+            0.9970766129032258,
+            0.9970766129032258,
+            0.9970766129032258
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.21461851332398316,
+            0.21461851332398316,
+            0.21461851332398316
+          ],
+          "paired_t_p_holm_over_s": 0.008299596087838394
+        },
+        "swap_s3": {
+          "nogate": [
+            0.3185430299469045,
+            0.3095226803486563,
+            0.32098046484896653
+          ],
+          "gtf2": [
+            0.4465378195546244,
+            0.4686317041759367,
+            0.44614595746968244
+          ],
+          "oracle": [
+            0.718920958174713,
+            0.7341662074513279,
+            0.7195814761906244
+          ],
+          "gtf2_minus_nogate": [
+            0.12799478960771993,
+            0.15910902382728037,
+            0.1251654926207159
+          ],
+          "sign_consistent_positive": true,
+          "paired_t_p": 0.006202661783928443,
+          "recovered_per_seed": [
+            {
+              "denominator": 0.40037792822780854,
+              "recovered": 0.3196849291224989
+            },
+            {
+              "denominator": 0.42464352710267156,
+              "recovered": 0.37468844730279033
+            },
+            {
+              "denominator": 0.3986010113416579,
+              "recovered": 0.31401197954671334
+            }
+          ],
+          "recovered_mean_over_seeds": 0.33612845199066754,
+          "corruption_loss": [
+            0.42747306230775767,
+            0.45009530063637887,
+            0.4248496417591194
+          ],
+          "tpr": [
+            0.9971747311827956,
+            0.9971747311827956,
+            0.9971747311827956
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.3144552785923754,
+            0.3144552785923754,
+            0.3144552785923754
+          ],
+          "paired_t_p_holm_over_s": 0.008299596087838394
+        }
+      },
+      "clean": {
+        "nogate": [
+          0.7460160922546621,
+          0.7596179809850352,
+          0.7458301066080859
+        ],
+        "gtf2": [
+          0.7454114548787529,
+          0.7585750275220117,
+          0.744765500533982
+        ],
+        "realized_fpr_clean_windows": [
+          0.010086451612903226,
+          0.010086451612903226,
+          0.010086451612903226
+        ]
+      }
+    }
+  },
+  "decision_rule_gtf2_sigma1e-2": {
+    "stuck": {
+      "role": "primary",
+      "useful (better than no gate in all 3 seeds at every s)": true,
+      "per_s": {
+        "stuck_s1": true,
+        "stuck_s2": true,
+        "stuck_s3": true
+      }
+    },
+    "bias_2pct": {
+      "role": "secondary",
+      "useful (better than no gate in all 3 seeds at every s)": true,
+      "per_s": {
+        "bias_2pct_s1": true,
+        "bias_2pct_s2": true,
+        "bias_2pct_s3": true
+      }
+    },
+    "bias_5pct": {
+      "role": "secondary",
+      "useful (better than no gate in all 3 seeds at every s)": true,
+      "per_s": {
+        "bias_5pct_s1": true,
+        "bias_5pct_s2": true,
+        "bias_5pct_s3": true
+      }
+    },
+    "gauss_0.02": {
+      "role": "reported only",
+      "useful (better than no gate in all 3 seeds at every s)": false,
+      "per_s": {
+        "gauss_0.02_s1": false,
+        "gauss_0.02_s2": false,
+        "gauss_0.02_s3": false
+      }
+    },
+    "swap": {
+      "role": "secondary",
+      "useful (better than no gate in all 3 seeds at every s)": true,
+      "per_s": {
+        "swap_s1": true,
+        "swap_s2": true,
+        "swap_s3": true
+      }
+    }
+  }
+}
+[2026-11-05T04:56:38Z] step gtf2r_score_42: start
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+  [score seed=42 sigma=0.01] batch 0 0.1 min
+  [score seed=42 sigma=0.01] batch 20 1.6 min
+  [score seed=42 sigma=0.01] batch 40 3.1 min
+  [score seed=42 sigma=0.01] batch 60 4.4 min
+  [score seed=42 sigma=0.01] batch 80 6.1 min
+  [score seed=42 sigma=0.01] batch 100 7.7 min
+  [score seed=42 sigma=0.01] batch 120 9.2 min
+  [score seed=42 sigma=0.01] batch 140 11.0 min
+  [score seed=42 sigma=0.01] batch 160 12.5 min
+  [score seed=42 sigma=0.01] batch 180 14.1 min
+  [score seed=42 sigma=0.01] batch 200 15.7 min
+  [score seed=42 sigma=0.01] batch 220 17.4 min
+  [score seed=42 sigma=0.01] batch 240 19.0 min
+  [score seed=42 sigma=0.01] batch 260 20.5 min
+  [score seed=42 sigma=0.01] batch 280 22.1 min
+  [score seed=42 sigma=0.01] batch 300 23.6 min
+  [score seed=42 sigma=0.01] batch 320 25.1 min
+  [score seed=42 sigma=0.01] batch 340 26.5 min
+  [score seed=42 sigma=0.01] batch 360 28.0 min
+  [score seed=42 sigma=0.01] batch 380 29.5 min
+  [score seed=42 sigma=0.01] batch 400 30.9 min
+  [score seed=42 sigma=0.01] batch 420 32.3 min
+  [score seed=42 sigma=0.01] batch 440 33.8 min
+  [score seed=42 sigma=0.01] batch 460 35.5 min
+  [score seed=42 sigma=0.01] batch 480 37.1 min
+  [score seed=42 sigma=0.01] batch 500 38.6 min
+  [score seed=42 sigma=0.01] batch 520 40.1 min
+  [score seed=42 sigma=0.01] batch 540 41.3 min
+  [score seed=42 sigma=0.01] batch 560 43.0 min
+  [score seed=42 sigma=0.01] batch 580 44.8 min
+  [score seed=42 sigma=0.01] batch 600 46.3 min
+  [score seed=42 sigma=0.01] batch 620 47.7 min
+  [score seed=42 sigma=0.01] batch 640 49.2 min
+  [score seed=42 sigma=0.01] batch 660 50.6 min
+  [score seed=42 sigma=0.01] batch 680 52.2 min
+  [score seed=42 sigma=0.01] batch 700 53.9 min
+  [score seed=42 sigma=0.01] batch 720 55.4 min
+  [score seed=42 sigma=0.01] batch 740 56.8 min
+  [score seed=42 sigma=0.01] batch 760 58.5 min
+[2026-11-05T05:57:11Z] step gtf2r_score_43: start
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+  [score seed=43 sigma=0.01] batch 0 0.1 min
+  [score seed=43 sigma=0.01] batch 20 1.7 min
+  [score seed=43 sigma=0.01] batch 40 3.1 min
+  [score seed=43 sigma=0.01] batch 60 4.5 min
+  [score seed=43 sigma=0.01] batch 80 6.1 min
+  [score seed=43 sigma=0.01] batch 100 7.7 min
+  [score seed=43 sigma=0.01] batch 120 9.3 min
+  [score seed=43 sigma=0.01] batch 140 11.0 min
+  [score seed=43 sigma=0.01] batch 160 12.6 min
+  [score seed=43 sigma=0.01] batch 180 14.1 min
+  [score seed=43 sigma=0.01] batch 200 15.7 min
+  [score seed=43 sigma=0.01] batch 220 17.4 min
+  [score seed=43 sigma=0.01] batch 240 19.1 min
+  [score seed=43 sigma=0.01] batch 260 20.5 min
+  [score seed=43 sigma=0.01] batch 280 22.1 min
+  [score seed=43 sigma=0.01] batch 300 23.7 min
+  [score seed=43 sigma=0.01] batch 320 25.2 min
+  [score seed=43 sigma=0.01] batch 340 26.6 min
+  [score seed=43 sigma=0.01] batch 360 28.1 min
+  [score seed=43 sigma=0.01] batch 380 29.6 min
+  [score seed=43 sigma=0.01] batch 400 31.0 min
+  [score seed=43 sigma=0.01] batch 420 32.4 min
+  [score seed=43 sigma=0.01] batch 440 33.9 min
+  [score seed=43 sigma=0.01] batch 460 35.6 min
+  [score seed=43 sigma=0.01] batch 480 37.2 min
+  [score seed=43 sigma=0.01] batch 500 38.7 min
+  [score seed=43 sigma=0.01] batch 520 40.2 min
+  [score seed=43 sigma=0.01] batch 540 41.4 min
+  [score seed=43 sigma=0.01] batch 560 43.2 min
+  [score seed=43 sigma=0.01] batch 580 44.9 min
+  [score seed=43 sigma=0.01] batch 600 46.4 min
+  [score seed=43 sigma=0.01] batch 620 47.8 min
+  [score seed=43 sigma=0.01] batch 640 49.3 min
+  [score seed=43 sigma=0.01] batch 660 50.8 min
+  [score seed=43 sigma=0.01] batch 680 52.4 min
+  [score seed=43 sigma=0.01] batch 700 54.1 min
+  [score seed=43 sigma=0.01] batch 720 55.5 min
+  [score seed=43 sigma=0.01] batch 740 57.0 min
+  [score seed=43 sigma=0.01] batch 760 58.7 min
+[2026-11-05T06:57:53Z] step gtf2r_score_44: start
+/home/ubuntu/Fault-Localization/.venv/lib/python3.12/site-packages/torch/cuda/__init__.py:716: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+  [score seed=44 sigma=0.01] batch 0 0.1 min
+  [score seed=44 sigma=0.01] batch 20 1.7 min
+  [score seed=44 sigma=0.01] batch 40 3.1 min
+  [score seed=44 sigma=0.01] batch 60 4.5 min
+  [score seed=44 sigma=0.01] batch 80 6.1 min
+  [score seed=44 sigma=0.01] batch 100 7.7 min
+  [score seed=44 sigma=0.01] batch 120 9.3 min
+  [score seed=44 sigma=0.01] batch 140 11.0 min
+  [score seed=44 sigma=0.01] batch 160 12.6 min
+  [score seed=44 sigma=0.01] batch 180 14.1 min
+  [score seed=44 sigma=0.01] batch 200 15.8 min
+  [score seed=44 sigma=0.01] batch 220 17.5 min
+  [score seed=44 sigma=0.01] batch 240 19.1 min
+  [score seed=44 sigma=0.01] batch 260 20.6 min
+  [score seed=44 sigma=0.01] batch 280 22.2 min
+  [score seed=44 sigma=0.01] batch 300 23.8 min
+  [score seed=44 sigma=0.01] batch 320 25.3 min
+  [score seed=44 sigma=0.01] batch 340 26.7 min
+  [score seed=44 sigma=0.01] batch 360 28.2 min
+  [score seed=44 sigma=0.01] batch 380 29.7 min
+  [score seed=44 sigma=0.01] batch 400 31.1 min
+  [score seed=44 sigma=0.01] batch 420 32.5 min
+  [score seed=44 sigma=0.01] batch 440 34.0 min
+  [score seed=44 sigma=0.01] batch 460 35.8 min
+  [score seed=44 sigma=0.01] batch 480 37.3 min
+  [score seed=44 sigma=0.01] batch 500 38.9 min
+  [score seed=44 sigma=0.01] batch 520 40.3 min
+  [score seed=44 sigma=0.01] batch 540 41.6 min
+  [score seed=44 sigma=0.01] batch 560 43.3 min
+  [score seed=44 sigma=0.01] batch 580 45.0 min
+  [score seed=44 sigma=0.01] batch 600 46.6 min
+  [score seed=44 sigma=0.01] batch 620 48.0 min
+  [score seed=44 sigma=0.01] batch 640 49.5 min
+  [score seed=44 sigma=0.01] batch 660 50.9 min
+  [score seed=44 sigma=0.01] batch 680 52.6 min
+  [score seed=44 sigma=0.01] batch 700 54.2 min
+  [score seed=44 sigma=0.01] batch 720 55.7 min
+  [score seed=44 sigma=0.01] batch 740 57.2 min
+  [score seed=44 sigma=0.01] batch 760 58.8 min
+[2026-11-05T07:58:45Z] step gtf2r_summarize: start
+{
+  "scope": "core",
+  "arm": "resid05",
+  "note": "descriptive; not in a decision rule",
+  "sigma": {
+    "0.01": {
+      "conditions": {
+        "stuck_s1": {
+          "nogate": [
+            0.6660011858167991,
+            0.6876743294025457,
+            0.6636663885871411
+          ],
+          "oracle": [
+            0.7392182317245344,
+            0.7538102295897234,
+            0.7401701075027716
+          ],
+          "gtf2": [
+            0.6740711247918802,
+            0.6938437985529505,
+            0.6714911007496099
+          ],
+          "resid05": [
+            0.6722011264076964,
+            0.6878939944439609,
+            0.6688416889826905
+          ],
+          "resid05_minus_nogate": [
+            0.006199940590897235,
+            0.00021966504141524013,
+            0.005175300395549365
+          ],
+          "gtf2_minus_resid05": [
+            0.0018699983841838907,
+            0.005949804108989598,
+            0.002649411766919463
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.07321704590773526,
+              "recovered": 0.08467892297526063
+            },
+            {
+              "denominator": 0.06613590018717774,
+              "recovered": 0.0033214190899881063
+            },
+            {
+              "denominator": 0.07650371891563046,
+              "recovered": 0.06764769698655787
+            }
+          ],
+          "corruption_loss": [
+            0.08001490643786302,
+            0.0719436515824895,
+            0.0821637180209448
+          ],
+          "tpr": [
+            0.2882016129032258,
+            0.2882016129032258,
+            0.2882016129032258
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.04787668010752688,
+            0.04787668010752688,
+            0.04787668010752688
+          ]
+        },
+        "stuck_s2": {
+          "nogate": [
+            0.575935434027105,
+            0.6006132121104508,
+            0.5715106789494794
+          ],
+          "oracle": [
+            0.7330844403247814,
+            0.7476729065837946,
+            0.7339382594131413
+          ],
+          "gtf2": [
+            0.5881273642655365,
+            0.6105116705258833,
+            0.5847050732190934
+          ],
+          "resid05": [
+            0.585302444009544,
+            0.6009806522259449,
+            0.58089670993495
+          ],
+          "resid05_minus_nogate": [
+            0.009367009982439,
+            0.0003674401154940554,
+            0.00938603098547064
+          ],
+          "gtf2_minus_resid05": [
+            0.002824920255992458,
+            0.00953101829993841,
+            0.003808363284143357
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.15714900629767636,
+              "recovered": 0.05960591290469715
+            },
+            {
+              "denominator": 0.14705969447334377,
+              "recovered": 0.002498577987734485
+            },
+            {
+              "denominator": 0.1624275804636619,
+              "recovered": 0.057785943487414504
+            }
+          ],
+          "corruption_loss": [
+            0.17008065822755714,
+            0.15900476887458437,
+            0.17431942765860653
+          ],
+          "tpr": [
+            0.28548790322580647,
+            0.28548790322580647,
+            0.28548790322580647
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.09444284712482469,
+            0.09444284712482469,
+            0.09444284712482469
+          ]
+        },
+        "stuck_s3": {
+          "nogate": [
+            0.49443647840242516,
+            0.5151874278122531,
+            0.49287360025858223
+          ],
+          "oracle": [
+            0.7278588789321812,
+            0.7423784381314678,
+            0.7277815820257685
+          ],
+          "gtf2": [
+            0.5046618775763647,
+            0.5355420373807113,
+            0.5042440120983102
+          ],
+          "resid05": [
+            0.5000555202851534,
+            0.5191264612953682,
+            0.4992863688066122
+          ],
+          "resid05_minus_nogate": [
+            0.005619041882728271,
+            0.003939033483115084,
+            0.006412768548029968
+          ],
+          "gtf2_minus_resid05": [
+            0.004606357291211283,
+            0.016415576085343053,
+            0.004957643291697955
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.233422400529756,
+              "recovered": 0.02407241922787086
+            },
+            {
+              "denominator": 0.22719101031921463,
+              "recovered": 0.017337981276550278
+            },
+            {
+              "denominator": 0.23490798176718625,
+              "recovered": 0.027299066212171395
+            }
+          ],
+          "corruption_loss": [
+            0.251579613852237,
+            0.24443055317278206,
+            0.2529565063495037
+          ],
+          "tpr": [
+            0.2824327956989247,
+            0.2824327956989247,
+            0.2824327956989247
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.13092375366568915,
+            0.13092375366568915,
+            0.13092375366568915
+          ]
+        },
+        "bias_2pct_s1": {
+          "nogate": [
+            0.7264869244694631,
+            0.7463708152448282,
+            0.7337307894283153
+          ],
+          "oracle": [
+            0.7392182317245344,
+            0.7538102295897234,
+            0.7401701075027716
+          ],
+          "gtf2": [
+            0.7310032499948943,
+            0.7495425555627419,
+            0.7356021076952396
+          ],
+          "resid05": [
+            0.7311780109753605,
+            0.7494224102788972,
+            0.735689221218891
+          ],
+          "resid05_minus_nogate": [
+            0.004691086505897446,
+            0.0030515950340690434,
+            0.0019584317905757542
+          ],
+          "gtf2_minus_resid05": [
+            -0.00017476098046620425,
+            0.00012014528384463041,
+            -8.711352365142755e-05
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.012731307255071322,
+              "recovered": 0.36846856429679076
+            },
+            {
+              "denominator": 0.0074394143448952565,
+              "recovered": null
+            },
+            {
+              "denominator": 0.006439318074456302,
+              "recovered": null
+            }
+          ],
+          "corruption_loss": [
+            0.019529167785199086,
+            0.013247165740207012,
+            0.012099317179770641
+          ],
+          "tpr": [
+            0.32863709677419356,
+            0.32863709677419356,
+            0.32863709677419356
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.005481854838709678,
+            0.005481854838709678,
+            0.005481854838709678
+          ]
+        },
+        "bias_2pct_s2": {
+          "nogate": [
+            0.7072109656430184,
+            0.7335050652848244,
+            0.7204107781837469
+          ],
+          "oracle": [
+            0.7330844403247814,
+            0.7476729065837946,
+            0.7339382594131413
+          ],
+          "gtf2": [
+            0.7173880545963265,
+            0.7380603466634637,
+            0.7267167310517977
+          ],
+          "resid05": [
+            0.7172210343349862,
+            0.7378878050300387,
+            0.7264705598545074
+          ],
+          "resid05_minus_nogate": [
+            0.010010068691967744,
+            0.0043827397452143035,
+            0.006059781670760489
+          ],
+          "gtf2_minus_resid05": [
+            0.00016702026134030046,
+            0.00017254163342494966,
+            0.00024617119729031245
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.02587347468176293,
+              "recovered": 0.38688536484136776
+            },
+            {
+              "denominator": 0.014167841298970196,
+              "recovered": 0.309344215023983
+            },
+            {
+              "denominator": 0.0135274812293944,
+              "recovered": 0.44796082640964596
+            }
+          ],
+          "corruption_loss": [
+            0.0388051266116437,
+            0.026112915700210793,
+            0.025419328424339027
+          ],
+          "tpr": [
+            0.3334314516129032,
+            0.3334314516129032,
+            0.3334314516129032
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.005946002805049089,
+            0.005946002805049089,
+            0.005946002805049089
+          ]
+        },
+        "bias_2pct_s3": {
+          "nogate": [
+            0.689272619478233,
+            0.7182505251059002,
+            0.7048135523359998
+          ],
+          "oracle": [
+            0.7278588789321812,
+            0.7423784381314678,
+            0.7277815820257685
+          ],
+          "gtf2": [
+            0.7038497108375802,
+            0.7274405708506599,
+            0.7157735118619168
+          ],
+          "resid05": [
+            0.7034926838683236,
+            0.7272493833893484,
+            0.7155910021494153
+          ],
+          "resid05_minus_nogate": [
+            0.014220064390090603,
+            0.008998858283448263,
+            0.01077744981341544
+          ],
+          "gtf2_minus_resid05": [
+            0.0003570269692565464,
+            0.00019118746131152609,
+            0.00018250971250155512
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.03858625945394811,
+              "recovered": 0.36852663594049456
+            },
+            {
+              "denominator": 0.024127913025567604,
+              "recovered": 0.37296463535459745
+            },
+            {
+              "denominator": 0.022968029689768632,
+              "recovered": 0.46923702028373715
+            }
+          ],
+          "corruption_loss": [
+            0.056743472776429105,
+            0.04136745587913504,
+            0.04101655427208606
+          ],
+          "tpr": [
+            0.33621236559139783,
+            0.33621236559139783,
+            0.33621236559139783
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.006282991202346041,
+            0.006282991202346041,
+            0.006282991202346041
+          ]
+        },
+        "bias_5pct_s1": {
+          "nogate": [
+            0.7191191469015374,
+            0.7106735916011977,
+            0.7039683137187478
+          ],
+          "oracle": [
+            0.7392182317245344,
+            0.7538102295897234,
+            0.7401701075027716
+          ],
+          "gtf2": [
+            0.7369619147535296,
+            0.7499262690378935,
+            0.738019203286351
+          ],
+          "resid05": [
+            0.73704674336605,
+            0.749966736618884,
+            0.7379410641709748
+          ],
+          "resid05_minus_nogate": [
+            0.017927596464512585,
+            0.039293145017686326,
+            0.03397275045222703
+          ],
+          "gtf2_minus_resid05": [
+            -8.482861252046003e-05,
+            -4.0467580990521945e-05,
+            7.813911537613016e-05
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.020099084822996938,
+              "recovered": 0.8919608341569969
+            },
+            {
+              "denominator": 0.04313663798852574,
+              "recovered": 0.9108995705260624
+            },
+            {
+              "denominator": 0.03620179378402377,
+              "recovered": 0.9384272684084388
+            }
+          ],
+          "corruption_loss": [
+            0.0268969453531247,
+            0.048944389383837494,
+            0.04186179288933811
+          ],
+          "tpr": [
+            0.9642177419354838,
+            0.9642177419354838,
+            0.9642177419354838
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.00868279569892473,
+            0.00868279569892473,
+            0.00868279569892473
+          ]
+        },
+        "bias_5pct_s2": {
+          "nogate": [
+            0.68665675397458,
+            0.6686305981510745,
+            0.6691351926796696
+          ],
+          "oracle": [
+            0.7330844403247814,
+            0.7476729065837946,
+            0.7339382594131413
+          ],
+          "gtf2": [
+            0.7292868767795402,
+            0.7407710704404185,
+            0.7299796699448672
+          ],
+          "resid05": [
+            0.7293956532012673,
+            0.7408387629298177,
+            0.7298450179481655
+          ],
+          "resid05_minus_nogate": [
+            0.04273889922668728,
+            0.07220816477874314,
+            0.06070982526849589
+          ],
+          "gtf2_minus_resid05": [
+            -0.00010877642172713031,
+            -6.769248939919592e-05,
+            0.0001346519967017068
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.046427686350201336,
+              "recovered": 0.920547685799164
+            },
+            {
+              "denominator": 0.07904230843272009,
+              "recovered": 0.9135381571023563
+            },
+            {
+              "denominator": 0.06480306673347169,
+              "recovered": 0.9368356827646617
+            }
+          ],
+          "corruption_loss": [
+            0.05935933828008211,
+            0.09098738283396068,
+            0.07669491392841632
+          ],
+          "tpr": [
+            0.9622379032258065,
+            0.9622379032258065,
+            0.9622379032258065
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.01270687237026648,
+            0.01270687237026648,
+            0.01270687237026648
+          ]
+        },
+        "bias_5pct_s3": {
+          "nogate": [
+            0.6537623293546488,
+            0.629371760671334,
+            0.6394304728610692
+          ],
+          "oracle": [
+            0.7278588789321812,
+            0.7423784381314678,
+            0.7277815820257685
+          ],
+          "gtf2": [
+            0.7225064168403968,
+            0.7322979054522373,
+            0.7208212465522364
+          ],
+          "resid05": [
+            0.7224021355518219,
+            0.7322626862106127,
+            0.7208455954783972
+          ],
+          "resid05_minus_nogate": [
+            0.06863980619717303,
+            0.1028909255392787,
+            0.08141512261732797
+          ],
+          "gtf2_minus_resid05": [
+            0.00010428128857498109,
+            3.521924162452894e-05,
+            -2.434892616076656e-05
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.07409654957753231,
+              "recovered": 0.9263563092819926
+            },
+            {
+              "denominator": 0.11300667746013371,
+              "recovered": 0.9104853611467019
+            },
+            {
+              "denominator": 0.08835110916469924,
+              "recovered": 0.9214951955561579
+            }
+          ],
+          "corruption_loss": [
+            0.0922537629000133,
+            0.13024622031370114,
+            0.10639963374701666
+          ],
+          "tpr": [
+            0.959983870967742,
+            0.959983870967742,
+            0.959983870967742
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.017089076246334312,
+            0.017089076246334312,
+            0.017089076246334312
+          ]
+        },
+        "gauss_0.02_s1": {
+          "nogate": [
+            0.7384695981522065,
+            0.7522203288829548,
+            0.7407078640363122
+          ],
+          "oracle": [
+            0.7392182317245344,
+            0.7538102295897234,
+            0.7401701075027716
+          ],
+          "gtf2": [
+            0.7387942094132449,
+            0.7522894752052113,
+            0.7396634122085847
+          ],
+          "resid05": [
+            0.7390109464641671,
+            0.7523249552007254,
+            0.7397461944682534
+          ],
+          "resid05_minus_nogate": [
+            0.000541348311960621,
+            0.00010462631777063969,
+            -0.000961669568058765
+          ],
+          "gtf2_minus_resid05": [
+            -0.00021673705092217777,
+            -3.547999551412051e-05,
+            -8.278225966873443e-05
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.0007486335723279058,
+              "recovered": null
+            },
+            {
+              "denominator": 0.0015899007067686766,
+              "recovered": null
+            },
+            {
+              "denominator": -0.0005377565335406009,
+              "recovered": null
+            }
+          ],
+          "corruption_loss": [
+            0.00754649410245567,
+            0.007397652102080432,
+            0.0051222425717737385
+          ],
+          "tpr": [
+            0.32856451612903226,
+            0.32856451612903226,
+            0.32856451612903226
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.00541633064516129,
+            0.00541633064516129,
+            0.00541633064516129
+          ]
+        },
+        "gauss_0.02_s2": {
+          "nogate": [
+            0.7304533166803757,
+            0.7465399211124902,
+            0.7355466333220428
+          ],
+          "oracle": [
+            0.7330844403247814,
+            0.7476729065837946,
+            0.7339382594131413
+          ],
+          "gtf2": [
+            0.7319743519332255,
+            0.7465497347338304,
+            0.7348634251847704
+          ],
+          "resid05": [
+            0.732193432087299,
+            0.7466458041995357,
+            0.734888494553387
+          ],
+          "resid05_minus_nogate": [
+            0.001740115406923315,
+            0.00010588308704551075,
+            -0.000658138768655836
+          ],
+          "gtf2_minus_resid05": [
+            -0.00021908015407356984,
+            -9.60694657053951e-05,
+            -2.5069368616570387e-05
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.002631123644405653,
+              "recovered": null
+            },
+            {
+              "denominator": 0.0011329854713043597,
+              "recovered": null
+            },
+            {
+              "denominator": -0.0016083739089015614,
+              "recovered": null
+            }
+          ],
+          "corruption_loss": [
+            0.015562775574286425,
+            0.013078059872544956,
+            0.010283473286043066
+          ],
+          "tpr": [
+            0.3311008064516129,
+            0.3311008064516129,
+            0.3311008064516129
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.005791023842917251,
+            0.005791023842917251,
+            0.005791023842917251
+          ]
+        },
+        "gauss_0.02_s3": {
+          "nogate": [
+            0.7228483977671674,
+            0.7381160601798394,
+            0.7303009065111309
+          ],
+          "oracle": [
+            0.7278588789321812,
+            0.7423784381314678,
+            0.7277815820257685
+          ],
+          "gtf2": [
+            0.7255327512460705,
+            0.7407557160775078,
+            0.7298822518483461
+          ],
+          "resid05": [
+            0.7254406407208237,
+            0.7407847594041801,
+            0.7298290943222607
+          ],
+          "resid05_minus_nogate": [
+            0.002592242953656343,
+            0.0026686992243406538,
+            -0.00047181218887015763
+          ],
+          "gtf2_minus_resid05": [
+            9.211052524682461e-05,
+            -2.904332667230669e-05,
+            5.3157526085367834e-05
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.0050104811650137915,
+              "recovered": null
+            },
+            {
+              "denominator": 0.0042623779516283156,
+              "recovered": null
+            },
+            {
+              "denominator": -0.0025193244853624064,
+              "recovered": null
+            }
+          ],
+          "corruption_loss": [
+            0.023167694487494783,
+            0.02150192080519575,
+            0.01552920009695502
+          ],
+          "tpr": [
+            0.3335,
+            0.3335,
+            0.3335
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.006096041055718475,
+            0.006096041055718475,
+            0.006096041055718475
+          ]
+        },
+        "swap_s1": {
+          "nogate": [
+            0.5670101623756352,
+            0.5748057597498137,
+            0.5495233677361813
+          ],
+          "oracle": [
+            0.7371529533479791,
+            0.7513007222694791,
+            0.7365987639374436
+          ],
+          "gtf2": [
+            0.6467389185897955,
+            0.6632741575233168,
+            0.6475416086642108
+          ],
+          "resid05": [
+            0.6468266147375806,
+            0.6632134232269953,
+            0.6477454940005204
+          ],
+          "resid05_minus_nogate": [
+            0.07981645236194546,
+            0.08840766347718154,
+            0.09822212626433913
+          ],
+          "gtf2_minus_resid05": [
+            -8.769614778514345e-05,
+            6.073429632147409e-05,
+            -0.00020388533630955052
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.17014279097234397,
+              "recovered": 0.4691145120272495
+            },
+            {
+              "denominator": 0.17649496251966534,
+              "recovered": 0.5009075738766823
+            },
+            {
+              "denominator": 0.18707539620126235,
+              "recovered": 0.5250403220243258
+            }
+          ],
+          "corruption_loss": [
+            0.17900592987902697,
+            0.18481222123522145,
+            0.19630673887190464
+          ],
+          "tpr": [
+            0.9967983870967742,
+            0.9967983870967742,
+            0.9967983870967742
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.10276881720430107,
+            0.10276881720430107,
+            0.10276881720430107
+          ]
+        },
+        "swap_s2": {
+          "nogate": [
+            0.42046677874185556,
+            0.41875420019284715,
+            0.4116137595175285
+          ],
+          "oracle": [
+            0.7267885826945737,
+            0.740930523385008,
+            0.7287345038471034
+          ],
+          "gtf2": [
+            0.5386822674842827,
+            0.5606502582758099,
+            0.5408814421862413
+          ],
+          "resid05": [
+            0.538874987148184,
+            0.5606801014369099,
+            0.5406685306106068
+          ],
+          "resid05_minus_nogate": [
+            0.11840820840632849,
+            0.1419259012440628,
+            0.12905477109307834
+          ],
+          "gtf2_minus_resid05": [
+            -0.00019271966390133066,
+            -2.9843161099996074e-05,
+            0.00021291157563452234
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.30632180395271813,
+              "recovered": 0.38654841698635733
+            },
+            {
+              "denominator": 0.32217632319216083,
+              "recovered": 0.44052244385262174
+            },
+            {
+              "denominator": 0.3171207443295749,
+              "recovered": 0.4069578335719194
+            }
+          ],
+          "corruption_loss": [
+            0.3255493135128066,
+            0.34086378079218804,
+            0.3342163470905574
+          ],
+          "tpr": [
+            0.9970766129032258,
+            0.9970766129032258,
+            0.9970766129032258
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.2103295932678822,
+            0.2103295932678822,
+            0.2103295932678822
+          ]
+        },
+        "swap_s3": {
+          "nogate": [
+            0.3185430299469045,
+            0.3095226803486563,
+            0.32098046484896653
+          ],
+          "oracle": [
+            0.718920958174713,
+            0.7341662074513279,
+            0.7195814761906244
+          ],
+          "gtf2": [
+            0.4465378195546244,
+            0.4686317041759367,
+            0.44614595746968244
+          ],
+          "resid05": [
+            0.44661325498295157,
+            0.4688352984529199,
+            0.446091649633226
+          ],
+          "resid05_minus_nogate": [
+            0.1280702250360471,
+            0.15931261810426356,
+            0.12511118478425948
+          ],
+          "gtf2_minus_resid05": [
+            -7.54354283271641e-05,
+            -0.00020359427698318777,
+            5.430783645643533e-05
+          ],
+          "recovered_per_seed": [
+            {
+              "denominator": 0.40037792822780854,
+              "recovered": 0.3198733396791474
+            },
+            {
+              "denominator": 0.42464352710267156,
+              "recovered": 0.3751678948016662
+            },
+            {
+              "denominator": 0.3986010113416579,
+              "recovered": 0.3138757334386725
+            }
+          ],
+          "corruption_loss": [
+            0.42747306230775767,
+            0.45009530063637887,
+            0.4248496417591194
+          ],
+          "tpr": [
+            0.9971747311827956,
+            0.9971747311827956,
+            0.9971747311827956
+          ],
+          "realized_fpr_clean_sensors_of_corrupted_windows": [
+            0.31061436950146626,
+            0.31061436950146626,
+            0.31061436950146626
+          ]
+        }
+      },
+      "clean": {
+        "nogate": [
+          0.7460160922546621,
+          0.7596179809850352,
+          0.7458301066080859
+        ],
+        "resid05": [
+          0.7456362157441923,
+          0.7586660783895419,
+          0.7448793831093833
+        ],
+        "realized_fpr_clean_windows": [
+          0.005077741935483871,
+          0.005077741935483871,
+          0.005077741935483871
+        ]
+      }
+    }
+  }
+}
+[2026-11-05T07:58:46Z] chain complete
