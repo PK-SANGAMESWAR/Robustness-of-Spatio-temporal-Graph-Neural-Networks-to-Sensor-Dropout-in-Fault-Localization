@@ -17,3 +17,4 @@ eval/store_bench/
 eval/embedding_cache/
 eval/llm_cache/
 eval/agent/
+eval/doc_index/

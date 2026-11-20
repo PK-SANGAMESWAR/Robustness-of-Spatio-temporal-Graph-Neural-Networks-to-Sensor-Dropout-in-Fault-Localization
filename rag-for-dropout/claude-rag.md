@@ -153,3 +153,7 @@ rm -f "$GIT_INDEX_FILE"; unset GIT_INDEX_FILE
 ```
 Check before each commit: `git ls-tree -r --name-only gridsense-eval | grep -c '\.env$'` must be 0.
 `CLAUDE.md` on `main` keeps its other uncommitted edits; commit only its GridSense lines if it changes again.
+
+## 11. Publishing (2026-11-20; the GitHub repository is public)
+Every round commit to `gridsense-eval` goes through `gridsense.publish.commit` (it sanitizes, scans for text of the unpublished manuscript and for keys, and refuses a leak; the working tree keeps the full text).
+Do not use the temporary-index `git add` procedure of § 10 any more. Never push a tag; the local tag `backup/gridsense-eval-unsanitized-20261120` holds unsanitized history. Push only the branch `gridsense-eval`. Details: `EXPERIMENT_LOG_2.md` E40.

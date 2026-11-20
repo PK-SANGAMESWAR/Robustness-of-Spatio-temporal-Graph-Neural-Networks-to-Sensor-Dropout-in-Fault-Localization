@@ -124,12 +124,40 @@ def run(live: bool, plan: dict | None = None) -> dict:
     return {"snapshot": str(snap.relative_to(ROOT)), "decision": decision, "candidates": per}
 
 
+def rescore(items_path: str) -> dict:
+    """Offline, no API call (E39). Recomputes `no_approval_claim`, `no_confirmation` (clause-level negation, "rather than") and `neighbour_counts` (a true store-correctness count is allowed) from the stored reports, then the summaries and the choice.
+    Also a like-for-like view: every candidate on the SAME events and the first repeat only (the events of the smallest plan), because the plans differ in size (90 reports against 10).
+    The other checks need the passages, which a Layer 2 item does not store; they are unchanged."""
+    from pathlib import Path
+    from gridsense.s4 import run as R
+    ev = R.load_events()
+    order = sorted(ev)
+    items = [json.loads(x) for x in Path(items_path).read_text(encoding="utf-8").splitlines() if x.strip()]
+    for it in items:
+        if "checks" in it:
+            e = ev[it["event_id"]]
+            view = GEN.event_view(e, order.index(it["event_id"]))
+            it["checks"]["no_approval_claim"] = CK.no_approval_claim(it["report"])
+            it["checks"]["no_confirmation"] = CK.no_confirmation(it["report"])
+            it["checks"]["neighbour_counts"] = CK.neighbour_counts(it["report"], e["event_object"]["knn"]["neighbours"], view)
+    models = list(dict.fromkeys(i["model"] for i in items))
+    per = {m: summarize([i for i in items if i["model"] == m]) for m in models}
+    small = min(models, key=lambda m: len([i for i in items if i["model"] == m]))
+    ev_small = {i["event_id"] for i in items if i["model"] == small}
+    same = {m: summarize([i for i in items if i["model"] == m and i["event_id"] in ev_small and i.get("repeat", 0) == 0]) for m in models}
+    snap = write_snapshot("s5_layer2_live_rescored", {"layer2": per, "decision": choose(per), "like_for_like_same_events_first_repeat": same, "like_for_like_decision": choose(same)}, items,
+                          config_effective={"source_items": str(items_path), "rescored": ["no_approval_claim", "no_confirmation", "neighbour_counts"], "like_for_like_events": len(ev_small), "like_for_like_reference_candidate": small},
+                          notes="OFFLINE RESCORE of the Layer 2 live run (no API call): no_approval_claim, no_confirmation and neighbour_counts fixed (E39). Golden passages and events are draft.")
+    return {"snapshot": str(snap.relative_to(ROOT)), "decision": choose(per), "like_for_like_decision": choose(same), "candidates": per, "like_for_like": same}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--live", action="store_true")
+    ap.add_argument("--rescore", help="items .jsonl of a live run: recompute offline (no API call)")
     a = ap.parse_args()
     try:
-        out = run(a.live)
+        out = rescore(a.rescore) if a.rescore else run(a.live)
     except ApprovalMissing as e:
         raise SystemExit(f"REFUSED: {e}")
     print(json.dumps(out, indent=1, default=str))

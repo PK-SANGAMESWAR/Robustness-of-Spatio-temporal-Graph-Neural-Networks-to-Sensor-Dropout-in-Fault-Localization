@@ -323,3 +323,30 @@ def test_S4_O46_coverage_text_and_incomplete_detection_by_hand():
     assert out["sensor_coverage_summary"] == coverage_text(view) and info["generator_coverage_incomplete"] and CK.field_consistency(out, view)["pass"]
     out, info = assemble(_good(view), "sufficient")                                          # no view: the generator's sentence is kept
     assert out["sensor_coverage_summary"] == _good(view)["sensor_coverage_summary"] and "generator_coverage_incomplete" not in info
+
+
+@pytest.mark.parametrize("sentence,ok", [
+    ("The corpus is research material, not approved by any utility.", True),
+    ("The documents have not been approved by a utility.", True),
+    ("This report is not approved; a person must review it.", True),
+    ("This report has been approved.", False),
+    ("The report was approved by the duty engineer.", False),
+    ("This is not clear, but the report was approved by the engineer.", False),            # the negation belongs to another clause
+    ("approval_status: approved", False),
+])
+def test_S4_no_approval_claim_uses_clause_level_negation_E39(sentence, ok):
+    rep = _good(GEN.event_view(_item(), 1)) | {"limitations": [sentence]}
+    assert CK.no_approval_claim(rep)["pass"] is ok, sentence
+    assert not CK.no_approval_claim(_good(GEN.event_view(_item(), 1)) | {"approval_status": "pending"})["pass"]       # the writer never sets the field
+
+
+def test_S4_E39_a_true_store_correctness_count_and_rather_than_are_not_defects():
+    item = _item()                                                                          # 6 neighbours with bus 55 (store correct), 4 with bus 53 (store wrong)
+    view = GEN.event_view(item, 1)
+    nb = item["event_object"]["knn"]["neighbours"]
+    ok = _good(view) | {"case_evidence_summary": "6 of 10 neighbours have bus 55. Their store predictions are correct in 6 of 10 cases."}
+    assert CK.neighbour_counts(ok, nb, view)["pass"]
+    bad = _good(view) | {"case_evidence_summary": "7 of 10 neighbours have bus 55."}          # 7 is neither a bus count nor a store-correctness count
+    assert not CK.neighbour_counts(bad, nb, view)["pass"]
+    assert CK.no_confirmation(_good(view) | {"limitations": ["Review the candidate set rather than treating bus 51 as a confirmed fault."]})["pass"]
+    assert not CK.no_confirmation(_good(view) | {"limitations": ["Treat bus 51 as a confirmed fault."]})["pass"]

@@ -1,0 +1,45 @@
+{
+  "git_commit": "b930e61",
+  "git_dirty": true,
+  "label": "s6_geval_aggregate_live",
+  "timestamp_utc": "2026-11-20T05:32:01Z",
+  "config_effective": {
+    "live": true,
+    "source_items": "20261120T044829Z_s6_safety_live_rescored.jsonl",
+    "cap_usd": 0.1,
+    "pass_rule": "raw score 5"
+  },
+  "index_fingerprint": null,
+  "case_store_fingerprint": null,
+  "prompt_hashes": null,
+  "rubric_hashes": null,
+  "golden_versions": null,
+  "judge_model": null,
+  "generation_model": null,
+  "deepeval_version": null,
+  "metrics": {
+    "layer5_geval.reports": 9,
+    "layer5_geval.scored": 9,
+    "layer5_geval.failures": 0,
+    "layer5_geval.pass_rate_raw_equals_5": 0.8888888888888888,
+    "layer5_geval.raw_scores": [
+      3.0,
+      5.0,
+      5.0,
+      5.0,
+      5.0,
+      5.0,
+      5.0,
+      5.0,
+      5.0
+    ]
+  },
+  "n_items": 9,
+  "n_failures": 0,
+  "failure_causes": [],
+  "tokens": {},
+  "cost_usd": 0.0,
+  "langsmith_experiment_url": null,
+  "items_path": "rag-for-dropout/eval/items/20261120T053201Z_s6_geval_aggregate_live.jsonl",
+  "notes": "GEval no_aggregate_metric_as_confidence on the 9 aggregate-trap reports; LIVE; draft items"
+}
