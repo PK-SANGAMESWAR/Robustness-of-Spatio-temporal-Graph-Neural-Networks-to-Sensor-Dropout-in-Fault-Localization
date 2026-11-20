@@ -76,3 +76,10 @@ Nothing here edits a pre-registered file. Decisions that belong to the author ar
 - **S5.2 correction:** my earlier open item said S5.2 was "not recorded in `01_SPEC.md` § 7". That was wrong. The § 7 amendment (2026-10-25, in-sample score) is on disk. Only the author's explicit sign-off in `07_STAGE_F_gate.md` is missing. `stage_g_known_limitations_DRAFT.md` L5 is corrected.
 - **A4:** `14_PREREGISTRATION.md` Amendment 5 leaves "collapses on OOD R" undefined. The sealed set is already open, so any definition now is post hoc. Recommendation: report A4 as not evaluated (limitations L2). The B2ᵃ sealed numbers stay descriptive in T8.
 - **G-TF2 on the test split:** `PC-STGNN/stage_f_gtf2_test_preregistration_DRAFT.md` (frozen validation thresholds, all else as registered). Needs the author's approval, a commit, and a GPU go-ahead before any scoring. Not run.
+
+## 10. Fourth round (2026-11-20): G-TF2 test result, A4, Stage F checklist item
+- **G-TF2 on the test split finished** (`stage_f_gtf2_test_record.md`, T9c): stuck 9/9, bias ±2 %, ±5 % and swap met, Gaussian not helped; stuck gains small (+0.005 to +0.010 F1). Committed in a647860. Limitation L4 narrowed.
+- **A4** evaluated under an author-approved post hoc rule (`stage_g_a4_record.md`): B2ᵃ −67 % (1 seed), R5 −40 %. Limitation L2 reworded. 14 is not edited.
+- **Stage F gate checklist item** (§ C, "gate scales the input embedding ...") annotated N/A: it concerns the PCRG gate, which was not built (Amendment 5). F-F4 does not apply. Box left unticked.
+- Still open: R0 sealed row (L1, accepted), B2ᵃ retrain (L3, accepted), checklist boxes of § A and § D, email in `STARTED.json` / `log_row.md`, repo visibility.
+

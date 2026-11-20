@@ -114,7 +114,7 @@ noise augmentation alone produced:
       ordinary dropout
 - [x] Silent injectors never touch uninstrumented phases (V = 0, m = 0) `[Ticked 2026-11-19: tests/test_silent.py::test_uninstrumented_phases_are_untouched passes.]`
 - [x] LOO residual refits on A \ {i}, not on A — otherwise the corrupted sensor explains itself `[Ticked 2026-11-19: tests/test_physics_residual.py::test_loo_beats_in_sample_on_a_planted_corrupt_sensor and ::test_in_sample_can_hide_a_corruption_entirely pass.]`
-- [ ] The gate scales the input embedding and vote weight, not messages at every hop
+- [ ] The gate scales the input embedding and vote weight, not messages at every hop `[N/A 2026-11-20: this item is about the trained PCRG gate, which was not built (14, Amendment 5: PCRG G0–G3 replaced by G-TF2; A5/H5 not tested). G-TF2 has no learned gate: a flagged sensor is zeroed (six channels) at the input, the same path as dropout (`stage_f_gtf2_preregistration.md` § 3). F-F4 (gate-value distribution) does not apply. Box left unticked on purpose.]`
 - [x] The observation vector is the last timestep, de-normalised to p.u. with the loader's stored `[Ticked 2026-11-19: tests/test_physics_cache_observation.py::test_observation_is_last_timestep_denormalised_with_mask_availability passes.]`
       stats (`data/dataset.py:30–31`); the table is in p.u.
 - [x] Windows with zero post-inception samples (w = 20) are excluded from L₁/L₂ `[Ticked 2026-11-19: tests/test_pc_stgnn.py::test_loss_mask_excludes_the_unlabelable_windows passes (w0020 mask 0).]`
