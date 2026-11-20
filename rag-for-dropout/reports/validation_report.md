@@ -68,6 +68,6 @@ old snapshots are kept. The live safety run used draft items and the 0.25 USD ca
 ## 6. Not done
 Layer 2 generator comparison (needs candidate models, O1, and money); judge validation (needs your labels); LangSmith (needs your approval, O8); GEval part of Layer 5; end-to-end live latency; VRAM; a human study of whether reports help decisions.
 
-## 7. Decisions for the author
+## 7. Decisions for the author (one page with recommended defaults: `reports/CLOSURE_DECISIONS.md`; review aids: `reports/s4/O13_labelling_sheet.csv` + `O13_LABELLING_GUIDE.md`, `reports/s7/SAFETY_REVIEW_TABLE.csv`, `reports/events/judgement_points_s4.csv`)
 O43 review of the 25 safety items; O44 sensitive strings in excerpts; O45 an operator-question field; **O46** let Python write the sensor-coverage field from the event (as for the human-review field);
 the 33 S4 judgement points; O13 labels; approval of the measured tolerances; the evidence-status flipping (vote of 3 or limitation); candidate generator models for Layer 2.

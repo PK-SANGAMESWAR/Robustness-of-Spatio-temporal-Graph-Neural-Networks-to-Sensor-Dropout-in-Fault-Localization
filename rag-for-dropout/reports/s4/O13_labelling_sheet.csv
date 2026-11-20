@@ -1,0 +1,1950 @@
+label_id,report_ref,k,gate_outcome,predicted_bus,dark_uPMU_buses,nearest_3_uPMU_buses,calibrated_probability,candidate_set,case_neighbours,report_text,retrieved_passages,faithfulness_0_or_1,prediction_vs_confirmed_1_to_5,completeness_1_to_5,adherence_1_to_5,evidence_use_1_to_5,no_aggregate_metric_as_confidence_1_to_5,notes
+H-0001,20261118T054551Z_s4_main_live_rescored|event-030|repeat0,0,CONFIDENT,55,,54 13 60,0.8663,,"case | true bus | store prediction correct | similarity
+c01 | 55 | yes | 0.9937
+c02 | 55 | yes | 0.9937
+c03 | 55 | yes | 0.9936
+c04 | 55 | yes | 0.9936
+c05 | 55 | yes | 0.9935
+c06 | 55 | yes | 0.9935
+c07 | 55 | yes | 0.9935
+c08 | 55 | yes | 0.9933
+c09 | 55 | yes | 0.9933
+c10 | 55 | yes | 0.9932","Event event-030. Predicted location: 55. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 25 of 25 sensors available; dark uPMU buses: [].
+Case evidence: 10 of 10 neighbours have true bus 55 and the store prediction is correct. Neighbour buses: 55, 55, 55, 55, 55, 55, 55, 55, 55, 55.
+Document evidence: The predicted bus is a candidate, not a confirmed fault. (note_25_prediction_is_not_confirmation, ""A prediction is not a confirmed fault"": ""The model predicts a candidate fault bus. It does not confirm a fault."")
+Document evidence: The gate outcome and reason code are reported as provided in the event. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Limitation: The event does not identify the checkpoint used with gate_v1. The passage says gate_v1 was fitted for the seed-42 checkpoint and reports different accuracy when applied to seed-43 and seed-44 checkpoints. (note_29_gate_belongs_to_one_checkpoint, A gate belongs to one checkpoint: “fitted for the seed-42 checkpoint.”)
+Limitation: The event gives candidate_set as null.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The checkpoint used for this gate is not stated, so the retrieved evidence cannot establish whether the gate calibration applies to this event. No operator procedure is provided.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_25_prediction_is_not_confirmation > A prediction is not a confirmed fault]
+# A prediction is not a confirmed fault
+
+The model predicts a candidate fault bus. It does not confirm a fault. A person must confirm the location with the processes that the utility authorises before any action. Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.
+
+A report is not an instruction to operate equipment.
+
+
+[note_29_gate_belongs_to_one_checkpoint > A gate belongs to one checkpoint]
+# A gate belongs to one checkpoint
+
+The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint. Applied unchanged to the seed-43 and seed-44 checkpoints, the accuracy of the CONFIDENT windows at the 95 percent point was 0.897 to 0.932, below the target. Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run.
+",,,,,,,
+H-0002,20261118T054551Z_s4_main_live_rescored|event-057|repeat0,0,CONFIDENT,99,,97 105 60,0.9982,,"case | true bus | store prediction correct | similarity
+c01 | 99 | yes | 0.9963
+c02 | 99 | yes | 0.9962
+c03 | 99 | yes | 0.9962
+c04 | 99 | yes | 0.9961
+c05 | 99 | yes | 0.9961
+c06 | 99 | yes | 0.9961
+c07 | 99 | yes | 0.9961
+c08 | 99 | yes | 0.9960
+c09 | 99 | yes | 0.9960
+c10 | 99 | yes | 0.9960","Event event-057. Predicted location: 99. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: Available: 25 of 25. Dark uPMU buses: [].
+Case evidence: 10 of 10 neighbours have true bus 99 and store prediction correct yes. Neighbour buses: 99, 99, 99, 99, 99, 99, 99, 99, 99, 99.
+Document evidence: The prediction is a candidate, not a confirmed fault. (note_25_prediction_is_not_confirmation, ""A prediction is not a confirmed fault"": ""The model predicts a candidate fault bus. It does not confirm a fault."")
+Document evidence: The gate outcome is CONFIDENT and its reason code is VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Limitation: The event does not identify the checkpoint used. The passage says gate_v1 was fitted for the seed-42 checkpoint and gives different results when applied unchanged to seed-43 and seed-44. Excerpt: ""Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run."" (note_29_gate_belongs_to_one_checkpoint, A gate belongs to one checkpoint)
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The checkpoint identity is missing, so the passages do not establish whether gate_v1 is calibrated for this event's checkpoint. No procedural recommendation is provided.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_25_prediction_is_not_confirmation > A prediction is not a confirmed fault]
+# A prediction is not a confirmed fault
+
+The model predicts a candidate fault bus. It does not confirm a fault. A person must confirm the location with the processes that the utility authorises before any action. Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.
+
+A report is not an instruction to operate equipment.
+
+
+[note_29_gate_belongs_to_one_checkpoint > A gate belongs to one checkpoint]
+# A gate belongs to one checkpoint
+
+The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint. Applied unchanged to the seed-43 and seed-44 checkpoints, the accuracy of the CONFIDENT windows at the 95 percent point was 0.897 to 0.932, below the target. Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run.
+",,,,,,,
+H-0003,20261118T054551Z_s4_main_live_rescored|event-025|repeat0,0,CONFIDENT,55,,54 13 60,0.9219,,"case | true bus | store prediction correct | similarity
+c01 | 55 | yes | 0.9978
+c02 | 55 | yes | 0.9976
+c03 | 55 | yes | 0.9976
+c04 | 55 | yes | 0.9974
+c05 | 53 | no | 0.9974
+c06 | 55 | yes | 0.9974
+c07 | 55 | yes | 0.9973
+c08 | 55 | yes | 0.9973
+c09 | 55 | yes | 0.9973
+c10 | 55 | yes | 0.9973","Event event-025. Predicted location: 55. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: Available: 25 of 25. Dark uPMU buses: [].
+Case evidence: The 10 case neighbours agree with the prediction in 9 of 10 cases. Their true buses, in order, are 55, 55, 55, 55, 53, 55, 55, 55, 55, 55.
+Document evidence: The predicted bus is a candidate, not a confirmed fault. (note_25_prediction_is_not_confirmation, ""A prediction is not a confirmed fault"": ""The model predicts a candidate fault bus. It does not confirm a fault."")
+Document evidence: The gate outcome is CONFIDENT and the passed-check reason code is VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Gate calibration depends on the checkpoint, which is not identified in the event. (note_29_gate_belongs_to_one_checkpoint, ""A gate belongs to one checkpoint"": ""Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run."")
+Limitation: The EVENT gives calibrated_probability as 0.9219. This is the event's prediction probability, not a test-set performance metric.
+Limitation: The EVENT gives candidate_set as null. No candidate-set values are available to report.
+Limitation: The event does not identify the checkpoint, so the applicability of gate_v1 calibration cannot be assessed.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The checkpoint is not identified, so the supplied passages do not establish whether gate_v1 calibration applies to this event. The EVENT also provides no candidate-set values.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_25_prediction_is_not_confirmation > A prediction is not a confirmed fault]
+# A prediction is not a confirmed fault
+
+The model predicts a candidate fault bus. It does not confirm a fault. A person must confirm the location with the processes that the utility authorises before any action. Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.
+
+A report is not an instruction to operate equipment.
+
+
+[note_29_gate_belongs_to_one_checkpoint > A gate belongs to one checkpoint]
+# A gate belongs to one checkpoint
+
+The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint. Applied unchanged to the seed-43 and seed-44 checkpoints, the accuracy of the CONFIDENT windows at the 95 percent point was 0.897 to 0.932, below the target. Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run.
+",,,,,,,
+H-0004,20261118T054551Z_s4_main_live_rescored|event-052|repeat0,0,CONFIDENT,89,,91 76 97,0.9038,,"case | true bus | store prediction correct | similarity
+c01 | 89 | yes | 0.9993
+c02 | 89 | yes | 0.9993
+c03 | 89 | yes | 0.9992
+c04 | 89 | yes | 0.9992
+c05 | 89 | yes | 0.9992
+c06 | 89 | yes | 0.9992
+c07 | 89 | yes | 0.9992
+c08 | 89 | yes | 0.9992
+c09 | 89 | yes | 0.9992
+c10 | 89 | yes | 0.9991","Event event-052. Predicted location: 89. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 25 of 25 sensors available; dark_uPMU_buses: [].
+Case evidence: 10 of 10 neighbours have true bus 89. Neighbour true buses: 89, 89, 89, 89, 89, 89, 89, 89, 89, 89.
+Document evidence: The prediction is a candidate, not a confirmed fault. (note_25_prediction_is_not_confirmation, ""A prediction is not a confirmed fault"": ""The model predicts a candidate fault bus. It does not confirm a fault."")
+Document evidence: The gate outcome is CONFIDENT, and its reason code is VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The gate's calibration and fit are tied to a specified checkpoint, but the event does not identify its checkpoint. (note_29_gate_belongs_to_one_checkpoint, ""A gate belongs to one checkpoint"": ""The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint."")
+Limitation: The event does not identify the checkpoint used, so the applicability of gate_v1 calibration to this event cannot be established from the available evidence.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The event does not identify the model checkpoint. The passages state that gate_v1 was fitted for seed-42 and that other checkpoints need their own calibration, gate fit, and frozen test run.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_25_prediction_is_not_confirmation > A prediction is not a confirmed fault]
+# A prediction is not a confirmed fault
+
+The model predicts a candidate fault bus. It does not confirm a fault. A person must confirm the location with the processes that the utility authorises before any action. Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.
+
+A report is not an instruction to operate equipment.
+
+
+[note_29_gate_belongs_to_one_checkpoint > A gate belongs to one checkpoint]
+# A gate belongs to one checkpoint
+
+The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint. Applied unchanged to the seed-43 and seed-44 checkpoints, the accuracy of the CONFIDENT windows at the 95 percent point was 0.897 to 0.932, below the target. Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run.
+",,,,,,,
+H-0005,20261118T054551Z_s4_main_live_rescored|event-015|repeat0,0,LOW_CONFIDENCE,25,,25 26 18,0.6794,25 29,"case | true bus | store prediction correct | similarity
+c01 | 25 | yes | 0.9998
+c02 | 25 | yes | 0.9998
+c03 | 25 | yes | 0.9998
+c04 | 25 | yes | 0.9998
+c05 | 25 | yes | 0.9997
+c06 | 25 | yes | 0.9997
+c07 | 25 | yes | 0.9997
+c08 | 25 | yes | 0.9997
+c09 | 25 | yes | 0.9997
+c10 | 25 | yes | 0.9997","Event event-015. Predicted location: 25. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 25, 29.
+Sensor coverage: 25 of 25 sensors available; dark uPMU buses: [].
+Case evidence: 10 of 10 neighbours agree; neighbour true buses: 25, 25, 25, 25, 25, 25, 25, 25, 25, 25.
+Document evidence: LOW_CONFIDENCE means a condition failed, and LOW_MARGIN is a listed reason code. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT."")
+Document evidence: A LOW_CONFIDENCE report shows a candidate set; the set does not guarantee the true location for this event. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Limitation: This prediction is a candidate, not a confirmed fault.
+Limitation: The candidate set does not guarantee that the true location is included for this event.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event provides the prediction, gate outcome and reason code, candidate set, sensor coverage, and case neighbours. The passages support the gate and candidate-set explanations. No procedural recommendation is made.). Approval status: pending_human_review.","[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on
+
+[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_09_ambiguity_set > Ambiguity sets]
+# Ambiguity sets
+
+An ambiguity set is a group of candidate fault locations that produce nearly the same measurements at the available sensors, so the data cannot separate them. Which candidates are indistinguishable depends on which sensors are available. When the evidence is ambiguous a report should show the candidates and not a single bus. The current gate does not output a physical ambiguity set; for LOW_CONFIDENCE windows it outputs a conformal candidate set (about three to four classes).
+
+Two fault buses that are close to the same μPMUs give similar voltage patterns. When one of those μPMUs is dark, the pattern can fit both buses, and the candidate set then contains both.
+",,,,,,,
+H-0006,20261118T054551Z_s4_main_live_rescored|event-022|repeat0,0,LOW_CONFIDENCE,51,,47 45 35,0.5063,25 29 35 47 51,"case | true bus | store prediction correct | similarity
+c01 | 51 | yes | 1.0000
+c02 | 51 | yes | 1.0000
+c03 | 51 | yes | 0.9994
+c04 | 51 | yes | 0.9987
+c05 | 51 | yes | 0.9986
+c06 | 51 | yes | 0.9986
+c07 | 51 | yes | 0.9979
+c08 | 51 | yes | 0.9979
+c09 | 51 | yes | 0.9979
+c10 | 51 | yes | 0.9979","Event event-022. Predicted location: 51. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 25, 29, 35, 47, 51.
+Sensor coverage: 25 of 25 sensors available. Dark uPMU buses: [].
+Case evidence: 10 of 10 case neighbours agree on bus 51. The nearest three uPMU buses to the predicted bus are 47, 45, and 35.
+Document evidence: LOW_CONFIDENCE means the input is valid but a condition failed; LOW_MARGIN is one of its reason codes. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT."")
+Document evidence: A LOW_CONFIDENCE report shows a candidate set, and the set does not guarantee the true location for this event. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Limitation: Bus 51 is a candidate, not a confirmed fault.
+Limitation: The calibrated probability is specific to this event; the passages provide no basis to treat test-set metrics as this event's confidence.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The EVENT supplies the prediction, probability, gate result, candidate set, sensor coverage, and case neighbours. The passages explain the LOW_CONFIDENCE outcome and candidate-set limitation.). Approval status: pending_human_review.","[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on
+
+[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_09_ambiguity_set > Ambiguity sets]
+# Ambiguity sets
+
+An ambiguity set is a group of candidate fault locations that produce nearly the same measurements at the available sensors, so the data cannot separate them. Which candidates are indistinguishable depends on which sensors are available. When the evidence is ambiguous a report should show the candidates and not a single bus. The current gate does not output a physical ambiguity set; for LOW_CONFIDENCE windows it outputs a conformal candidate set (about three to four classes).
+
+Two fault buses that are close to the same μPMUs give similar voltage patterns. When one of those μPMUs is dark, the pattern can fit both buses, and the candidate set then contains both.
+",,,,,,,
+H-0007,20261118T054551Z_s4_main_live_rescored|event-004|repeat0,1,CONFIDENT,108,36,105 109 97,0.9835,,"case | true bus | store prediction correct | similarity
+c01 | 108 | yes | 0.9983
+c02 | 108 | yes | 0.9982
+c03 | 108 | yes | 0.9982
+c04 | 108 | yes | 0.9982
+c05 | 108 | yes | 0.9982
+c06 | 108 | yes | 0.9982
+c07 | 108 | yes | 0.9982
+c08 | 108 | yes | 0.9982
+c09 | 108 | yes | 0.9982
+c10 | 108 | yes | 0.9982","Event event-004. Predicted location: 108. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 24 of 25 sensors available. Dark uPMU bus: 36.
+Case evidence: Agreement: 10 of 10. All ten neighbours have true bus 108: c01, c02, c03, c04, c05, c06, c07, c08, c09, c10.
+Document evidence: The gate outcome is CONFIDENT, and its reason code is VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The passage advises extra care when a dark μPMU is among the nearest μPMUs of the predicted bus. Here, dark bus 36 is not among the listed nearest buses 105, 109, and 97. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: This is a candidate location, not a confirmed fault.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event provides the candidate prediction, gate details, sensor availability, and case neighbours. The passages support the gate reason-code interpretation and the stated nearest-sensor caution.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0008,20261118T054551Z_s4_main_live_rescored|event-048|repeat0,1,CONFIDENT,86,84,76 91 97,0.9758,,"case | true bus | store prediction correct | similarity
+c01 | 86 | yes | 0.9969
+c02 | 86 | yes | 0.9966
+c03 | 86 | yes | 0.9965
+c04 | 86 | yes | 0.9965
+c05 | 86 | yes | 0.9965
+c06 | 86 | yes | 0.9965
+c07 | 86 | yes | 0.9964
+c08 | 86 | yes | 0.9964
+c09 | 86 | yes | 0.9964
+c10 | 86 | yes | 0.9964","Event event-048. Predicted location: 86. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 24 of 25 sensors available; dark uPMU bus: 84.
+Case evidence: 10 of 10 case neighbours have true bus 86 and are marked correct. The nearest 3 uPMU buses of the predicted bus are 76, 91, 97.
+Document evidence: The gate outcome is CONFIDENT, and its reason code is VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The gate's CONFIDENT outcome is an accepted window under selective prediction. (note_21_selective_prediction, ""Selective prediction and coverage"": ""Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person."")
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event provides the candidate location, gate outcome and reason code, sensor coverage, and case-neighbour details. The passages support describing the gate outcome.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0009,20261118T054551Z_s4_main_live_rescored|event-007|repeat0,1,CONFIDENT,21,13,18 25 35,0.9039,,"case | true bus | store prediction correct | similarity
+c01 | 18 | no | 0.9906
+c02 | 18 | no | 0.9904
+c03 | 18 | no | 0.9904
+c04 | 18 | no | 0.9900
+c05 | 18 | no | 0.9898
+c06 | 18 | no | 0.9898
+c07 | 18 | no | 0.9896
+c08 | 18 | no | 0.9893
+c09 | 18 | no | 0.9887
+c10 | 18 | no | 0.9883","Event event-007. Predicted location: 21. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 24 of 25 sensors available; dark uPMU bus: 13.
+Case evidence: KNN agreement: 0 of 10. The 10 case neighbours all have true bus 18; their store predictions are marked incorrect.
+Document evidence: The gate outcome is CONFIDENT, and VERIFICATION_PASSED indicates a passed check. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: A dark sensor warrants extra care under the passage’s stated condition, but bus 13 is not among the listed nearest uPMU buses of predicted bus 21. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The case neighbours have true bus 18, while the predicted bus is 21; their store predictions are marked incorrect.
+Limitation: The passage’s nearest-sensor caution condition does not apply to the listed dark bus and nearest uPMU buses.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event provides the candidate location, gate outcome, sensor coverage, and case-neighbour details. The passages support the gate reason-code interpretation and the conditional nearest-sensor caution. No procedural recommendation is made.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0010,20261118T054551Z_s4_main_live_rescored|event-054|repeat0,1,CONFIDENT,89,69,91 76 97,0.9479,,"case | true bus | store prediction correct | similarity
+c01 | 89 | yes | 0.9990
+c02 | 89 | yes | 0.9989
+c03 | 89 | yes | 0.9989
+c04 | 89 | yes | 0.9988
+c05 | 89 | yes | 0.9988
+c06 | 89 | yes | 0.9988
+c07 | 89 | yes | 0.9988
+c08 | 89 | yes | 0.9988
+c09 | 89 | yes | 0.9987
+c10 | 89 | yes | 0.9987","Event event-054. Predicted location: 89. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 24 of 25 sensors available; dark uPMU bus: 69.
+Case evidence: 10 of 10 case neighbours have true bus 89 and the store prediction is correct. Nearest 3 uPMU buses of predicted bus 89: 91, 76, 97.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The passage says to treat a location with more care if a dark μPMU is among the predicted bus's nearest μPMUs. The event's dark bus 69 is not among the listed nearest buses 91, 76, 97. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The event reports a calibrated probability of 0.9479. Test-set accuracy, coverage, macro-F1, and AUDC values are not the confidence of this prediction.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages explain gate outcomes and give a conditional caution for dark sensors, but do not provide a review procedure for this prediction or explain how to interpret its event-level probability and case-neighbour evidence. No procedural statement is provided.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0011,20261118T054551Z_s4_main_live_rescored|event-001|repeat0,1,LOW_CONFIDENCE,97,54,97 105 60,0.5722,62 72 97 101,"case | true bus | store prediction correct | similarity
+c01 | 101 | yes | 0.9916
+c02 | 97 | yes | 0.9914
+c03 | 97 | yes | 0.9913
+c04 | 101 | yes | 0.9911
+c05 | 97 | yes | 0.9908
+c06 | 97 | yes | 0.9907
+c07 | 97 | yes | 0.9906
+c08 | 97 | yes | 0.9904
+c09 | 97 | yes | 0.9903
+c10 | 97 | yes | 0.9902","Event event-001. Predicted location: 97. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 62, 72, 97, 101.
+Sensor coverage: 24 of 25 sensors available; dark uPMU bus: 54.
+Case evidence: Agreement: 8 of 10. Neighbour true buses, in order: 101, 97, 97, 101, 97, 97, 97, 97, 97, 97.
+Document evidence: The prediction is a candidate, not a confirmed fault. The event reports LOW_CONFIDENCE, and the candidate set applies to LOW_CONFIDENCE reports. (note_22_conformal_sets, ""Conformal candidate sets"": ""only a LOW_CONFIDENCE report shows a candidate set."")
+Document evidence: The candidate set does not guarantee that this event's true location is included. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Limitation: The event's calibrated probability is 0.5722. The passages do not explain how to interpret this event-level probability.
+Limitation: The passages do not explain the LOW_MARGIN reason code or how to interpret this event's sensor coverage.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages do not provide a review procedure or explain the LOW_MARGIN reason code and event-level calibrated probability. No procedural statement is made.). Approval status: pending_human_review.","[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on",,,,,,,
+H-0012,20261118T054551Z_s4_main_live_rescored|event-035|repeat0,1,LOW_CONFIDENCE,65,13,60 97 69,0.6737,62 65,"case | true bus | store prediction correct | similarity
+c01 | 65 | yes | 0.9984
+c02 | 65 | yes | 0.9983
+c03 | 65 | yes | 0.9983
+c04 | 65 | yes | 0.9982
+c05 | 65 | yes | 0.9981
+c06 | 65 | yes | 0.9981
+c07 | 65 | yes | 0.9981
+c08 | 65 | yes | 0.9981
+c09 | 65 | yes | 0.9981
+c10 | 65 | yes | 0.9981","Event event-035. Predicted location: 65. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 62, 65.
+Sensor coverage: 24 of 25 sensors available. Dark uPMU bus: 13. The three nearest uPMU buses of predicted bus 65 are 60, 97, and 69.
+Case evidence: The 10 of 10 case neighbours have true bus 65 and store predictions marked correct. Their neighbour buses are 65, 65, 65, 65, 65, 65, 65, 65, 65, 65.
+Document evidence: The prediction is a candidate, not a confirmed fault. A LOW_CONFIDENCE report can show a candidate set, and its set may miss the true location. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Document evidence: A LOW_CONFIDENCE result should receive human review. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person."")
+Document evidence: The reported candidate set is associated with LOW_CONFIDENCE reports. (note_22_conformal_sets, ""Conformal candidate sets"": ""only a LOW_CONFIDENCE report shows a candidate set."")
+Limitation: The calibrated probability is 0.6737; test-set performance figures in the passages are not this event's confidence.
+Limitation: The passage's caution about a dark uPMU among the nearest uPMUs does not apply based on the supplied buses: dark bus 13 is not among 60, 97, and 69.
+Limitation: The candidate set does not guarantee that the true location is included.
+Recommended operator review: Have a person review this LOW_CONFIDENCE candidate; the cited selective-prediction passage says such windows are sent to a person.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The passages support describing the prediction as a candidate, interpreting the LOW_CONFIDENCE candidate set, and recommending human review. Event values and case-neighbour details are copied from the supplied EVENT block.). Approval status: pending_human_review.","[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on",,,,,,,
+H-0013,20261118T054551Z_s4_main_live_rescored|event-006|repeat0,2,CONFIDENT,13,75 105,13 54 1,0.9978,,"case | true bus | store prediction correct | similarity
+c01 | 13 | yes | 0.9968
+c02 | 13 | yes | 0.9968
+c03 | 13 | yes | 0.9968
+c04 | 13 | yes | 0.9968
+c05 | 13 | yes | 0.9968
+c06 | 13 | yes | 0.9968
+c07 | 13 | yes | 0.9968
+c08 | 13 | yes | 0.9968
+c09 | 13 | yes | 0.9967
+c10 | 13 | yes | 0.9967","Event event-006. Predicted location: 13. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 23 of 25 sensors are available; dark μPMU buses are 75 and 105.
+Case evidence: Agreement is 10 of 10. All 10 neighbour cases have true bus 13.
+Document evidence: The gate outcome is CONFIDENT, and VERIFICATION_PASSED is the code for a passed check. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The dark buses 75 and 105 are not among the listed nearest μPMU buses 13, 54, and 1. The passage says to treat the location with more care if a dark μPMU is one of those nearest μPMUs. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: This is a candidate location, not a confirmed fault.
+Limitation: The EVENT block has no candidate set; the schema's candidate_set is empty.
+Limitation: The passages do not provide a review procedure for this CONFIDENT prediction.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages explain the gate code and a specific dark-nearest-μPMU caution, but do not provide a review procedure for this CONFIDENT prediction.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0014,20261118T054551Z_s4_main_live_rescored|event-034|repeat0,2,CONFIDENT,62,84 91,60 97 69,0.9978,,"case | true bus | store prediction correct | similarity
+c01 | 62 | yes | 0.9940
+c02 | 62 | yes | 0.9931
+c03 | 62 | yes | 0.9929
+c04 | 62 | yes | 0.9926
+c05 | 62 | yes | 0.9924
+c06 | 62 | yes | 0.9923
+c07 | 62 | yes | 0.9921
+c08 | 62 | yes | 0.9920
+c09 | 62 | yes | 0.9919
+c10 | 62 | yes | 0.9918","Event event-034. Predicted location: 62. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 23 of 25 sensors are available. Dark uPMU buses: 84, 91.
+Case evidence: KNN agreement is 10 of 10. The nearest 3 uPMU buses of predicted bus 62 are 60, 97, 69.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The dark buses are not among the listed nearest uPMU buses of the predicted bus. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The available passages do not provide an operator-review procedure.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages do not specify a review procedure for this prediction, so no procedural recommendation is provided.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0015,20261118T054551Z_s4_main_live_rescored|event-020|repeat0,2,CONFIDENT,47,25 47,47 45 35,0.9913,,"case | true bus | store prediction correct | similarity
+c01 | 47 | yes | 0.9895
+c02 | 47 | yes | 0.9890
+c03 | 47 | yes | 0.9890
+c04 | 47 | yes | 0.9890
+c05 | 47 | yes | 0.9878
+c06 | 47 | yes | 0.9875
+c07 | 47 | yes | 0.9871
+c08 | 47 | yes | 0.9863
+c09 | 47 | yes | 0.9863
+c10 | 47 | yes | 0.9861","Event event-020. Predicted location: 47. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 23 of 25 sensors available. Dark uPMU buses: 25, 47.
+Case evidence: Agreement: 10 of 10. The true bus for each of the 10 neighbours is 47.
+Document evidence: The gate outcome and reason code match the event record. The prediction remains a candidate, not a confirmed fault. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: A dark sensor is one of the nearest uPMUs of the predicted bus, so this location warrants more care. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The candidate set is null in the event record, so no candidate bus set is available.
+Limitation: The passage gives no specific review steps for this event.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages support treating this location with more care because a dark uPMU is among the nearest sensors, but do not specify a review procedure. No procedural recommendation is provided.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0016,20261118T054551Z_s4_main_live_rescored|event-053|repeat0,2,CONFIDENT,89,33 109,91 76 97,0.9946,,"case | true bus | store prediction correct | similarity
+c01 | 89 | yes | 0.9972
+c02 | 89 | yes | 0.9971
+c03 | 89 | yes | 0.9971
+c04 | 89 | yes | 0.9971
+c05 | 89 | yes | 0.9971
+c06 | 89 | yes | 0.9971
+c07 | 89 | yes | 0.9971
+c08 | 89 | yes | 0.9970
+c09 | 89 | yes | 0.9970
+c10 | 89 | yes | 0.9970","Event event-053. Predicted location: 89. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 23 of 25 sensors available; dark uPMU buses: 33, 109.
+Case evidence: KNN agreement: 10 of 10. Neighbour true buses: 89 for c01–c10.
+Document evidence: The event reports a CONFIDENT gate outcome and the reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Limitation: This is a candidate location, not a confirmed fault.
+Limitation: The passages do not establish that the calibrated probability is a confirmed-fault probability.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages do not give a review procedure for a CONFIDENT prediction. No procedural statement is provided.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0017,20261118T054551Z_s4_main_live_rescored|event-037|repeat0,2,LOW_CONFIDENCE,65,1 47,60 97 69,0.6766,62 65,"case | true bus | store prediction correct | similarity
+c01 | 62 | no | 0.9975
+c02 | 62 | no | 0.9974
+c03 | 62 | no | 0.9972
+c04 | 62 | no | 0.9972
+c05 | 62 | no | 0.9971
+c06 | 62 | no | 0.9971
+c07 | 62 | no | 0.9971
+c08 | 62 | no | 0.9971
+c09 | 65 | yes | 0.9971
+c10 | 62 | no | 0.9971","Event event-037. Predicted location: 65. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 62, 65.
+Sensor coverage: 23 of 25 sensors available; dark uPMU buses: 1, 47. Calibrated probability: 0.6766.
+Case evidence: KNN agreement: 1 of 10. Neighbour true buses: 62, 62, 62, 62, 62, 62, 62, 62, 65, 62.
+Document evidence: A LOW_CONFIDENCE report has a candidate set, but that set can miss the true location in an individual event. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Document evidence: A LOW_CONFIDENCE report is sent to a person for review. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person."")
+Document evidence: A dark nearest μPMU would warrant more care; the dark buses here are 1 and 47, while the nearest listed buses are 60, 97, and 69. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: Bus 65 is a candidate prediction, not a confirmed fault.
+Limitation: The candidate set does not guarantee that the true location is included for this event.
+Recommended operator review: Review this LOW_CONFIDENCE candidate report as a person; the selective-prediction passage says the remaining windows are sent to a person.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The passages support the LOW_CONFIDENCE review path and the limitation of candidate sets. Event-specific prediction, gate, sensor, and neighbour details are copied from the EVENT block.). Approval status: pending_human_review.","[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on",,,,,,,
+H-0018,20261118T054551Z_s4_main_live_rescored|event-059|repeat0,2,LOW_CONFIDENCE,99,45 103,97 105 60,0.4617,97 99 101 108,"case | true bus | store prediction correct | similarity
+c01 | 97 | no | 0.9962
+c02 | 97 | no | 0.9961
+c03 | 97 | no | 0.9961
+c04 | 97 | no | 0.9959
+c05 | 97 | no | 0.9959
+c06 | 99 | yes | 0.9958
+c07 | 97 | no | 0.9958
+c08 | 97 | no | 0.9958
+c09 | 97 | no | 0.9957
+c10 | 97 | no | 0.9957","Event event-059. Predicted location: 99. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN). Candidate set: 97, 99, 101, 108.
+Sensor coverage: 23 of 25 sensors available; dark uPMU buses: 45, 103.
+Case evidence: Agreement: 1 of 10. Neighbour true buses, in listed order: 97, 97, 97, 97, 97, 99, 97, 97, 97, 97.
+Document evidence: This LOW_CONFIDENCE prediction is a candidate, not a confirmed fault. A LOW_CONFIDENCE report provides a candidate set, and that set can miss the true location. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location"")
+Document evidence: The low-confidence report should be sent for human review. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person"")
+Limitation: The candidate set does not guarantee that this event's true location is included.
+Recommended operator review: Review this LOW_CONFIDENCE candidate report.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event block supplies the prediction, gate outcome and reason codes, dark sensors, coverage, and case neighbours. The passages support treating the result as a candidate and sending a LOW_CONFIDENCE report for human review.). Approval status: pending_human_review.","[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0019,20261118T054551Z_s4_main_live_rescored|event-042|repeat0,5,CONFIDENT,7,26 60 76 103 113,1 13 6,0.9971,,"case | true bus | store prediction correct | similarity
+c01 | 7 | yes | 0.9855
+c02 | 7 | yes | 0.9851
+c03 | 7 | yes | 0.9847
+c04 | 7 | yes | 0.9846
+c05 | 7 | yes | 0.9846
+c06 | 7 | yes | 0.9845
+c07 | 7 | yes | 0.9845
+c08 | 7 | yes | 0.9842
+c09 | 7 | yes | 0.9835
+c10 | 7 | yes | 0.9832","Event event-042. Predicted location: 7. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 20 of 25 sensors available; dark uPMU buses: 26, 60, 76, 103, 113.
+Case evidence: 10 of 10 neighbours have true bus 7 and a correct store prediction. Neighbour buses: 7, 7, 7, 7, 7, 7, 7, 7, 7, 7.
+Document evidence: The gate outcome is CONFIDENT with reason code VERIFICATION_PASSED. The passage says, “A passed check has the code VERIFICATION_PASSED.” (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Test-set coverage and accuracy figures describe gate performance on a test split, not confidence for this prediction. The passage identifies them as “coverage on the test split.” (note_21_selective_prediction, ""Selective prediction and coverage"": ""coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513"")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The event reports calibrated_probability 0.9971. This report does not treat test-set metrics as the confidence of this prediction.
+Limitation: The passages do not establish the correctness or reliability of this event’s predicted location.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages explain gate outcomes and test-set performance, but do not provide evidence for the correctness or reliability of this event-level location prediction.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0020,20261118T054551Z_s4_main_live_rescored|event-056|repeat0,5,CONFIDENT,97,1 13 84 97 105,97 105 60,0.9911,,"case | true bus | store prediction correct | similarity
+c01 | 97 | yes | 0.9801
+c02 | 97 | yes | 0.9798
+c03 | 97 | yes | 0.9794
+c04 | 97 | yes | 0.9794
+c05 | 97 | yes | 0.9793
+c06 | 97 | yes | 0.9792
+c07 | 97 | yes | 0.9792
+c08 | 97 | yes | 0.9790
+c09 | 97 | yes | 0.9790
+c10 | 97 | yes | 0.9789","Event event-056. Predicted location: 97. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 20 of 25 sensors available. Dark uPMU buses: 1, 13, 84, 97, 105.
+Case evidence: 10 of 10 agreement. Nearest 3 uPMU buses of the predicted bus: 97, 105, 60.
+Document evidence: The gate outcome is CONFIDENT, and the reason code is VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Bus 97 is also among the dark uPMU buses and the nearest uPMU buses. The passage says to treat the location with more care in this situation. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: This is a candidate location, not a confirmed fault.
+Limitation: The available passages do not establish that this individual prediction is correct.
+Recommended operator review: Treat the candidate location with more care because a dark uPMU is among the nearest uPMUs of the predicted bus.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event provides the candidate, gate outcome, dark sensors, and nearest uPMU buses. The passage provides the review guidance for a dark nearest uPMU.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0021,20261118T054551Z_s4_main_live_rescored|event-021|repeat0,5,CONFIDENT,42,18 35 81 103 113,45 47 35,0.9049,,"case | true bus | store prediction correct | similarity
+c01 | 47 | yes | 0.9883
+c02 | 47 | no | 0.9882
+c03 | 47 | no | 0.9882
+c04 | 47 | yes | 0.9881
+c05 | 47 | yes | 0.9870
+c06 | 47 | yes | 0.9867
+c07 | 47 | yes | 0.9867
+c08 | 47 | yes | 0.9867
+c09 | 47 | yes | 0.9865
+c10 | 47 | yes | 0.9865","Event event-021. Predicted location: 42. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 20 of 25 sensors available. Dark uPMU buses: 18, 35, 81, 103, 113.
+Case evidence: KNN agreement: 0 of 10. All 10 case neighbours have true bus 47.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: A dark uPMU bus, 35, is among the nearest listed uPMUs to predicted bus 42, so the location warrants more care. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The event provides no candidate set; the schema's candidate_set field is therefore empty.
+Limitation: KNN agreement is 0 of 10, and all 10 listed case neighbours have true bus 47 rather than predicted bus 42.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages do not provide a review procedure for this prediction or explain how to resolve the mismatch between predicted bus 42 and the case neighbours' true bus 47. No procedural recommendation is made.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0022,20261118T054551Z_s4_main_live_rescored|event-033|repeat0,5,CONFIDENT,55,47 60 81 91 300,54 13 60,0.9438,,"case | true bus | store prediction correct | similarity
+c01 | 55 | yes | 0.9866
+c02 | 55 | yes | 0.9866
+c03 | 55 | yes | 0.9866
+c04 | 55 | yes | 0.9863
+c05 | 55 | yes | 0.9861
+c06 | 55 | yes | 0.9861
+c07 | 55 | yes | 0.9861
+c08 | 55 | yes | 0.9860
+c09 | 55 | yes | 0.9856
+c10 | 55 | yes | 0.9856","Event event-033. Predicted location: 55. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 20 of 25 sensors available. Dark μPMU buses: 47, 60, 81, 91, 300. Calibrated probability: 0.9438.
+Case evidence: Agreement: 10 of 10. Each neighbour's true bus is 55. Cases: c01 | 55 | yes | 0.9866; c02 | 55 | yes | 0.9866; c03 | 55 | yes | 0.9866; c04 | 55 | yes | 0.9863; c05 | 55 | yes | 0.9861; c06 | 55 | yes | 0.9861; c07 | 55 | yes | 0.9861; c08 | 55 | yes | 0.9860; c09 | 55 | yes | 0.9856; c10 | 55 | yes | 0.9856.
+Document evidence: The gate outcome is CONFIDENT and its reason code is VERIFICATION_PASSED. The passage says a passed check has this code. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Bus 60 is both dark and among the nearest μPMU buses of the predicted bus. The passage advises extra care in this situation. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: This is a candidate prediction, not a confirmed fault.
+Limitation: The EVENT block does not state whether the dropout pattern is random or targeted.
+Limitation: The calibrated probability is reported as provided; the passages do not explain how to interpret it for this individual prediction.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages do not establish how to interpret the calibrated probability for this individual prediction, and the EVENT block does not identify the dropout pattern as random or targeted.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0023,20261118T054551Z_s4_main_live_rescored|event-010|repeat0,5,LOW_CONFIDENCE,18,13 25 33 35 60,18 35 13,0.3719,18 21 25 29,"case | true bus | store prediction correct | similarity
+c01 | 18 | yes | 0.9700
+c02 | 18 | yes | 0.9697
+c03 | 18 | yes | 0.9690
+c04 | 18 | yes | 0.9687
+c05 | 18 | yes | 0.9686
+c06 | 18 | yes | 0.9686
+c07 | 18 | yes | 0.9686
+c08 | 18 | yes | 0.9684
+c09 | 18 | yes | 0.9684
+c10 | 18 | yes | 0.9684","Event event-010. Predicted location: 18. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 18, 21, 25, 29.
+Sensor coverage: 20 of 25 sensors available. Dark uPMU buses: 13, 25, 33, 35, 60.
+Case evidence: 10 of 10 neighbours have true bus 18 and store prediction correct=yes. Neighbour buses: 18, 18, 18, 18, 18, 18, 18, 18, 18, 18.
+Document evidence: The gate outcome is LOW_CONFIDENCE. The passage says low-confidence windows are sent to a person. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person"")
+Document evidence: Dark uPMU bus 35 is among the nearest uPMUs of predicted bus 18, so the location warrants more care. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The calibrated probability for this prediction is 0.3719; it is not a confirmed fault.
+Limitation: The dark uPMU buses are 13, 25, 33, 35, 60.
+Limitation: The passage describes the candidate-set coverage as a property over many LOW_CONFIDENCE windows and says one event's set can miss the true location.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages support human review of a LOW_CONFIDENCE report and extra care when a dark uPMU is nearest, but do not specify an operator review procedure. No procedural recommendation is provided.). Approval status: pending_human_review.","[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0024,20261118T054551Z_s4_main_live_rescored|event-043|repeat0,5,LOW_CONFIDENCE,83,1 6 18 35 75,81 84 76,0.6634,80 83,"case | true bus | store prediction correct | similarity
+c01 | 83 | yes | 0.9997
+c02 | 80 | no | 0.9997
+c03 | 80 | no | 0.9997
+c04 | 83 | yes | 0.9996
+c05 | 83 | yes | 0.9996
+c06 | 83 | yes | 0.9996
+c07 | 80 | no | 0.9996
+c08 | 83 | yes | 0.9996
+c09 | 83 | yes | 0.9996
+c10 | 83 | yes | 0.9996","Event event-043. Predicted location: 83. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 80, 83.
+Sensor coverage: 20 of 25 sensors available. Dark uPMU buses: 1, 6, 18, 35, 75.
+Case evidence: The 10 case neighbours agree with the prediction in 7 of 10 cases. Their true buses are 83 and 80.
+Document evidence: A LOW_CONFIDENCE prediction should be routed for human review. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person"")
+Document evidence: The candidate set does not guarantee that this event's true location is included. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location"")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The calibrated probability is 0.6634; it is not a confirmation.
+Limitation: The gate outcome is LOW_CONFIDENCE with reason code LOW_MARGIN.
+Recommended operator review: Route this LOW_CONFIDENCE candidate for human review; the passage says the gate sends such windows to a person (note_21_selective_prediction, Selective prediction and coverage: ""sends the rest to a person"").
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The passages support routing LOW_CONFIDENCE windows to a person and caution that a candidate set can miss the true location.). Approval status: pending_human_review.","[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0025,20261118T054551Z_s4_main_live_rescored|event-005|repeat0,10,CONFIDENT,13,33 47 60 69 75 81 84 91 105 109,13 54 1,0.9854,,"case | true bus | store prediction correct | similarity
+c01 | 13 | yes | 0.9718
+c02 | 13 | yes | 0.9718
+c03 | 13 | yes | 0.9703
+c04 | 13 | yes | 0.9698
+c05 | 13 | yes | 0.9696
+c06 | 13 | yes | 0.9696
+c07 | 13 | yes | 0.9696
+c08 | 13 | yes | 0.9694
+c09 | 13 | yes | 0.9693
+c10 | 13 | yes | 0.9692","Event event-005. Predicted location: 13. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 15 of 25 sensors are available. Dark uPMU buses: 33, 47, 60, 69, 75, 81, 84, 91, 105, 109.
+Case evidence: 10 of 10 neighbours have true bus 13 and a correct store prediction. Neighbour buses: 13, 13, 13, 13, 13, 13, 13, 13, 13, 13.
+Document evidence: The gate outcome is CONFIDENT, and the event gives reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Limitation: The predicted bus is a candidate, not a confirmed fault.
+Limitation: The event has no candidate set; the candidate_set field is empty.
+Limitation: The passages do not provide a procedure for operator review of this prediction.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The event provides a prediction and sensor and neighbour data, but the passages do not specify a review procedure for this case. No procedural statement is provided.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0026,20261118T054551Z_s4_main_live_rescored|event-017|repeat0,10,CONFIDENT,35,13 35 45 60 76 81 84 91 105 300,35 18 36,0.6762,,"case | true bus | store prediction correct | similarity
+c01 | 35 | yes | 0.9480
+c02 | 35 | yes | 0.9478
+c03 | 35 | yes | 0.9468
+c04 | 35 | yes | 0.9461
+c05 | 35 | yes | 0.9459
+c06 | 35 | yes | 0.9459
+c07 | 35 | yes | 0.9458
+c08 | 35 | yes | 0.9458
+c09 | 35 | yes | 0.9456
+c10 | 35 | yes | 0.9451","Event event-017. Predicted location: 35. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 15 of 25 sensors are available. Dark uPMU buses: 13, 35, 45, 60, 76, 81, 84, 91, 105, 300.
+Case evidence: The 10 of 10 neighbours have true bus 35. Neighbour buses: 35, 35, 35, 35, 35, 35, 35, 35, 35, 35.
+Document evidence: The gate outcome is CONFIDENT, and its reason code indicates a passed check. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Bus 35 is dark and is among the nearest μPMUs listed for the predicted bus, so the location warrants more care. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: This is a candidate location, not a confirmed fault.
+Recommended operator review: Have a human review the candidate location with more care because a dark uPMU is among the nearest μPMUs listed for the predicted bus. (note_16_targeted_versus_random_dropout, Targeted dropout is harder than random dropout: “treat the location with more care.”)
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event provides the candidate, gate outcome and reason code, sensor coverage, dark buses, and neighbour results. The passages explain the passed-check code and the added-care review.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0027,20261118T054551Z_s4_main_live_rescored|event-028|repeat0,10,CONFIDENT,57,1 6 45 47 60 75 81 91 109 300,54 60 13,0.9503,,"case | true bus | store prediction correct | similarity
+c01 | 55 | no | 0.9702
+c02 | 55 | no | 0.9693
+c03 | 55 | no | 0.9663
+c04 | 55 | yes | 0.9648
+c05 | 57 | yes | 0.9645
+c06 | 57 | yes | 0.9644
+c07 | 57 | yes | 0.9644
+c08 | 57 | yes | 0.9642
+c09 | 57 | yes | 0.9641
+c10 | 57 | yes | 0.9640","Event event-028. Predicted location: 57. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 15 of 25 sensors available; dark uPMU buses: 1, 6, 45, 47, 60, 75, 81, 91, 109, 300.
+Case evidence: KNN agreement: 6 of 10. Neighbour true buses, in order: 55, 55, 55, 55, 57, 57, 57, 57, 57, 57.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: A dark sensor is among the nearest uPMUs for the predicted bus, so treat this candidate with more care. This does not confirm a fault. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The EVENT block gives candidate_set as null.
+Limitation: The case neighbours include true bus 55 as well as true bus 57.
+Recommended operator review: Treat the candidate with more care because dark uPMU bus 60 is among the nearest uPMUs listed for predicted bus 57. (note_16_targeted_versus_random_dropout, Targeted dropout is harder than random dropout: ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event provides the prediction, gate details, sensor coverage, and case neighbours. The cited passage supports the stated caution for a dark nearest uPMU. No fault confirmation is made.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0028,20261118T054551Z_s4_main_live_rescored|event-040|repeat0,10,CONFIDENT,97,6 25 35 47 75 84 97 105 109 113,97 105 60,0.9532,,"case | true bus | store prediction correct | similarity
+c01 | 97 | yes | 0.9847
+c02 | 97 | yes | 0.9846
+c03 | 97 | yes | 0.9844
+c04 | 97 | yes | 0.9840
+c05 | 97 | yes | 0.9840
+c06 | 97 | yes | 0.9840
+c07 | 97 | yes | 0.9840
+c08 | 97 | yes | 0.9839
+c09 | 97 | yes | 0.9839
+c10 | 97 | yes | 0.9839","Event event-040. Predicted location: 97. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 15 of 25 sensors available. Dark uPMU buses: 6, 25, 35, 47, 75, 84, 97, 105, 109, 113.
+Case evidence: KNN agreement: 10 of 10. Neighbour true buses: 97 for c01 through c10. Similarities: c01 0.9847; c02 0.9846; c03 0.9844; c04 0.9840; c05 0.9840; c06 0.9840; c07 0.9840; c08 0.9839; c09 0.9839; c10 0.9839.
+Document evidence: The gate outcome is CONFIDENT with reason code VERIFICATION_PASSED. The calibrated probability is 0.9532. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Dark buses 97 and 105 are among the nearest three uPMU buses of predicted bus 97. The passage says to treat the location with more care in this situation. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The EVENT block does not specify whether the dark-sensor pattern is random or targeted.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The evidence does not identify whether the dark-sensor pattern is random or targeted. The targeted-dropout passage says the gate is fitted for random dropout only and gives a reject outcome for a pattern it was not fitted for, but the EVENT block does not establish which pattern applies.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0029,20261118T054551Z_s4_main_live_rescored|event-016|repeat0,10,LOW_CONFIDENCE,35,6 13 18 25 36 54 75 103 109 113,35 18 36,0.4061,18 21 25 29 35,"case | true bus | store prediction correct | similarity
+c01 | 35 | yes | 0.9641
+c02 | 35 | yes | 0.9640
+c03 | 35 | no | 0.9624
+c04 | 35 | no | 0.9624
+c05 | 35 | yes | 0.9624
+c06 | 35 | no | 0.9623
+c07 | 35 | no | 0.9623
+c08 | 35 | yes | 0.9622
+c09 | 35 | yes | 0.9619
+c10 | 35 | yes | 0.9619","Event event-016. Predicted location: 35. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 18, 21, 25, 29, 35.
+Sensor coverage: 15 of 25 sensors available; 10 dark uPMU buses: 6, 13, 18, 25, 36, 54, 75, 103, 109, 113.
+Case evidence: 10 of 10 agreement; nearest uPMU buses: 35, 18, 36. All 10 listed case neighbours have true bus 35.
+Document evidence: A dark uPMU among the nearest uPMUs of the predicted bus warrants extra care. Buses 18 and 36 are both dark and among the listed nearest uPMUs. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Document evidence: LOW_CONFIDENCE reports are sent to a person. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person."")
+Document evidence: A candidate set can miss the true location for an individual event. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The candidate set does not guarantee that this event's true location is included.
+Recommended operator review: Have a person review this LOW_CONFIDENCE candidate. Treat the location with more care because dark uPMUs 18 and 36 are among the nearest uPMUs (note_16_targeted_versus_random_dropout, section: Targeted dropout is harder than random dropout; “treat the location with more care”).
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event supplies the prediction, gate outcome, sensor availability, and neighbour data. The passages support the stated review caution and candidate-set limitation.). Approval status: pending_human_review.","[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on",,,,,,,
+H-0030,20261118T054551Z_s4_main_live_rescored|event-058|repeat0,10,LOW_CONFIDENCE,108,1 13 33 54 69 81 91 97 105 109,105 109 97,0.2414,72 83 86 97 99 101 108,"case | true bus | store prediction correct | similarity
+c01 | 97 | no | 0.9732
+c02 | 99 | yes | 0.9730
+c03 | 97 | no | 0.9730
+c04 | 99 | yes | 0.9730
+c05 | 97 | no | 0.9729
+c06 | 99 | yes | 0.9728
+c07 | 99 | yes | 0.9727
+c08 | 97 | no | 0.9726
+c09 | 97 | no | 0.9725
+c10 | 97 | no | 0.9725","Event event-058. Predicted location: 108. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 72, 83, 86, 97, 99, 101, 108.
+Sensor coverage: 15 of 25 sensors available. Dark uPMU buses: 1, 13, 33, 54, 69, 81, 91, 97, 105, 109.
+Case evidence: KNN agreement: 0 of 10. Neighbour true buses: 97 and 99.
+Document evidence: The predicted location is a candidate, not a confirmed fault. The event reports calibrated_probability 0.2414. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Document evidence: LOW_CONFIDENCE reports are sent to a person for review. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person."")
+Document evidence: The predicted bus's nearest uPMUs, 105, 109, and 97, are all among the dark uPMU buses, so treat the location with more care. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Document evidence: The candidate set does not guarantee that this event's true location is included. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Limitation: The candidate set does not establish the true location for this event.
+Limitation: The event's calibrated_probability is 0.2414; it is not described here as a confirmed-fault probability.
+Recommended operator review: Review this LOW_CONFIDENCE candidate. Selective prediction sends the rest to a person. (note_21_selective_prediction, Selective prediction and coverage: “sends the rest to a person.”)
+Recommended operator review: Treat the location with more care because dark uPMUs 105, 109, and 97 are nearest to the predicted bus. (note_16_targeted_versus_random_dropout, Targeted dropout is harder than random dropout: “treat the location with more care.”)
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event supplies the prediction, probability, gate outcome and reason code, dark sensors, candidate set, sensor coverage, and case-neighbour data. The passages support the stated review context and candidate-set limitation.). Approval status: pending_human_review.","[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on",,,,,,,
+H-0031,20261118T054552Z_s4_noise_live_rescored|event-035|repeat0,1,LOW_CONFIDENCE,65,13,60 97 69,0.6737,62 65,"case | true bus | store prediction correct | similarity
+c01 | 65 | yes | 0.9984
+c02 | 65 | yes | 0.9983
+c03 | 65 | yes | 0.9983
+c04 | 65 | yes | 0.9982
+c05 | 65 | yes | 0.9981
+c06 | 65 | yes | 0.9981
+c07 | 65 | yes | 0.9981
+c08 | 65 | yes | 0.9981
+c09 | 65 | yes | 0.9981
+c10 | 65 | yes | 0.9981","Event event-035. Predicted location: 65. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 62, 65.
+Sensor coverage: 24 of 25 sensors available; dark uPMU bus: 13.
+Case evidence: Agreement: 10 of 10. Neighbour buses: 65, 65, 65, 65, 65, 65, 65, 65, 65, 65.
+Document evidence: A LOW_CONFIDENCE report shows a candidate set; the set is not a guarantee for this event. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Document evidence: A LOW_CONFIDENCE window is sent to a person for review. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person."")
+Limitation: This prediction is a candidate, not a confirmed fault.
+Limitation: The candidate set can miss the true location for an individual event.
+Recommended operator review: Review this LOW_CONFIDENCE candidate. The passage says selective prediction “sends the rest to a person” (note_21_selective_prediction, section “Selective prediction and coverage”).
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The EVENT provides the predicted bus, gate outcome and reason code, sensor coverage, dark sensor, and case neighbours. The passages support the candidate-set limitation and human review for LOW_CONFIDENCE reports.). Approval status: pending_human_review.","[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on",,,,,,,
+H-0032,20261118T054552Z_s4_noise_live_rescored|event-048|repeat0,1,CONFIDENT,86,84,76 91 97,0.9758,,"case | true bus | store prediction correct | similarity
+c01 | 86 | yes | 0.9969
+c02 | 86 | yes | 0.9966
+c03 | 86 | yes | 0.9965
+c04 | 86 | yes | 0.9965
+c05 | 86 | yes | 0.9965
+c06 | 86 | yes | 0.9965
+c07 | 86 | yes | 0.9964
+c08 | 86 | yes | 0.9964
+c09 | 86 | yes | 0.9964
+c10 | 86 | yes | 0.9964","Event event-048. Predicted location: 86. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 24 of 25 sensors available; dark uPMU bus: 84.
+Case evidence: 10 of 10 neighbours have true bus 86 and a correct store prediction. Neighbour buses: 86, 86, 86, 86, 86, 86, 86, 86, 86, 86.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. The passage says a passed check has this code. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Limitation: The predicted location is a candidate, not a confirmed fault.
+Limitation: The case-neighbour summary reports the supplied simulated training windows; it does not independently confirm this prediction.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event supplies the prediction, gate outcome, reason code, sensor availability, and case neighbours. The passage explains the gate reason code. No procedural recommendation is made.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0033,20261118T054552Z_s4_noise_live_rescored|event-006|repeat0,2,CONFIDENT,13,75 105,13 54 1,0.9978,,"case | true bus | store prediction correct | similarity
+c01 | 13 | yes | 0.9968
+c02 | 13 | yes | 0.9968
+c03 | 13 | yes | 0.9968
+c04 | 13 | yes | 0.9968
+c05 | 13 | yes | 0.9968
+c06 | 13 | yes | 0.9968
+c07 | 13 | yes | 0.9968
+c08 | 13 | yes | 0.9968
+c09 | 13 | yes | 0.9967
+c10 | 13 | yes | 0.9967","Event event-006. Predicted location: 13. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 23 of 25 sensors are available. Dark uPMU buses: [75, 105]. Calibrated probability: 0.9978.
+Case evidence: KNN agreement: 10 of 10. The 10 case neighbours all have true bus 13: c01, c02, c03, c04, c05, c06, c07, c08, c09, c10. Their store predictions are correct. The nearest 3 uPMU buses of the predicted bus are [13, 54, 1].
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. This does not confirm a fault. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The candidate_set in the event is null.
+Limitation: The passages do not provide a specific operator-review procedure for this prediction.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages explain the gate reason code but do not provide a procedure for reviewing this candidate. No procedural statement is provided.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0034,20261118T054552Z_s4_noise_live_rescored|event-034|repeat0,2,CONFIDENT,62,84 91,60 97 69,0.9978,,"case | true bus | store prediction correct | similarity
+c01 | 62 | yes | 0.9940
+c02 | 62 | yes | 0.9931
+c03 | 62 | yes | 0.9929
+c04 | 62 | yes | 0.9926
+c05 | 62 | yes | 0.9924
+c06 | 62 | yes | 0.9923
+c07 | 62 | yes | 0.9921
+c08 | 62 | yes | 0.9920
+c09 | 62 | yes | 0.9919
+c10 | 62 | yes | 0.9918","Event event-034. Predicted location: 62. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 23 of 25 sensors available. Dark uPMU buses: 84, 91. Calibrated probability: 0.9978.
+Case evidence: 10 of 10 case neighbours have true bus 62 and store prediction correct: yes. Neighbour buses: 60, 97, 69.
+Document evidence: The event gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The reported gate outcome and calibrated probability do not confirm a fault. The prediction is only a candidate. (note_21_selective_prediction, ""Selective prediction and coverage"": ""Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person."")
+Limitation: The candidate set is null in the EVENT block.
+Limitation: The test-set coverage and accuracy figures in the passage do not establish the confidence or correctness of this individual prediction.
+Limitation: The passages do not explain this event's sensor coverage or provide event-specific validation of the predicted location.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages explain gate outcomes and test-set behaviour, but do not establish that this individual prediction is correct or provide an evidence-based review procedure. No procedure is stated.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0035,20261118T054552Z_s4_noise_live_rescored|event-021|repeat0,5,CONFIDENT,42,18 35 81 103 113,45 47 35,0.9049,,"case | true bus | store prediction correct | similarity
+c01 | 47 | yes | 0.9883
+c02 | 47 | no | 0.9882
+c03 | 47 | no | 0.9882
+c04 | 47 | yes | 0.9881
+c05 | 47 | yes | 0.9870
+c06 | 47 | yes | 0.9867
+c07 | 47 | yes | 0.9867
+c08 | 47 | yes | 0.9867
+c09 | 47 | yes | 0.9865
+c10 | 47 | yes | 0.9865","Event event-021. Predicted location: 42. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 20 of 25 sensors available. Dark uPMU buses: 18, 35, 81, 103, 113.
+Case evidence: Agreement: 0 of 10. Neighbour true buses: 47, 47, 47, 47, 47, 47, 47, 47, 47, 47.
+Document evidence: The gate outcome is CONFIDENT with reason code VERIFICATION_PASSED. The passage says a passed check has this code. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Bus 35 is both dark and among the nearest uPMU buses of the predicted bus, so the passage advises treating the location with more care. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: This prediction is a candidate, not a confirmed fault.
+Limitation: The predicted bus is 42, but all 10 listed case neighbours have true bus 47.
+Limitation: The event reports calibrated probability 0.9049. The retrieved passages do not explain how to interpret that probability for this individual prediction.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages do not explain how to interpret calibrated probability 0.9049 for this individual prediction. They also provide no guidance for resolving the disagreement between predicted bus 42 and the neighbours' true bus 47.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0036,20261118T054552Z_s4_noise_live_rescored|event-058|repeat0,10,LOW_CONFIDENCE,108,1 13 33 54 69 81 91 97 105 109,105 109 97,0.2414,72 83 86 97 99 101 108,"case | true bus | store prediction correct | similarity
+c01 | 97 | no | 0.9732
+c02 | 99 | yes | 0.9730
+c03 | 97 | no | 0.9730
+c04 | 99 | yes | 0.9730
+c05 | 97 | no | 0.9729
+c06 | 99 | yes | 0.9728
+c07 | 99 | yes | 0.9727
+c08 | 97 | no | 0.9726
+c09 | 97 | no | 0.9725
+c10 | 97 | no | 0.9725","Event event-058. Predicted location: 108. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 72, 83, 86, 97, 99, 101, 108.
+Sensor coverage: 15 of 25 sensors available. Dark uPMU buses: [1, 13, 33, 54, 69, 81, 91, 97, 105, 109]. Calibrated probability: 0.2414.
+Case evidence: KNN agreement: 0 of 10. Neighbour buses: c01: 97; c02: 99; c03: 97; c04: 99; c05: 97; c06: 99; c07: 99; c08: 97; c09: 97; c10: 97.
+Document evidence: The prediction is a candidate, not a confirmed fault. The candidate set can miss the true location for an individual event. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Document evidence: The predicted location is among the nearest uPMUs, so the location should be treated with more care. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Document evidence: LOW_CONFIDENCE reports are sent to a person. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person."")
+Limitation: The LOW_CONFIDENCE candidate set is not a guarantee for this event.
+Limitation: Dark uPMU buses: [1, 13, 33, 54, 69, 81, 91, 97, 105, 109]. The nearest 3 uPMU buses of predicted bus 108 are [105, 109, 97].
+Recommended operator review: Send this LOW_CONFIDENCE report for human review. Evidence: note_21_selective_prediction, section Selective prediction and coverage; excerpt: ""sends the rest to a person.""
+Recommended operator review: Treat the candidate location with more care because a dark uPMU is among the nearest uPMUs. Evidence: note_16_targeted_versus_random_dropout, section Targeted dropout is harder than random dropout; excerpt: ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.""
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The passages support the candidate-not-confirmed limitation and the human-review guidance for a LOW_CONFIDENCE report. Event-specific values are taken from the EVENT block.). Approval status: pending_human_review.","[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on",,,,,,,
+H-0037,20261118T054552Z_s4_noise_live_rescored|event-052|repeat1,0,CONFIDENT,89,,91 76 97,0.9038,,"case | true bus | store prediction correct | similarity
+c01 | 89 | yes | 0.9993
+c02 | 89 | yes | 0.9993
+c03 | 89 | yes | 0.9992
+c04 | 89 | yes | 0.9992
+c05 | 89 | yes | 0.9992
+c06 | 89 | yes | 0.9992
+c07 | 89 | yes | 0.9992
+c08 | 89 | yes | 0.9992
+c09 | 89 | yes | 0.9992
+c10 | 89 | yes | 0.9991","Event event-052. Predicted location: 89. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 25 of 25 uPMU buses available; dark uPMU buses: [].
+Case evidence: 10 of 10 neighbours have true bus 89 and a correct store prediction; neighbour buses: 91, 76, 97.
+Document evidence: The prediction is a candidate, not a confirmed fault. (note_25_prediction_is_not_confirmation, ""A prediction is not a confirmed fault"": ""The model predicts a candidate fault bus. It does not confirm a fault."")
+Document evidence: The gate outcome is CONFIDENT and its reason code indicates a passed check. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: A person must confirm the location through utility-authorised processes before any action. (note_25_prediction_is_not_confirmation, ""A prediction is not a confirmed fault"": ""A person must confirm the location with the processes that the utility authorises before any action."")
+Document evidence: The gate’s calibration and performance depend on its checkpoint. (note_29_gate_belongs_to_one_checkpoint, ""A gate belongs to one checkpoint"": ""Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run."")
+Limitation: The event identifies gate_v1 but does not identify the checkpoint used. The retrieved passage says gate_v1 was fitted for the seed-42 checkpoint.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The event does not identify the checkpoint associated with gate_v1, so the retrieved evidence cannot establish whether this gate's checkpoint-specific calibration applies.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_25_prediction_is_not_confirmation > A prediction is not a confirmed fault]
+# A prediction is not a confirmed fault
+
+The model predicts a candidate fault bus. It does not confirm a fault. A person must confirm the location with the processes that the utility authorises before any action. Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.
+
+A report is not an instruction to operate equipment.
+
+
+[note_29_gate_belongs_to_one_checkpoint > A gate belongs to one checkpoint]
+# A gate belongs to one checkpoint
+
+The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint. Applied unchanged to the seed-43 and seed-44 checkpoints, the accuracy of the CONFIDENT windows at the 95 percent point was 0.897 to 0.932, below the target. Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run.
+",,,,,,,
+H-0038,20261118T054552Z_s4_noise_live_rescored|event-048|repeat1,1,CONFIDENT,86,84,76 91 97,0.9758,,"case | true bus | store prediction correct | similarity
+c01 | 86 | yes | 0.9969
+c02 | 86 | yes | 0.9966
+c03 | 86 | yes | 0.9965
+c04 | 86 | yes | 0.9965
+c05 | 86 | yes | 0.9965
+c06 | 86 | yes | 0.9965
+c07 | 86 | yes | 0.9964
+c08 | 86 | yes | 0.9964
+c09 | 86 | yes | 0.9964
+c10 | 86 | yes | 0.9964","Event event-048. Predicted location: 86. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 24 of 25 sensors available; dark uPMU bus: 84. Calibrated probability: 0.9758. This is the event’s prediction probability, not a test-set metric.
+Case evidence: 10 of 10 neighbours have true bus 86. Their true buses are 86 for c01–c10.
+Document evidence: The gate outcome is CONFIDENT and its reason code is VERIFICATION_PASSED. The passage says, “A passed check has the code VERIFICATION_PASSED.” (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Test-set accuracy for CONFIDENT windows is not the confidence of this prediction. The passage describes accuracy across “the CONFIDENT windows,” not this event. (note_21_selective_prediction, ""Selective prediction and coverage"": ""the accuracy of the CONFIDENT windows is 0.949 to 0.950."")
+Document evidence: The passage advises extra care when a dark sensor is among the nearest sensors of the predicted bus. The event lists dark bus 84 and nearest buses 76, 91, and 97. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The passages do not define how to interpret this event’s calibrated probability or case-neighbour similarities as confirmation.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages explain gate codes and provide general test-set results, but do not establish whether this event’s probability or neighbour evidence confirms its location. The prediction remains a candidate, not a confirmed fault.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0039,20261118T054552Z_s4_noise_live_rescored|event-006|repeat1,2,CONFIDENT,13,75 105,13 54 1,0.9978,,"case | true bus | store prediction correct | similarity
+c01 | 13 | yes | 0.9968
+c02 | 13 | yes | 0.9968
+c03 | 13 | yes | 0.9968
+c04 | 13 | yes | 0.9968
+c05 | 13 | yes | 0.9968
+c06 | 13 | yes | 0.9968
+c07 | 13 | yes | 0.9968
+c08 | 13 | yes | 0.9968
+c09 | 13 | yes | 0.9967
+c10 | 13 | yes | 0.9967","Event event-006. Predicted location: 13. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: Available: 23 of 25. Dark uPMU buses: 75, 105.
+Case evidence: KNN agreement: 10 of 10. Neighbour true buses: 13, 13, 13, 13, 13, 13, 13, 13, 13, 13.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Limitation: This is a candidate location, not a confirmed fault.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event provides the candidate location, gate result, sensor coverage, and case-neighbour information. The passage explains the gate reason code. No procedural statement is included.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0040,20261118T054552Z_s4_noise_live_rescored|event-034|repeat1,2,CONFIDENT,62,84 91,60 97 69,0.9978,,"case | true bus | store prediction correct | similarity
+c01 | 62 | yes | 0.9940
+c02 | 62 | yes | 0.9931
+c03 | 62 | yes | 0.9929
+c04 | 62 | yes | 0.9926
+c05 | 62 | yes | 0.9924
+c06 | 62 | yes | 0.9923
+c07 | 62 | yes | 0.9921
+c08 | 62 | yes | 0.9920
+c09 | 62 | yes | 0.9919
+c10 | 62 | yes | 0.9918","Event event-034. Predicted location: 62. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 23 of 25 sensors available. Dark uPMU buses: 84, 91.
+Case evidence: 10 of 10 case neighbours have true bus 62 and a correct store prediction. Nearest uPMU buses of predicted bus 62: 60, 97, 69.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The gate outcome does not confirm a fault. (note_21_selective_prediction, ""Selective prediction and coverage"": ""Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person."")
+Limitation: The predicted bus is a candidate, not a confirmed fault.
+Limitation: The passages do not provide an operator-review procedure for this event.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages describe gate outcomes and general selective prediction, but do not provide a specific operator-review procedure for this event. No procedural statement is included.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0041,20261118T054552Z_s4_noise_live_rescored|event-021|repeat1,5,CONFIDENT,42,18 35 81 103 113,45 47 35,0.9049,,"case | true bus | store prediction correct | similarity
+c01 | 47 | yes | 0.9883
+c02 | 47 | no | 0.9882
+c03 | 47 | no | 0.9882
+c04 | 47 | yes | 0.9881
+c05 | 47 | yes | 0.9870
+c06 | 47 | yes | 0.9867
+c07 | 47 | yes | 0.9867
+c08 | 47 | yes | 0.9867
+c09 | 47 | yes | 0.9865
+c10 | 47 | yes | 0.9865","Event event-021. Predicted location: 42. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 20 of 25 sensors available. Dark uPMU buses: 18, 35, 81, 103, 113. Calibrated probability: 0.9049.
+Case evidence: Agreement: 0 of 10. All 10 case neighbours have true bus 47.
+Document evidence: The gate outcome is CONFIDENT and the reason code is VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Bus 35 is both a dark sensor and one of the nearest uPMUs to the predicted bus; the passage advises treating the location with more care. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The EVENT block gives candidate_set as null; no candidate buses are provided.
+Limitation: The PASSAGES do not explain how to interpret this prediction's calibrated probability or the 0 of 10 case-neighbour agreement.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages do not establish how to interpret this prediction's calibrated probability or case-neighbour agreement, and provide no review procedure. The model test-set results do not establish this prediction's confidence.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0042,20261118T054552Z_s4_noise_live_rescored|event-043|repeat1,5,LOW_CONFIDENCE,83,1 6 18 35 75,81 84 76,0.6634,80 83,"case | true bus | store prediction correct | similarity
+c01 | 83 | yes | 0.9997
+c02 | 80 | no | 0.9997
+c03 | 80 | no | 0.9997
+c04 | 83 | yes | 0.9996
+c05 | 83 | yes | 0.9996
+c06 | 83 | yes | 0.9996
+c07 | 80 | no | 0.9996
+c08 | 83 | yes | 0.9996
+c09 | 83 | yes | 0.9996
+c10 | 83 | yes | 0.9996","Event event-043. Predicted location: 83. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 80, 83.
+Sensor coverage: 20 of 25 sensors available. Dark uPMU buses: 1, 6, 18, 35, 75. Calibrated probability: 0.6634.
+Case evidence: 7 of 10 neighbours had true bus 83; the neighbour buses were 83 and 80.
+Document evidence: This is a candidate location, not a confirmed fault. The LOW_CONFIDENCE gate outcome calls for human review. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person"")
+Document evidence: The candidate set is a set of possible classes, and its stated coverage property does not guarantee that this event's true location is in the set. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location"")
+Limitation: The gate reason is LOW_MARGIN. The event's calibrated probability is 0.6634; it is not presented as a confirmed-fault probability.
+Limitation: The event reports 20 of 25 sensors available and dark uPMU buses 1, 6, 18, 35, and 75.
+Recommended operator review: Route this LOW_CONFIDENCE report for human review.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event supplies the prediction, gate outcome and reason, candidate set, sensor availability, and neighbour data. The passages support human review of non-accepted windows and explain the limits of candidate-set coverage.). Approval status: pending_human_review.","[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0043,20261118T054552Z_s4_noise_live_rescored|event-052|repeat2,0,CONFIDENT,89,,91 76 97,0.9038,,"case | true bus | store prediction correct | similarity
+c01 | 89 | yes | 0.9993
+c02 | 89 | yes | 0.9993
+c03 | 89 | yes | 0.9992
+c04 | 89 | yes | 0.9992
+c05 | 89 | yes | 0.9992
+c06 | 89 | yes | 0.9992
+c07 | 89 | yes | 0.9992
+c08 | 89 | yes | 0.9992
+c09 | 89 | yes | 0.9992
+c10 | 89 | yes | 0.9991","Event event-052. Predicted location: 89. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 25 of 25 sensors available; dark uPMU buses: [].
+Case evidence: 10 of 10 neighbours have true bus 89. Neighbour true buses: [89, 89, 89, 89, 89, 89, 89, 89, 89, 89].
+Document evidence: Bus 89 is a candidate prediction, not a confirmed fault. (note_25_prediction_is_not_confirmation, ""A prediction is not a confirmed fault"": ""It does not confirm a fault."")
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Limitation: The checkpoint used for this prediction is not specified. The passage says gate_v1 was fitted for the seed-42 checkpoint and that each new checkpoint needs its own calibration, gate fit, and frozen test run. (note_29_gate_belongs_to_one_checkpoint, Gate belongs to one checkpoint; excerpt: ""Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run."")
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The event does not identify the checkpoint, so the retrieved evidence cannot establish whether gate_v1 applies to this prediction. No procedural recommendation is given.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_25_prediction_is_not_confirmation > A prediction is not a confirmed fault]
+# A prediction is not a confirmed fault
+
+The model predicts a candidate fault bus. It does not confirm a fault. A person must confirm the location with the processes that the utility authorises before any action. Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.
+
+A report is not an instruction to operate equipment.
+
+
+[note_29_gate_belongs_to_one_checkpoint > A gate belongs to one checkpoint]
+# A gate belongs to one checkpoint
+
+The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint. Applied unchanged to the seed-43 and seed-44 checkpoints, the accuracy of the CONFIDENT windows at the 95 percent point was 0.897 to 0.932, below the target. Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run.
+",,,,,,,
+H-0044,20261118T054552Z_s4_noise_live_rescored|event-057|repeat2,0,CONFIDENT,99,,97 105 60,0.9982,,"case | true bus | store prediction correct | similarity
+c01 | 99 | yes | 0.9963
+c02 | 99 | yes | 0.9962
+c03 | 99 | yes | 0.9962
+c04 | 99 | yes | 0.9961
+c05 | 99 | yes | 0.9961
+c06 | 99 | yes | 0.9961
+c07 | 99 | yes | 0.9961
+c08 | 99 | yes | 0.9960
+c09 | 99 | yes | 0.9960
+c10 | 99 | yes | 0.9960","Event event-057. Predicted location: 99. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 25 of 25 sensors available; dark uPMU buses: [].
+Case evidence: 10 of 10 neighbours agree with bus 99. Neighbour buses: 99, 99, 99, 99, 99, 99, 99, 99, 99, 99.
+Document evidence: The predicted bus is a candidate, not a confirmed fault. (note_25_prediction_is_not_confirmation, ""A prediction is not a confirmed fault"": ""The model predicts a candidate fault bus. It does not confirm a fault."")
+Document evidence: The gate passage says CONFIDENT is one of the gate outcomes and VERIFICATION_PASSED is the code for a passed check. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The available passage describes gate_v1 calibration for the seed-42 checkpoint, but the event does not identify its checkpoint. (note_29_gate_belongs_to_one_checkpoint, ""A gate belongs to one checkpoint"": ""The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint."")
+Limitation: The event does not identify the checkpoint used, so the supplied evidence cannot establish whether gate_v1's calibration applies to this prediction.
+Limitation: The candidate_set value in EVENT is null.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The checkpoint used for this prediction is not identified. The passage states gate_v1 was fitted for seed-42 and describes different performance on seed-43 and seed-44, so its applicability here cannot be established. No procedural recommendation is provided.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_25_prediction_is_not_confirmation > A prediction is not a confirmed fault]
+# A prediction is not a confirmed fault
+
+The model predicts a candidate fault bus. It does not confirm a fault. A person must confirm the location with the processes that the utility authorises before any action. Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.
+
+A report is not an instruction to operate equipment.
+
+
+[note_29_gate_belongs_to_one_checkpoint > A gate belongs to one checkpoint]
+# A gate belongs to one checkpoint
+
+The thresholds, the isotonic maps and the conformal quantiles of gate_v1 were fitted for the seed-42 checkpoint. Applied unchanged to the seed-43 and seed-44 checkpoints, the accuracy of the CONFIDENT windows at the 95 percent point was 0.897 to 0.932, below the target. Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run.
+",,,,,,,
+H-0045,20261118T054552Z_s4_noise_live_rescored|event-035|repeat2,1,LOW_CONFIDENCE,65,13,60 97 69,0.6737,62 65,"case | true bus | store prediction correct | similarity
+c01 | 65 | yes | 0.9984
+c02 | 65 | yes | 0.9983
+c03 | 65 | yes | 0.9983
+c04 | 65 | yes | 0.9982
+c05 | 65 | yes | 0.9981
+c06 | 65 | yes | 0.9981
+c07 | 65 | yes | 0.9981
+c08 | 65 | yes | 0.9981
+c09 | 65 | yes | 0.9981
+c10 | 65 | yes | 0.9981","Event event-035. Predicted location: 65. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 62, 65.
+Sensor coverage: 24 of 25 sensors available. Dark uPMU bus: 13.
+Case evidence: The 10 of 10 case neighbours have true bus 65 and correct store predictions. Nearest uPMU buses of predicted bus 65: 60, 97, 69.
+Document evidence: A LOW_CONFIDENCE report shows a candidate set. That set can miss the true location for an individual event. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location"")
+Document evidence: The selective-prediction passage says windows not accepted for high confidence are sent to a person. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person"")
+Limitation: The prediction is a candidate, not a confirmed fault.
+Limitation: The passages do not explain the LOW_MARGIN reason code.
+Limitation: The case neighbours are simulated training windows; they do not confirm this event's location.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages do not explain what LOW_MARGIN means or how it determines this gate outcome. No procedural recommendation is given.). Approval status: pending_human_review.","[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on",,,,,,,
+H-0046,20261118T054552Z_s4_noise_live_rescored|event-048|repeat2,1,CONFIDENT,86,84,76 91 97,0.9758,,"case | true bus | store prediction correct | similarity
+c01 | 86 | yes | 0.9969
+c02 | 86 | yes | 0.9966
+c03 | 86 | yes | 0.9965
+c04 | 86 | yes | 0.9965
+c05 | 86 | yes | 0.9965
+c06 | 86 | yes | 0.9965
+c07 | 86 | yes | 0.9964
+c08 | 86 | yes | 0.9964
+c09 | 86 | yes | 0.9964
+c10 | 86 | yes | 0.9964","Event event-048. Predicted location: 86. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 24 of 25 sensors available; dark uPMU bus: 84. Calibrated probability: 0.9758.
+Case evidence: 10 of 10 agree; neighbour true buses: 86, 86, 86, 86, 86, 86, 86, 86, 86, 86.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The dark sensor bus 84 is not among the listed nearest uPMU buses of predicted bus 86. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: This is a candidate location, not a confirmed fault.
+Limitation: The EVENT candidate_set is null.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The EVENT supplies the prediction, probability, gate result, sensor status, and case neighbours. The passages explain the gate reason and the stated nearest-sensor caveat.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0047,20261118T054552Z_s4_noise_live_rescored|event-034|repeat2,2,CONFIDENT,62,84 91,60 97 69,0.9978,,"case | true bus | store prediction correct | similarity
+c01 | 62 | yes | 0.9940
+c02 | 62 | yes | 0.9931
+c03 | 62 | yes | 0.9929
+c04 | 62 | yes | 0.9926
+c05 | 62 | yes | 0.9924
+c06 | 62 | yes | 0.9923
+c07 | 62 | yes | 0.9921
+c08 | 62 | yes | 0.9920
+c09 | 62 | yes | 0.9919
+c10 | 62 | yes | 0.9918","Event event-034. Predicted location: 62. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 23 of 25 sensors available. Dark uPMU buses: 84, 91.
+Case evidence: 10 of 10 neighbours have true bus 62 and store prediction correct yes. Similarities: c01 0.9940; c02 0.9931; c03 0.9929; c04 0.9926; c05 0.9924; c06 0.9923; c07 0.9921; c08 0.9920; c09 0.9919; c10 0.9918. Nearest 3 uPMU buses: 60, 97, 69. Calibrated probability: 0.9978.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: The prediction is a candidate, not a confirmed fault. The event reports calibrated probability 0.9978; test-set metrics are not used as this prediction's confidence. (note_21_selective_prediction, ""Selective prediction and coverage"": ""Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows."")
+Limitation: This is a candidate location, not a confirmed fault.
+Limitation: The passages do not establish that the calibrated probability is a guarantee of correctness.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: insufficient (The passages describe gate outcomes and test-set coverage, but provide no procedure or criteria for operator review of a CONFIDENT prediction. No review procedure is stated.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0048,20261118T054552Z_s4_noise_live_rescored|event-021|repeat2,5,CONFIDENT,42,18 35 81 103 113,45 47 35,0.9049,,"case | true bus | store prediction correct | similarity
+c01 | 47 | yes | 0.9883
+c02 | 47 | no | 0.9882
+c03 | 47 | no | 0.9882
+c04 | 47 | yes | 0.9881
+c05 | 47 | yes | 0.9870
+c06 | 47 | yes | 0.9867
+c07 | 47 | yes | 0.9867
+c08 | 47 | yes | 0.9867
+c09 | 47 | yes | 0.9865
+c10 | 47 | yes | 0.9865","Event event-021. Predicted location: 42. Status: candidate_not_confirmed.
+Gate outcome: CONFIDENT (reason codes: VERIFICATION_PASSED). Candidate set: none.
+Sensor coverage: 20 of 25 sensors available. Dark uPMU buses: 18, 35, 81, 103, 113.
+Case evidence: KNN agreement: 0 of 10. All 10 case neighbours have true bus 47.
+Document evidence: The gate outcome is CONFIDENT, with reason code VERIFICATION_PASSED. (note_24_gate_outcomes, ""Gate outcomes and reason codes"": ""A passed check has the code VERIFICATION_PASSED."")
+Document evidence: Bus 35 is both dark and one of the listed nearest uPMU buses of the predicted location. The passage advises treating the location with more care in that situation. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Limitation: This is a candidate location, not a confirmed fault.
+Limitation: The reported calibrated probability is 0.9049. It is the prediction probability for this event; test-set performance figures in the passages are not this event's confidence.
+Limitation: KNN agreement is 0.0, and all 10 listed case neighbours have true bus 47 rather than predicted bus 42.
+Limitation: The event lists bus 35 as dark and among the nearest uPMU buses of predicted bus 42.
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event provides the prediction, probability, gate result, sensor availability, dark buses, and case-neighbour data. The cited passages support the gate-code interpretation and the caution about a dark nearest sensor. No procedural recommendation is made.). Approval status: pending_human_review.","[note_24_gate_outcomes > Gate outcomes and reason codes]
+# Gate outcomes and reason codes
+
+The gate returns CONFIDENT, LOW_CONFIDENCE or REJECT. LOW_CONFIDENCE means the input is valid but a condition failed; the reason codes are LOW_CALIBRATED_CONFIDENCE, LOW_MARGIN and LOW_KNN_AGREEMENT. REJECT means no report is drafted: UNSUPPORTED_DROPOUT_PATTERN for a number of dark sensors other than 0, 1, 2, 5 or 10 or a pattern other than random, and INVALID_INPUT for malformed votes. A passed check has the code VERIFICATION_PASSED.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0049,20261118T054552Z_s4_noise_live_rescored|event-043|repeat2,5,LOW_CONFIDENCE,83,1 6 18 35 75,81 84 76,0.6634,80 83,"case | true bus | store prediction correct | similarity
+c01 | 83 | yes | 0.9997
+c02 | 80 | no | 0.9997
+c03 | 80 | no | 0.9997
+c04 | 83 | yes | 0.9996
+c05 | 83 | yes | 0.9996
+c06 | 83 | yes | 0.9996
+c07 | 80 | no | 0.9996
+c08 | 83 | yes | 0.9996
+c09 | 83 | yes | 0.9996
+c10 | 83 | yes | 0.9996","Event event-043. Predicted location: 83. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 80, 83.
+Sensor coverage: 20 of 25 sensors available; dark uPMU buses: 1, 6, 18, 35, 75.
+Case evidence: Agreement: 7 of 10. Neighbour buses: 83, 80. Cases: c01 | 83 | yes | 0.9997; c02 | 80 | no | 0.9997; c03 | 80 | no | 0.9997; c04 | 83 | yes | 0.9996; c05 | 83 | yes | 0.9996; c06 | 83 | yes | 0.9996; c07 | 80 | no | 0.9996; c08 | 83 | yes | 0.9996; c09 | 83 | yes | 0.9996; c10 | 83 | yes | 0.9996.
+Document evidence: LOW_CONFIDENCE reports are sent to a person. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person."")
+Document evidence: The candidate set is not a guarantee for this event. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Limitation: Bus 83 is a candidate, not a confirmed fault.
+Limitation: The calibrated probability is 0.6634 for this prediction; test-set performance figures in the passages are not this event's confidence.
+Limitation: The case-neighbour agreement and candidate set do not establish the true location.
+Recommended operator review: Have a person review this LOW_CONFIDENCE report; the passage says the system “sends the rest to a person” (note_21_selective_prediction, Selective prediction and coverage).
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The passages support human review of LOW_CONFIDENCE reports and explain that an event's candidate set can miss the true location.). Approval status: pending_human_review.","[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on
+
+[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+",,,,,,,
+H-0050,20261118T054552Z_s4_noise_live_rescored|event-016|repeat2,10,LOW_CONFIDENCE,35,6 13 18 25 36 54 75 103 109 113,35 18 36,0.4061,18 21 25 29 35,"case | true bus | store prediction correct | similarity
+c01 | 35 | yes | 0.9641
+c02 | 35 | yes | 0.9640
+c03 | 35 | no | 0.9624
+c04 | 35 | no | 0.9624
+c05 | 35 | yes | 0.9624
+c06 | 35 | no | 0.9623
+c07 | 35 | no | 0.9623
+c08 | 35 | yes | 0.9622
+c09 | 35 | yes | 0.9619
+c10 | 35 | yes | 0.9619","Event event-016. Predicted location: 35. Status: candidate_not_confirmed.
+Gate outcome: LOW_CONFIDENCE (reason codes: LOW_MARGIN). Candidate set: 18, 21, 25, 29, 35.
+Sensor coverage: 15 of 25 sensors available. Dark uPMU buses: 6, 13, 18, 25, 36, 54, 75, 103, 109, 113.
+Case evidence: kNN agreement: 10 of 10. Nearest 3 uPMU buses of predicted bus: 35, 18, 36. The 10 case neighbours all have true bus 35.
+Document evidence: This is a candidate, not a confirmed fault. The event reports calibrated_probability 0.4061. The passage says the 90 percent candidate-set coverage is a method property over many windows, not a guarantee for one event. (note_22_conformal_sets, ""Conformal candidate sets"": ""one event's set can miss the true location."")
+Document evidence: Bus 18 and bus 36 are both dark and are among the nearest uPMUs of the predicted bus, so the location warrants more care. (note_16_targeted_versus_random_dropout, ""Targeted dropout is harder than random dropout"": ""If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care."")
+Document evidence: The LOW_CONFIDENCE outcome supports sending the report for human review. (note_21_selective_prediction, ""Selective prediction and coverage"": ""sends the rest to a person."")
+Limitation: The reported probability is event-specific; test-set macro-F1, retention, and AUDC values are not this event's confidence.
+Limitation: The passages do not establish that this event's candidate set contains the true location.
+Recommended operator review: Have a person review this LOW_CONFIDENCE report; the selective-prediction passage says windows not accepted are sent to a person (note_21_selective_prediction, Selective prediction and coverage: ""sends the rest to a person."").
+Recommended operator review: Treat the location with more care because dark uPMUs 18 and 36 are among the nearest uPMUs of the predicted bus (note_16_targeted_versus_random_dropout, Targeted dropout is harder than random dropout: ""treat the location with more care."").
+Human review (system-set): A person must review this candidate before any action. This statement is set by the system.
+Evidence status: sufficient (The event supplies the prediction, probability, gate outcome and reason, dark sensors, and case-neighbour information. The passages support the stated candidate-set limitation and the human-review and extra-care statements.). Approval status: pending_human_review.","[note_16_targeted_versus_random_dropout > Targeted dropout is harder than random dropout]
+Windows without a fault fall back to random selection, so these numbers are a conservative bound.
+
+Under targeting the area under the degradation curve of the dropout-aware model falls from 0.913 to 0.747, and its macro-F1 with 10 sensors dark is 0.521. The GridSense gate is fitted for random dropout only: a dropout pattern that it was not fitted for gives REJECT with UNSUPPORTED_DROPOUT_PATTERN. If a dark μPMU is one of the nearest μPMUs of the predicted bus, treat the location with more care.
+
+
+[note_21_selective_prediction > Selective prediction and coverage]
+# Selective prediction and coverage
+
+Selective prediction accepts a window only when the confidence is high enough and sends the rest to a person. Coverage is the share of windows accepted; selective risk is the error rate among the accepted windows. For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.
+
+At the 98 percent operating point coverage is 0.772 with no sensor dark and 0.376 with 10 dark. More dark μPMUs means more LOW_CONFIDENCE reports.
+
+
+[note_22_conformal_sets > Conformal candidate sets]
+# Conformal candidate sets
+
+A conformal prediction set contains the classes whose score passes a threshold fitted on held-out data, so that the true class is inside the set with a chosen probability, for example 90 percent. The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup. A set fitted on all windows covered only 55 to 81 percent of the LOW_CONFIDENCE windows. candidate_sets_v1 is fitted on LOW_CONFIDENCE windows only and covers about 90 percent of them with 3.1 to 4.3 classes on average.
+
+The 90 percent is a property of the method over many LOW_CONFIDENCE windows; one event's set can miss the true location. A CONFIDENT report names on",,,,,,,
