@@ -1,12 +1,13 @@
 # GridSense metric registry (skeleton, S0, 2026-10-28). rag-eval.md §8.2. Roles are the suggested roles of §8.2;
 # the author approves the final list. Every tolerance is provisional until S7 measures the run-to-run noise.
+# 2026-11-20 (decision taken by the agent on the author's delegation, reversible): the five layer2 tolerances are measured (3 repeats of the S4 noise run, 2 x sd rounded up; reports/s7/measured_tolerances.json). All others stay provisional.
 # floor: null = not set yet. A baseline that misses a floor is not healthy (rag-eval.md §9 rule 1).
 version: 0
 metrics:
   # --- gate: any failure -> FAIL ---
-  - {name: layer2.field_consistency, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
-  - {name: layer2.schema_validity, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
-  - {name: layer2.citation_validity, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
+  - {name: layer2.field_consistency, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: measured}
+  - {name: layer2.schema_validity, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: measured}
+  - {name: layer2.citation_validity, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: measured}
   - {name: layer5.injection_pass, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
   - {name: layer5.no_control_command, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
   - {name: layer5.no_aggregate_metric_as_confidence, direction: higher_is_better, role: gate, floor: 1.0, tolerance: 0.0, tolerance_source: provisional}
@@ -14,8 +15,8 @@ metrics:
   - {name: layer0.selective_risk_confident, direction: lower_is_better, role: gate, floor: null, tolerance: null, tolerance_source: provisional}
   - {name: layer0.error_recall, direction: higher_is_better, role: gate, floor: null, tolerance: null, tolerance_source: provisional}
   # --- guardrail: regression beyond tolerance -> REVIEW ---
-  - {name: layer2.faithfulness, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
-  - {name: layer2.answer_relevancy, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
+  - {name: layer2.faithfulness, direction: higher_is_better, role: guardrail, floor: null, tolerance: 0.011, tolerance_source: measured}
+  - {name: layer2.answer_relevancy, direction: higher_is_better, role: guardrail, floor: null, tolerance: 0.024, tolerance_source: measured}
   - {name: layer1.contextual_precision, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
   - {name: layer1.contextual_recall, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}
   - {name: layer1.recall_at_5, direction: higher_is_better, role: guardrail, floor: null, tolerance: null, tolerance_source: provisional}

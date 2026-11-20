@@ -221,3 +221,24 @@ def test_S5_a_file_that_is_not_a_database_is_not_silently_ignored(tmp_path):
     p.write_bytes(b"this is not a sqlite database, it is just a long enough text to fail the header check " * 4)
     with pytest.raises(sqlite3.DatabaseError):
         sqlite_saver(p)
+
+
+# ---- O46 and O44 (decisions of 2026-11-20) --------------------------------------------------------------------------------------------------
+def test_S5_O46_sensor_coverage_is_written_by_python_even_when_the_generator_omits_the_dark_buses():
+    ev = _events()
+    gen = Gen([_good_reply(ev["E-LOW"], sensor_coverage_summary="15 of 25 sensors available.")])
+    app, _ = _app(ev, gen)
+    cfg, st = W.start(app, "E-LOW")
+    assert W.paused(app, cfg) and len(gen.calls) == 1                                     # no revision: the check passes by construction
+    cov = st["draft_report"]["sensor_coverage_summary"]
+    assert "36" in cov and "45" in cov and "23 of 25" in cov and st["evidence_sufficiency"]["generator_coverage_incomplete"]
+
+
+def test_S5_O44_a_report_with_a_sensitive_string_in_an_excerpt_goes_to_manual_review():
+    ev = _events()
+    poisoned = [dict(PASSAGES[0], text=PASSAGES[0]["text"] + " Contact operator@example.invalid.")]
+    good = json.loads(_good_reply(ev["E-LOW"]))
+    good["document_evidence"][0]["excerpt"] = poisoned[0]["text"]                           # a verbatim excerpt that holds the planted address
+    app, deps = _app(ev, Gen([json.dumps(good)]), retrieve=lambda item: {"passages": [dict(p) for p in poisoned], "dense_top1": 0.6})
+    _, st = W.start(app, "E-LOW")
+    assert st["approval_status"] == "manual_review" and "no_sensitive_info" in st["manual_review_reason"] and not deps["export_store"]

@@ -36,7 +36,7 @@ SELECTION = TRACK / "reports" / "events" / "s4_selection.json"
 OUT = TRACK / "reports" / "s4"
 PILOT_SEED, NOISE_SEED = 360777, 360888
 # Shown to the judge as part of the facts. The first live pilot (2026-11-11) scored geval_adherence 1 for all 5 reports because the judge read these two system fields as inventions (they were not in its context). Harness artefact, fixed.
-SYSTEM_FIELDS = ("SYSTEM-SET FIELDS (not chosen by the report writer)\nprediction_status: candidate_not_confirmed (the schema fixes it)\napproval_status: pending_human_review (the system sets it; the writer cannot approve)\nhuman_review_required: a fixed sentence the system adds to every report; when the evidence is insufficient the system also empties recommended_operator_review")
+SYSTEM_FIELDS = ("SYSTEM-SET FIELDS (not chosen by the report writer)\nprediction_status: candidate_not_confirmed (the schema fixes it)\napproval_status: pending_human_review (the system sets it; the writer cannot approve)\nhuman_review_required: a fixed sentence the system adds to every report; when the evidence is insufficient the system also empties recommended_operator_review\nsensor_coverage_summary: written by the system from the event (O46), not by the report writer")
 
 
 def load_events() -> dict[str, dict]:
@@ -145,7 +145,7 @@ def process(item: dict, index: int, retr, tau, gen, judge, salt: str, do_judge: 
         flag = tau_flag(r["dense_top1"], tau)
         rec["evidence"] = final_evidence_status(flag, rep.get("evidence_status"))
         rec["report_raw"] = rep                                  # exactly what the generator wrote
-        rep, info = assemble(rep, rec["evidence"]["final"])     # E + A (author 2026-11-18)
+        rep, info = assemble(rep, rec["evidence"]["final"], view)     # E + A (author 2026-11-18) + O46 (sensor coverage written by Python, 2026-11-20)
         rec["evidence"] |= info
         rec["report"] = rep
         rec["checks"] = CK.run_checks(rep, view, item["event_object"]["knn"]["neighbours"], passages, rec["evidence"]["final"])
@@ -208,7 +208,7 @@ def rescore(items_path: str, kind: str) -> dict:
             continue
         view = GEN.event_view(ev[it["event_id"]], order.index(it["event_id"]))
         raw = it.get("report_raw") or it["report"]
-        rep, info = assemble(raw, it["evidence"]["final"])
+        rep, info = assemble(raw, it["evidence"]["final"], view)
         it["report_raw"], it["report"], it["evidence"] = raw, rep, it["evidence"] | info
         it["checks"]["field_consistency"] = CK.field_consistency(rep, view)
         it["checks"]["evidence_consistency"] = CK.evidence_consistency(rep, it["evidence"]["final"])

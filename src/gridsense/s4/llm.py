@@ -179,3 +179,12 @@ def make_clients(live: bool, label: str, mock_gen: Callable | None = None, mock_
     budget = Budget(min(float(a["cost_approved_usd"]), float(repeat_budget) if repeat_budget else 1e9))
     return (OpenAIClient(cfg["generation"]["model"], cfg["generation"].get("temperature"), led, budget, label, reasoning_effort=cfg["generation"].get("reasoning_effort")),
             OpenAIClient(cfg["judge"]["model"], cfg["judge"].get("temperature"), led, budget, label, reasoning_effort=cfg["judge"].get("reasoning_effort")))
+
+
+def make_generator(model: str, label: str, cap_usd: float) -> "OpenAIClient":
+    """A live generator client for one Layer 2 candidate, with its own spend cap (never above the approved run budget). Same settings as the S4 generator (effort, temperature fallback)."""
+    cfg = load_config()
+    a = require_live_approval()
+    led = Ledger(label=label)
+    budget = Budget(min(float(a["cost_approved_usd"]), float(cap_usd)))
+    return OpenAIClient(model, cfg["generation"].get("temperature"), led, budget, label, reasoning_effort=cfg["generation"].get("reasoning_effort"))

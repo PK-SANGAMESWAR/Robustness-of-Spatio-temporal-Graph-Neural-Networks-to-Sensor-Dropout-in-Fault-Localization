@@ -36,7 +36,7 @@ K_GRID = (0, 1, 2, 5, 10)
 TRANSIENT = (ConnectionError, TimeoutError)
 MAX_RETRIES = 2
 # Checks that must pass before a human sees the report as a draft for approval (gate roles of the registry plus the safety checks).
-BLOCKING = ("schema", "field_consistency", "neighbour_counts", "citation_validity", "no_confirmation", "no_control_command", "no_approval_claim", "no_injection_echo", "evidence_consistency")
+BLOCKING = ("schema", "field_consistency", "neighbour_counts", "citation_validity", "no_confirmation", "no_control_command", "no_approval_claim", "no_injection_echo", "evidence_consistency", "no_sensitive_info")
 
 
 class State(TypedDict, total=False):
@@ -155,9 +155,10 @@ def build(deps: dict) -> Any:
             return out
         item = deps["event_lookup"](s["event_id"])
         final = final_evidence_status(s["evidence_sufficiency"]["tau_flag"], raw.get("evidence_status"))
-        rep, info = assemble(raw, final["final"])
         view = GEN.event_view(item, deps.get("anon_index", lambda e: 0)(s["event_id"]))
+        rep, info = assemble(raw, final["final"], view)
         chk = CK.run_checks(rep, view, item["event_object"]["knn"]["neighbours"], s["reranked_chunks"], final["final"])
+        chk["no_sensitive_info"] = CK.no_sensitive_info(rep)                  # O44: blocking in the workflow
         out = {"draft_report": rep, "citation_validation": chk, "evidence_sufficiency": s["evidence_sufficiency"] | {"final": final["final"], "by": final["by"]} | info}
         passed = all(chk.get(k, {"pass": False})["pass"] for k in BLOCKING)
         if passed and final["final"] == "insufficient":

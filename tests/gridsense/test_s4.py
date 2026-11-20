@@ -310,3 +310,16 @@ def test_S4_assemble_E_and_A_author_2026_11_18():
 def test_S4_no_confirmation_uses_clause_level_negation_E36(sentence, ok):
     rep = _good(GEN.event_view(_item(), 1)) | {"limitations": [sentence]}
     assert CK.no_confirmation(rep)["pass"] is ok, sentence
+
+
+def test_S4_O46_coverage_text_and_incomplete_detection_by_hand():
+    from gridsense.s4.decision import assemble, coverage_incomplete, coverage_text
+    view = GEN.event_view(_item(), 1)                                                       # k = 2, dark buses 36 and 45
+    assert coverage_text(view) == "23 of 25 μPMUs available; 2 dark μPMU buses: 36, 45."
+    assert coverage_text(GEN.event_view(_item(k=0, dropped_pmu_buses=[]), 1)).startswith("25 of 25 μPMUs available; no dark")
+    assert coverage_incomplete("23 of 25 sensors available.", view) and not coverage_incomplete("buses 36 and 45 are dark", view)
+    assert coverage_incomplete("2 sensors are dark", GEN.event_view(_item(k=0, dropped_pmu_buses=[]), 1))
+    out, info = assemble(_good(view) | {"sensor_coverage_summary": "23 of 25 sensors available."}, "sufficient", view)
+    assert out["sensor_coverage_summary"] == coverage_text(view) and info["generator_coverage_incomplete"] and CK.field_consistency(out, view)["pass"]
+    out, info = assemble(_good(view), "sufficient")                                          # no view: the generator's sentence is kept
+    assert out["sensor_coverage_summary"] == _good(view)["sensor_coverage_summary"] and "generator_coverage_incomplete" not in info

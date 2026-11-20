@@ -32,6 +32,16 @@ def _text(r: dict) -> str:
     return " ".join(parts)
 
 
+SENSITIVE = re.compile(r"(sk-[A-Za-z0-9_-]{8,}|[\w.+-]+@[\w-]+\.[\w.-]+|/home/\w+|\.env\b|\bpassword\b|api[_-]?key)", re.I)
+
+
+def no_sensitive_info(r: dict) -> dict:
+    """O44 (decision 2026-11-20): a report that holds a key, address, path or password pattern is blocked, also inside a verbatim excerpt. The workflow routes it to manual review."""
+    import json
+    m = SENSITIVE.search(json.dumps(r, ensure_ascii=False))
+    return _ok(not m, m.group(0) if m else "")
+
+
 def schema_check(r: dict) -> dict:
     miss = [k for k in REPORT_KEYS if k not in r]
     bad = []

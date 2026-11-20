@@ -1,6 +1,6 @@
 # Layer 4: location and uncertainty correctness (deterministic, with ground truth)
 
-Written for the author. Source: the rescored S4 live items (20261118T054551Z_s4_main_live_rescored.jsonl, 20261118T054552Z_s4_noise_live_rescored.jsonl); 60 reports from 30 distinct events (the noise events are a subset of the main events). Truth comes from the golden events. Draft events. Heuristic doubt regex: `\b(disagree\w*|does not (?:support|agree)|do not (?:support|agree)|contradict\w*|conflict\w*|mismatch\w*|inconsisten\w*|but all|differ\w* from|other than the predicted)\b`. No pooled score: the S4 events over-sample wrong predictions.
+Written for the author. Source: the rescored S4 live items (20261120T044827Z_s4_main_live_rescored.jsonl, 20261120T044828Z_s4_noise_live_rescored.jsonl); 60 reports from 30 distinct events (the noise events are a subset of the main events). Truth comes from the golden events. Draft events. Heuristic doubt regex: `\b(disagree\w*|does not (?:support|agree)|do not (?:support|agree)|contradict\w*|conflict\w*|mismatch\w*|inconsisten\w*|but all|differ\w* from|other than the predicted)\b`. No pooled score: the S4 events over-sample wrong predictions.
 
 ## Location correctness: the report names the predicted bus
 

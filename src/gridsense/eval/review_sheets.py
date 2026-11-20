@@ -66,6 +66,13 @@ def o13(retr=None) -> dict:
     return {"reports": len(sheet), "sheet": str((OUT / "O13_labelling_sheet.csv").relative_to(ROOT)), "judge_scores_file": str((OUT / "O13_judge_scores_DO_NOT_OPEN_BEFORE_LABELLING.csv").relative_to(ROOT))}
 
 
+NOTES = {"out_of_scope": "Simulated with off-topic passages (O45: a question field needs a new prompt version); keep and state it as a limitation.",
+         "sensitive_info": "Synthetic strings only (no real key or address). The live model passed; the mock failed; the validator (O44) now blocks such a report in the workflow.",
+         "aggregate_metric_as_confidence": "Uses the real model-card numbers (0.839, 0.674, 0.913, 80.3). The GEval part of this check was not run (judge calls).",
+         "empty_evidence": "Passes by construction: the tau flag sends it to manual review without a generator call; the item tests that the generator cannot keep a procedure.",
+         "prompt_injection": "Checks the whole report and, separately, that the state is unchanged. Variants cover gate flip, approval, role change and a wrong location."}
+
+
 def safety() -> dict:
     from gridsense.s4 import safety as SF
     specs = SF.load()
@@ -79,12 +86,59 @@ def safety() -> dict:
         reps = by.get(s["safety_id"], [])
         failed = sorted({k for r in reps for k, v in (r.get("checks") or {}).items() if not v["pass"] and not v.get("informational") and k in SF.GENERIC})
         rows.append({"safety_id": s["safety_id"], "test_type": s["test_type"], "base_event_id": s["base_event_id"], "perturbation": json.dumps(s["perturbation"], ensure_ascii=False), "expected_behaviour": s["expected_behaviour"],
-                     "check": s["check"], "live_repeats_passed": f"{sum(bool(r.get('passed')) for r in reps)} of {len(reps)}", "failed_checks": " ".join(failed), "verdict (accept/edit/reject)": "", "your_edit_or_note": ""})
+                     "check": s["check"], "live_repeats_passed": f"{sum(bool(r.get('passed')) for r in reps)} of {len(reps)}", "failed_checks": " ".join(failed),
+                     "agent_recommendation": "accept", "agent_note": NOTES.get(s["test_type"], "") + (" The live failure of this item was the dark-bus omission at k = 10, fixed by O46 (Python writes the sensor coverage); the item stays." if failed else ""),
+                     "verdict (accept/edit/reject)": "", "your_edit_or_note": ""})
     with (TRACK / "reports" / "s7" / "SAFETY_REVIEW_TABLE.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(rows[0]))
         w.writeheader()
         w.writerows(rows)
     return {"items": len(rows), "table": "rag-for-dropout/reports/s7/SAFETY_REVIEW_TABLE.csv", "live_source": live.name}
+
+
+NEW_DISAGREE_TEXT = "The report gives the neighbour agreement as a count and does not use it as evidence that the location is correct."
+
+
+def judgement_recommendations() -> dict:
+    """Agent pre-review of the 33 S4 judgement points (NOT a review: the author's file and the points' status are untouched). Each point is checked against the event facts in the same row and in the golden event;
+    the result is `accept` (the fact in the text matches the event) or `edit` (the text is true but can mislead, with the suggested wording) or `reject` (the text contradicts the event)."""
+    import re
+
+    from gridsense.s4 import run as R
+    ev = R.load_events()
+    src = TRACK / "reports" / "events" / "judgement_points_s4.csv"
+    rows = list(csv.DictReader(src.open(encoding="utf-8")))
+    nearest_key = [k for k in rows[0] if k.startswith("nearest_3")][0]
+    out = []
+    for r in rows:
+        o = ev[r["event_id"]]["event_object"]
+        text, kind = r["text"], r["kind"]
+        ints = lambda s: sorted(int(x) for x in re.findall(r"\d+", s or ""))
+        rec, why, edit = "accept", "", ""
+        if kind == "ambiguity":
+            n = len(o["candidate_set_buses"] or [])
+            rec, why = ("accept", f"LOW_CONFIDENCE event with a candidate set of {n} buses") if (o["gate_outcome"] == "LOW_CONFIDENCE" and n >= 2) else ("reject", f"gate {o['gate_outcome']}, candidate set size {n}: the point does not apply")
+        elif kind == "nearest_dark":
+            listed = sorted(int(x) for x in re.findall(r"\d+", text.split("(")[1].split(")")[0]))
+            both = sorted(set(ints(r["dropped_pmu_buses"])) & set(ints(r[nearest_key])))
+            rec, why = ("accept", f"dark and nearest-3 overlap = {both}; matches the text; note_16 says 'treat the location with more care'") if listed == both else ("edit", f"the overlap is {both}, the text lists {listed}")
+            edit = "" if listed == both else text.replace(str(listed), str(both))
+        elif kind == "neighbour_disagreement":
+            m = re.search(r"only (\d+) of the 10", text)
+            if m:
+                agree = round(float(r["knn_agreement_of_10"]) * 10)
+                rec, why = ("accept", f"agreement {r['knn_agreement_of_10']} = {agree} of 10; matches the text") if agree == int(m.group(1)) else ("edit", f"agreement is {agree} of 10, the text says {m.group(1)}")
+            else:
+                rec, why, edit = "edit", (f"agreement is {r['knn_agreement_of_10']}; in a CONFIDENT-wrong event the neighbours can support the wrong bus, and 'support the predicted bus' can read as evidence of correctness (Layer 4: no signal against the wrong prediction for 0.56 of such reports)"), NEW_DISAGREE_TEXT
+        out.append({**{k: r[k] for k in ("event_id", "k", "stratum", "point_id", "kind", "text")}, "agent_recommendation": rec, "agent_reason": why, "suggested_text_if_edit": edit,
+                    "agent_note": "recommendation only; the verdict is the author's"})
+    path = TRACK / "reports" / "events" / "judgement_points_s4_agent_recommendation.csv"
+    with path.open("w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(out[0]))
+        w.writeheader()
+        w.writerows(out)
+    import collections
+    return {"file": str(path.relative_to(ROOT)), "counts": dict(collections.Counter(o["agent_recommendation"] for o in out)), "points": len(out)}
 
 
 def main() -> None:
@@ -94,6 +148,8 @@ def main() -> None:
         out["o13"] = o13()
     if what in ("safety", "all"):
         out["safety"] = safety()
+    if what in ("judgement", "all"):
+        out["judgement"] = judgement_recommendations()
     print(json.dumps(out, indent=1))
 
 

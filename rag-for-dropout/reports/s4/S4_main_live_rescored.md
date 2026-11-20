@@ -23,6 +23,7 @@ Primary result: per stratum, CONFIDENT-wrong (`high_conf_error`) first. Checks: 
 | judge.geval_no_aggregate_metric_as_confidence | 5.00 (n=10) | 5.00 (n=10) | 5.00 (n=10) |
 | evidence.final_insufficient | 0.80 (n=10) | 0.60 (n=10) | 0.20 (n=10) |
 | evidence.generator_review_while_insufficient | 0.20 (n=10) | 0.00 (n=10) | 0.00 (n=10) |
+| evidence.generator_coverage_incomplete | 0.00 (n=10) | 0.00 (n=10) | 0.00 (n=10) |
 
 ## Secondary: weighted figure, over the covered strata
 Weights: share of the stratum among the test runs at the same k (`reports/events/stratum_shares.json`), renormalised over the three strata; mean over k. Share of runs in no stratum (CONFIDENT, wrong, p < 0.9) per k: k=0 0.031, k=1 0.028, k=2 0.029, k=5 0.029, k=10 0.016.
@@ -48,3 +49,4 @@ Weights: share of the stratum among the test runs at the same k (`reports/events
 | judge.geval_no_aggregate_metric_as_confidence | 5.00 |
 | evidence.final_insufficient | 0.51 |
 | evidence.generator_review_while_insufficient | 0.00 |
+| evidence.generator_coverage_incomplete | 0.00 |

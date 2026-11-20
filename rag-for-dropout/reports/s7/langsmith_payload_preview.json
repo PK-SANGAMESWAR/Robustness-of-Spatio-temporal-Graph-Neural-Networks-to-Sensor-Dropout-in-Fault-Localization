@@ -1,0 +1,1235 @@
+{
+ "payload_sha256": "2827cee7c6adae53136655722d88a85cfc4203a2a0470ad995d062a1de81110a",
+ "dataset": "gridsense-retrieval",
+ "golden_versions": [
+  "4"
+ ],
+ "examples": [
+  {
+   "inputs": {
+    "query": "What happens to the voltages when one phase touches ground?"
+   },
+   "outputs": {
+    "reference_answer": "At the fault the voltage of the faulted phase falls toward zero when the fault resistance is low, while the voltages of the other two phases change much less.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_01_single_line_to_ground",
+      "section_path": [
+       "Single line-to-ground faults"
+      ],
+      "span_hash": "eff434893d678e5af48e0dbad9436f1bd91aa43357c00282ef6560bb8d17214f",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0001",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which kind of fault joins two phases without any earth connection?"
+   },
+   "outputs": {
+    "reference_answer": "A line-to-line (LL) fault connects two phase conductors without a ground connection.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_02_line_to_line",
+      "section_path": [
+       "Line-to-line faults"
+      ],
+      "span_hash": "634a7af02b179abbb4180d4f455b9e2ec2ae0ca109043ded11e4f96d359241c5",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0002",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which sequence networks are involved when two phases and earth are in the fault?"
+   },
+   "outputs": {
+    "reference_answer": "All three sequence networks take part: the positive-sequence network is in series with the parallel combination of the negative- and zero-sequence networks.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_03_double_line_to_ground",
+      "section_path": [
+       "Double line-to-ground faults"
+      ],
+      "span_hash": "0e202ec04beee71e0e8374f93fd5e99fc768b594a0740b855390f343cf3cb1c1",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0003",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Are all three phases hit equally by a symmetrical short circuit?"
+   },
+   "outputs": {
+    "reference_answer": "A three-phase fault involves all three phases and is balanced, so only the positive-sequence network is needed.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_04_three_phase_fault",
+      "section_path": [
+       "Three-phase faults"
+      ],
+      "span_hash": "bbda123e7b88adfb04f275a0b642120400457459cb1da3483bf346650b3d4855",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0004",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Why is a fault through a high resistance harder to find?"
+   },
+   "outputs": {
+    "reference_answer": "A high-resistance fault therefore leaves a weaker signature.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_05_fault_resistance",
+      "section_path": [
+       "Fault resistance and detectability"
+      ],
+      "span_hash": "28457fabe5a1f35852a90859a9d1e8300d52de008a854af248f5c1fe824aeb3d",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0005",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Why do the sensors closest to the fault give the most information?"
+   },
+   "outputs": {
+    "reference_answer": "Sensors close to the fault therefore carry the most information about its location.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_06_voltage_sag_propagation",
+      "section_path": [
+       "How a voltage sag spreads along a feeder"
+      ],
+      "span_hash": "9049ac6e5799b736c22fdd2f1662d8b19888b8d36df0ad1c6bf75d1b79789db8",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0006",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What does a micro-PMU actually deliver to the model?"
+   },
+   "outputs": {
+    "reference_answer": "In this project each of the 25 μPMUs provides three RMS phase voltages per time step to the model, together with three availability-mask channels.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_07_micro_pmu",
+      "section_path": [
+       "What a μPMU measures"
+      ],
+      "span_hash": "3b94496d38ede1f890cb4dd78f4962e99b4d30c47ab546d6e2c582d81b97d970",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0007",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Why can the model not see the fault directly at most of the candidate buses?"
+   },
+   "outputs": {
+    "reference_answer": "The other 19 candidate fault buses are not measured directly, so the model infers their location from the voltage disturbance seen at other buses.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_08_partial_observability",
+      "section_path": [
+       "Partial observability on the feeder"
+      ],
+      "span_hash": "fb1f22e6ff90c45a756247406c786e418d9613c6c955fe6771d9a3fa1372bd97",
+      "grade": 3
+     },
+     {
+      "document_id": "feeder_overview",
+      "section_path": [
+       "Feeder, sensors, classes and data windows",
+       "System"
+      ],
+      "span_hash": "1357e60ed80e9d11178b886a0ace1d876d30e11055b5ce4018ab435e2b990193",
+      "grade": 2
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0008",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What should a report show when several locations look the same to the available sensors?"
+   },
+   "outputs": {
+    "reference_answer": "When the evidence is ambiguous a report should show the candidates and not a single bus.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_09_ambiguity_set",
+      "section_path": [
+       "Ambiguity sets"
+      ],
+      "span_hash": "c59993c13f9fe16f76a831d22ffef1b2700a9cd1bc0fef8b681808d400f0d253",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0009",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which window index is used for the report and why was it chosen?"
+   },
+   "outputs": {
+    "reference_answer": "The report window is index 25 (5 post-fault samples); it was chosen on the validation split as the earliest index within one percentage point of the best accuracy.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_10_window_semantics",
+      "section_path": [
+       "Window semantics and the report window"
+      ],
+      "span_hash": "d29bb60ea00d534e62a59260beb591dca59789a5caf916d357e65813b5b63b73",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0010",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Why can a sensor stop delivering data?"
+   },
+   "outputs": {
+    "reference_answer": "A μPMU can stop delivering usable data because of communication loss, loss of power, loss of its time reference, or a hardware failure.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_11_causes_of_sensor_dropout",
+      "section_path": [
+       "Why sensors drop out"
+      ],
+      "span_hash": "0e5772d0a1e2dbdde23e44abab5d0fc54826122aafd42c7bf9d160987ba4f69c",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0011",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "How does the model tell a missing sensor from a sensor that reads zero volts?"
+   },
+   "outputs": {
+    "reference_answer": "A voltage of 0 can be a valid reading, so the mask is the authoritative indicator of a missing sensor.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_12_missing_data_representation",
+      "section_path": [
+       "How a dropped sensor is represented"
+      ],
+      "span_hash": "430c748430a4c6ac51d8fda8822c1005c98dd61da923fe0b2821b2cfad4b9c17",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0012",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "How are the dropped nodes chosen while the model is trained?"
+   },
+   "outputs": {
+    "reference_answer": "For each training batch the number of masked nodes k is drawn from {0, 1, 2, 5}, and the model learns that the mask pattern (0,0,0) means a dark sensor.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_13_dropout_aware_training",
+      "section_path": [
+       "Dropout-aware training"
+      ],
+      "span_hash": "c478ea6be0ccc08393441af5f6cd6109fc5f8bcf3235d810d195fc7e68c26809",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0013",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Does training for missing sensors also protect against noisy measurements?"
+   },
+   "outputs": {
+    "reference_answer": "Dropout-aware training therefore does not help against measurement noise.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_17_noise_versus_dropout",
+      "section_path": [
+       "Measurement noise is not sensor dropout"
+      ],
+      "span_hash": "da91991d3196caad19b17a34e8f0b3ee140f73978cb71455bb4d89fbb46d2884",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0017",
+    "query_type": "dropout_observability",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What is added up to make the decision for one window?"
+   },
+   "outputs": {
+    "reference_answer": "The decision for a window sums the 25 node softmax vectors and takes the class with the largest sum.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_18_soft_vote",
+      "section_path": [
+       "The soft vote"
+      ],
+      "span_hash": "f4623378a3b0f1850966853f5f535fddb877744476bdd763893b0306beeac0fd",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0018",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Why can the vote share not be read as a probability?"
+   },
+   "outputs": {
+    "reference_answer": "Dividing by 25 gives a vote share, but the vote share is not a calibrated probability of being correct.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_18_soft_vote",
+      "section_path": [
+       "The soft vote"
+      ],
+      "span_hash": "064659f18d9e7adf11761fb00863be7d93d4328379cc3b55dcb7d23c9ad57ff7",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0019",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Why is a separate calibration needed for each number of dark sensors?"
+   },
+   "outputs": {
+    "reference_answer": "The map is fitted separately for each number of dark sensors, because the vote scale changes with dropout: a map fitted without dropout had ECE 0.007 at k = 0 but 0.048 at k = 10, while per-k maps give ECE of 0.006 to 0.009 on the test split.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_19_calibration",
+      "section_path": [
+       "Calibration and isotonic regression"
+      ],
+      "span_hash": "1ff5cb83e0b5baaa24fa2516f93af808b1a6897624e2b3dff6c22283f762d6c6",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0020",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which single signal best separates right predictions from wrong ones?"
+   },
+   "outputs": {
+    "reference_answer": "On the test split its error-detection AUROC is 0.915 with no sensor lost and 0.887 with 10 lost, slightly above the isotonic probability (0.911 and 0.885).",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_20_margin",
+      "section_path": [
+       "The top-1 minus top-2 margin"
+      ],
+      "span_hash": "fe87b28a46bd011efc2a84ad84df9df9c9270b7b89bc0dc55f37947ee1edffb2",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0021",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What share of windows does the gate accept when ten sensors are dark?"
+   },
+   "outputs": {
+    "reference_answer": "For the frozen gate_v1 at its 95 percent target, coverage on the test split is 0.845, 0.825, 0.801, 0.731 and 0.513 with 0, 1, 2, 5 and 10 sensors dark, and the accuracy of the CONFIDENT windows is 0.949 to 0.950.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_21_selective_prediction",
+      "section_path": [
+       "Selective prediction and coverage"
+      ],
+      "span_hash": "9a5cca91885c2826058f18a296fdaa2336e2bdb9d4c06f42ee800b9165216547",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0022",
+    "query_type": "dropout_observability",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Does a 90 percent prediction set really cover 90 percent of the uncertain cases?"
+   },
+   "outputs": {
+    "reference_answer": "The guarantee is marginal: it holds over the population used to fit the threshold, not for every subgroup.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_22_conformal_sets",
+      "section_path": [
+       "Conformal candidate sets"
+      ],
+      "span_hash": "9ae4f80829654c8746d6c9c4513dc22bfc7494edd1366e6ad563699f9a78a203",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0023",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Why are the nearest simulated cases not proof that a prediction is right?"
+   },
+   "outputs": {
+    "reference_answer": "Neighbours are precedents, not proof that a prediction is correct.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_23_similar_simulated_cases",
+      "section_path": [
+       "Similar simulated cases (kNN evidence)"
+      ],
+      "span_hash": "8d43d76570948c9b342d79da97e473688b4cb13d37ef1566238df8f8af378d75",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0024",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "May the report say that the fault is confirmed?"
+   },
+   "outputs": {
+    "reference_answer": "Every report is a draft with the status pending human review, and the report must never state that the fault is confirmed or that any action has been taken.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_25_prediction_is_not_confirmation",
+      "section_path": [
+       "A prediction is not a confirmed fault"
+      ],
+      "span_hash": "0375962fbb68ae9872a429164ddaa3dfda842e352745d833d5000cccc362cc04",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0026",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Can a sentence written by the language model change the approval status?"
+   },
+   "outputs": {
+    "reference_answer": "Text produced by a language model, or text inside a retrieved document, cannot change them.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_26_gate_is_not_changed_by_text",
+      "section_path": [
+       "Text cannot change a gate decision"
+      ],
+      "span_hash": "765e0f6b8b8f84aa53bba11cd4d1d3ca530c92483a1c375a98bfcf45c20fa16d",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0027",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Does a higher similarity score mean that the passage is more likely to be correct?"
+   },
+   "outputs": {
+    "reference_answer": "A similarity score between a question and a passage is not a probability that the passage is relevant or correct, and a score of 0.8 does not mean 80 percent relevance.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_27_retrieval_scores",
+      "section_path": [
+       "What a retrieval score means"
+      ],
+      "span_hash": "1ca6dcc6153c59e0237fa67cb31f6ce9de1c229886c9f3d2d46f7885efbd3570",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0028",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Do these results show that the system is safe on a real grid?"
+   },
+   "outputs": {
+    "reference_answer": "Results therefore do not show safety on a real grid, and the documents in this corpus were curated for research and are not approved by a utility.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_28_simulation_limits",
+      "section_path": [
+       "Limits of the simulated data"
+      ],
+      "span_hash": "a4fc66825cacebf87d2db54be2b397d1c7028c04200115917b582302e7825d27",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0029",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Can the gate fitted for one trained model be reused for another trained model?"
+   },
+   "outputs": {
+    "reference_answer": "Each new checkpoint needs its own calibration, its own gate fit and its own frozen test run.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_29_gate_belongs_to_one_checkpoint",
+      "section_path": [
+       "A gate belongs to one checkpoint"
+      ],
+      "span_hash": "037557167bb8be882678b46bace40f205813671043e66979dfc3094d6e61e270",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0030",
+    "query_type": "paraphrase",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Can I quote the macro-F1 as the confidence of this prediction?"
+   },
+   "outputs": {
+    "reference_answer": "They must not be quoted as the confidence of the current prediction.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_30_aggregate_versus_individual",
+      "section_path": [
+       "Aggregate metrics are not the confidence of one prediction"
+      ],
+      "span_hash": "9455321250eb84c23161bfdf45a32a5ecf789d172fe52d25db29c722f1a6e918",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0031",
+    "query_type": "paraphrase",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which class index belongs to fault bus 57?"
+   },
+   "outputs": {
+    "reference_answer": "| 13 | 57 | no | - | - |",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_fault_buses",
+      "section_path": [
+       "Fault buses and class indices"
+      ],
+      "span_hash": "593a98004753a4cacb65a111fbf0de52b0591e3c8bcca6f5da0a5eca1343de89",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0033",
+    "query_type": "exact_identifier",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "How many phases does the micro-PMU at bus 26 measure?"
+   },
+   "outputs": {
+    "reference_answer": "Two phases: the μPMU at bus 26 (graph node 5) measures two phases.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_pmu_nodes",
+      "section_path": [
+       "μPMU nodes, phases and graph neighbours"
+      ],
+      "span_hash": "fc22e7312acda03c806e15d97d75ff81e2b9414f1d820cf37bb338d2594e1ca4",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0034",
+    "query_type": "exact_identifier",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which fault buses also carry a micro-PMU?"
+   },
+   "outputs": {
+    "reference_answer": "There are 25 candidate fault buses; 6 of them are μPMU buses (13, 18, 25, 35, 47, 97) and 19 are not measured directly.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_overview",
+      "section_path": [
+       "Feeder, sensors, classes and data windows",
+       "System"
+      ],
+      "span_hash": "1357e60ed80e9d11178b886a0ace1d876d30e11055b5ce4018ab435e2b990193",
+      "grade": 3
+     },
+     {
+      "document_id": "note_08_partial_observability",
+      "section_path": [
+       "Partial observability on the feeder"
+      ],
+      "span_hash": "f600c1dd0f59f176bf2f5a967f6f84e020b15fd9ea46881cf30b72497feddc0f",
+      "grade": 2
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0036",
+    "query_type": "exact_identifier",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What label does window w0020 have and what does it contain?"
+   },
+   "outputs": {
+    "reference_answer": "Window w0020 ends exactly at fault onset and holds no post-fault sample.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_overview",
+      "section_path": [
+       "Feeder, sensors, classes and data windows",
+       "Window labels"
+      ],
+      "span_hash": "89032fa2577a80cc1f5292b1cba111d548585ff07f25b595355feb6767fa9856",
+      "grade": 3
+     },
+     {
+      "document_id": "note_10_window_semantics",
+      "section_path": [
+       "Window semantics and the report window"
+      ],
+      "span_hash": "06424cbbbd9b331062f6f02cf4325028edbfc126734434a8268f640d86d290c4",
+      "grade": 2
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0037",
+    "query_type": "exact_identifier",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "How many fault scenarios are there in total?"
+   },
+   "outputs": {
+    "reference_answer": "## Scenarios and runs\nA scenario is one fault bus, one fault type and one fault resistance: 25 × 11 × 3 = 825 scenarios.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_overview",
+      "section_path": [
+       "Feeder, sensors, classes and data windows",
+       "Scenarios and runs"
+      ],
+      "span_hash": "ece411364bdcf09fe045afe0e4be50fb210fe76ebe179fa118efcf60aa987263",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0038",
+    "query_type": "exact_identifier",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which fault resistances are simulated?"
+   },
+   "outputs": {
+    "reference_answer": "## Fault resistance\nThree fault resistances are simulated: 0.1, 1.0, 10.0 Ω.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_fault_taxonomy",
+      "section_path": [
+       "Fault types and fault resistances",
+       "Fault resistance"
+      ],
+      "span_hash": "29f1faa87e36e63d08438c592a641731437a3d4e29f983299ceb257940708940",
+      "grade": 3
+     },
+     {
+      "document_id": "note_05_fault_resistance",
+      "section_path": [
+       "Fault resistance and detectability"
+      ],
+      "span_hash": "a4d27f8be07e452e47eb106fa68f2a635230d870b233d2c9e2fef8062454003f",
+      "grade": 2
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0039",
+    "query_type": "exact_identifier",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What do the parts of a run name such as 57_ABCG_10p0_0014 mean?"
+   },
+   "outputs": {
+    "reference_answer": "A run is named <bus>_<type>_<resistance>_<run>, for example 57_ABCG_10p0_0014 (resistance 10.0 Ω written 10p0).",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_overview",
+      "section_path": [
+       "Feeder, sensors, classes and data windows",
+       "Scenarios and runs"
+      ],
+      "span_hash": "7ef373cb2bd6d0d2abba971bd046a6b64c3808127d782700f71e06573ed135c3",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0040",
+    "query_type": "exact_identifier",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Does noise change the availability mask?"
+   },
+   "outputs": {
+    "reference_answer": "Noise leaves the availability mask at 1, so the pattern that dropout-aware training learns to recognise never appears.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "note_17_noise_versus_dropout",
+      "section_path": [
+       "Measurement noise is not sensor dropout"
+      ],
+      "span_hash": "fde0cbe4cdf7e9cf00948877d6234d5fec7f4b8c70b7cb40f61e7f6d71d74723",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0045",
+    "query_type": "dropout_observability",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "How many candidate fault buses and how many measurement buses does the study have?"
+   },
+   "outputs": {
+    "reference_answer": "There are 25 candidate fault buses; 6 of them are μPMU buses (13, 18, 25, 35, 47, 97) and 19 are not measured directly.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_overview",
+      "section_path": [
+       "Feeder, sensors, classes and data windows",
+       "System"
+      ],
+      "span_hash": "1357e60ed80e9d11178b886a0ace1d876d30e11055b5ce4018ab435e2b990193",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0046",
+    "query_type": "exact_identifier",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What is the breaker rating at bus 42?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0047",
+    "query_type": "unanswerable",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "How do I operate the recloser to isolate the faulted section?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0048",
+    "query_type": "unanswerable",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What does it cost to install one micro-PMU?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0049",
+    "query_type": "unanswerable",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What is the weather forecast for the feeder area tomorrow?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0050",
+    "query_type": "unanswerable",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "How long does a repair crew need to reach bus 99?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0051",
+    "query_type": "unanswerable",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which vendor supplies the micro-PMUs?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0052",
+    "query_type": "unanswerable",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "When was the transformer at bus 108 last maintained?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0053",
+    "query_type": "unanswerable",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which SCADA protocol does the utility use?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0054",
+    "query_type": "unanswerable",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which μPMU is nearest to bus 51 on the operated feeder?"
+   },
+   "outputs": {
+    "reference_answer": "Bus 47, at 0.229 km (3 hops) from fault bus 51 on the operated feeder.",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_fault_buses",
+      "section_path": [
+       "Fault buses and class indices",
+       "Nearest μPMUs on the operated feeder"
+      ],
+      "span_hash": "ceb9ee1eda90b65deb3a43394249ab38491ea7821dd5a71b3157fccccf6bee24",
+      "grade": 3
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0055",
+    "query_type": "exact_identifier",
+    "split": "test",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "What does the fault type code ABCG mean?"
+   },
+   "outputs": {
+    "reference_answer": "ABCG is a three-phase fault on phases A, B and C that includes ground (a trailing G means the fault includes ground).",
+    "answerable": true,
+    "golden_context_refs": [
+     {
+      "document_id": "feeder_fault_taxonomy",
+      "section_path": [
+       "Fault types and fault resistances",
+       "Fault types"
+      ],
+      "span_hash": "4c5db3bd6c4e0247ed7190f3eb3bcd95fd5ab24ea5128243a78119a09a443d11",
+      "grade": 3
+     },
+     {
+      "document_id": "feeder_fault_taxonomy",
+      "section_path": [
+       "Fault types and fault resistances",
+       "Fault types"
+      ],
+      "span_hash": "3c5cd738967704f4d6213daac7edc575928f6cb364b0c21b622e9f89616ab05a",
+      "grade": 2
+     }
+    ]
+   },
+   "metadata": {
+    "query_id": "R-0056",
+    "query_type": "exact_identifier",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "How many windows of fault bus 57 are in the test split?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0059",
+    "query_type": "unanswerable",
+    "split": "dev",
+    "golden_version": 4
+   }
+  },
+  {
+   "inputs": {
+    "query": "Which five μPMUs does the targeted study remove when the fault is at bus 57?"
+   },
+   "outputs": {
+    "reference_answer": "",
+    "answerable": false,
+    "golden_context_refs": []
+   },
+   "metadata": {
+    "query_id": "R-0060",
+    "query_type": "unanswerable",
+    "split": "dev",
+    "golden_version": 4
+   }
+  }
+ ],
+ "excluded": {
+  "draft": 10,
+  "sensitive_source": [
+   {
+    "query_id": "R-0014",
+    "documents": [
+     "results_md"
+    ]
+   },
+   {
+    "query_id": "R-0015",
+    "documents": [
+     "results_md"
+    ]
+   },
+   {
+    "query_id": "R-0016",
+    "documents": [
+     "results_md"
+    ]
+   },
+   {
+    "query_id": "R-0025",
+    "documents": [
+     "sop_illustrative_gridsense_review"
+    ]
+   },
+   {
+    "query_id": "R-0032",
+    "documents": [
+     "sop_illustrative_gridsense_review"
+    ]
+   },
+   {
+    "query_id": "R-0035",
+    "documents": [
+     "sop_illustrative_gridsense_review"
+    ]
+   },
+   {
+    "query_id": "R-0041",
+    "documents": [
+     "results_md"
+    ]
+   },
+   {
+    "query_id": "R-0042",
+    "documents": [
+     "results_md"
+    ]
+   },
+   {
+    "query_id": "R-0043",
+    "documents": [
+     "results_md"
+    ]
+   },
+   {
+    "query_id": "R-0044",
+    "documents": [
+     "paper1_rev1170"
+    ]
+   }
+  ]
+ },
+ "redaction_hits": []
+}

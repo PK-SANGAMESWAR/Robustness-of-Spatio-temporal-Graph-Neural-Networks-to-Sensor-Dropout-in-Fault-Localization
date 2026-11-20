@@ -133,7 +133,7 @@ reranker:
 generation:
   provider: openai
   model: gpt-6-luna               # author 2026-11-02 (O1); name and prices confirmed on the OpenAI pricing and model pages 2026-11-02; confirm again before the first call
-  candidates: [gpt-6-luna]
+  candidates: [gpt-6-luna, gpt-5.4-nano, gpt-5-mini, gpt-6-sol]   # Layer 2 (2026-11-20); the judge gpt-6.1-terra is never a candidate; the S4 generator stays gpt-6-luna until Layer 2 says otherwise
   temperature: 0                  # author 2026-11-02 (O35). If gpt-6-luna does not accept a temperature, send none and record the model default in the snapshot
   reasoning_effort: low           # 2026-11-11: the gpt-6 models refuse an explicit temperature (the model default runs) and reason before answering; with the default effort a report took ~1,600 reasoning tokens and 900 max tokens gave an empty reply. 'low' = ~450
   prompt_version: generator_v0    # draft: rag-for-dropout/prompts/generator_v0.md
@@ -164,16 +164,20 @@ cost:
     text-embedding-3-small: {input_per_1m: 0.02, output_per_1m: 0.0, date: 2026-10-31, source: "OpenAI model page (author; page re-read by session A 2026-10-31: '$0.02 / 1M tokens')"}   # no further use (author 2026-11-02)
     gpt-6-luna: {input_per_1m: 0.10, output_per_1m: 0.50, batch_input_per_1m: 0.05, batch_output_per_1m: 0.25, date: 2026-11-02, source: "author 2026-11-02; OpenAI pricing page read 2026-11-02 (standard and Batch rates); model page: Batch supported, priced at 50 % of standard"}
     gpt-6.1-terra: {input_per_1m: 1.00, output_per_1m: 5.00, batch_input_per_1m: 0.50, batch_output_per_1m: 2.50, date: 2026-11-02, source: "author 2026-11-02; OpenAI pricing page read 2026-11-02 (standard and Batch rates)"}
+    # Layer 2 candidates (2026-11-20): prices read by the agent on developers.openai.com/api/docs/pricing (standard, short context); model choice delegated by the author ("you can take decision ... keep in mind the money").
+    gpt-5.4-nano: {input_per_1m: 0.20, output_per_1m: 1.25, batch_input_per_1m: 0.10, batch_output_per_1m: 0.625, date: 2026-11-20, source: "OpenAI pricing page read 2026-11-20 (agent)"}
+    gpt-5-mini: {input_per_1m: 0.25, output_per_1m: 2.00, batch_input_per_1m: 0.125, batch_output_per_1m: 1.00, date: 2026-11-20, source: "OpenAI pricing page read 2026-11-20 (agent)"}
+    gpt-6-sol: {input_per_1m: 2.00, output_per_1m: 10.00, batch_input_per_1m: 1.00, batch_output_per_1m: 5.00, date: 2026-11-20, source: "OpenAI pricing page read 2026-11-20 (agent)"}
   limit_usd_total: 5.0            # O9 (author update 2026-10-28): whole track; stop and ask before more
   limit_usd_per_run: 5.0          # never above the remaining total
   ledger: rag-for-dropout/eval/cost_ledger.jsonl   # cumulative spend across runs
 
 langsmith:
-  enabled: false                  # OPEN: O8 (key present and valid 2026-10-28)
+  enabled: true                   # O8 closed 2026-11-20: the author's message "use langsmith online i have given api key right" (recorded by the agent)
   endpoint: https://api.smith.langchain.com   # US region (EU returned 403)
-  project: null                   # OPEN: O8
+  project: gridsense-eval         # chosen by the agent 2026-11-20
   online_sample_rate: null
-  upload_approved: false
+  upload_approved: true           # SCOPE of the approval as applied: the reviewed retrieval dataset (references only, no passage text, no manuscript/RESULTS/SOP-sourced items) and local-evaluator experiments whose outputs hold document ids only. Events, safety items and traces with text: ask first.
 
 snapshots:
   dir: rag-for-dropout/eval/snapshots

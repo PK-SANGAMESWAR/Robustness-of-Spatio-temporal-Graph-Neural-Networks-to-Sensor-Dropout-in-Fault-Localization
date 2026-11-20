@@ -72,7 +72,7 @@ def make_adapter(client, salt: str = "main"):
     return Adapter()
 
 
-def run_judge(client, report_text: str, question: str, event_facts: str, passages: list[str], salt: str = "main") -> dict:
+def run_judge(client, report_text: str, question: str, event_facts: str, passages: list[str], salt: str = "main", only: tuple | None = None) -> dict:
     """Scores for one report. Returns {"scores": {metric: {"score", "reason"}}, "failures": {metric: cause}, "usage": {...}}."""
     from deepeval.metrics import AnswerRelevancyMetric, ContextualRelevancyMetric, FaithfulnessMetric, GEval
     from deepeval.metrics.g_eval.utils import Rubric
@@ -93,6 +93,8 @@ def run_judge(client, report_text: str, question: str, event_facts: str, passage
         cases[f"geval_{r}"] = LLMTestCase(input=question, actual_output=report_text, retrieval_context=full_ctx)
     scores, failures = {}, {}
     for name, metric in metrics.items():
+        if only is not None and name not in only:                                      # a subset of the metrics (Layer 5 runs one GEval rubric only)
+            continue
         try:
             metric.measure(cases[name])
             scores[name] = {"score": float(metric.score), "reason": str(getattr(metric, "reason", ""))[:400]}

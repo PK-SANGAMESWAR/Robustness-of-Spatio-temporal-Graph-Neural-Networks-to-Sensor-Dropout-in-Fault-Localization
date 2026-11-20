@@ -358,3 +358,10 @@ def test_S7_judge_cost_is_reported_apart_from_the_system_cost():
 def test_S7_reply_records_latency_and_a_mock_or_cached_reply_has_none():
     assert llm.Reply("x", 1, 1).latency_s == 0.0
     assert llm.MockClient(lambda m, p: "{}").complete([{"role": "user", "content": "q"}], purpose="generator").latency_s == 0.0
+
+
+def test_S6_the_judge_can_run_one_rubric_only_and_a_dry_geval_has_the_pass_rule_raw_5():
+    from gridsense.s4.judge import MockJudgeResponder, run_judge
+    res = run_judge(llm.MockClient(MockJudgeResponder(geval_score=5)), "report text", "q", "facts", ["passage"], only=("geval_adherence",))
+    assert set(res["scores"]) == {"geval_adherence"} and res["scores"]["geval_adherence"]["raw_1_to_5"] == 5.0 and not res["failures"]
+    assert SF.GEVAL_METRIC == "geval_no_aggregate_metric_as_confidence"

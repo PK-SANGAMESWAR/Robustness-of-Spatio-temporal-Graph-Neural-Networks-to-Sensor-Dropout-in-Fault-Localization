@@ -1,0 +1,42 @@
+{
+  "git_commit": "b930e61",
+  "git_dirty": true,
+  "label": "s8_langsmith_retrieval_dev",
+  "timestamp_utc": "2026-11-20T04:58:16Z",
+  "config_effective": {
+    "dataset": "gridsense-retrieval",
+    "split": "dev",
+    "queries": 25,
+    "project": "gridsense-eval"
+  },
+  "index_fingerprint": "a31d45a23dfbb6daf5b649e1839b9968b58faa906f145c1448e86c1586adc1ea",
+  "case_store_fingerprint": null,
+  "prompt_hashes": null,
+  "rubric_hashes": null,
+  "golden_versions": null,
+  "judge_model": null,
+  "generation_model": null,
+  "deepeval_version": null,
+  "metrics": {
+    "dev.recall@1.mean": 0.9473684210526315,
+    "dev.recall@1.n": 19,
+    "dev.recall@3.mean": 0.9473684210526315,
+    "dev.recall@3.n": 19,
+    "dev.recall@5.mean": 0.9473684210526315,
+    "dev.recall@5.n": 19,
+    "dev.mrr@10.mean": 0.9473684210526315,
+    "dev.mrr@10.n": 19,
+    "dev.ndcg@5.mean": 0.9539213987211257,
+    "dev.ndcg@5.n": 19,
+    "dev.evidence_flag_correct.mean": 0.8,
+    "dev.evidence_flag_correct.n": 25
+  },
+  "n_items": 0,
+  "n_failures": 0,
+  "failure_causes": [],
+  "tokens": {},
+  "cost_usd": 0.0,
+  "langsmith_experiment_url": "https://smith.langchain.com/o/<org-id-withheld>/datasets/25230709-c549-4102-9f77-a6b8b9e10075/compare?selectedSessions=e59bc6ff-dbe1-4f71-978f-fd95f2701f32",
+  "items_path": "rag-for-dropout/eval/items/20261120T045816Z_s8_langsmith_retrieval_dev.jsonl",
+  "notes": "LangSmith mirror of a local evaluation on the DEV split (retrieval v2). Not the frozen test result. Outputs sent: ids, sections, scores; no passage text."
+}
