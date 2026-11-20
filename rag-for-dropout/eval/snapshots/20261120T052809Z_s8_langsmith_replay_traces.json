@@ -1,0 +1,32 @@
+{
+  "git_commit": "b930e61",
+  "git_dirty": true,
+  "label": "s8_langsmith_replay_traces",
+  "timestamp_utc": "2026-11-20T05:28:09Z",
+  "config_effective": {
+    "project": "gridsense-eval",
+    "source_items": "20261120T044827Z_s4_main_live_rescored.jsonl",
+    "scrub": "sensitive sources withheld"
+  },
+  "index_fingerprint": "a31d45a23dfbb6daf5b649e1839b9968b58faa906f145c1448e86c1586adc1ea",
+  "case_store_fingerprint": null,
+  "prompt_hashes": null,
+  "rubric_hashes": null,
+  "golden_versions": null,
+  "judge_model": null,
+  "generation_model": null,
+  "deepeval_version": null,
+  "metrics": {
+    "replay.events": 30,
+    "replay.paused_for_human": 14,
+    "replay.manual_review": 16
+  },
+  "n_items": 0,
+  "n_failures": 0,
+  "failure_causes": [],
+  "tokens": {},
+  "cost_usd": 0.0,
+  "langsmith_experiment_url": null,
+  "items_path": "rag-for-dropout/eval/items/20261120T052809Z_s8_langsmith_replay_traces.jsonl",
+  "notes": "Replay traces of the workflow in LangSmith. No API call, cost 0. No human decision. Sensitive sources withheld (scrub)."
+}
