@@ -33,7 +33,10 @@ def _patched_runner_copy(tmp_path) -> Path:
     d = tmp_path / "copy"
     (d / "fault_localization/experiments").mkdir(parents=True)
     # base = the committed runner.py, so the helper works whether or not the queue has applied the patch to the working tree
-    (d / RUNNER).write_text(subprocess.run(["git", "show", f"HEAD:{RUNNER}"], cwd=REPO, capture_output=True, text=True, check=True).stdout)
+    base = subprocess.run(["git", "show", f"HEAD:{RUNNER}"], cwd=REPO, capture_output=True, text=True, check=True).stdout
+    (d / RUNNER).write_text(base)
+    if "use_rhat_head" in base:                                   # the hooks are already in the committed runner (commit adca737): nothing to apply
+        return d / RUNNER
     r = _git_apply(cwd=d)
     assert r.returncode == 0, r.stderr
     return d / RUNNER

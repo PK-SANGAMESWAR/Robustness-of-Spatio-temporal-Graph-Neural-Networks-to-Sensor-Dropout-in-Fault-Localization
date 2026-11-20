@@ -37,5 +37,5 @@
 
 - Macro-F1 of the pooled soft vote with no gate, with the gate, and with an oracle gate that knows which sensors are corrupted.
 - Primary pre-registered rule: stuck, gate > no gate in 3/3 seeds at each s (met). Gains are small (see the column); do not call them large.
-- arm 'resid05' is the residual-only variant: descriptive, not in a decision rule. G-TF2 was not run on the test split (outside its pre-registration).
+- arm 'resid05' is the residual-only variant: descriptive, not in a decision rule. The test-split run is T9c.
 - Source: results/stage_f/gtf2/core/summary.json, results/stage_f/gtf2r/core/summary.json.

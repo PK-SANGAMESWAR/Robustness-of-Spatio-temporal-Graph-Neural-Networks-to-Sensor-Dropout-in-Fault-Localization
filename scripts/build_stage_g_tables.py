@@ -100,8 +100,20 @@ def main() -> int:
                   "T9b — G-TF2 training-free gate, validation half B, σ0 = 1e-2, k = 0 (3 seeds)",
                   ["Macro-F1 of the pooled soft vote with no gate, with the gate, and with an oracle gate that knows which sensors are corrupted.",
                    "Primary pre-registered rule: stuck, gate > no gate in 3/3 seeds at each s (met). Gains are small (see the column); do not call them large.",
-                   "arm 'resid05' is the residual-only variant: descriptive, not in a decision rule. G-TF2 was not run on the test split (outside its pre-registration).",
+                   "arm 'resid05' is the residual-only variant: descriptive, not in a decision rule. The test-split run is T9c.",
                    "Source: results/stage_f/gtf2/core/summary.json, results/stage_f/gtf2r/core/summary.json."])
+
+    t9t = T.build_t9_gate_test()
+    if t9t:
+        T.write_table(t9t, ["arm", "condition", "role", "no gate", "gate", "oracle gate", "gate − no gate", "seeds > 0", "p (raw t)",
+                            "recovered of gap to oracle", "FPR clean sensors"], OUT / "T9c_gate_test",
+                      "T9c — G-TF2 training-free gate, TEST split (247,000 windows), σ0 = 1e-2, k = 0 (3 seeds)",
+                      ["Same design as T9b with the split changed; thresholds frozen from validation half A (sha256 in stage_f_gtf2_test_preregistration.md). "
+                       "Registered before any test number existed.",
+                       "Primary rule (stuck, 9/9 pairs) and the secondary rules are copied from the validation registration. A pass is a sign result, not a significance claim (n = 3).",
+                       "'recovered' is read only where oracle − no gate ≥ 0.01 (— otherwise). Gaussian 0.02 is reported only.",
+                       "Compare with T9b (validation half B); the two tables use different splits and are not pooled.",
+                       "Source: results/stage_f/gtf2_test/summary.json."])
 
     t10 = T.build_t10()
     T.write_table(t10, ["condition", "k", "R5", "R0ⁿ", "ΔF1", "seeds > 0", "p (raw)"], OUT / "T10_noise_policies_test",

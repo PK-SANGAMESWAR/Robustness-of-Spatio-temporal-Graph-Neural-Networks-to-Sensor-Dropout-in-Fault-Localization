@@ -227,3 +227,21 @@ def test_real_t9_matches_stage_f_record():
     assert len(stuck) == 3 and all(r["seeds > 0"] == "3/3" for r in stuck)    # 9 of 9 seed-by-s pairs positive
     clean = next(r for r in gate if r["condition"].startswith("clean"))
     assert clean["gate − no gate"] == "-0.0009"                               # mean of -0.0006/-0.0010/-0.0011
+
+
+def test_T9c_gate_test_matches_summary_json():
+    """T9c (test split) rows equal results/stage_f/gtf2_test/summary.json; the decision-rule roles are carried over."""
+    import json
+    p = T.REPO / "results/stage_f/gtf2_test/summary.json"
+    if not p.exists():
+        import pytest
+        pytest.skip("pending: results/stage_f/gtf2_test/summary.json")
+    d = json.loads(p.read_text())
+    rows = {r["condition"]: r for r in T.build_t9_gate_test()}
+    c = d["sigma"]["0.01"]["conditions"]["stuck_s2"]
+    r = rows["stuck_s2"]
+    assert r["role"] == "primary"
+    assert abs(float(r["gate − no gate"]) - np.mean(np.array(c["gtf2"]) - np.array(c["nogate"]))) < 5e-5
+    assert r["seeds > 0"] == "3/3"
+    assert rows["gauss_0.02_s1"]["role"] == "reported only"
+    assert all(rows[f"stuck_s{s}"]["seeds > 0"] == "3/3" for s in (1, 2, 3))

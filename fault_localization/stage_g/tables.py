@@ -588,11 +588,15 @@ def build_t9_detection() -> list[dict]:
     return out
 
 
-def build_t9_gate() -> list[dict]:
-    """G-TF2 (and the residual-only arm where present): F1 without gate / with gate / oracle gate, per condition."""
+def build_t9_gate(arm_dirs: tuple = ("gtf2", "gtf2r"), subdir: str = "core") -> list[dict]:
+    """G-TF2 (and the residual-only arm where present): F1 without gate / with gate / oracle gate, per condition.
+
+    Default = validation half B (``results/stage_f/{gtf2,gtf2r}/core``). ``build_t9_gate_test`` reads the
+    test-split run (``results/stage_f/gtf2_test``, pre-registered in ``PC-STGNN/stage_f_gtf2_test_preregistration.md``).
+    """
     rows = []
-    for arm_dir in ("gtf2", "gtf2r"):
-        p = REPO / f"results/stage_f/{arm_dir}/core/summary.json"
+    for arm_dir in arm_dirs:
+        p = REPO / (f"results/stage_f/{arm_dir}/{subdir}/summary.json" if subdir else f"results/stage_f/{arm_dir}/summary.json")
         if not p.exists():
             continue
         d = json.loads(p.read_text())
@@ -620,3 +624,8 @@ def build_t9_gate() -> list[dict]:
                          "FPR clean sensors": fmt(float(np.mean(cl["realized_fpr_clean_windows"]))), "role": "cost check",
                          "delta_per_seed": [float(x) for x in (g - n)]})
     return rows
+
+
+def build_t9_gate_test() -> list[dict]:
+    """G-TF2 on the test split (247,000 windows, thresholds frozen from validation half A). Same columns as T9b."""
+    return build_t9_gate(("gtf2_test",), "")
